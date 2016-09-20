@@ -32,6 +32,9 @@ module.exports = ($) ->
         else if ~last.search ' when ' then 'case'
         else if ~last.search /(?:\sif|if\s)/ then 'if'
         else 'string'
+      #record function name
+      if ~last.search ' =>'
+        fn.parse.$fnName = _.trim last.replace /\s=.*/, ''
     else if d < deep
 
       arr = []
@@ -63,7 +66,11 @@ module.exports = ($) ->
   fn.parse = (string) ->
     fn.deep string
     #"aaa#{bbb}ccc"
-    .replace /"(.*)#\{(.*)}(.*)"/g, '"$1" & $2 & "$3"'
+    .replace /".*#\{.*?}.*"/g, (text) ->
+      text.replace /#{/g, '" & '
+      .replace /}/g, ' & "'
+      .replace /"" &/g, ''
+      .replace /& ""/g, ''
 
     #replace all ' to ""
     .replace /'/g, '"'
@@ -81,6 +88,21 @@ module.exports = ($) ->
     .replace /(\w+)\(\)/g, 'call $1()'
     .replace /\.call /g, '.'
 
+#    #dim
+#    .replace /(\w+) = \[(.*?)]/g, (text) ->
+#      key = _.trim text.replace /\s=.*/, ''
+#      res = ["dim #{key}()"]
+#
+#      vList = text.replace(/.*\[/, '').replace(/].*/, '').replace(/\s*/g, '').split ','
+#      if vList.length and vList[0].length
+#        for a, i in vList
+#          res.push "#{key}(#{i}) = #{a}"
+#
+#      res.join ' : '
+#
+#    #array
+#    .replace /(\w+)\[(\d+?)\]/g, '$1($2)'
+
     #special format
     .replace /(end|gosub|delay|leftClick|rightClick|keyDown|keyUp|moveTo|findPic)\((.*?)\)/g, '$1 $2'
 
@@ -90,9 +112,11 @@ module.exports = ($) ->
     #function
     .replace /\= =>/g, '= () =>'
     .replace /(\w+?) = \((.*)\) =>/g, 'function $1($2)'
+    .replace /([^\s\d:]+) = ([^\s\d:]+) ([^\s:]+)/g, '$1 = $2($3)'
 
     #return
     .replace /return/g, 'exit sub'
+    .replace /exit sub (.+)/g, "#{fn.parse.$fnName} = $1 : exit function"
 
     #if
     .replace /else if/g, 'elseif'

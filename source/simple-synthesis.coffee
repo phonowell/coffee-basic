@@ -38,8 +38,9 @@ main = ->
   stepBy '生命药草', '基础药草', '生命药水50点'
 
   delay 500
-  moveToImage '合成按钮'
-  leftClick 1
+  isie = isImageExist '合成按钮'
+  if isie == true
+    leftClick 1
 
   delay 6500
   main()
