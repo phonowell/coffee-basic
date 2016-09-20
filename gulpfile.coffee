@@ -44,7 +44,7 @@ $.task 'watch', ->
   .pipe intercept (file) ->
     src = './source/module/parse.js'
     delete require.cache[require.resolve src]
-    parse = require src
+    parse = require(src) $
 
     file.contents = new Buffer parse file.contents.toString()
 
@@ -65,7 +65,7 @@ $.task 'build', (callback) ->
     .pipe using()
     .pipe include()
     .pipe intercept (file) ->
-      parse = require src
+      parse = require('./source/module/parse.js') $
       file.contents = new Buffer parse file.contents.toString()
       file
     .pipe rename (path) ->
