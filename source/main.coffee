@@ -1,9 +1,20 @@
 #=include lib/init.coffee
-#=include lib/msg.coffee
 #=include lib/image.coffee
+#=include lib/skill.coffee
 
 #main
 main = ->
-  res = isImageExist '火结晶'
-  showMessage "#{res}, #{x}, #{y}"
+
+  delay 1000
+  getSkill()
+  delay 100
+  updateSkill()
+  delay 1000
+
+  main()
+
+moveCenter()
+delay 200
+leftClick 1
+
 main()
