@@ -1,24 +1,38 @@
 #caution: type 1
+
+#get shape
+$.getShape = =>
+  _shape = GetCursorShape 1
+  return _shape
+
 #cursor shape
-cursorShape = (name) =>
-  switch name
+$.shape = (_name) =>
+  switch _name
     when 'default'
-      return 2147483647
+      _shape = 2147483647
     when 'forbiden'
-      return 2147409951
+      _shape = 2147409951
     when 'point'
-      return 252698368
+      _shape = 252698368
     when 'input'
-      return 2113994751
-    when 'Hand'
-      return 961150971
+      _shape = 2113994751
+    when 'hand'
+      _shape = 961150971
     when 'drop'
-      return 961085563
+      _shape = 961085563
     when 'fire'
-      return 1576667162
+      _shape = 1576667162
     when 'riot'
-      return 1027735296
+      _shape = 1027735296
     when 'hammer'
-      return 2130706431
-    else
-      return GetCursorShape(1)
+      _shape = 2130706431
+  return _shape
+
+#is shape
+$.isShape = (_name) =>
+  _current = $.getShape()
+  _target = $.shape _name
+  if _current == _target
+    return true
+  else
+    return false

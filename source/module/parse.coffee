@@ -63,14 +63,30 @@ module.exports = ($) ->
   fn.deep.$deep = 0
   fn.deep.$last = ''
 
+  fn.namespace = (string) ->
+    switch string[0]
+      when '$' then _.camelCase string.replace(/\$/, 'cb').replace /\./g, '_'
+      when '_' then _.camelCase string.replace /_/, 'temp '
+      else string
+
   fn.parse = (string) ->
     fn.deep string
+
     #"aaa#{bbb}ccc"
     .replace /".*#\{.*?}.*"/g, (text) ->
       text.replace /#{/g, '" & '
       .replace /}/g, ' & "'
       .replace /"" &/g, ''
       .replace /& ""/g, ''
+
+    #true and false
+    .replace /true/g, '-1'
+    .replace /false/g, '0'
+
+    #_ to temp
+    .replace /_\w+/g, (text) -> fn.namespace text
+    #$. to cb
+    .replace /\$\.(?:\w|\.)+/g, (text) -> fn.namespace text
 
     #replace all ' to ""
     .replace /'/g, '"'
@@ -79,14 +95,18 @@ module.exports = ($) ->
     #replace all != to <>
     .replace /!=/g, '<>'
 
+    #replace -1 to `~1
+    .replace /-(\d)/g, '`~$1'
+
     #quote
     .replace /#.*/g, (text) ->
-      text.replace /#/, '_%_'
+      text.replace /#/, '`%`'
       .replace /\s/g, '_'
 
     #call
     .replace /(\w+)\(\)/g, 'call $1()'
     .replace /\.call /g, '.'
+    .replace /(\S) call/g, '$1'
 
 #    #dim
 #    .replace /(\w+) = \[(.*?)]/g, (text) ->
@@ -104,7 +124,10 @@ module.exports = ($) ->
 #    .replace /(\w+)\[(\d+?)\]/g, '$1($2)'
 
     #special format
-    .replace /(end|gosub|delay|leftClick|rightClick|keyDown|keyUp|moveTo|findPic)\((.*?)\)/g, '$1 $2'
+    .replace /(end|gosub|delay|leftClick|leftUp|leftDown|rightClick|rightUp|rightDown|keyDown|keyUp|moveTo|findPic)\((.*?)\)/g, '$1 $2'
+
+    #vb string
+    .replace /call (randomize)\(\)/g, '$1'
 
     #sub
     .replace /\= ->/g, '= () ->'
@@ -112,11 +135,14 @@ module.exports = ($) ->
     #function
     .replace /\= =>/g, '= () =>'
     .replace /(\w+?) = \((.*)\) =>/g, 'function $1($2)'
-    .replace /([^\s\d:]+) = ([^\s\d:]+) ([^\s:]+)/g, '$1 = $2($3)'
+    .replace /(\w+) = (\w+) ([^+\-*\/:]+)/g, '$1 = $2($3)'
+
 
     #return
     .replace /return/g, 'exit sub'
-    .replace /exit sub (.+)/g, "#{fn.parse.$fnName} = $1 : exit function"
+    .replace /exit sub .+/g, (text) ->
+      res = text.replace /exit sub /, "#{fn.namespace fn.parse.$fnName} = "
+      "#{res} : exit function"
 
     #if
     .replace /else if/g, 'elseif'
@@ -132,9 +158,15 @@ module.exports = ($) ->
     #for
     .replace /for (\w+) in \[(\w+?)\.+?(\w+?)]/g, 'for $1 = $2 to $3'
 
+    #remove useless ()
+    .replace /\((\+|-|\*|\/)\)/g, ' $1'
+
+    #-1 back
+    .replace /`~(\d)/g, '-$1'
+
     #quote back
-    .replace /_%_.*/g, (text) ->
-      text.replace /_%_/g, "//"
+    .replace /`%`.*/g, (text) ->
+      text.replace /`%`/g, "//"
       .replace /_/g, ' '
 
   #return
