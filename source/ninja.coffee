@@ -1,42 +1,56 @@
-#=include lib/init.coffee
-#=include lib/image.coffee
-#=include lib/skill.coffee
-#=include lib/team-viewer.coffee
+#=include lib/basic.coffee
+#=include lib/use.coffee
 
 #main
+
+_tsA = 0
+_tsB = 0
+
 main = ->
 
-  ignoreTeamViewer()
-
   delay 500
-  moveCenter()
+  $.move 0.5, 0.5
 
   delay 1000
-  useSkill '樱时雨', '1'
+  $.use '切换装备', 'Tab'
+
+  _dtA = dateDiff 's', _tsA, now()
+  if _dtA > 60
+    _tsA = now()
+    delay 1000
+    $.use '忍耐之歌', '8'
+
+  _dtB = dateDiff 's', _tsB, now()
+  if _dtB > 300
+    _tsB = now()
+    delay 1000
+    $.use '樱时雨', '1'
+
   delay 1000
-  useSkill '螺旋斩', '2'
+  $.use '螺旋斩', '2'
   delay 1000
-  useSkill '影子束缚术', '3'
+  $.use '影子束缚术', '3'
   delay 1000
-  useSkill '烟幕术', '4'
+  $.use '烟幕术', '4'
   delay 1000
-  useSkill '影子隐身术', '5'
+  $.use '影子隐身术', '5'
   delay 1000
-  useSkill '手里剑爆破术', '6'
+  $.use '手里剑爆破术', '6'
   delay 1000
-  useSkill '手里剑风暴', '7'
-  delay 1000
-  useSkill '忍耐之歌', '8'
+  $.use '手里剑风暴', '7'
 
   delay 3000
-  getSkill()
+  $.getSkill()
   delay 500
-  updateSkill()
+  $.updateSkill()
 
   main()
 
-moveCenter()
+$.move 0.5, 0.5
 delay 200
 leftClick 1
 
 main()
+
+onScriptExit = ->
+  $.exit()

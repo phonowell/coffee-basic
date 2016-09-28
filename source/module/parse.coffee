@@ -67,6 +67,7 @@ module.exports = ($) ->
     switch string[0]
       when '$' then _.camelCase string.replace(/\$/, 'cb').replace /\./g, '_'
       when '_' then _.camelCase string.replace /_/, 'temp '
+      when '@' then _.camelCase string.replace /@/, "#{fn.namespace fn.parse.$fnName} vari "
       else string
 
   fn.parse = (string) ->
@@ -87,6 +88,8 @@ module.exports = ($) ->
     .replace /_\w+/g, (text) -> fn.namespace text
     #$. to cb
     .replace /\$\.(?:\w|\.)+/g, (text) -> fn.namespace text
+    #@ to fn
+    .replace /@\w+/g, (text) -> fn.namespace text
 
     #replace all ' to ""
     .replace /'/g, '"'

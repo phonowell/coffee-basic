@@ -38,7 +38,3 @@ $.search = (_name) ->
       _color = 'fea6d0'
     when '金色药草'
       _color = 'baa6d0'
-
-  $.findColor _color
-  if x > 0
-    $.move x + 5, y + 5

@@ -1,3 +1,24 @@
+#step
+stepForGetSkill = (_name) ->
+  $.find _name
+  if x > 0
+    $.move x + 5, y + 10
+    delay 500
+    leftClick 1
+    delay 1000
+
+#get skill
+$.getSkill = ->
+  stepForGetSkill '获得技能'
+  stepForGetSkill '获得技能Get'
+  stepForGetSkill '确认才能'
+
+#update skill
+$.updateSkill = ->
+  stepForGetSkill '升级'
+  stepForGetSkill '升级Advance'
+  stepForGetSkill '确认技能'
+
 #use
 $.use = (_name, _key) ->
   if _name != '取消技能'
@@ -6,12 +27,75 @@ $.use = (_name, _key) ->
   switch _name
     when '取消技能'
       keyPress _key, 1
+    when '普通攻击'
+      skillAttack _key
+    when '切换装备'
+      keyPress _key, 1
+    when '忍耐之歌'
+      skillSimpleCancelAfter _key, 1500
     when '丰收之歌'
-      _skillSimpleCancelAfter _key, 5000
+      skillSimpleCancelAfter _key, 5000
+    when '樱时雨'
+      skillCheeryBlossomWind _key
+    when '螺旋斩'
+      skillShurikenCharging _key
+    when '影子束缚术'
+      skillSimpleStandBy _key, 500, 1000
+    when '烟幕术'
+      skillSimpleStandBy _key, 500, 1000
+    when '影子隐身术'
+      skillSimpleCancelAfter _key, 1000
+    when '手里剑爆破术'
+      skillSimpleStandBy _key, 500, 2000
+    when '手里剑风暴'
+      skillSimpleAttack _key, 1000
 
 #使用然后取消的技能
 #忍耐之歌、影子隐身术
-_skillSimpleCancelAfter = (_key, _time) ->
-  keyPress _key, 1
-  delay _time
-  $.use '取消技能', 'x'
+skillSimpleCancelAfter = (key, time) ->
+  keyPress key, 1
+  delay time
+  cancelSkill()
+
+#基础技能类型
+#重击、手里剑风暴
+skillSimpleAttack = (key, time) ->
+  keyPress key, 1
+  delay 200
+  skillAttack time
+
+#脚下释放的技能
+#影子束缚术、烟幕术
+skillSimpleStandBy = (key, before, after) ->
+  keyPress key, 1
+  delay before
+  $.move 0.4, 0.5
+  delay 500
+  leftClick 1
+  delay after
+
+#普通攻击
+skillAttack = (time) ->
+  keyDown 'Ctrl', 1
+  delay 200
+  leftClick 1
+  delay time
+  keyUp 'Ctrl', 1
+
+#樱时雨
+skillCheeryBlossomWind = (key) ->
+  keyDown key, 1
+  delay 5000
+  keyUp key, 1
+
+#螺旋斩
+skillShurikenCharging = (key) ->
+  keyDown key, 1
+  delay 200
+  keyDown 'Ctrl', 1
+  delay 3500
+  leftClick 1
+  delay 200
+  keyUp 'Ctrl', 1
+  delay 200
+  keyUp key, 1

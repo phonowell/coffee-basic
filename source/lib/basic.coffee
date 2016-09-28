@@ -26,7 +26,7 @@ $.findColor = (_color) ->
   _g = mid _color, 3, 2
   _b = right _color, 2
   _color = "#{_b}#{_g}#{_r}"
-  findCenterColor $.screen.width * 0.25, $.screen.height * 0.25, $.screen.width * 0.75, $.screen.height * 0.75, _color , x, y
+  findCenterColor 0, 0, $.screen.width, $.screen.height, _color , x, y
 
 #say
 $.say = (_text) ->
