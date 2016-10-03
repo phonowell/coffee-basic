@@ -28,15 +28,9 @@ $.findColor = (_color) ->
   _color = "#{_b}#{_g}#{_r}"
   findCenterColor 0, 0, $.screen.width, $.screen.height, _color , x, y
 
-#say
-$.say = (_text) ->
-  keyPress 'Enter', 1
-  delay 200
-  SayString _text
-  delay 200
-  keyPress 'Enter', 1
-  delay 200
-  keyPress 'Enter', 1
+#copy
+$.copy = (_text) ->
+  Plugin.Sys.SetCLB _text
 
 #exit
 $.exit = ->

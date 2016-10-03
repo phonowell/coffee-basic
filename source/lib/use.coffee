@@ -21,16 +21,11 @@ $.updateSkill = ->
 
 #use
 $.use = (_name, _key) ->
-  if _name != '取消技能'
-    $.use '取消技能', 'x'
-    delay 200
+  $.act '取消技能', 'x'
+  delay 200
   switch _name
-    when '取消技能'
-      keyPress _key, 1
     when '普通攻击'
       skillAttack _key
-    when '切换装备'
-      keyPress _key, 1
     when '忍耐之歌'
       skillSimpleCancelAfter _key, 1500
     when '丰收之歌'
@@ -42,20 +37,20 @@ $.use = (_name, _key) ->
     when '影子束缚术'
       skillSimpleStandBy _key, 500, 1000
     when '烟幕术'
-      skillSimpleStandBy _key, 500, 1000
+      skillSmokescreen _key
     when '影子隐身术'
-      skillSimpleCancelAfter _key, 1000
+      skillShadowStealth _key
     when '手里剑爆破术'
-      skillSimpleStandBy _key, 500, 2000
+      skillSimpleStandBy _key, 1000, 2000
     when '手里剑风暴'
-      skillSimpleAttack _key, 1000
+      skillSimpleAttack _key, 2000
 
 #使用然后取消的技能
 #忍耐之歌、影子隐身术
 skillSimpleCancelAfter = (key, time) ->
   keyPress key, 1
   delay time
-  cancelSkill()
+  $.act '取消技能', 'x'
 
 #基础技能类型
 #重击、手里剑风暴
@@ -73,6 +68,7 @@ skillSimpleStandBy = (key, before, after) ->
   delay 500
   leftClick 1
   delay after
+  $.move 0.5, 0.5
 
 #普通攻击
 skillAttack = (time) ->
@@ -99,3 +95,19 @@ skillShurikenCharging = (key) ->
   keyUp 'Ctrl', 1
   delay 200
   keyUp key, 1
+
+#影子隐身术
+skillShadowStealth = (key) ->
+  keyPress key, 1
+  delay 500
+  keyPress key, 1
+
+#烟幕术
+skillSmokescreen = (key) ->
+  keyPress key, 1
+  delay 500
+  $.move 0.2, 0.3
+  delay 500
+  leftClick 1
+  delay 1000
+  $.move 0.5, 0.5

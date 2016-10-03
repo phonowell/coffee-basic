@@ -10,6 +10,12 @@ $.shape = (_name) =>
   switch _name
     when 'default'
       _shape = 2147483647
+    when 'blade'
+      _shape = 2081579103
+    when 'range'
+      _shape = 1075777535
+    when 'range-out'
+      _shape = 1011269659
     when 'forbiden'
       _shape = 2147409951
     when 'point'

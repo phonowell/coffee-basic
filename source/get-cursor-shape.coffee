@@ -1,14 +1,19 @@
-#=include lib/init.coffee
-#=include lib/msg.coffee
+#=include lib/basic.coffee
 #=include lib/cursor.coffee
-#=include lib/image.coffee
-#=include lib/get.coffee
+#=include lib/act.coffee
 
 #main
 main = ->
 
-  shape = cursorShape('current')
-  Plugin.Sys.SetCLB shape
-  showMessage shape
+  delay 1000
 
+  shape = $.getShape()
+  $.copy shape
+  $.say shape
+
+#execute
 main()
+
+#exit
+onScriptExit = ->
+  $.exit()
