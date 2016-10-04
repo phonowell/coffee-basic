@@ -35,9 +35,9 @@ $.use = (_name, _key) ->
     when '螺旋斩'
       skillShurikenCharging _key
     when '影子束缚术'
-      skillSimpleStandBy _key, 500, 1000
+      skillSimpleStandBy _key, 500, 2000
     when '烟幕术'
-      skillSmokescreen _key
+      skillSimpleStandBy _key, 500, 2000
     when '影子隐身术'
       skillShadowStealth _key
     when '手里剑爆破术'
@@ -60,11 +60,11 @@ skillSimpleAttack = (key, time) ->
   skillAttack time
 
 #脚下释放的技能
-#影子束缚术、烟幕术
+#影子束缚术
 skillSimpleStandBy = (key, before, after) ->
   keyPress key, 1
   delay before
-  $.move 0.4, 0.5
+  $.move 0.3, 0.5
   delay 500
   leftClick 1
   delay after
@@ -83,6 +83,7 @@ skillCheeryBlossomWind = (key) ->
   keyDown key, 1
   delay 5000
   keyUp key, 1
+  delay 2000
 
 #螺旋斩
 skillShurikenCharging = (key) ->
@@ -101,13 +102,3 @@ skillShadowStealth = (key) ->
   keyPress key, 1
   delay 500
   keyPress key, 1
-
-#烟幕术
-skillSmokescreen = (key) ->
-  keyPress key, 1
-  delay 500
-  $.move 0.2, 0.3
-  delay 500
-  leftClick 1
-  delay 1000
-  $.move 0.5, 0.5

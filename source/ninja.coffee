@@ -21,17 +21,17 @@ main = ->
     _tsA = now()
     delay 1000
     $.use '忍耐之歌', '8'
-    delay 1000
-    $.use '影子隐身术', '5'
+    #delay 1000
+    #$.use '影子隐身术', '5'
 
   _dtB = dateDiff 's', _tsB, now()
   if _dtB > 300
     _tsB = now()
-    delay 1000
-    $.use '樱时雨', '1'
+    #delay 1000
+    #$.use '樱时雨', '1'
 
   _dtC = dateDiff 's', _tsC, now()
-  if _dtC > 15
+  if _dtC > 20
     _tsC = now()
     delay 1000
     $.use '影子束缚术', '3'
