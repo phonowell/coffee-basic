@@ -30,6 +30,11 @@ $.use = (_name, _key) ->
       skillSimpleCancelAfter _key, 1500
     when '丰收之歌'
       skillSimpleCancelAfter _key, 5000
+    when '迷惑的演奏'
+      keyPress _key, 1
+      delay 5000
+    when '脱离险境'
+      skillSimpleCancelAfter _key, 2000
     when '樱时雨'
       skillCheeryBlossomWind _key
     when '螺旋斩'
@@ -64,7 +69,7 @@ skillSimpleAttack = (key, time) ->
 skillSimpleStandBy = (key, before, after) ->
   keyPress key, 1
   delay before
-  $.move 0.3, 0.5
+  $.move 0.45, 0.5
   delay 500
   leftClick 1
   delay after
