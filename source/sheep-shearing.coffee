@@ -10,7 +10,7 @@ _tsA = 0
 main = ->
 
   _dtA = dateDiff 's', _tsA, now()
-  if _dtA > 60
+  if _dtA > 150
     _tsA = now()
     delay 1000
     $.use '丰收之歌', '1'
@@ -20,7 +20,7 @@ main = ->
     $.move x + 30, y + 50
     delay 200
     leftClick 1
-    delay 4500
+    delay 3500
 
   $.pick '羊毛'
 
