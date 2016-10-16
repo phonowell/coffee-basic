@@ -31,8 +31,7 @@ $.use = (_name, _key) ->
     when '丰收之歌'
       skillSimpleCancelAfter _key, 5000
     when '迷惑的演奏'
-      keyPress _key, 1
-      delay 5000
+      skillSimpleUse _key, 5000
     when '脱离险境'
       skillSimpleCancelAfter _key, 2000
     when '樱时雨'
@@ -49,6 +48,11 @@ $.use = (_name, _key) ->
       skillSimpleStandBy _key, 1000, 2000
     when '手里剑风暴'
       skillSimpleAttack _key, 2000
+
+#直接使用的技能
+skillSimpleUse = (key, time) ->
+  keyPress key, 1
+  delay time
 
 #使用然后取消的技能
 #忍耐之歌、影子隐身术

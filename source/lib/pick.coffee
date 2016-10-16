@@ -11,6 +11,8 @@ $.pick = (_name) ->
       _color = 'd4a9d0'
     when '黄金药草'
       _color = 'fec0d0'
+    when '羊毛'
+      _color = 'c5d99f'
 
   $.findColor _color
   if x > 0

@@ -1,6 +1,8 @@
 $.screen.width = Plugin.Sys.GetScRX()
 $.screen.height = Plugin.Sys.GetScRY()
 
+$.handle = Plugin.Window.Foreground()
+
 #random
 $.rnd = (_min, _max) =>
   randomize()
