@@ -32,6 +32,8 @@ $.use = (_name, _key) ->
       skillSimpleCancelAfter _key, 5000
     when '迷惑的演奏'
       skillSimpleUse _key, 5000
+    when '摇篮曲'
+      skillSimpleCancelAfter _key, 1000
     when '脱离险境'
       skillSimpleCancelAfter _key, 2000
     when '樱时雨'

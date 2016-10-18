@@ -22,6 +22,7 @@ $.pick = (_name) ->
     delay 200
     keyPress 'Alt', 1
     leftClick 1
+    delay 500
 
     $.findColor _color
     if x > 0

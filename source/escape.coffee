@@ -1,7 +1,6 @@
 #=include lib/basic.coffee
 #=include lib/act.coffee
 #=include lib/use.coffee
-#=include lib/pick.coffee
 
 #main
 
@@ -9,20 +8,26 @@ _tsA = 0
 
 main = ->
 
+  delay 500
+  $.move 0.5, 0.5
+
   _dtA = dateDiff 's', _tsA, now()
-  if _dtA > 150
+  if _dtA > 40
     _tsA = now()
     delay 1000
-    $.use '丰收之歌', '1'
+    $.use '忍耐之歌', '8'
+    delay 1000
+    $.use '迷惑的演奏', '9'
+    delay 1000
+    $.use '脱离险境', 'F11'
 
-  $.findColor 'dff3bd'
-  if x > 0
-    $.move x, y + 50
-    delay 200
-    leftClick 1
-    delay 4000
+  delay 1000
+  $.use '摇篮曲', 'F9'
 
-  $.pick '羊毛'
+  #delay 500
+  #$.getSkill()
+  delay 500
+  $.updateSkill()
 
   main()
 
