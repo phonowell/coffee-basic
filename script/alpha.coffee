@@ -1,21 +1,54 @@
+# variable
+
+isLeftPressed = false
+isRightPressed = false
+
 # function
 
-beep = ->
-  $.beep()
+jump = ->
+  $.press 'space'
+
+viewFar = ->
+  $.press 'ctrl:down', 'up:down', 'page-up:down'
+  $.sleep 5000
+  $.press 'ctrl:up', 'up:up', 'page-down:up'
 
 # bind
 
-$.on 'f1', ->
-  [x, y] = $.getPosition()
-  color = $.getColor x, y
-  alert "current color is #{color}"
-
-$.on 'f2', ->
-  [x, y] = $.find '#fff', [0, 0], [100, 100]
-  alert "find #fff at #{x}, #{y}"
-
-$.on 'f3', ->
-  beep()
-
-$.on 'ctrl + f12', ->
+# exit
+$.on 'f12', ->
   $.exit()
+
+# test
+$.on 'f1', ->
+  viewFar()
+
+# left
+
+$.on 'click', ->
+  isLeftPressed = true
+
+  if isRightPressed == true
+    jump()
+    return
+
+  $.click 'down'
+
+$.on 'click:up', ->
+  isLeftPressed = false
+  $.click 'up'
+
+# right
+
+$.on 'click-right', ->
+  isRightPressed = true
+
+  if isLeftPressed == true
+    jump()
+    return
+
+  $.click 'right', 'down'
+
+$.on 'click-right:up', ->
+  isRightPressed = false
+  $.click 'right', 'up'

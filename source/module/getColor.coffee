@@ -20,16 +20,18 @@ module.exports = (cont) ->
     n = getDepth line
 
     line = line
+    .replace /\$\.getColor/, ''
     .replace /\s/g, ''
     .replace /[\(\)]/g, ''
-    .replace /\$\.getColor/, ''
 
     [output, arg] = line.split '='
 
     # arg
     [x, y] = arg.split ','
-    x or= 0
-    y or= 0
+    unless x and y
+      x or= '__x__'
+      y or= '__y__'
+      result.push "#{setDepth n}[#{x}, #{y}] = $.getPosition()"
 
     # return
     result.push "#{setDepth n}PixelGetColor #{output}, #{x}, #{y}"

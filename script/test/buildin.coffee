@@ -1,28 +1,21 @@
-# beep
+Math.abs -1
+Math.ceil 1.5
+Math.round 1.4
+
+# ---
+
+alert 'message'
+$.alert 'message'
 $.beep()
-
-# block
 $.block()
-
-# click
 $.click 20, 20
-
-# exit
 $.exit()
-
-# move
+$.info 'title', 'content'
 $.move 0, 120, 50
-
-# open
 $.open 'notepad'
-
-# play
 $.play 'ahk.mp4'
-
-# sleep
 $.sleep 20
-
-# trim
+$.tip 'message'
 $.trim ' string '
 $.trimEnd 'string '
 $.trimStart ' string'

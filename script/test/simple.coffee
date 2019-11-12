@@ -55,6 +55,6 @@ attackB = ->
   $.press 'z'
 
 attackC = ->
-  $.press 'z-down'
+  $.press 'z:down'
   $.press 'x'
-  $.press 'z-up'
+  $.press 'z:up'

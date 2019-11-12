@@ -15,7 +15,14 @@ module.exports = (input) ->
 
     # string
     if it != item
-      result.push it.replace /(?:#{|})/g, '%'
+      
+      it = it
+      .replace /(?:#{|})/g, '%'
+
+      if it.includes ' '
+        it = "\"#{it}\""
+
+      result.push it
       continue
 
     # number

@@ -7,12 +7,18 @@ getDepth = require '../fn/getDepth'
 getKey = (text) ->
   text
   .toLowerCase()
-  .replace /[\s\+]/g, ''
+  .replace /[\s\+-]/g, ''
+  # ---
   .replace /alt/g, '!'
   .replace /control/g, '^'
   .replace /ctrl/g, '^'
   .replace /shift/g, '+'
   .replace /win/g, '#'
+  # ---
+  .replace /clickright/g, 'rbutton'
+  .replace /click/g, 'lbutton'
+  # ---
+  .replace /:/g, ' '
 
 # return
 module.exports = (cont) ->

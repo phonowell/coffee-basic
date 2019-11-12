@@ -3,33 +3,37 @@ _ = require 'lodash'
 # function
 
 getDepth = require '../fn/getDepth'
+setDepth = require '../fn/setDepth'
 
 removeSpace = (line) ->
 
-  depth = getDepth line
+  n = getDepth line
 
   line = line
   .trim()
   .replace /\s+/, ' '
+
+  unless line
+    return ''
   
   # return
-  "#{_.repeat ' ', depth * 2}#{line}"
+  "#{setDepth n}#{line}"
 
 # return
 module.exports = (cont) ->
 
   result = []
 
-  for line, i in (cont + '\n').split '\n'
+  for line, i in cont.split '\n'
 
-    line = removeSpace line
+    unless line = removeSpace line
+      continue
 
     # return
     result.push line
 
   result = result
   .join '\n'
-  .replace /\n{2,}/g, '\n\n'
   .replace /'/g, '"'
 
-  result # return
+  result + '\n' # return

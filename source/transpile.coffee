@@ -5,21 +5,25 @@ module.exports = (source) ->
 
   cont = source
 
-  unless result = (require './module/validate') cont
+  unless (require './module/validate') cont
     return ''
 
   cont = (require './module/comment') cont
   cont = (require './module/format') cont
+  cont = (require './module/number') cont
+
+  cont = (require './module/loop') cont
+  cont = (require './module/on') cont
+  cont = (require './module/timer') cont
+  cont = (require './module/function') cont
 
   cont = (require './module/if') cont
   cont = (require './module/for') cont
 
-  cont = (require './module/on') cont
-  cont = (require './module/function') cont
-
   cont = (require './module/buildin') cont
   cont = (require './module/press') cont
   cont = (require './module/find') cont
+
   cont = (require './module/getColor') cont
   cont = (require './module/getPosition') cont
 
