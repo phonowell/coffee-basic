@@ -11,14 +11,12 @@ SendMode Event
 SetKeyDelay 0, 50
 SetMouseDelay 0, 50
 
-fn() {
-  return 'result'
+PixelSearch x, y, 0, 0, 100, 100, 0xFFFFFF, 0, Fast RGB
+
+if (x > 0 and y > 0) {
+  Run 'Notepad'
+} else {
+  ExitApp
 }
 
-fn() {
-  return 'result'
-}
-
-fn(a, b) {
-  return a + b
-}
+ImageSearch x, y, 0, 0, 100, 100, *25 'img.jpg'

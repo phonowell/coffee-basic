@@ -11,14 +11,22 @@ SendMode Event
 SetKeyDelay 0, 50
 SetMouseDelay 0, 50
 
-fn() {
-  return 'result'
-}
+SoundBeep
 
-fn() {
-  return 'result'
-}
+BlockInput
 
-fn(a, b) {
-  return a + b
-}
+Click 20, 20
+
+ExitApp
+
+MouseMove 0, 120, 50
+
+Run 'notepad'
+
+SoundPlay 'ahk.mp4'
+
+Sleep 20
+
+Trim ' string '
+RTrim 'string '
+LTrim ' string'

@@ -1,12 +1,12 @@
 ; transpiled by coffee-basic
 
-#noEnv
-#persistent
-#singleInstance force
-#useHook
+#NoEnv
+#Persistent
+#SingleInstance Force
+#UseHook
 
-SetKeyDelay 0, 50
+CoordMode Mouse, Client
+CoordMode Pixel, Client
 SendMode Event
-
-; simple A
-; simple B
+SetKeyDelay 0, 50
+SetMouseDelay 0, 50

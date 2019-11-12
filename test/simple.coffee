@@ -20,25 +20,41 @@ $.on 'joy6', ->
   $.block false
 
 $.on 'joy7', ->
-  $.send 'esc'
+  $.press 'esc'
 
 # function
 
 attackA = ->
-  $.send 'c'
+  $.press 'c'
   $.sleep 20
-  $.send 'numpad4'
+  $.press 'numpad4'
   $.sleep 20
-  $.send 'numpad2'
+  $.press 'numpad2'
   $.sleep 20
-  $.send 'numpad6'
+  $.press 'numpad6'
   $.sleep 20
-  $.send 'numpad8'
+  $.press 'numpad8'
   $.sleep 20
-  $.send 'z'
+  $.press 'z'
   $.sleep 200
-  $.send 'up'
+  $.press 'up'
   $.sleep 200
-  $.send 'esc'
+  $.press 'esc'
   $.sleep 600
-  $.send 'esc'
+  $.press 'esc'
+
+attackB = ->
+  $.press 'numpad4'
+  $.sleep 20
+  $.press 'numpad8'
+  $.sleep 20
+  $.press 'numpad6'
+  $.sleep 20
+  $.press 'numpad2'
+  $.sleep 20
+  $.press 'z'
+
+attactC = ->
+  $.press 'z-down'
+  $.press 'x'
+  $.press 'z-up'

@@ -19,25 +19,20 @@ module.exports = (cont) ->
       list = [0...(cache.length - _.indexOf cache, n)]
       m = list.length - 1
 
-      # add return
-      _i = result.length - 1
-      result[_i] = result[_i]
-      .replace /(\S)/, 'return $1'
-
       for j in list
         cache.pop()
         result.push "#{_.repeat ' ', (m - j) * 2}}"
 
-    if line.includes '->'
+    if ~line.search /(if|else)/
       cache.push n
-      result.push line.replace /(\S+)\s*=\s*\(?(.*?)\)?\s*->/g
-      , '$1($2) {'
+      result.push "#{line} {"
       continue
 
     result.push line
 
   result = result
   .join '\n'
-  .replace /(?:return ){1,}/g, 'return '
+  .replace /if\s*(.*?)\s*{/g, 'if ($1) {'
+  .replace /}\s*else/g, '} else'
 
   result # return

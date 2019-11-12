@@ -4,6 +4,17 @@ _ = require 'lodash'
 
 getDepth = (line) -> (line.length - line.trimStart().length) // 2
 
+removeSpace = (line) ->
+
+  depth = getDepth line
+
+  line = line
+  .trim()
+  .replace /\s+/, ' '
+  
+  # return
+  "#{_.repeat ' ', depth * 2}#{line}"
+
 # return
 module.exports = (cont) ->
 
@@ -11,20 +22,9 @@ module.exports = (cont) ->
 
   for line, i in (cont + '\n').split '\n'
 
-    # remove space at the end
-    line = line
-    .trimEnd()
+    line = removeSpace line
 
-    # set depth
-    
-    depth = getDepth line
-    
-    line = line
-    .trimStart()
-    .replace /\s+/, ' '
-    
-    line = "#{_.repeat ' ', depth * 2}#{line}"
-
+    # return
     result.push line
 
   result = result

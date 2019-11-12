@@ -11,14 +11,6 @@ SendMode Event
 SetKeyDelay 0, 50
 SetMouseDelay 0, 50
 
-fn() {
-  return 'result'
-}
-
-fn() {
-  return 'result'
-}
-
-fn(a, b) {
-  return a + b
+for item, i in list {
+  alert 'xxx'
 }

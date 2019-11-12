@@ -11,14 +11,4 @@ SendMode Event
 SetKeyDelay 0, 50
 SetMouseDelay 0, 50
 
-fn() {
-  return 'result'
-}
-
-fn() {
-  return 'result'
-}
-
-fn(a, b) {
-  return a + b
-}
+PixelGetColor color, 0, 0

@@ -11,14 +11,16 @@ SendMode Event
 SetKeyDelay 0, 50
 SetMouseDelay 0, 50
 
-fn() {
-  return 'result'
+if (a >= 1) {
+  fn 1
+} else {
+  fn 2
 }
 
-fn() {
-  return 'result'
-}
-
-fn(a, b) {
-  return a + b
+if (a >= 2) {
+  fn 3
+} else if (a >= 4) {
+  fn 4
+} else {
+  fn 5
 }
