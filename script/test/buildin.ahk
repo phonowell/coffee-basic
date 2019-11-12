@@ -21,12 +21,12 @@ ExitApp
 
 MouseMove 0, 120, 50
 
-Run 'notepad'
+Run notepad
 
-SoundPlay 'ahk.mp4'
+SoundPlay ahk.mp4
 
 Sleep 20
 
-Trim ' string '
-RTrim 'string '
-LTrim ' string'
+Trim string
+RTrim string
+LTrim string

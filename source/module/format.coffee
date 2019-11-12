@@ -2,7 +2,7 @@ _ = require 'lodash'
 
 # function
 
-getDepth = (line) -> (line.length - line.trimStart().length) // 2
+getDepth = require '../fn/getDepth'
 
 removeSpace = (line) ->
 
@@ -30,5 +30,6 @@ module.exports = (cont) ->
   result = result
   .join '\n'
   .replace /\n{2,}/g, '\n\n'
+  .replace /'/g, '"'
 
   result # return

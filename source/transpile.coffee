@@ -5,26 +5,28 @@ module.exports = (source) ->
 
   cont = source
 
-  unless result = (require './validate') cont
+  unless result = (require './module/validate') cont
     return ''
 
-  cont = (require './comment') cont
-  cont = (require './format') cont
+  cont = (require './module/comment') cont
+  cont = (require './module/format') cont
 
-  cont = (require './if') cont
-  cont = (require './for') cont
+  cont = (require './module/if') cont
+  cont = (require './module/for') cont
 
-  cont = (require './on') cont
-  cont = (require './function') cont
+  cont = (require './module/on') cont
+  cont = (require './module/function') cont
 
-  cont = (require './buildin') cont
-  cont = (require './press') cont
-  cont = (require './find') cont
-  cont = (require './getColor') cont
+  cont = (require './module/buildin') cont
+  cont = (require './module/press') cont
+  cont = (require './module/find') cont
+  cont = (require './module/getColor') cont
+  cont = (require './module/getPosition') cont
 
-  cont = (require './variable') cont
-  cont = (require './format') cont
+  cont = (require './module/variable') cont
+  cont = (require './module/unquote') cont
+  cont = (require './module/format') cont
 
-  cont = (require './final') cont
+  cont = (require './module/final') cont
 
   cont # return

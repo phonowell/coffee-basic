@@ -16,61 +16,61 @@ f1::
 return
 
 joy4::
-  BlockInput on
+  BlockInput %true%
   attackC()
-  BlockInput off
+  BlockInput %false%
 return
 
 joy5::
-  BlockInput on
+  BlockInput %true%
   attackB()
-  BlockInput off
+  BlockInput %false%
 return
 
 joy6::
-  BlockInput on
+  BlockInput %true%
   attackA()
-  BlockInput off
+  BlockInput %false%
 return
 
 joy7::
-  Send {esc}
+  Send "esc"
 return
 
 attackA() {
-  Send {c}
+  Send "c"
   Sleep 20
-  Send {numpad4}
+  Send "numpad4"
   Sleep 20
-  Send {numpad2}
+  Send "numpad2"
   Sleep 20
-  Send {numpad6}
+  Send "numpad6"
   Sleep 20
-  Send {numpad8}
+  Send "numpad8"
   Sleep 20
-  Send {z}
+  Send "z"
   Sleep 200
-  Send {up}
+  Send "up"
   Sleep 200
-  Send {esc}
+  Send "esc"
   Sleep 600
-  return Send {esc}
+  Send "esc"
 }
 
 attackB() {
-  Send {numpad4}
+  Send "numpad4"
   Sleep 20
-  Send {numpad8}
+  Send "numpad8"
   Sleep 20
-  Send {numpad6}
+  Send "numpad6"
   Sleep 20
-  Send {numpad2}
+  Send "numpad2"
   Sleep 20
-  return Send {z}
+  Send "z"
 }
 
-attactC() {
-  Send {z down}
-  Send {x}
-  return Send {z up}
+attackC() {
+  Send "z down"
+  Send "x"
+  Send "z up"
 }

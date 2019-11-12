@@ -12,12 +12,12 @@ module.exports = (cont) ->
       log 'found block comment'
       return false
 
-    if ~line.search /\S\s+#./
-      log 'found inline comment'
-      return false
-
     if line.includes 'then'
       log 'found if-then'
+      return false
+
+    if line.includes 'unless'
+      log 'found unless'
       return false
 
     if ~line.search /->\s*\S/

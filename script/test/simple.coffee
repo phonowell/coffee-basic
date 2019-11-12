@@ -54,7 +54,7 @@ attackB = ->
   $.sleep 20
   $.press 'z'
 
-attactC = ->
+attackC = ->
   $.press 'z-down'
   $.press 'x'
   $.press 'z-up'

@@ -11,8 +11,14 @@ SendMode Event
 SetKeyDelay 0, 50
 SetMouseDelay 0, 50
 
-Send {f}
+fn() {
+  return "result"
+}
 
-Send {win}{f}
+fn() {
+  return "result"
+}
 
-Send {alt down}{f}
+fn(a, b) {
+  return a + b
+}

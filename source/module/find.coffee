@@ -2,12 +2,15 @@ _ = require 'lodash'
 
 # function
 
+getDepth = require '../fn/getDepth'
+setDepth = require '../fn/setDepth'
+
 transColor = (string) ->
 
   if string.includes '0x'
     return string
 
-  string = _.trim string, "'#"
+  string = _.trim string, '"#'
 
   if string.length == 3
     string = [
@@ -32,6 +35,8 @@ module.exports = (cont) ->
       result.push line
       continue
 
+    n = getDepth line
+
     line = line
     .replace /\s/g, ''
     .replace /[\[\]\(\)]/g, ''
@@ -50,7 +55,7 @@ module.exports = (cont) ->
     else ['ImageSearch', "*25 #{target}"]
 
     # return
-    result.push "#{method} #{oX}, #{oY},
+    result.push "#{setDepth n}#{method} #{oX}, #{oY},
     #{x1}, #{y1}, #{x2}, #{y2},
     #{target}"
 

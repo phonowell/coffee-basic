@@ -2,10 +2,14 @@ _ = require 'lodash'
 
 # function
 
-getDepth = (line) -> (line.length - line.trimStart().length) // 2
+getDepth = require '../fn/getDepth'
+setDepth = require '../fn/setDepth'
 
 # return
 module.exports = (cont) ->
+
+  unless cont.includes 'if'
+    return cont
 
   result = []
   cache = []
@@ -13,17 +17,17 @@ module.exports = (cont) ->
   for line, i in cont.split '\n'
 
     n = getDepth line
-
     if n <= _.last cache
 
-      list = [0...(cache.length - _.indexOf cache, n)]
-      m = list.length - 1
+      m = _.indexOf cache, n
+      (list = cache[m...]).reverse()
 
       for j in list
-        cache.pop()
-        result.push "#{_.repeat ' ', (m - j) * 2}}"
 
-    if line.includes 'for'
+        cache.pop()
+        result.push "#{setDepth j}}"
+
+    if ~line.search /(if|else)/
       cache.push n
       result.push "#{line} {"
       continue
@@ -32,5 +36,7 @@ module.exports = (cont) ->
 
   result = result
   .join '\n'
+  .replace /if\s*(.*?)\s*{/g, 'if ($1) {'
+  .replace /}\s*else/g, '} else'
 
   result # return

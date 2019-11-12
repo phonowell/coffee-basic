@@ -1,3 +1,8 @@
+# function
+
+getDepth = require '../fn/getDepth'
+setDepth = require '../fn/setDepth'
+
 # return
 module.exports = (cont) ->
 
@@ -12,6 +17,8 @@ module.exports = (cont) ->
       result.push line
       continue
 
+    n = getDepth line
+
     line = line
     .replace /\s/g, ''
     .replace /[\(\)]/g, ''
@@ -21,8 +28,10 @@ module.exports = (cont) ->
 
     # arg
     [x, y] = arg.split ','
+    x or= 0
+    y or= 0
 
     # return
-    result.push "PixelGetColor #{output}, #{x}, #{y}"
+    result.push "#{setDepth n}PixelGetColor #{output}, #{x}, #{y}"
 
   result.join '\n' # return

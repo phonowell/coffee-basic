@@ -11,6 +11,12 @@ SendMode Event
 SetKeyDelay 0, 50
 SetMouseDelay 0, 50
 
-for item, i in list {
-  alert 'xxx'
+PixelSearch x, y, 0, 0, 100, 100, 0xFFFFFF, 0, Fast RGB
+
+if (x > 0 and y > 0) {
+  Run Notepad
+} else {
+  ExitApp
 }
+
+ImageSearch x, y, 0, 0, 100, 100, *25 "img.jpg"
