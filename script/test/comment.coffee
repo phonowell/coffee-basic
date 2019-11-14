@@ -1,2 +1,0 @@
-# simple A
-# simple B

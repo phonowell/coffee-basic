@@ -1,39 +1,39 @@
 _ = require 'lodash'
 
-# function
-
 getDepth = require '../fn/getDepth'
 setDepth = require '../fn/setDepth'
 
-removeSpace = (line) ->
+# function
 
-  n = getDepth line
-
-  line = line
-  .trim()
-  .replace /\s+/, ' '
-
-  unless line
-    return ''
+execute = (content) ->
   
-  # return
-  "#{setDepth n}#{line}"
-
-# return
-module.exports = (cont) ->
-
   result = []
 
-  for line, i in cont.split '\n'
+  for line in content
 
-    unless line = removeSpace line
+    n = getDepth line
+
+    _line = line
+    .trim()
+
+    # ' -> "
+    .replace /'/g, '"'
+
+    # 1e3 -> 1000
+    .replace /\b\d+e\d+\b/g, (text) ->
+      [pre, sub] = text.split 'e'
+      "#{pre}#{_.repeat 0, parseInt sub}"
+
+    unless _line
       continue
 
-    # return
-    result.push line
+    result.push "#{setDepth n}#{_line}"
 
-  result = result
-  .join '\n'
-  .replace /'/g, '"'
+  result.push ''
+  result # return
 
-  result + '\n' # return
+# return
+module.exports = ->
+
+  for block in [@function..., @bind...]
+    block.content = execute block.content

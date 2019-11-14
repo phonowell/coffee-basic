@@ -5,25 +5,12 @@ _ = require 'lodash'
 getDepth = require '../fn/getDepth'
 setDepth = require '../fn/setDepth'
 
-isValid = (string) ->
-
-  listBoolean = [
-    string.includes 'for'
-    string.includes 'loop'
-  ]
-
-  listBoolean.includes true # return
-
-# return
-module.exports = (cont) ->
-
-  unless isValid cont
-    return cont
+execute = (content) ->
 
   result = []
   cache = []
 
-  for line, i in cont.split '\n'
+  for line in content
 
     n = getDepth line
     if n <= _.last cache
@@ -36,14 +23,20 @@ module.exports = (cont) ->
         cache.pop()
         result.push "#{setDepth j}}"
 
-    if isValid line
+    if line.includes 'for'
       cache.push n
       result.push "#{line} {"
       continue
 
     result.push line
 
-  result = result
-  .join '\n'
-
   result # return
+
+# return
+module.exports = ->
+
+  unless @raw.includes 'for'
+    return
+
+  for block in [@function..., @bind...]
+    block.content = execute block.content

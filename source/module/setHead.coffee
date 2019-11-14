@@ -1,10 +1,7 @@
-_ = require 'lodash'
-
 # return
-module.exports = (cont) ->
-
-  # return
-  [
+module.exports = ->
+  
+  @head = [
     '; transpiled by coffee-basic'
     ''
     '#NoEnv'
@@ -12,12 +9,7 @@ module.exports = (cont) ->
     '#SingleInstance Force'
     '#UseHook'
     ''
-    'CoordMode Mouse, Client'
-    'CoordMode Pixel, Client'
     'SendMode Event'
     'SetKeyDelay 0, 50'
     'SetMouseDelay 0, 50'
-    ''
-    cont.trim()
-  ].join '\n'
-  .trim()
+  ]

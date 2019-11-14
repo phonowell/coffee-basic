@@ -1,12 +1,12 @@
 # return
-module.exports = (cont) ->
+module.exports = ->
 
-  unless cont.includes '#'
-    return cont
+  unless @raw.includes '#'
+    return
 
   result = []
 
-  for line in cont.split '\n'
+  for line in @main
 
     unless line.includes '#'
       result.push line
@@ -17,4 +17,4 @@ module.exports = (cont) ->
 
     result.push line
 
-  result.join '\n' # return
+  @main = result # return

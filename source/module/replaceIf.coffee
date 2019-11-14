@@ -5,16 +5,12 @@ _ = require 'lodash'
 getDepth = require '../fn/getDepth'
 setDepth = require '../fn/setDepth'
 
-# return
-module.exports = (cont) ->
-
-  unless cont.includes 'if'
-    return cont
+execute = (content) ->
 
   result = []
   cache = []
 
-  for line, i in cont.split '\n'
+  for line in content
 
     n = getDepth line
     if n <= _.last cache
@@ -29,14 +25,22 @@ module.exports = (cont) ->
 
     if ~line.search /(if|else)/
       cache.push n
-      result.push "#{line} {"
+
+      _line = "#{line} {"
+      .replace /if\s+(.*?)\s+{/, 'if ($1) {'
+
+      result.push _line
       continue
 
     result.push line
 
-  result = result
-  .join '\n'
-  .replace /if\s*(.*?)\s*{/g, 'if ($1) {'
-  .replace /}\s*else/g, '} else'
-
   result # return
+
+# return
+module.exports = ->
+
+  unless @raw.includes 'if'
+    return
+
+  for block in [@function..., @bind...]
+    block.content = execute block.content

@@ -1,36 +1,82 @@
 _ = require 'lodash'
 
-# return
-module.exports = (input) ->
+getDepth = require '../fn/getDepth'
+setDepth = require '../fn/setDepth'
 
-  unless input
-    return ''
+# function
+
+format = (line) ->
+
+  n = getDepth line
+  line = line
+  .trim()
+  .replace /['"].*?,.*\1/g, (text) -> text.replace /,/g, '__comma__'
+  .replace /\[.*?,.*]/g, (text) -> text.replace /,/g, '__comma__'
+  .replace /{.*?,.*}/g, (text) -> text.replace /,/g, '__comma__'
 
   result = []
 
-  for item in input.split ','
+  for item in line.split ','
 
     item = item.trim()
-    it = _.trim item, '\'"'
 
-    # string
-    if it != item
-      
-      it = it
-      .replace /(?:#{|})/g, '%'
-
-      if it.includes ' '
-        it = "\"#{it}\""
-
-      result.push it
+    unless item.includes '='
+      result.push item
       continue
 
-    # number
-    unless _.isNaN parseInt it
-      result.push it
+    if ~item.search /(==|!|<|>)/
+      result.push item
       continue
 
-    # variable
-    result.push "%#{it}%"
+    [key, value...] = item.split '='
+    
+    value = value
+    .join '='
+    .trim()
 
-  result.join ', ' # return
+    result.push "#{key}:= #{value}"
+
+  result = result
+  .join ', '
+  .replace /__comma__/g, ','
+
+  # return
+  "#{setDepth n}#{result}"
+
+trans = (input) ->
+
+  unless input = input.trim()[2...(input.length - 2)]
+    return ''
+
+  # string
+  if ["'", '"'].includes input[0]
+    result = input[1...(input.length - 1)]
+    .replace /(#{|})/g, '%'
+    return "\"#{result}\""
+
+  # number
+  unless _.isNaN parseInt input
+    return input
+
+  # array, object, function
+  if ~input.search /[\[{\(]/
+    return input
+
+  # boolean
+  if ['true', 'false'].includes input
+    return input
+
+  # variable
+  "%#{input}%"
+
+# return
+module.exports = (line) ->
+
+  if line.includes '='
+    line = format line
+
+  unless line.includes '{{'
+    return line
+
+  line
+  .replace /{{.*?}}/g, (text) -> trans text
