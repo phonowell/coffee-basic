@@ -6,11 +6,12 @@ class Content
 
   constructor: (@raw) ->
     
-    @head = []
-    @global = []
-    @function = []
     @bind = []
     @foot = []
+    @function = []
+    @global = []
+    @head = []
+    @mode = []
 
     @main = "#{@raw}\n"
     .replace /\r/g, ''
@@ -34,12 +35,13 @@ class Content
 
   # ---
 
-  buildIn: require './module/buildIn'
+  buildIn: require './module/build-in'
   call: require './module/call'
   format: require './module/format'
   getBind: require './module/getBind'
   getFunction: require './module/getFunction'
   getGlobal: require './module/getGlobal'
+  getMode: require './module/getMode'
   removeComment: require './module/removeComment'
   render: require './module/render'
   replaceFor: require './module/replaceFor'
@@ -52,10 +54,12 @@ class Content
 
   # ---
 
-  execute: ->
+  execute: (option) ->
 
     unless @validate()
       return ''
+
+    @getMode()
 
     @removeComment()
 
@@ -63,9 +67,10 @@ class Content
     @getFunction()
     @getBind()
 
-    @setHead()
     @setMain()
-    @setFoot()
+    unless option.bare
+      @setHead()
+      @setFoot()
 
     @format()
 
@@ -79,7 +84,5 @@ class Content
     @render()
     
 # return
-module.exports = (source) ->
-
-  cont = new Content source
-  cont.execute()
+module.exports = (source, option = {}) ->
+  (new Content source).execute option

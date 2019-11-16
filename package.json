@@ -26,6 +26,7 @@
   "homepage": "https://github.com/phonowell/coffee-basic",
   "devDependencies": {},
   "dependencies": {
-    "fire-keeper": "0.0.168"
+    "fire-keeper": "0.0.168",
+    "iconv-lite": "^0.5.0"
   }
 }

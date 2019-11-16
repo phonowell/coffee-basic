@@ -1,36 +1,34 @@
 # function
 
-execute = (content) ->
+format = (line) ->
 
-  result = []
+  # remove await
+  line = line
+  .replace /await\s+/g, ''
 
-  for line in content
+  # validate
+  unless validate line
+    return line
 
-    unless validate line
-      result.push line
-      continue
+  # return
+  line
+  .replace /[^\s=\()\{},\+\-\*\/]+\s+[^=]+/g, (text) ->
 
-    _result = line
-    .replace /([^\s=\()\{},\+\-\*\/]+)\s+([^=]+)/g, (text) ->
-      [key, value...] = text.split ' '
-      value = (value.join ' ').trim()
+    [key, value...] = text.split ' '
+    value = (value.join ' ').trim()
 
-      if ~value.search /[+\-*/]\s/
-        return text
+    if ~value.search /[+\-*/]\s/
+      return text
 
-      "#{key}(#{value})"
-
-    # add
-    result.push _result
-
-  result # return
+    "#{key}(#{value})"
 
 validate = (string) ->
 
   list = [
+    'else {'
+    'if ('
+    'loop '
     'return'
-    '{'
-    '}'
   ]
 
   result = true
@@ -43,5 +41,8 @@ validate = (string) ->
 # return
 module.exports = ->
 
+  for line, i in @global
+    @global[i] = format line
+
   for block in [@function..., @bind...]
-    block.content = execute block.content
+    block.content = (format line for line in block.content)

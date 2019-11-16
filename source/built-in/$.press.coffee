@@ -4,11 +4,14 @@ format = (line) ->
 
   line
   .toLowerCase()
-  .replace /[-'"]/g, ''
+  .replace /['"]/g, ''
   # ---
+  .replace /equal/g, '='
+  .replace /minus/, '-'
   .replace /num(\d)/g, 'numpad$1'
-  .replace /pagedown/g, 'pgdn'
-  .replace /pageup/g, 'pgup'
+  .replace /page-?down/g, 'pgdn'
+  .replace /page-?up/g, 'pgup'
+  .replace /plus/g, '+'
   # --
   .replace /:/g, ' '
 

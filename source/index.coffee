@@ -1,28 +1,26 @@
 $ = require 'fire-keeper'
+iconv = require 'iconv-lite'
 
 # function
 
 class Parser
 
-  ###
-  execute_(path)
-  read_(path)
-  write_(path, cont)
-  ###
-
-  execute_: (path) ->
-
-    source = await @read_ path
-    cont = @transpile source
-    await @write_ path, cont
-
-    cont # return
-
   read_: require './read_'
   transpile: require './transpile'
   write_: require './write_'
 
+  # ---
+
+  execute_: (path, option) ->
+
+    source = await @read_ path
+    cont = @transpile source, option
+    await @write_ path, iconv.encode cont, 'utf8',
+      addBOM: true
+
+    cont # return
+
 # return
-module.exports = (source) ->
+module.exports = (source, option = {}) ->
   parser = new Parser()
-  await parser.execute_ source
+  await parser.execute_ source, option

@@ -5,6 +5,6 @@ module.exports = ->
     return
 
   @function.push
-    name: '__fn_main__'
+    name: 'default'
     argument: []
     content: @main

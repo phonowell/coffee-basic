@@ -2,9 +2,6 @@ _ = require 'lodash'
 
 # function
 
-getDepth = require '../fn/getDepth'
-setDepth = require '../fn/setDepth'
-
 execute = (content) ->
 
   result = []
@@ -12,7 +9,7 @@ execute = (content) ->
 
   for line in content
 
-    n = getDepth line
+    n = @getDepth line
     if n <= _.last cache
 
       m = _.indexOf cache, n
@@ -21,9 +18,9 @@ execute = (content) ->
       for j in list
 
         cache.pop()
-        result.push "#{setDepth j}}"
+        result.push "#{@setDepth j}}"
 
-    if ~line.search /(if|else)/
+    if ~line.search /(if |else)/
       cache.push n
 
       _line = "#{line} {"
@@ -39,8 +36,8 @@ execute = (content) ->
 # return
 module.exports = ->
 
-  unless @raw.includes 'if'
+  unless @raw.includes 'if '
     return
 
   for block in [@function..., @bind...]
-    block.content = execute block.content
+    block.content = execute.call @, block.content

@@ -1,7 +1,5 @@
 _ = require 'lodash'
 
-getDepth = require '../fn/getDepth'
-
 # const
 
 Block = ->
@@ -13,18 +11,20 @@ Block = ->
 format = (string) ->
   string
   .toLowerCase()
-  .replace /[\s\+-]/g, ''
+  .replace /[\s-]/g, ''
+  .replace /\+/g, '&'
   # ---
-  .replace /alt/g, '!'
-  .replace /control/g, '^'
-  .replace /ctrl/g, '^'
-  .replace /shift/g, '+'
-  .replace /win/g, '#'
+  .replace /alt&?/g, '!'
+  .replace /control&?/g, '^'
+  .replace /ctrl&?/g, '^'
+  .replace /shift&?/g, '+'
+  .replace /win&?/g, '#'
   # ---
-  .replace /clickmiddle/g, 'mbutton'
-  .replace /clickright/g, 'rbutton'
+  .replace /(clickmiddle|middleclick)/g, 'mbutton'
+  .replace /(clickright|rightclick)/g, 'rbutton'
   .replace /click/g, 'lbutton'
   # ---
+  .replace /&/g, ' & '
   .replace /:/g, ' '
 
 getName = (line) ->
@@ -40,7 +40,7 @@ getName = (line) ->
 
 validate = (line) ->
 
-  if n = getDepth line
+  if n = @getDepth line
     return
 
   line = line
@@ -64,7 +64,7 @@ module.exports = ->
 
     if isPending
       
-      if n = getDepth line
+      if n = @getDepth line
         block.content.push line.replace '  ', ''
         continue
 
@@ -72,7 +72,7 @@ module.exports = ->
       @bind.push block
       block = Block()
 
-    unless validate line
+    unless validate.call @, line
       result.push line
       continue
 

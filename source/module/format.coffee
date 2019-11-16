@@ -16,9 +16,6 @@ execute = (content) ->
     _line = line
     .trim()
 
-    # ' -> "
-    .replace /'/g, '"'
-
     # 1e3 -> 1000
     .replace /\b\d+e\d+\b/g, (text) ->
       [pre, sub] = text.split 'e'

@@ -5,30 +5,53 @@ _ = require 'lodash'
 Rule =
   '$.beep': 'SoundBeep'
   '$.block': 'BlockInput'
-  '$.clearInterval': (arg) -> "SetTimer #{arg[0]}, Off"
-  '$.clearTimeout': (arg) -> "SetTimer #{arg[0]}, Off"
-  '$.click': 'Click'
   '$.exit': 'ExitApp'
-  '$.find': require '../built-in/$.find'
-  '$.getColor': require '../built-in/$.getColor'
-  '$.getPosition': require '../built-in/$.getPosition'
   '$.info': 'TrayTip'
   '$.move': 'MouseMove'
-  '$.open': (arg) -> "Run #{@trim arg[0]}"
   '$.pause': 'Pause'
   '$.play': 'SoundPlay'
-  '$.press': require '../built-in/$.press'
-  '$.setInterval': (arg) -> "SetTimer #{arg[0]}, {{#{arg[1]}}}"
-  '$.setTimeout': (arg) -> "SetTimer #{arg[0]}, -{{#{arg[1]}}}"
-  '$.sleep': 'Sleep'
-  '$.tip': (arg) -> "ToolTip #{@trim arg[0]}"
   '$.trim': 'Trim'
   '$.trimEnd': 'RTrim'
   '$.trimStart': 'LTrim'
   'Math.abs': 'Abs'
   'Math.ceil': 'Ceil'
   'Math.round': 'Round'
-  'alert': 'MsgBox'
+  'alert': 'MsgBox %'
+  '$.sleep': 'Sleep %'
+
+  # ---
+  
+  '$.find': require '../built-in/$.find'
+  '$.getColor': require '../built-in/$.getColor'
+  '$.getPosition': require '../built-in/$.getPosition'
+  '$.press': require '../built-in/$.press'
+
+  # ---
+
+  '$.clearInterval': (arg) ->
+    "SetTimer #{wrap.call @, arg[0]}, Off"
+  
+  '$.clearTimeout': (arg) ->
+    "SetTimer #{wrap.call @, arg[0]}, Off"
+  
+  '$.click': (arg) ->
+    unless arg[0]
+      'Click'
+    else "Click % #{arg[0].replace /:/g, ' '}"
+  
+  '$.open': (arg) ->
+    "Run #{@trim arg[0]}"
+  
+  '$.setInterval': (arg) ->
+    "SetTimer #{wrap.call @, arg[0]}, #{arg[1] or 0}"
+  
+  '$.setTimeout': (arg) ->
+    "SetTimer #{wrap.call @, arg[0]}, % 0 - #{arg[1] or 0}"
+  
+  '$.tip': (arg) ->
+    unless arg[0]
+      'ToolTip'
+    else "ToolTip % #{arg[0]}"
 
 # function
 
@@ -58,7 +81,8 @@ execute = (content) ->
       continue
 
     if (typeof transformer) == 'string'
-      _res = "#{transformer} {{#{argument.join '}}, {{'}}}"
+      _res = '#{' + (argument.join '}, #{') + '}'
+      _res = "#{transformer} #{_res}"
       if output
         _res = "#{output} = #{_res}"
       result.push "#{@setDepth n}#{_res}"
@@ -84,11 +108,24 @@ getName = (line) ->
     return
 
   arg = _.trim (arg.join '('), ' ()'
+  .replace /'[^']+?'/g, (text) -> text.replace /,/g, '__comma__'
+  .replace /"[^"]+?"/g, (text) -> text.replace /,/g, '__comma__'
   .split ','
-  arg = (it.trim() for it in arg)
+
+  for it, i in arg
+    arg[i] = it
+    .trim()
+    .replace /__comma__/g, ','
 
   # return
   [name, arg, output]
+
+wrap = (name) ->
+
+  if ~_.findIndex @function, {name}
+    return name
+
+  "%#{name}%"
 
 # return
 module.exports = ->

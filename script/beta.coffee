@@ -1,11 +1,4 @@
-# admin
-if A_IsAdmin != true
-  $.open '*RunAs "%A_ScriptFullPath%"'
-  $.exit()
-
-# time
-if A_YYYY != 2019
-  $.exit()
+# use admin
 
 # variable
 
@@ -129,7 +122,7 @@ viewFar = ->
 
 $.on 'f12', ->
   $.click 'up'
-  $.click 'right', 'up'
+  $.click 'right:up'
   reset()
   $.beep()
   $.exit()
@@ -143,7 +136,7 @@ $.on 'click', ->
   if isPaused == false and isRp == true
     unbind()
     $.click 'down'
-    $.click 'right', 'down'
+    $.click 'right:down'
     return
 
   $.click 'down'
@@ -154,7 +147,7 @@ $.on 'click:up', ->
 
   if isPaused == false and isRp == true
     $.click 'up'
-    $.click 'right', 'up'
+    $.click 'right:up'
     bind()
     return
   
@@ -175,7 +168,7 @@ $.on 'click-right', ->
     bind()
     return
 
-  $.click 'right', 'down'
+  $.click 'right:down'
 
 $.on 'click-right:up', ->
   
@@ -185,7 +178,7 @@ $.on 'click-right:up', ->
     unbind()
     return
   
-  $.click 'right', 'up'
+  $.click 'right:up'
 
 # middle click
 
@@ -198,4 +191,9 @@ $.on 'click-middle', ->
   toggle()
 
 $.on 'click-middle:up', ->
-  $.click 'middle', 'up'
+  $.click 'middle:up'
+
+# execute
+
+if A_YYYY != 2019
+  $.exit()

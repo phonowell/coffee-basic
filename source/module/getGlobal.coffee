@@ -1,32 +1,21 @@
 # function
 
-getDepth = require '../fn/getDepth'
-
-format = (line) ->
-
-  [key, value...] = line.split '='
-  
-  # key
-  key = key.trim()
-  if ~key.search /[\s\$\.]/
-    return
-
-  # value
-  value = value
-  .join '='
-  .trim()
-
-  {key, value} # return
-
 validate = (line) ->
 
-  if n = getDepth line
+  if @getDepth line
     return
 
   unless line.includes '='
     return
 
   if line.includes '->'
+    return
+
+  [key, value...] = line.split '='
+  key = key.trim()
+  value = (value.join '=').trim()
+
+  if key.includes ' '
     return
 
   true
@@ -38,15 +27,11 @@ module.exports = ->
 
   for line in @main
 
-    unless validate line
+    unless validate.call @, line
       result.push line
       continue
 
-    unless data = format line
-      result.push line
-      continue
-
-    @global.push data
+    @global.push line
 
   # return
   @main = result

@@ -50,8 +50,8 @@ renderGlobal = (list) ->
 
   result = []
 
-  for {key, value} in list
-    result.push unquote "global #{key} = #{value}"
+  for line in list
+    result.push unquote "global #{line}"
 
   result # return
 
@@ -83,6 +83,15 @@ module.exports = ->
       (renderFunction @function)...
     ]
 
+  # main
+  if (@main.join '\n').trim()
+    result = [
+      result...
+      ''
+      '; default'
+      'default()'
+    ]
+
   # bind
   if @bind.length
     result = [
@@ -105,3 +114,4 @@ module.exports = ->
   .join '\n'
   .replace /\n{2,}/g, '\n\n'
   .replace /'/g, '"'
+  .replace /\s=\s/g, ' := '

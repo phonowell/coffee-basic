@@ -56,7 +56,6 @@ public
 src
 
 # compiled
-*.ahk
 *.css
 *.html
 *.js

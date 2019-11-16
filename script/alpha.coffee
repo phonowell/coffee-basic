@@ -1,2 +1,2 @@
-getDv = (y) ->
-  dis = y - (A_ScreenHeight * 0.8)
+$.on 'f2', ->
+  $.beep()

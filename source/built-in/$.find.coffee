@@ -1,5 +1,7 @@
 _ = require 'lodash'
 
+unquote = require '../fn/unquote'
+
 # function
 
 transColor = (string) ->
@@ -7,7 +9,7 @@ transColor = (string) ->
   if string.includes '0x'
     return string
 
-  string = _.trim string, '"#'
+  string = _.trim string, " '\"#"
 
   if string.length == 3
     string = [
@@ -33,9 +35,9 @@ module.exports = (arg, output) ->
   x2 or= 'A_ScreenWidth'
   y2 or= 'A_ScreenHeight'
 
-  [method, target] = if target.includes '#'
+  [method, target] = if ~target.search /#\w/
     ['PixelSearch', "#{transColor target}, 0, Fast RGB"]
-  else ['ImageSearch', "*25 #{target}"]
+  else ['ImageSearch', "% A_ScriptDir . \"\\\" . #{target}"]
 
   # return
   "#{method} #{oX}, #{oY},
