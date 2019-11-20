@@ -1,5 +1,9 @@
 # use admin
 
+# const
+
+count = 0
+
 # skill
 
 内静 = ->
@@ -70,10 +74,14 @@
   $.press 'ctrl:down', 'equal', 'ctrl:up'
   await $.sleep 1500
 
-# function
+开始制作 = ->
+  $.press 'shift:down', '7', 'shift:up'
+  await $.sleep 1e3
 
-execute = ->
-  
+  循环制作()
+
+制作 = ->
+
   稳手II()
   坯料加工()
   坯料加工()
@@ -82,29 +90,86 @@ execute = ->
 
   await $.sleep 500
 
-  status = find '再利用'
-  if status
+  res = hasStatus '再利用'
+  if res
     模范制作III()
+    count++
   else
     坯料加工()
     坯料加工()
 
-find = (name) ->
-
-  [x, y] = $.find "#{name}.png", 725, 840, 925, 875
-  
-  if x > 0 and y > 0
-    return true
-  return false
-
-restart = ->
   await $.sleep 2e3
+
+继续制作 = ->
   $.press 'numpad0'
   await $.sleep 500
   $.press 'numpad0'
   await $.sleep 500
   $.press 'numpad0'
   await $.sleep 1e3
+
+停止制作 = ->
+  await $.sleep 1e3
+  $.press 'esc'
+  await $.sleep 2e3
+
+循环制作 = ->
+
+  if count >= 50
+    停止制作()
+    修理()
+    分解()
+
+    count = 0
+    开始制作()
+    return
+
+  继续制作()
+  制作()
+  循环制作()
+
+修理 = ->
+  $.press 'shift:down', '8', 'shift:up'
+  await $.sleep 1e3
+  $.press 'numpad6'
+  await $.sleep 500
+  $.press 'numpad0'
+  await $.sleep 500
+  $.press 'numpad4'
+  await $.sleep 500
+  $.press 'numpad0'
+  await $.sleep 500
+  $.press 'esc'
+  await $.sleep 500
+  $.press 'esc'
+  await $.sleep 2e3
+
+分解 = ->
+  $.press 'shift:down', '9', 'shift:up'
+  await $.sleep 1e3
+
+  $.loop count, ->
+    $.press 'numpad0'
+    await $.sleep 500
+    $.press 'numpad4'
+    await $.sleep 500
+    $.press 'numpad0'
+    await $.sleep 3e3
+    $.press 'numpad0'
+    await $.sleep 500
+
+  $.press 'esc'
+  await $.sleep 2e3
+
+# function
+
+hasStatus = (name) ->
+
+  [x, y] = $.find "#{name}.png", 725, 840, 925, 875
+  
+  if x > 0 and y > 0
+    return true
+  return false
 
 # bind
 
@@ -122,6 +187,4 @@ $.on 'f9', ->
 # ---
 
 $.on 'f2', ->
-  $.loop ->
-    execute()
-    restart()
+  开始制作()

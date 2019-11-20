@@ -14,7 +14,12 @@ SetMouseDelay 0, 50
 
 ; bind
 
+f12::
+  ExitApp
+return
+
 f2::
+  Sleep % "" . 1000 . ""
   SoundBeep
 return
 

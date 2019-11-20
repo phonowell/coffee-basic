@@ -217,10 +217,10 @@ global isViewFar := false
 delay(name, time := 300, n := 1) {
   loop %n% {
     if (n != 1) {
-      Sleep % " . time . "
+      Sleep % "" . time . ""
     }
-    SetTimer %name%, Off
-    SetTimer %name%, % 0 - time
+  SetTimer %name%, Off
+  SetTimer %name%, % 0 - time
   }
 }
 
@@ -252,15 +252,15 @@ hasStatus(name) {
 
 toggleView() {
   if (isViewFar == false) {
-    Send {ctrl down}{up down}{pgdn down}
-    Sleep % " . 3000 . "
-    Send {ctrl up}{up up}{pgdn up}
+  Send {ctrl down}{up down}{pgdn down}
+    Sleep % "" . 3000 . ""
+  Send {ctrl up}{up up}{pgdn up}
     isViewFar := true
   }
   else {
-    Send {ctrl down}{down down}{pgup down}
-    Sleep % " . 3000 . "
-    Send {ctrl up}{down up}{pgup up}
+  Send {ctrl down}{down down}{pgup down}
+    Sleep % "" . 3000 . ""
+  Send {ctrl up}{down up}{pgup up}
     isViewFar := false
   }
   SoundBeep

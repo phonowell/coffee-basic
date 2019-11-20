@@ -6,7 +6,7 @@ Rule =
   '$.beep': 'SoundBeep'
   '$.block': 'BlockInput'
   '$.exit': 'ExitApp'
-  '$.info': 'TrayTip'
+  '$.info': 'TrayTip %'
   '$.move': 'MouseMove'
   '$.pause': 'Pause'
   '$.play': 'SoundPlay'
@@ -55,47 +55,41 @@ Rule =
 
 # function
 
-execute = (content) ->
+format = (line) ->
 
-  result = []
+  unless line.includes '('
+    return line
 
-  for line in content
+  unless data = getName line
+    return line
+  [name, argument, output] = data
+  n = @getDepth line
 
-    unless line.includes '('
-      result.push line
-      continue
+  # not found
+  unless transformer = Rule[name]
+    result = "#{name}(#{argument.join ', '})"
+    if output
+      result = "#{output} = #{result}"
+    return "#{@setDepth n}#{result}"
 
-    unless data = getName line
-      result.push line
-      continue
+  # string
+  if (typeof transformer) == 'string'
+    
+    if argument.length == 1 and argument[0] == ''
+      return "#{@setDepth n}#{transformer}"
+    
+    result = '"#{' + (argument.join '}, #{') + '}"'
+    result = "#{transformer} #{result}"
+    if output
+      result = "#{output} = #{result}"
+    
+    return "#{@setDepth n}#{result}"
 
-    n = @getDepth line
-
-    [name, argument, output] = data
-
-    unless transformer = Rule[name]
-      _res = "#{name}(#{argument.join ', '})"
-      if output
-        _res = "#{output} = #{_res}"
-      result.push "#{@setDepth n}#{_res}"
-      continue
-
-    if (typeof transformer) == 'string'
-      _res = '#{' + (argument.join '}, #{') + '}'
-      _res = "#{transformer} #{_res}"
-      if output
-        _res = "#{output} = #{_res}"
-      result.push "#{@setDepth n}#{_res}"
-      continue
-
-    _res = transformer.call @, argument, output
-    if (typeof _res) == 'string'
-      _res = [_res]
-
-    for it in _res
-      result.push "#{@setDepth n}#{it}"
-
-  result # return
+  # function
+  result = transformer.call @, argument, output
+  if (typeof result) == 'string'
+    return result
+  ("#{@setDepth n}#{line}" for line in result)
 
 getName = (line) ->
   
@@ -131,4 +125,16 @@ wrap = (name) ->
 module.exports = ->
 
   for block in [@function..., @bind...]
-    block.content = execute.call @, block.content
+
+    result = []
+
+    for line in block.content
+      res = format.call @, line
+
+      if (typeof res) == 'string'
+        result.push res
+        continue
+
+      result = [result..., res...]
+
+    block.content = result

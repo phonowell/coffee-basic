@@ -96,16 +96,16 @@ press(dh, dv) {
   cacheV := dv
   reset()
   if (dh == "left") {
-    Send {a down}
+  Send {a down}
   }
   else if (dh == "right") {
-    Send {d down}
+  Send {d down}
   }
   if (dv == "up") {
-    Send {w down}
+  Send {w down}
   }
   else if (dv == "down") {
-    Send {s down}
+  Send {s down}
   }
 }
 
@@ -118,11 +118,11 @@ reset() {
 
 toggle() {
   if (isPaused == true) {
-    ToolTip % "ON"
+  ToolTip % "ON"
     isPaused := false
   }
   else {
-    ToolTip % "OFF"
+  ToolTip % "OFF"
     isPaused := true
   }
   SetTimer clearTip, % 0 - 1000
@@ -136,7 +136,7 @@ unbind() {
 viewFar() {
   ToolTip % "wait..."
   Send {ctrl down}{up down}{pgdn down}
-  Sleep % " . 3000 . "
+  Sleep % "" . 3000 . ""
   Send {ctrl up}{up up}{pgdn up}
   ToolTip % "ON"
   SetTimer clearTip, % 0 - 1000
@@ -165,8 +165,8 @@ lbutton::
   isLp := true
   if (isPaused == false and isRp == true) {
     unbind()
-    Click % "down"
-    Click % "right down"
+  Click % "down"
+  Click % "right down"
     return
   }
   Click % "down"
@@ -175,8 +175,8 @@ return
 lbutton up::
   isLp := false
   if (isPaused == false and isRp == true) {
-    Click % "up"
-    Click % "right up"
+  Click % "up"
+  Click % "right up"
     bind()
     return
   }
@@ -208,7 +208,7 @@ return
 
 mbutton::
   if (isRp == true) {
-    Send {space}
+  Send {space}
     return
   }
   toggle()

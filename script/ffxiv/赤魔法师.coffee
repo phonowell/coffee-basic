@@ -8,91 +8,62 @@ isViewFar = false
 
 回刺 = ->
   $.press 'alt:down', '1', 'alt:up'
-
 摇荡 = ->
   $.press 'alt:down', '2', 'alt:up'
-
 赤闪雷 = ->
   $.press 'alt:down', '3', 'alt:up'
-
 短兵相接 = ->
   $.press 'alt:down', '4', 'alt:up'
-
 赤疾风 = ->
   $.press 'alt:down', '5', 'alt:up'
-
 散碎 = ->
   $.press 'alt:down', '6', 'alt:up'
-
 赤震雷 = ->
   $.press 'alt:down', '7', 'alt:up'
-
 赤烈风 = ->
   $.press 'alt:down', '8', 'alt:up'
-
 赤火炎 = ->
   $.press 'alt:down', '9', 'alt:up'
-
 赤飞石 = ->
   $.press 'alt:down', '0', 'alt:up'
-
 交击斩 = ->
   $.press 'alt:down', 'minus', 'alt:up'
-
 移转 = ->
   $.press 'alt:down', 'equal', 'alt:up'
-
 飞刺 = ->
   $.press 'ctrl:down', '1', 'ctrl:up'
-
 连攻 = ->
   $.press 'ctrl:down', '2', 'ctrl:up'
-
 促进 = ->
   $.press 'ctrl:down', '3', 'ctrl:up'
-
 划圆斩 = ->
   $.press 'ctrl:down', '4', 'ctrl:up'
-
 赤治疗 = ->
   $.press 'ctrl:down', '5', 'ctrl:up'
-
 六分反击 = ->
   $.press 'ctrl:down', '6', 'ctrl:up'
-
 鼓励 = ->
   $.press 'ctrl:down', '7', 'ctrl:up'
-
 倍增 = ->
   $.press 'ctrl:down', '8', 'ctrl:up'
-
 震荡 = ->
   $.press 'ctrl:down', '9', 'ctrl:up'
-
 赤复活 = ->
   $.press 'ctrl:down', '0', 'ctrl:up'
-
 冲击 = ->
   $.press 'ctrl:down', 'minus', 'ctrl:up'
-
 交剑 = ->
   $.press 'ctrl:down', 'equal', 'ctrl:up'
-
 续斩 = ->
   $.press 'shift:down', '1', 'shift:up'
-
 昏乱 = ->
   $.press 'shift:down', '2', 'shift:up'
-
 即刻咏唱 = ->
   $.press 'shift:down', '3', 'shift:up'
-
 醒梦 = ->
   $.press 'shift:down', '4', 'shift:up'
-
 沉稳咏唱 = ->
   $.press 'shift:down', '5', 'shift:up'
-
 索敌 = ->
   $.press 'shift:down', '6', 'shift:up'
 

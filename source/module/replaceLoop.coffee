@@ -24,7 +24,7 @@ execute = (content) ->
       cache.push n
 
       _line = line
-      .replace /\$\.loop\s+([^,],\s+)?->/g, (text) ->
+      .replace /\$\.loop\s+([^,]+,\s+)?->/g, (text) ->
         
         n = text
         .replace /[\s,]/g, ''
