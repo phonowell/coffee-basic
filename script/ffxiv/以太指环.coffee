@@ -3,6 +3,7 @@
 # const
 
 count = 0
+limit = 20
 
 # skill
 
@@ -69,6 +70,13 @@ count = 0
 
 # ---
 
+退出界面 = ->
+  $.loop 4, ->
+    await $.sleep 200
+    $.press 'num-dot'
+  await $.sleep 200
+  await $.sleep 1e3
+
 回收利用 = ->
   $.press 'alt:down', '0', 'alt:up'
   $.press 'ctrl:down', 'equal', 'ctrl:up'
@@ -88,34 +96,36 @@ count = 0
 
   回收利用()
 
-  await $.sleep 500
+  模范制作III()
+  count++
 
-  res = hasStatus '再利用'
-  if res
-    模范制作III()
-    count++
-  else
-    坯料加工()
-    坯料加工()
+  # await $.sleep 500
+
+  # res = hasStatus '再利用'
+  # if res
+  #   模范制作III()
+  #   count++
+  # else
+  #   坯料加工()
+  #   坯料加工()
 
   await $.sleep 2e3
 
 继续制作 = ->
-  $.press 'numpad0'
+  $.press 'num-0'
   await $.sleep 500
-  $.press 'numpad0'
+  $.press 'num-0'
   await $.sleep 500
-  $.press 'numpad0'
+  $.press 'num-0'
   await $.sleep 1e3
 
 停止制作 = ->
   await $.sleep 1e3
-  $.press 'esc'
-  await $.sleep 2e3
+  退出界面()
 
 循环制作 = ->
 
-  if count >= 50
+  if count >= limit
     停止制作()
     修理()
     分解()
@@ -131,35 +141,32 @@ count = 0
 修理 = ->
   $.press 'shift:down', '8', 'shift:up'
   await $.sleep 1e3
-  $.press 'numpad6'
+  $.press 'num-6'
   await $.sleep 500
-  $.press 'numpad0'
+  $.press 'num-0'
   await $.sleep 500
-  $.press 'numpad4'
+  $.press 'num-4'
   await $.sleep 500
-  $.press 'numpad0'
+  $.press 'num-0'
   await $.sleep 500
-  $.press 'esc'
-  await $.sleep 500
-  $.press 'esc'
-  await $.sleep 2e3
+  
+  退出界面()
 
 分解 = ->
   $.press 'shift:down', '9', 'shift:up'
   await $.sleep 1e3
 
   $.loop count, ->
-    $.press 'numpad0'
+    $.press 'num-0'
     await $.sleep 500
-    $.press 'numpad4'
+    $.press 'num-4'
     await $.sleep 500
-    $.press 'numpad0'
+    $.press 'num-0'
     await $.sleep 3e3
-    $.press 'numpad0'
+    $.press 'num-0'
     await $.sleep 500
 
-  $.press 'esc'
-  await $.sleep 2e3
+  退出界面()
 
 # function
 

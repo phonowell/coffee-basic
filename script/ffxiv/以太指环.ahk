@@ -20,6 +20,7 @@ SetMouseDelay 0, 50
 ; global
 
 global count := 0
+global limit := 20
 
 ; function
 
@@ -123,6 +124,15 @@ global count := 0
   Sleep % "" . 2500 . ""
 }
 
+退出界面() {
+  loop 4 {
+    Sleep % "" . 200 . ""
+    Send {numpaddot}
+  }
+  Sleep % "" . 200 . ""
+  Sleep % "" . 1000 . ""
+}
+
 回收利用() {
   Send {alt down}{0}{alt up}
   Send {ctrl down}{=}{ctrl up}
@@ -140,16 +150,8 @@ global count := 0
   坯料加工()
   坯料加工()
   回收利用()
-  Sleep % "" . 500 . ""
-  res := hasStatus("再利用")
-  if (res) {
-    模范制作III()
-    count++
-  }
-  else {
-    坯料加工()
-    坯料加工()
-  }
+  模范制作III()
+  count++
   Sleep % "" . 2000 . ""
 }
 
@@ -164,12 +166,11 @@ global count := 0
 
 停止制作() {
   Sleep % "" . 1000 . ""
-  Send {esc}
-  Sleep % "" . 2000 . ""
+  退出界面()
 }
 
 循环制作() {
-  if (count >= 50) {
+  if (count >= limit) {
     停止制作()
     修理()
     分解()
@@ -193,27 +194,23 @@ global count := 0
   Sleep % "" . 500 . ""
   Send {numpad0}
   Sleep % "" . 500 . ""
-  Send {esc}
-  Sleep % "" . 500 . ""
-  Send {esc}
-  Sleep % "" . 2000 . ""
+  退出界面()
 }
 
 分解() {
   Send {shift down}{9}{shift up}
   Sleep % "" . 1000 . ""
   loop %count% {
-  Send {numpad0}
+    Send {numpad0}
     Sleep % "" . 500 . ""
-  Send {numpad4}
+    Send {numpad4}
     Sleep % "" . 500 . ""
-  Send {numpad0}
+    Send {numpad0}
     Sleep % "" . 3000 . ""
-  Send {numpad0}
+    Send {numpad0}
     Sleep % "" . 500 . ""
   }
-  Send {esc}
-  Sleep % "" . 2000 . ""
+  退出界面()
 }
 
 hasStatus(name) {
@@ -233,7 +230,7 @@ return
 
 f9::
   MouseGetPos x, y
-  PixelGetColor color, x, y
+  PixelGetColor color, x, y, RGB
   ToolTip % "" . x . ", " . y . ", " . color . ""
 return
 

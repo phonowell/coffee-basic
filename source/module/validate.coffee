@@ -2,7 +2,6 @@
 
 listForbiden = [
   'then'
-  'unless'
   'until'
   'when'
   'while'
@@ -10,9 +9,8 @@ listForbiden = [
 
 # function
 
-log = (message, i, result) ->
+log = (message, i) ->
   console.log "line #{i + 1}: #{message}"
-  result = false
   message # return
 
 # return
@@ -24,7 +22,8 @@ module.exports = ->
 
     # comment
     if line.includes '###'
-      log 'found block comment', i, result
+      log 'found block comment', i
+      result = false
     if line.trim()[0] == '#'
       continue
 
@@ -32,10 +31,7 @@ module.exports = ->
     for word in listForbiden
       unless line.includes word
         continue
-      log "found forbiden word '#{word}'", i, result
-
-    # inline
-    if ~line.search /->\s*\S/
-      log 'inline funciton', i, result
+      log "found forbiden word '#{word}'", i
+      result = false
 
   result # return

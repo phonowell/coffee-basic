@@ -21,7 +21,7 @@ transColor = (string) ->
   "0x#{string.toUpperCase()}" # return
 
 # return
-module.exports = (arg, output) ->
+module.exports = ({argument, output}) ->
 
   # output
   [oX, oY] = _.trim output, ' []'
@@ -29,7 +29,7 @@ module.exports = (arg, output) ->
   .split ','
 
   # arg
-  [target, x1, y1, x2, y2] = arg
+  [target, x1, y1, x2, y2] = argument
   x1 or= 0
   y1 or= 0
   x2 or= 'A_ScreenWidth'

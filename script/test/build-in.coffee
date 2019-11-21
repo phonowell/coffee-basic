@@ -1,7 +1,7 @@
 # module/build-in
 
 fn = ->
-  1
+  state = $.isPressing 'z'
 
 $.tip()
 $.tip "#{a}, #{b}, #{c}"
@@ -10,3 +10,7 @@ $.setTimeout fn
 $.setTimeout n
 
 await $.sleep 1e3
+
+$.press 'a'
+$.press 'shift'
+$.press 'shift + a'

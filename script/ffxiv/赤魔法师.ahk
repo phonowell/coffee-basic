@@ -100,7 +100,16 @@ global isViewFar := false
 }
 
 倍增() {
+  white := getWhite()
+  if !(white >= 40 and white <= 60) {
+    return false
+  }
+  black := getBlack()
+  if !(black >= 40 and black <= 60) {
+    return false
+  }
   Send {ctrl down}{8}{ctrl up}
+  return true
 }
 
 震荡() {
@@ -132,7 +141,12 @@ global isViewFar := false
 }
 
 醒梦() {
+  PixelGetColor color, 260, 35, RGB
+  if !(color == 0x56463C) {
+    return false
+  }
   Send {shift down}{4}{shift up}
+  return true
 }
 
 沉稳咏唱() {
@@ -143,75 +157,18 @@ global isViewFar := false
   Send {shift down}{6}{shift up}
 }
 
+爆发药() {
+  Send {shift down}{7}{shift up}
+}
+
 能力技() {
   索敌()
-  交剑()
+  倍增()
   飞刺()
   六分反击()
+  交剑()
   昏乱()
-}
-
-施放赤疾风() {
-  res := hasStatus("连续咏唱")
-  if (!res) {
-    res := hasStatus("赤飞石预备")
-    if (res) {
-      赤飞石()
-      return
-    }
-    摇荡()
-    return
-  }
-  赤疾风()
-  促进()
-  施放醒梦()
-  delay("能力技", 300, 2)
-}
-
-施放赤闪雷() {
-  res := hasStatus("连续咏唱")
-  if (!res) {
-    res := hasStatus("赤火炎预备")
-    if (res) {
-      赤火炎()
-      return
-    }
-    摇荡()
-    return
-  }
-  赤闪雷()
-  促进()
-  施放醒梦()
-  delay("能力技", 300, 2)
-}
-
-施放赤烈风() {
-  res := hasStatus("连续咏唱")
-  if (!res) {
-    赤烈风()
-    return
-  }
-  散碎()
-  施放醒梦()
-  delay("能力技", 300, 2)
-}
-
-施放赤震雷() {
-  res := hasStatus("连续咏唱")
-  if (!res) {
-    赤震雷()
-    return
-  }
-  散碎()
-  施放醒梦()
-  delay("能力技", 300, 2)
-}
-
-施放醒梦() {
-  PixelGetColor color, 265, 40
-  if (color == 0x3B5264) {
-    醒梦()
-  }
+  醒梦()
 }
 
 delay(name, time := 300, n := 1) {
@@ -219,25 +176,26 @@ delay(name, time := 300, n := 1) {
     if (n != 1) {
       Sleep % "" . time . ""
     }
-  SetTimer %name%, Off
-  SetTimer %name%, % 0 - time
+    SetTimer %name%, Off
+    SetTimer %name%, % 0 - time
   }
 }
 
 getGroup() {
-  PixelGetColor color, 965, 930
-  if (color == 0x6CA9BD) {
-    return "r1"
+  isLT := false
+  isRT := false
+  GetKeyState __value__, 2joy7
+  isLT := __value__ == "D"
+  GetKeyState __value__, 2joy8
+  isRT := __value__ == "D"
+  if (isLT and isRT) {
+    return "both"
   }
-  if (color == 0x7F6967) {
-    return "r2"
+  if (isLT) {
+    return "left"
   }
-  PixelGetColor color, 740, 930
-  if (color == 0x6BA8BD) {
-    return "l1"
-  }
-  if (color == 0x7F6866) {
-    return "l2"
+  if (isRT) {
+    return "right"
   }
   return "none"
 }
@@ -252,18 +210,140 @@ hasStatus(name) {
 
 toggleView() {
   if (isViewFar == false) {
-  Send {ctrl down}{up down}{pgdn down}
+    Send {ctrl down}{up down}{pgdn down}
     Sleep % "" . 3000 . ""
-  Send {ctrl up}{up up}{pgdn up}
+    Send {ctrl up}{up up}{pgdn up}
     isViewFar := true
   }
   else {
-  Send {ctrl down}{down down}{pgup down}
+    Send {ctrl down}{down down}{pgup down}
     Sleep % "" . 3000 . ""
-  Send {ctrl up}{down up}{pgup up}
+    Send {ctrl up}{down up}{pgup up}
     isViewFar := false
   }
   SoundBeep
+}
+
+attackCombo() {
+  if (hasStatus("连续咏唱")) {
+    SoundBeep
+    return
+  }
+  索敌()
+  white := getWhite()
+  black := getBlack()
+  if (white >= 80 and black >= 80) {
+    回刺()
+    短兵相接()
+    return
+  }
+  if (white >= 50 and black >= 50) {
+    交击斩()
+    鼓励()
+    return
+  }
+  if (white >= 25 and black >= 25) {
+    连攻()
+    交剑()
+    短兵相接()
+    return
+  }
+  if (white >= black) {
+    赤闪雷()
+  }
+  else {
+    赤疾风()
+  }
+  delay("能力技")
+}
+
+attackMulti() {
+  索敌()
+  white := getWhite()
+  black := getBlack()
+  if (white > 90 or black > 90) {
+    SoundBeep
+  }
+  if (hasStatus("连续咏唱")) {
+    散碎()
+    delay("能力技")
+    return
+  }
+  if (white >= black) {
+    赤震雷()
+  }
+  else {
+    赤烈风()
+  }
+}
+
+attackSingle() {
+  索敌()
+  white := getWhite()
+  black := getBlack()
+  total := white + black
+  if (total > 170 and total < 200) {
+    SoundBeep
+  }
+  isW := hasStatus("赤飞石预备")
+  isB := hasStatus("赤火炎预备")
+  if (hasStatus("连续咏唱")) {
+    if (isW) {
+      赤闪雷()
+    }
+    else if (isB) {
+      赤疾风()
+    }
+    else {
+      if (white >= black) {
+        赤闪雷()
+      }
+      else {
+        赤疾风()
+      }
+    }
+    delay("促进")
+    delay("能力技")
+    return
+  }
+  if (isW and isB) {
+    if (white >= black) {
+      赤火炎()
+    }
+    else {
+      赤飞石()
+    }
+    return
+  }
+  if (isW) {
+    赤飞石()
+    return
+  }
+  if (isB) {
+    赤火炎()
+    return
+  }
+  摇荡()
+}
+
+getBlack() {
+  PixelSearch x, y, 1027, 810, 1166, 810, 0x56463C, 0, Fast RGB
+  if !(x) {
+    return 100
+  }
+  percent := (x - 1023) * 100 / (1170 - 1023)
+  percent := Round(percent)
+  return percent - 1
+}
+
+getWhite() {
+  PixelSearch x, y, 1027, 801, 1166, 801, 0x2E1E14, 0, Fast RGB
+  if !(x) {
+    return 100
+  }
+  percent := (x - 1023) * 100 / (1170 - 1023)
+  percent := Round(percent)
+  return percent - 1
 }
 
 ; bind
@@ -275,7 +355,20 @@ return
 
 f9::
   MouseGetPos x, y
-  PixelGetColor color, x, y
+  PixelGetColor color, x, y, RGB
+  ToolTip % "" . x . ", " . y . ", " . color . ""
+return
+
+f10::
+  white := getWhite()
+  black := getBlack()
+  ToolTip % "" . white . " / " . black . ""
+return
+
+f11::
+  x := 1100
+  y := 935
+  PixelGetColor color, x, y, RGB
   ToolTip % "" . x . ", " . y . ", " . color . ""
 return
 
@@ -285,80 +378,65 @@ return
 
 2joy4::
   group := getGroup()
-  if (group == "none") {
+  if (group == "right") {
+    attackSingle()
     return
   }
-  索敌()
-  if (group == "r1") {
-    delay("能力技", 300, 2)
-    return
-  }
-  if (group == "r2") {
-    delay("短兵相接")
-    return
-  }
-  if (group == "l1") {
-    delay("能力技")
+  if (group == "both") {
+    attackMulti()
     return
   }
 return
 
 2joy2::
   group := getGroup()
-  if (group == "none") {
+  if (group == "right") {
+    attackCombo()
     return
   }
-  索敌()
-  if (group == "r1") {
-    施放赤疾风()
-    return
-  }
-  if (group == "r2") {
-    delay("鼓励")
-    return
-  }
-  if (group == "l1") {
-    施放赤烈风()
+  if (group == "both") {
+    if (getWhite() < 20) {
+      SoundBeep
+      return
+    }
+    if (getBlack() < 20) {
+      SoundBeep
+      return
+    }
+    if (hasStatus("连续咏唱")) {
+      SoundBeep
+      return
+    }
+    索敌()
+    划圆斩()
+    delay("能力技")
     return
   }
 return
 
 2joy1::
   group := getGroup()
-  if (group == "none") {
-    return
-  }
-  索敌()
-  if (group == "r1") {
-    施放赤疾风()
-    return
-  }
-  if (group == "r2") {
-    delay("交剑")
-    return
-  }
-  if (group == "l1") {
-    施放赤烈风()
+  if (group == "right") {
+    if (hasStatus("连续咏唱")) {
+      SoundBeep
+      return
+    }
+    索敌()
+    摇荡()
+    delay("能力技")
     return
   }
 return
 
 2joy3::
   group := getGroup()
-  if (group == "none") {
+  if (group == "right") {
+    赤治疗()
     return
   }
-  索敌()
-  if (group == "r1") {
-    施放赤闪雷()
-    return
-  }
-  if (group == "r2") {
-    delay("能力技", 300, 2)
-    return
-  }
-  if (group == "l1") {
-    施放赤震雷()
+  if (group == "both") {
+    赤复活()
+    delay("能力技")
     return
   }
 return

@@ -7,8 +7,9 @@ format = (line) ->
   .replace /['"]/g, ''
   # ---
   .replace /equal/g, '='
-  .replace /minus/, '-'
-  .replace /num(\d)/g, 'numpad$1'
+  .replace /minus/g, '-'
+  .replace /num-/g, 'numpad'
+  .replace /numpad-/g, 'numpad'
   .replace /page-?down/g, 'pgdn'
   .replace /page-?up/g, 'pgup'
   .replace /plus/g, '+'
@@ -16,6 +17,30 @@ format = (line) ->
   .replace /:/g, ' '
 
 # return
-module.exports = (arg) ->
-  list = (format it for it in arg)
-  "Send {#{list.join '}{'}}"
+module.exports = ({argument}) ->
+
+  listResult = []
+  for arg in argument
+
+    list = arg
+    .replace /\s/g, ''
+    .split '+'
+
+    max = list.length - 1
+    listPre = []
+    
+    for key, i in list
+
+      if i < max
+        listPre.push key
+        listResult.push format "#{key}:down"
+        continue
+
+      listResult.push format key
+
+    listPre.reverse()
+    for key in listPre
+      listResult.push format "#{key}:up"
+
+  # return
+  "Send {#{listResult.join '}{'}}"

@@ -13,7 +13,7 @@ class Content
     @head = []
     @mode = []
 
-    @main = "#{@raw}\n"
+    @main = @raw
     .replace /\r/g, ''
     .replace /\n{2,}/g, '\n'
     .split '\n'
@@ -42,7 +42,6 @@ class Content
   getFunction: require './module/getFunction'
   getGlobal: require './module/getGlobal'
   getMode: require './module/getMode'
-  removeComment: require './module/removeComment'
   render: require './module/render'
   replaceFor: require './module/replaceFor'
   replaceIf: require './module/replaceIf'
@@ -60,8 +59,7 @@ class Content
       return ''
 
     @getMode()
-
-    @removeComment()
+    @format()
 
     @getGlobal()
     @getFunction()
@@ -71,8 +69,6 @@ class Content
     unless option.bare
       @setHead()
       @setFoot()
-
-    @format()
 
     @replaceIf()
     @replaceFor()

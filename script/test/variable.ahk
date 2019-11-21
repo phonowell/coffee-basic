@@ -25,7 +25,7 @@ global f := fn(a, b)
 
 inside() {
   a := 1
-  b := "string"
+  b := "string, string"
   c := "" . a . ", " . c . ""
   d := true
   e := fn()

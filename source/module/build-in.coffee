@@ -7,15 +7,11 @@ Rule =
   '$.block': 'BlockInput'
   '$.exit': 'ExitApp'
   '$.info': 'TrayTip %'
-  '$.move': 'MouseMove'
   '$.pause': 'Pause'
   '$.play': 'SoundPlay'
   '$.trim': 'Trim'
   '$.trimEnd': 'RTrim'
   '$.trimStart': 'LTrim'
-  'Math.abs': 'Abs'
-  'Math.ceil': 'Ceil'
-  'Math.round': 'Round'
   'alert': 'MsgBox %'
   '$.sleep': 'Sleep %'
 
@@ -24,34 +20,42 @@ Rule =
   '$.find': require '../built-in/$.find'
   '$.getColor': require '../built-in/$.getColor'
   '$.getPosition': require '../built-in/$.getPosition'
+  '$.isPressing': require '../built-in/$.isPressing'
   '$.press': require '../built-in/$.press'
 
   # ---
 
-  '$.clearInterval': (arg) ->
-    "SetTimer #{wrap.call @, arg[0]}, Off"
+  '$.clearInterval': ({argument}) ->
+    "SetTimer #{wrap.call @, argument[0]}, Off"
   
-  '$.clearTimeout': (arg) ->
-    "SetTimer #{wrap.call @, arg[0]}, Off"
+  '$.clearTimeout': ({argument}) ->
+    "SetTimer #{wrap.call @, argument[0]}, Off"
   
-  '$.click': (arg) ->
-    unless arg[0]
+  '$.click': ({argument}) ->
+    unless argument[0]
       'Click'
-    else "Click % #{arg[0].replace /:/g, ' '}"
+    else "Click % #{argument[0].replace /:/g, ' '}"
+
+  '$.move': ({argument}) ->
+    "MouseMove #{argument[0] or 0}, #{argument[1] or 0}, #{argument[2] or 0}"
   
-  '$.open': (arg) ->
-    "Run #{@trim arg[0]}"
+  '$.open': ({argument}) ->
+    "Run #{@trim argument[0]}"
   
-  '$.setInterval': (arg) ->
-    "SetTimer #{wrap.call @, arg[0]}, #{arg[1] or 0}"
+  '$.setInterval': ({argument}) ->
+    "SetTimer #{wrap.call @, argument[0]}, #{argument[1] or 0}"
   
-  '$.setTimeout': (arg) ->
-    "SetTimer #{wrap.call @, arg[0]}, % 0 - #{arg[1] or 0}"
+  '$.setTimeout': ({argument}) ->
+    "SetTimer #{wrap.call @, argument[0]}, % 0 - #{argument[1] or 0}"
   
-  '$.tip': (arg) ->
-    unless arg[0]
+  '$.tip': ({argument}) ->
+    unless argument[0]
       'ToolTip'
-    else "ToolTip % #{arg[0]}"
+    else "ToolTip % #{argument[0]}"
+
+  'Math.abs': ({argument, output}) -> "#{output} = Abs(#{argument[0]})"
+  'Math.ceil': ({argument, output}) -> "#{output} = Ceil(#{argument[0]})"
+  'Math.round': ({argument, output}) -> "#{output} = Round(#{argument[0]})"
 
 # function
 
@@ -60,40 +64,48 @@ format = (line) ->
   unless line.includes '('
     return line
 
-  unless data = getName line
+  unless data = getData.call @, line
     return line
-  [name, argument, output] = data
-  n = @getDepth line
+  {argument, depth, name, output} = data
 
   # not found
   unless transformer = Rule[name]
     result = "#{name}(#{argument.join ', '})"
     if output
       result = "#{output} = #{result}"
-    return "#{@setDepth n}#{result}"
+    return "#{@setDepth depth}#{result}"
 
   # string
   if (typeof transformer) == 'string'
-    
-    if argument.length == 1 and argument[0] == ''
-      return "#{@setDepth n}#{transformer}"
-    
-    result = '"#{' + (argument.join '}, #{') + '}"'
-    result = "#{transformer} #{result}"
-    if output
-      result = "#{output} = #{result}"
-    
-    return "#{@setDepth n}#{result}"
+    return formatString.call @, _.assign {transformer}, data
 
   # function
-  result = transformer.call @, argument, output
+  result = transformer.call @, data
   if (typeof result) == 'string'
-    return result
-  ("#{@setDepth n}#{line}" for line in result)
+    return "#{@setDepth depth}#{result}"
+  ("#{@setDepth depth}#{line}" for line in result)
 
-getName = (line) ->
+formatString = (data) ->
+
+  {argument, depth, output, transformer} = data
+
+  if argument.length == 1 and argument[0] == ''
+    return "#{@setDepth depth}#{transformer}"
   
-  [name, arg...] = line.trim().split '('
+  result = '"#{' + (argument.join '}, #{') + '}"'
+  result = "#{transformer} #{result}"
+  if output
+    result = "#{output} = #{result}"
+  
+  return "#{@setDepth depth}#{result}"
+
+getData = (line) ->
+  
+  depth = @getDepth line
+
+  [name, arg...] = line
+  .trim()
+  .split '('
 
   if name.includes '='
     [output, name] = (it.trim() for it in name.split '=')
@@ -112,7 +124,8 @@ getName = (line) ->
     .replace /__comma__/g, ','
 
   # return
-  [name, arg, output]
+  argument = arg
+  {argument, depth, name, output}
 
 wrap = (name) ->
 

@@ -40,7 +40,7 @@ getName = (line) ->
 
 validate = (line) ->
 
-  if n = @getDepth line
+  if @getDepth line
     return
 
   line = line
@@ -64,11 +64,12 @@ module.exports = ->
 
     if isPending
       
-      if n = @getDepth line
+      if @getDepth line
         block.content.push line.replace '  ', ''
         continue
 
       isPending = false
+      block.content.push ''
       @bind.push block
       block = Block()
 

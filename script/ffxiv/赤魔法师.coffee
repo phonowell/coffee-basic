@@ -6,140 +6,63 @@ isViewFar = false
 
 # skill
 
-回刺 = ->
-  $.press 'alt:down', '1', 'alt:up'
-摇荡 = ->
-  $.press 'alt:down', '2', 'alt:up'
-赤闪雷 = ->
-  $.press 'alt:down', '3', 'alt:up'
-短兵相接 = ->
-  $.press 'alt:down', '4', 'alt:up'
-赤疾风 = ->
-  $.press 'alt:down', '5', 'alt:up'
-散碎 = ->
-  $.press 'alt:down', '6', 'alt:up'
-赤震雷 = ->
-  $.press 'alt:down', '7', 'alt:up'
-赤烈风 = ->
-  $.press 'alt:down', '8', 'alt:up'
-赤火炎 = ->
-  $.press 'alt:down', '9', 'alt:up'
-赤飞石 = ->
-  $.press 'alt:down', '0', 'alt:up'
-交击斩 = ->
-  $.press 'alt:down', 'minus', 'alt:up'
-移转 = ->
-  $.press 'alt:down', 'equal', 'alt:up'
-飞刺 = ->
-  $.press 'ctrl:down', '1', 'ctrl:up'
-连攻 = ->
-  $.press 'ctrl:down', '2', 'ctrl:up'
-促进 = ->
-  $.press 'ctrl:down', '3', 'ctrl:up'
-划圆斩 = ->
-  $.press 'ctrl:down', '4', 'ctrl:up'
-赤治疗 = ->
-  $.press 'ctrl:down', '5', 'ctrl:up'
-六分反击 = ->
-  $.press 'ctrl:down', '6', 'ctrl:up'
-鼓励 = ->
-  $.press 'ctrl:down', '7', 'ctrl:up'
+回刺 = -> $.press 'alt + 1'
+摇荡 = -> $.press 'alt + 2'
+赤闪雷 = -> $.press 'alt + 3'
+短兵相接 = -> $.press 'alt + 4'
+赤疾风 = -> $.press 'alt + 5'
+散碎 = -> $.press 'alt + 6'
+赤震雷 = -> $.press 'alt + 7'
+赤烈风 = -> $.press 'alt + 8'
+赤火炎 = -> $.press 'alt + 9'
+赤飞石 = -> $.press 'alt + 0'
+交击斩 = -> $.press 'alt + minus'
+移转 = -> $.press 'alt + equal'
+飞刺 = -> $.press 'ctrl + 1'
+连攻 = -> $.press 'ctrl + 2'
+促进 = -> $.press 'ctrl + 3'
+划圆斩 = -> $.press 'ctrl + 4'
+赤治疗 = -> $.press 'ctrl + 5'
+六分反击 = -> $.press 'ctrl + 6'
+鼓励 = -> $.press 'ctrl + 7'
+
 倍增 = ->
-  $.press 'ctrl:down', '8', 'ctrl:up'
-震荡 = ->
-  $.press 'ctrl:down', '9', 'ctrl:up'
-赤复活 = ->
-  $.press 'ctrl:down', '0', 'ctrl:up'
-冲击 = ->
-  $.press 'ctrl:down', 'minus', 'ctrl:up'
-交剑 = ->
-  $.press 'ctrl:down', 'equal', 'ctrl:up'
-续斩 = ->
-  $.press 'shift:down', '1', 'shift:up'
-昏乱 = ->
-  $.press 'shift:down', '2', 'shift:up'
-即刻咏唱 = ->
-  $.press 'shift:down', '3', 'shift:up'
+  white = getWhite()
+  unless white >= 40 and white <= 60
+    return false
+  black = getBlack()
+  unless black >= 40 and black <= 60
+    return false
+  $.press 'ctrl + 8'
+  return true
+
+震荡 = -> $.press 'ctrl + 9'
+赤复活 = -> $.press 'ctrl + 0'
+冲击 = -> $.press 'ctrl + minus'
+交剑 = -> $.press 'ctrl + equal'
+续斩 = -> $.press 'shift + 1'
+昏乱 = -> $.press 'shift + 2'
+即刻咏唱 = -> $.press 'shift + 3'
+
 醒梦 = ->
-  $.press 'shift:down', '4', 'shift:up'
-沉稳咏唱 = ->
-  $.press 'shift:down', '5', 'shift:up'
-索敌 = ->
-  $.press 'shift:down', '6', 'shift:up'
+  color = $.getColor 260, 35
+  unless color == 0x56463C
+    return false
+  $.press 'shift + 4'
+  return true
+
+沉稳咏唱 = -> $.press 'shift + 5'
+索敌 = -> $.press 'shift + 6'
+爆发药 = -> $.press 'shift + 7'
 
 能力技 = ->
   索敌()
-  交剑()
+  倍增()
   飞刺()
   六分反击()
+  交剑()
   昏乱()
-
-# ---
-
-施放赤疾风 = ->
-
-  res = hasStatus '连续咏唱'
-  if !res
-
-    res = hasStatus '赤飞石预备'
-    if res
-      赤飞石()
-      return
-
-    摇荡()
-    return
-  
-  赤疾风()
-  促进()
-  施放醒梦()
-  delay '能力技', 300, 2
-
-施放赤闪雷 = ->
-
-  res = hasStatus '连续咏唱'
-  if !res
-
-    res = hasStatus '赤火炎预备'
-    if res
-      赤火炎()
-      return
-
-    摇荡()
-    return
-
-  赤闪雷()
-  促进()
-  施放醒梦()
-  delay '能力技', 300, 2
-
-施放赤烈风 = ->
-
-  res = hasStatus '连续咏唱'
-  if !res
-
-    赤烈风()
-    return
-
-  散碎()
-  施放醒梦()
-  delay '能力技', 300, 2
-
-施放赤震雷 = ->
-
-  res = hasStatus '连续咏唱'
-  if !res
-
-    赤震雷()
-    return
-
-  散碎()
-  施放醒梦()
-  delay '能力技', 300, 2
-
-施放醒梦 = ->
-  color = $.getColor 265, 40
-  if color == 0x3B5264
-    醒梦()
+  醒梦()
 
 # function
 
@@ -151,18 +74,21 @@ delay = (name, time = 300, n = 1) ->
     $.setTimeout name, time
 
 getGroup = ->
-  
-  color = $.getColor 965, 930
-  if color == 0x6CA9BD
-    return 'r1'
-  if color == 0x7F6967
-    return 'r2'
-  
-  color = $.getColor 740, 930
-  if color == 0x6BA8BD
-    return 'l1'
-  if color == 0x7F6866
-    return 'l2'
+
+  isLT = false
+  isRT = false
+
+  isLT = $.isPressing '2joy7'
+  isRT = $.isPressing '2joy8'
+
+  if isLT and isRT
+    return 'both'
+
+  if isLT
+    return 'left'
+
+  if isRT
+    return 'right'
 
   return 'none'
 
@@ -194,6 +120,130 @@ toggleView = ->
 
   $.beep()
 
+# ---
+
+attackCombo = ->
+
+  if hasStatus '连续咏唱'
+    $.beep()
+    return
+
+  索敌()
+
+  white = getWhite()
+  black = getBlack()
+
+  if white >= 80 and black >= 80
+    回刺()
+    短兵相接()
+    return
+
+  if white >= 50 and black >= 50
+    交击斩()
+    鼓励()
+    return
+
+  if white >= 25 and black >= 25
+    连攻()
+    交剑()
+    短兵相接()
+    return
+
+  if white >= black
+    赤闪雷()
+  else
+    赤疾风()
+    
+  delay '能力技'
+
+attackMulti = ->
+
+  索敌()
+
+  white = getWhite()
+  black = getBlack()
+
+  if white > 90 or black > 90
+    $.beep()
+
+  if hasStatus '连续咏唱'
+    散碎()
+    delay '能力技'
+    return
+
+  if white >= black
+    赤震雷()
+  else
+    赤烈风()
+
+attackSingle = ->
+  
+  索敌()
+
+  white = getWhite()
+  black = getBlack()
+
+  # $.tip "#{white} / #{black}"
+  total = white + black
+  if total > 170 and total < 200
+    $.beep()
+
+  isW = hasStatus '赤飞石预备'
+  isB = hasStatus '赤火炎预备'
+
+  if hasStatus '连续咏唱'
+
+    if isW
+      赤闪雷()
+    else if isB
+      赤疾风()
+    else
+      if white >= black
+        赤闪雷()
+      else
+        赤疾风()
+
+    delay '促进'
+    delay '能力技'
+    return
+
+  if isW and isB
+    if white >= black
+      赤火炎()
+    else
+      赤飞石()
+    return
+
+  if isW
+    赤飞石()
+    return
+
+  if isB
+    赤火炎()
+    return
+  
+  摇荡()
+
+getBlack = ->
+  [x, y] = $.find '#56463c', 1027, 810, 1166, 810
+  
+  unless x
+    return 100
+  
+  percent = (x - 1023) * 100 / (1170 - 1023)
+  percent = Math.round percent
+  return percent - 1
+
+getWhite = ->
+  [x, y] = $.find '#2e1e14', 1027, 801, 1166, 801
+  
+  unless x
+    return 100
+  
+  percent = (x - 1023) * 100 / (1170 - 1023)
+  percent = Math.round percent
+  return percent - 1
+
 # bind
 
 $.on 'f12', ->
@@ -202,8 +252,17 @@ $.on 'f12', ->
 
 $.on 'f9', ->
   [x, y] = $.getPosition()
-  # x = 265
-  # y = 40
+  color = $.getColor x, y
+  $.tip "#{x}, #{y}, #{color}"
+
+$.on 'f10', ->
+  white = getWhite()
+  black = getBlack()
+  $.tip "#{white} / #{black}"
+
+$.on 'f11', ->
+  x = 1100
+  y = 935
   color = $.getColor x, y
   $.tip "#{x}, #{y}, #{color}"
 
@@ -215,85 +274,67 @@ $.on 'f2', ->
 $.on '2joy4', ->
 
   group = getGroup()
-  if group == 'none'
+
+  # 单体攻击
+  if group == 'right'
+    attackSingle()
     return
 
-  索敌()
-
-  if group == 'r1'
-    # 短兵相接
-    delay '能力技', 300, 2
-    return
-
-  if group == 'r2'
-    # 回刺
-    delay '短兵相接'
-    return
-
-  if group == 'l1'
-    # 划圆斩
-    delay '能力技'
+  # 群体攻击
+  if group == 'both'
+    attackMulti()
     return
 
 $.on '2joy2', ->
 
   group = getGroup()
-  if group == 'none'
+
+  if group == 'right'
+    attackCombo()
     return
 
-  索敌()
-  
-  if group == 'r1'
-    施放赤疾风()
-    return
+  if group == 'both'
 
-  if group == 'r2'
-    # 交击斩
-    delay '鼓励'
-    return
-
-  if group == 'l1'
-    施放赤烈风()
+    if getWhite() < 20
+      $.beep()
+      return
+    if getBlack() < 20
+      $.beep()
+      return
+    
+    if hasStatus '连续咏唱'
+      $.beep()
+      return
+    
+    索敌()
+    划圆斩()
+    delay '能力技'
     return
 
 $.on '2joy1', ->
 
   group = getGroup()
-  if group == 'none'
-    return
 
-  索敌()
-  
-  if group == 'r1'
-    施放赤疾风()
-    return
-
-  if group == 'r2'
-    # 连攻
-    delay '交剑'
-    return
-
-  if group == 'l1'
-    施放赤烈风()
+  if group == 'right'
+    
+    if hasStatus '连续咏唱'
+      $.beep()
+      return
+    
+    索敌()
+    摇荡()
+    delay '能力技'
     return
 
 $.on '2joy3', ->
 
   group = getGroup()
-  if group == 'none'
+
+  if group == 'right'
+    赤治疗()
     return
 
-  索敌()
-  
-  if group == 'r1'
-    施放赤闪雷()
-    return
-
-  if group == 'r2'
-    # 焦热
-    delay '能力技', 300, 2
-    return
-
-  if group == 'l1'
-    施放赤震雷()
+  if group == 'both'
+    赤复活()
+    delay '能力技'
     return

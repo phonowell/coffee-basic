@@ -1,5 +1,10 @@
 ﻿; transpiled by coffee-basic
 
+if (A_IsAdmin != true) {
+  Run *RunAs "%A_ScriptFullPath%"
+  ExitApp
+}
+
 #NoEnv
 #Persistent
 #SingleInstance Force
@@ -12,21 +17,18 @@ SendMode Event
 SetKeyDelay 0, 50
 SetMouseDelay 0, 50
 
-; global
+; bind
 
-global a := fn()
-global a := fn(a, b)
+f12::
+  ExitApp
+return
 
-; function
-
-default() {
-  fn()
-  fn(a, b)
-  fn(a + 1)
-  fn(!a)
-}
-
-; default
-default()
+rbutton::
+  Click % "right"
+  loop 4 {
+    Sleep % "" . 100 . ""
+    Send {numpad0}
+  }
+return
 
 ; eof

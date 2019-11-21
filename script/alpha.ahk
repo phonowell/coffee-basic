@@ -23,4 +23,8 @@ f2::
   SoundBeep
 return
 
+f3::
+  1
+return
+
 ; eof

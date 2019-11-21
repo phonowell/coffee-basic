@@ -4,5 +4,5 @@ fn a, b
 a = fn()
 a = fn a, b
 
-if a != true
-  fn()
+fn a + 1
+fn !a

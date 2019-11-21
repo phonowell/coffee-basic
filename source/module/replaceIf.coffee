@@ -9,6 +9,9 @@ execute = (content) ->
 
   for line in content
 
+    line = line
+    .replace 'unless', 'not-if'
+
     n = @getDepth line
     if n <= _.last cache
 
@@ -25,6 +28,7 @@ execute = (content) ->
 
       _line = "#{line} {"
       .replace /if\s+(.*?)\s+{/, 'if ($1) {'
+      .replace 'not-if (', 'if !('
 
       result.push _line
       continue
@@ -36,7 +40,12 @@ execute = (content) ->
 # return
 module.exports = ->
 
-  unless @raw.includes 'if '
+  isValid = [
+    @raw.includes 'if '
+    @raw.includes 'unless '
+  ].includes true
+
+  unless isValid
     return
 
   for block in [@function..., @bind...]

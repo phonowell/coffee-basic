@@ -1,7 +1,7 @@
 _ = require 'lodash'
 
 # return
-module.exports = (arg, output) ->
+module.exports = ({output}) ->
 
   [x, y] = _.trim output, ' []'
   .replace /\s/g, ''

@@ -1,7 +1,5 @@
 _ = require 'lodash'
 
-getDepth = require '../fn/getDepth'
-
 # const
 
 Block = ->
@@ -27,7 +25,7 @@ getName = (line) ->
 
 validate = (line) ->
 
-  if n = getDepth line
+  if @getDepth line
     return
 
   line = line
@@ -51,15 +49,16 @@ module.exports = ->
 
     if isPending
       
-      if n = getDepth line
+      if @getDepth line
         block.content.push line.replace '  ', ''
         continue
 
       isPending = false
+      block.content.push ''
       @function.push block
       block = Block()
 
-    unless validate line
+    unless validate.call @, line
       result.push line
       continue
 
