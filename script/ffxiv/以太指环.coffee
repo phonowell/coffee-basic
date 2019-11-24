@@ -3,69 +3,69 @@
 # const
 
 count = 0
-limit = 20
+limit = 50
 
 # skill
 
 内静 = ->
-  $.press 'alt:down', '1', 'alt:up'
+  $.press 'alt + 1'
   await $.sleep 1500
 阔步 = ->
-  $.press 'alt:down', '2', 'alt:up'
+  $.press 'alt + 2'
   await $.sleep 1500
 稳手II = ->
-  $.press 'alt:down', '3', 'alt:up'
+  $.press 'alt + 3'
   await $.sleep 1500
 上级加工 = ->
-  $.press 'alt:down', '4', 'alt:up'
+  $.press 'alt + 4'
   await $.sleep 2500
 比尔格的祝福 = ->
-  $.press 'alt:down', '5', 'alt:up'
+  $.press 'alt + 5'
   await $.sleep 2500
 模范制作III = ->
-  $.press 'alt:down', '6', 'alt:up'
+  $.press 'alt + 6'
   await $.sleep 2500
 掌握II = ->
-  $.press 'alt:down', '7', 'alt:up'
+  $.press 'alt + 7'
   await $.sleep 1500
 俭约加工 = ->
-  $.press 'alt:down', '8', 'alt:up'
+  $.press 'alt + 8'
   await $.sleep 2500
 坯料加工 = ->
-  $.press 'alt:down', '9', 'alt:up'
+  $.press 'alt + 9'
   await $.sleep 2500
 再利用 = ->
-  $.press 'alt:down', '0', 'alt:up'
+  $.press 'alt + 0'
   await $.sleep 1500
 精密制作 = ->
-  $.press 'alt:down', 'minus', 'alt:up'
+  $.press 'alt + minus'
   await $.sleep 2500
 工匠的神速技巧 = ->
-  $.press 'alt:down', 'equal', 'alt:up'
+  $.press 'alt + equal'
   await $.sleep 2500
 工匠的苦行 = ->
-  $.press 'ctrl:down', '1', 'ctrl:up'
+  $.press 'ctrl + 1'
   await $.sleep 2500
 新颖II = ->
-  $.press 'ctrl:down', '7', 'ctrl:up'
+  $.press 'ctrl + 7'
   await $.sleep 1500
 渐进 = ->
-  $.press 'ctrl:down', '8', 'ctrl:up'
+  $.press 'ctrl + 8'
   await $.sleep 1500
 改革 = ->
-  $.press 'ctrl:down', '9', 'ctrl:up'
+  $.press 'ctrl + 9'
   await $.sleep 1500
 俭约II = ->
-  $.press 'ctrl:down', '0', 'ctrl:up'
+  $.press 'ctrl + 0'
   await $.sleep 1500
 安逸 = ->
-  $.press 'ctrl:down', 'minus', 'ctrl:up'
+  $.press 'ctrl + minus'
   await $.sleep 1500
 回收 = ->
-  $.press 'ctrl:down', 'equal', 'ctrl:up'
+  $.press 'ctrl + equal'
   await $.sleep 1500
 坚信 = ->
-  $.press 'shift:down', '1', 'shift:up'
+  $.press 'shift + 1'
   await $.sleep 2500
 
 # ---
@@ -78,12 +78,12 @@ limit = 20
   await $.sleep 1e3
 
 回收利用 = ->
-  $.press 'alt:down', '0', 'alt:up'
-  $.press 'ctrl:down', 'equal', 'ctrl:up'
+  $.press 'alt + 0'
+  $.press 'ctrl + equal'
   await $.sleep 1500
 
 开始制作 = ->
-  $.press 'shift:down', '7', 'shift:up'
+  $.press 'shift + 7'
   await $.sleep 1e3
 
   循环制作()
@@ -96,18 +96,17 @@ limit = 20
 
   回收利用()
 
-  模范制作III()
-  count++
+  # 模范制作III()
+  # count++
 
-  # await $.sleep 500
+  await $.sleep 500
 
-  # res = hasStatus '再利用'
-  # if res
-  #   模范制作III()
-  #   count++
-  # else
-  #   坯料加工()
-  #   坯料加工()
+  if hasStatus '再利用'
+    模范制作III()
+    count++
+  else
+    坯料加工()
+    坯料加工()
 
   await $.sleep 2e3
 
@@ -139,7 +138,7 @@ limit = 20
   循环制作()
 
 修理 = ->
-  $.press 'shift:down', '8', 'shift:up'
+  $.press 'shift + 8'
   await $.sleep 1e3
   $.press 'num-6'
   await $.sleep 500
@@ -153,7 +152,7 @@ limit = 20
   退出界面()
 
 分解 = ->
-  $.press 'shift:down', '9', 'shift:up'
+  $.press 'shift + 9'
   await $.sleep 1e3
 
   $.loop count, ->
