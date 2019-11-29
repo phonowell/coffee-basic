@@ -3,7 +3,7 @@
 # const
 
 count = 0
-limit = 50
+limit = 20
 
 # skill
 
@@ -96,17 +96,17 @@ limit = 50
 
   回收利用()
 
-  # 模范制作III()
-  # count++
+  模范制作III()
+  count++
 
-  await $.sleep 500
+  # await $.sleep 500
 
-  if hasStatus '再利用'
-    模范制作III()
-    count++
-  else
-    坯料加工()
-    坯料加工()
+  # if hasStatus '再利用'
+  #   模范制作III()
+  #   count++
+  # else
+  #   坯料加工()
+  #   坯料加工()
 
   await $.sleep 2e3
 
@@ -171,7 +171,7 @@ limit = 50
 
 hasStatus = (name) ->
 
-  [x, y] = $.find "#{name}.png", 725, 840, 925, 875
+  [x, y] = $.findImage "#{name}.png", 725, 840, 925, 875
   
   if x > 0 and y > 0
     return true

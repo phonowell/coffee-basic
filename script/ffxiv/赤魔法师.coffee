@@ -94,7 +94,7 @@ getGroup = ->
 
 hasStatus = (name) ->
 
-  [x, y] = $.find "#{name}.png", 725, 840, 925, 875
+  [x, y] = $.findImage "#{name}.png", 725, 840, 925, 875
   
   if x > 0 and y > 0
     return true
@@ -225,7 +225,7 @@ attackSingle = ->
   摇荡()
 
 getBlack = ->
-  [x, y] = $.find '#56463c', 1027, 810, 1166, 810
+  [x, y] = $.findColor '#56463c', 1027, 810, 1166, 810
   
   unless x
     return 100
@@ -235,7 +235,7 @@ getBlack = ->
   return percent - 1
 
 getWhite = ->
-  [x, y] = $.find '#2e1e14', 1027, 801, 1166, 801
+  [x, y] = $.findColor '#2e1e14', 1027, 801, 1166, 801
   
   unless x
     return 100

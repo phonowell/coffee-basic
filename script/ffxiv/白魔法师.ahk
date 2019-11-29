@@ -51,10 +51,6 @@ global isViewFar := false
 
 复活() {
   即刻咏唱()
-  if !(hasStatus("即刻咏唱")) {
-    SoundBeep
-    return false
-  }
   无中生有()
   Send {alt down}{5}{alt up}
   return true
@@ -275,6 +271,7 @@ return
     法令()
     神速咏唱()
     无中生有()
+    即刻咏唱()
     神圣()
     return
   }
@@ -287,9 +284,9 @@ return
   }
   if (group == "right") {
     醒梦()
-    安慰之心()
-    法令()
     神名()
+    法令()
+    安慰之心()
     神速咏唱()
     再生()
     救疗()

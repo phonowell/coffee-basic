@@ -1,6 +1,6 @@
 # built-in/$.find
 
-[x, y] = $.find '#fff'
-[x, y] = $.find 'white.png'
-[x, y] = $.find color
-[x, y] = $.find "#{path}.png"
+[x, y] = $.findColor '#fff'
+[x, y] = $.findImage 'white.png'
+[x, y] = $.findColor color
+[x, y] = $.findImage "#{path}.png"

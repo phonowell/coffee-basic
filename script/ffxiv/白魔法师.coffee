@@ -23,9 +23,6 @@ isViewFar = false
 
 复活 = ->
   即刻咏唱()
-  unless hasStatus '即刻咏唱'
-    $.beep()
-    return false
   无中生有()
   $.press 'alt + 5'
   return true
@@ -105,7 +102,7 @@ getGroup = ->
 
 hasStatus = (name) ->
 
-  [x, y] = $.find "#{name}.png", 725, 840, 925, 875
+  [x, y] = $.findImage "#{name}.png", 725, 840, 925, 875
   
   if x > 0 and y > 0
     return true
@@ -113,7 +110,7 @@ hasStatus = (name) ->
 
 hasStatusTarget = (name) ->
 
-  [x, y] = $.find "#{name}.png", 725, 765, 925, 800
+  [x, y] = $.findImage "#{name}.png", 725, 765, 925, 800
   
   if x > 0 and y > 0
     return true
@@ -187,6 +184,7 @@ $.on '2joy4', ->
     法令()
     神速咏唱()
     无中生有()
+    即刻咏唱()
     神圣()
     return
 
@@ -200,11 +198,10 @@ $.on '2joy2', ->
   if group == 'right'
 
     醒梦()
-    安慰之心()
-    法令()
     神名()
+    法令()
+    安慰之心()
     神速咏唱()
-
     再生()
     救疗()
     治疗()
@@ -218,7 +215,6 @@ $.on '2joy2', ->
     全大赦()
     狂喜之心()
     神速咏唱()
-    
     医济()
     医治()
     return

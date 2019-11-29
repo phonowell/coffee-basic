@@ -17,7 +17,8 @@ Rule =
 
   # ---
   
-  '$.find': require '../built-in/$.find'
+  '$.findColor': require '../built-in/$.findColor'
+  '$.findImage': require '../built-in/$.findImage'
   '$.getColor': require '../built-in/$.getColor'
   '$.getPosition': require '../built-in/$.getPosition'
   '$.isPressing': require '../built-in/$.isPressing'

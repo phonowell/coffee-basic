@@ -20,7 +20,7 @@ SetMouseDelay 0, 50
 ; global
 
 global count := 0
-global limit := 50
+global limit := 20
 
 ; function
 
@@ -150,15 +150,8 @@ global limit := 50
   坯料加工()
   坯料加工()
   回收利用()
-  Sleep % "" . 500 . ""
-  if (hasStatus("再利用")) {
-    模范制作III()
-    count++
-  }
-  else {
-    坯料加工()
-    坯料加工()
-  }
+  模范制作III()
+  count++
   Sleep % "" . 2000 . ""
 }
 

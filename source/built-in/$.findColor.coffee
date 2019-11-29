@@ -1,10 +1,8 @@
 _ = require 'lodash'
 
-unquote = require '../fn/unquote'
-
 # function
 
-transColor = (string) ->
+format = (string) ->
 
   if string.includes '0x'
     return string
@@ -28,18 +26,17 @@ module.exports = ({argument, output}) ->
   .replace /\s/g, ''
   .split ','
 
-  # arg
+  # argument
   [target, x1, y1, x2, y2] = argument
   x1 or= 0
   y1 or= 0
   x2 or= 'A_ScreenWidth'
   y2 or= 'A_ScreenHeight'
 
-  [method, target] = if ~target.search /#\w/
-    ['PixelSearch', "#{transColor target}, 0, Fast RGB"]
-  else ['ImageSearch', "% A_ScriptDir . \"\\\" . #{target}"]
+  if target.startsWith '"#'
+    target = format target
 
   # return
-  "#{method} #{oX}, #{oY},
+  "PixelSearch #{oX}, #{oY},
   #{x1}, #{y1}, #{x2}, #{y2},
-  #{target}"
+  #{target}, 0, Fast RGB"
