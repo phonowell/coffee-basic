@@ -1,21 +1,23 @@
 # use admin
 
-# const
-
-isViewFar = false
-
 # skill
 
 飞石 = -> $.press 'alt + 1'
 治疗 = -> $.press 'alt + 2'
 
 疾风 = ->
+  
+  if isMoving()
+    $.press 'alt + 3'
+    return true
+  
   if hasStatusTarget '天辉'
     return false
   if hasStatusTarget '烈风'
     return false
   if hasStatusTarget '疾风'
     return false
+  
   $.press 'alt + 3'
   return true
 
@@ -116,6 +118,23 @@ hasStatusTarget = (name) ->
     return true
   return false
 
+isMoving = ->
+
+  dis = $.getState '2-joy-x'
+  if dis < 40
+    return true
+  if dis > 60
+    return true
+
+  dis = $.getState '2-joy-y'
+  if dis < 40
+    return true
+  if dis > 60
+    return true
+
+  return false
+
+isViewFar = false
 toggleView = ->
 
   if isViewFar == false
@@ -142,7 +161,7 @@ $.on 'f12', ->
   $.beep()
   $.exit()
 
-$.on 'f9', ->
+$.on 'f8', ->
   [x, y] = $.getPosition()
   # x = 265
   # y = 40
@@ -154,7 +173,7 @@ $.on 'f2', ->
 
 # ---
 
-$.on '2joy4', ->
+$.on '2-joy-4', ->
 
   group = getGroup()
   if group == 'none'
@@ -188,7 +207,7 @@ $.on '2joy4', ->
     神圣()
     return
 
-$.on '2joy2', ->
+$.on '2-joy-2', ->
 
   group = getGroup()
   if group == 'none'
@@ -219,7 +238,7 @@ $.on '2joy2', ->
     医治()
     return
 
-$.on '2joy1', ->
+$.on '2-joy-1', ->
 
   group = getGroup()
   if group == 'none'
@@ -240,7 +259,7 @@ $.on '2joy1', ->
     复活()
     return
   
-$.on '2joy3', ->
+$.on '2-joy-3', ->
 
   group = getGroup()
   if group == 'none'

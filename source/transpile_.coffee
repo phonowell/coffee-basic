@@ -4,7 +4,7 @@ $ = require 'fire-keeper'
 
 class Content
 
-  constructor: (@raw) ->
+  constructor: (@raw, @option) ->
     
     @bind = []
     @foot = []
@@ -42,6 +42,7 @@ class Content
   getFunction: require './module/getFunction'
   getGlobal: require './module/getGlobal'
   getMode: require './module/getMode'
+  include_: require './module/include_'
   render: require './module/render'
   replaceFor: require './module/replaceFor'
   replaceIf: require './module/replaceIf'
@@ -53,11 +54,12 @@ class Content
 
   # ---
 
-  execute: (option) ->
+  execute: ->
 
     unless @validate()
       return ''
-
+    
+    await @include_()
     @getMode()
     @format()
 
@@ -66,7 +68,7 @@ class Content
     @getBind()
 
     @setMain()
-    unless option.bare
+    unless @option.bare
       @setHead()
       @setFoot()
 
@@ -81,4 +83,4 @@ class Content
     
 # return
 module.exports = (source, option = {}) ->
-  (new Content source).execute option
+  (new Content source, option).execute()

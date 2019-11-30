@@ -3,7 +3,7 @@ $ = require 'fire-keeper'
 # return
 module.exports = ->
 
-  path = 'alpha'
+  path = 'ffxiv/赤魔法师/赤魔法师'
 
   await $.remove_ "./script/#{path}.ahk"
   

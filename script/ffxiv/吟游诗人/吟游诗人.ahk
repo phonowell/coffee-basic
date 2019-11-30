@@ -23,145 +23,143 @@ global isViewFar := false
 
 ; function
 
-飞石() {
+强力射击() {
   Send {alt down}{1}{alt up}
 }
 
-治疗() {
+直线射击() {
+  if !(hasStatus("直线射击预备")) {
+    return false
+  }
   Send {alt down}{2}{alt up}
+  return true
 }
 
-疾风() {
-  if (hasStatusTarget("天辉")) {
-    return false
-  }
-  if (hasStatusTarget("烈风")) {
-    return false
-  }
-  if (hasStatusTarget("疾风")) {
+猛者强击() {
+  if (hasStatus("猛者强击")) {
     return false
   }
   Send {alt down}{3}{alt up}
   return true
 }
 
-医治() {
+毒咬箭() {
+  if (hasStatusTarget("毒咬箭")) {
+    return false
+  }
   Send {alt down}{4}{alt up}
-}
-
-复活() {
-  即刻咏唱()
-  无中生有()
-  Send {alt down}{5}{alt up}
   return true
 }
 
-水流环() {
+失血箭() {
+  Send {alt down}{5}{alt up}
+}
+
+后跃射击() {
   Send {alt down}{6}{alt up}
 }
 
-救疗() {
+连珠箭() {
   Send {alt down}{7}{alt up}
 }
 
-医济() {
-  if (hasStatus("医济")) {
+风蚀箭() {
+  if (hasStatusTarget("风蚀箭")) {
     return false
   }
   Send {alt down}{8}{alt up}
   return true
 }
 
-神速咏唱() {
+纷乱箭() {
+  if !(hasStatus("猛者强击")) {
+    return false
+  }
   Send {alt down}{9}{alt up}
+  return true
 }
 
-再生() {
-  if (hasStatusTarget("再生")) {
+贤者的叙事谣() {
+  if !(hasStatus("猛者强击")) {
     return false
   }
   Send {alt down}{0}{alt up}
   return true
 }
 
-愈疗() {
+光阴神的礼赞凯歌() {
   Send {alt down}{-}{alt up}
 }
 
-神圣() {
+军神的赞美歌() {
   Send {alt down}{=}{alt up}
 }
 
-天赐祝福() {
+死亡箭雨() {
   Send {ctrl down}{1}{ctrl up}
 }
 
-安慰之心() {
+战斗之声() {
   Send {ctrl down}{2}{ctrl up}
 }
 
-庇护所() {
+放浪神的小步舞曲() {
   Send {ctrl down}{3}{ctrl up}
 }
 
-法令() {
+完美音调() {
   Send {ctrl down}{4}{ctrl up}
 }
 
-无中生有() {
+九天连箭() {
   Send {ctrl down}{5}{ctrl up}
 }
 
-神名() {
+伶牙俐齿() {
   Send {ctrl down}{6}{ctrl up}
 }
 
-神祝祷() {
+侧风诱导箭() {
   Send {ctrl down}{7}{ctrl up}
 }
 
-全大赦() {
+行吟() {
   Send {ctrl down}{8}{ctrl up}
 }
 
-苦难之心() {
+大地神的抒情恋歌() {
   Send {ctrl down}{9}{ctrl up}
 }
 
-狂喜之心() {
+影噬箭() {
   Send {ctrl down}{0}{ctrl up}
 }
 
-节制() {
+绝峰箭() {
   Send {ctrl down}{-}{ctrl up}
 }
 
-沉静() {
+伤腿() {
   Send {ctrl down}{=}{ctrl up}
 }
 
-康复() {
+内丹() {
   Send {shift down}{1}{shift up}
 }
 
-即刻咏唱() {
+伤足() {
   Send {shift down}{2}{shift up}
 }
 
-醒梦() {
-  PixelGetColor color, 260, 35, RGB
-  if !(color == 0x56463C) {
-    return false
-  }
+速行() {
   Send {shift down}{3}{shift up}
-  return true
 }
 
-沉稳咏唱() {
+伤头() {
   Send {shift down}{4}{shift up}
 }
 
-营救() {
+亲疏自行() {
   Send {shift down}{5}{shift up}
 }
 
@@ -214,6 +212,24 @@ hasStatusTarget(name) {
   return false
 }
 
+isMoving() {
+  GetKeyState dis, 2joyx
+  if (dis < 40) {
+    return true
+  }
+  if (dis > 60) {
+    return true
+  }
+  GetKeyState dis, 2joyy
+  if (dis < 40) {
+    return true
+  }
+  if (dis > 60) {
+    return true
+  }
+  return false
+}
+
 toggleView() {
   if (isViewFar == false) {
     Send {ctrl down}{up down}{pgdn down}
@@ -230,6 +246,13 @@ toggleView() {
   SoundBeep
 }
 
+能力技() {
+  猛者强击()
+  纷乱箭()
+  贤者的叙事谣()
+  失血箭()
+}
+
 ; bind
 
 f12::
@@ -237,7 +260,7 @@ f12::
   ExitApp
 return
 
-f9::
+f8::
   MouseGetPos x, y
   PixelGetColor color, x, y, RGB
   ToolTip % "" . x . ", " . y . ", " . color . ""
@@ -254,88 +277,17 @@ return
   }
   if (group == "right") {
     索敌()
-    醒梦()
-    苦难之心()
-    法令()
-    神速咏唱()
-    if (疾风()) {
-      return
-    }
-    飞石()
+    直线射击()
+    毒咬箭()
+    风蚀箭()
+    强力射击()
+    delay("能力技", 300, 2)
     return
   }
   if (group == "both") {
     索敌()
-    醒梦()
-    苦难之心()
-    法令()
-    神速咏唱()
-    无中生有()
-    即刻咏唱()
-    神圣()
-    return
-  }
-return
-
-2joy2::
-  group := getGroup()
-  if (group == "none") {
-    return
-  }
-  if (group == "right") {
-    醒梦()
-    神名()
-    法令()
-    安慰之心()
-    神速咏唱()
-    再生()
-    救疗()
-    治疗()
-    return
-  }
-  if (group == "both") {
-    醒梦()
-    法令()
-    全大赦()
-    狂喜之心()
-    神速咏唱()
-    医济()
-    医治()
-    return
-  }
-return
-
-2joy1::
-  group := getGroup()
-  if (group == "none") {
-    return
-  }
-  if (group == "right") {
-    神祝祷()
-    return
-  }
-  if (group == "both") {
-    康复()
-    return
-  }
-  if (group == "left") {
-    复活()
-    return
-  }
-return
-
-2joy3::
-  group := getGroup()
-  if (group == "none") {
-    return
-  }
-  if (group == "right") {
-    庇护所()
-    return
-  }
-  if (group == "both") {
-    无中生有()
-    愈疗()
+    连珠箭()
+    delay("能力技", 300, 2)
     return
   }
 return

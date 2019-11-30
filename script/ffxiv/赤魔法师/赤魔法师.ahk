@@ -1,22 +1,4 @@
-﻿; transpiled by coffee-basic
-
-if (A_IsAdmin != true) {
-  Run *RunAs "%A_ScriptFullPath%"
-  ExitApp
-}
-
-#NoEnv
-#Persistent
-#SingleInstance Force
-#UseHook
-
-CoordMode Mouse, Client
-CoordMode Pixel, Client
-CoordMode ToolTip, Client
-SendMode Event
-SetKeyDelay 0, 50
-SetMouseDelay 0, 50
-
+﻿
 ; global
 
 global isViewFar := false
@@ -375,7 +357,7 @@ toggleView() {
 
 魔三连() {
   if (hasStatus("连续咏唱")) {
-    SoundBeep
+    攻击()
     return
   }
   索敌()
@@ -404,6 +386,44 @@ toggleView() {
     赤疾风()
   }
   delay("能力技")
+}
+
+攻击() {
+  group := getGroup()
+  if (group == "right") {
+    单体攻击()
+    return
+  }
+  if (group == "both") {
+    群体攻击()
+    return
+  }
+}
+
+特殊攻击() {
+  group := getGroup()
+  if (group == "right") {
+    魔三连()
+    return
+  }
+  if (group == "both") {
+    if (getWhite() < 20) {
+      SoundBeep
+      return
+    }
+    if (getBlack() < 20) {
+      SoundBeep
+      return
+    }
+    if (hasStatus("连续咏唱")) {
+      SoundBeep
+      return
+    }
+    索敌()
+    划圆斩()
+    delay("能力技")
+    return
+  }
 }
 
 ; bind
@@ -437,40 +457,26 @@ f2::
 return
 
 2joy4::
-  group := getGroup()
-  if (group == "right") {
-    单体攻击()
-    return
-  }
-  if (group == "both") {
-    群体攻击()
-    return
+  loop {
+    GetKeyState __value__, 2joy4
+    isPressing := __value__ == "D"
+    if !(isPressing) {
+      break
+    }
+    攻击()
+    Sleep % "" . 300 . ""
   }
 return
 
 2joy2::
-  group := getGroup()
-  if (group == "right") {
-    魔三连()
-    return
-  }
-  if (group == "both") {
-    if (getWhite() < 20) {
-      SoundBeep
-      return
+  loop {
+    GetKeyState __value__, 2joy2
+    isPressing := __value__ == "D"
+    if !(isPressing) {
+      break
     }
-    if (getBlack() < 20) {
-      SoundBeep
-      return
-    }
-    if (hasStatus("连续咏唱")) {
-      SoundBeep
-      return
-    }
-    索敌()
-    划圆斩()
-    delay("能力技")
-    return
+    特殊攻击()
+    Sleep % "" . 300 . ""
   }
 return
 
@@ -500,5 +506,3 @@ return
     return
   }
 return
-
-; eof

@@ -6,7 +6,7 @@ iconv = require 'iconv-lite'
 class Parser
 
   read_: require './read_'
-  transpile: require './transpile'
+  transpile_: require './transpile_'
   write_: require './write_'
 
   # ---
@@ -14,7 +14,8 @@ class Parser
   execute_: (path, option) ->
 
     source = await @read_ path
-    cont = @transpile source, option
+    Object.assign option, {path}
+    cont = await @transpile_ source, option
     await @write_ path, iconv.encode cont, 'utf8',
       addBOM: true
 
