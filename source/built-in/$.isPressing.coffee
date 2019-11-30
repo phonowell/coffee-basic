@@ -1,3 +1,5 @@
+formatKey = require '../fn/formatKey'
+
 # return
 module.exports = ({argument, output}) ->
   
@@ -6,6 +8,6 @@ module.exports = ({argument, output}) ->
 
   # return
   [
-    "GetKeyState __value__, #{key}"
+    "GetKeyState __value__, #{formatKey key}"
     "#{output} = __value__ == \"D\""
   ]

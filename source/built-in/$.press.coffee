@@ -1,20 +1,6 @@
+formatKey = require '../fn/formatKey'
+
 # function
-
-format = (line) ->
-
-  line
-  .toLowerCase()
-  .replace /['"]/g, ''
-  # ---
-  .replace /equal/g, '='
-  .replace /minus/g, '-'
-  .replace /num-/g, 'numpad'
-  .replace /numpad-/g, 'numpad'
-  .replace /page-?down/g, 'pgdn'
-  .replace /page-?up/g, 'pgup'
-  .replace /plus/g, '+'
-  # --
-  .replace /:/g, ' '
 
 # return
 module.exports = ({argument}) ->
@@ -33,14 +19,14 @@ module.exports = ({argument}) ->
 
       if i < max
         listPre.push key
-        listResult.push format "#{key}:down"
+        listResult.push formatKey "#{key}:down"
         continue
 
-      listResult.push format key
+      listResult.push formatKey key
 
     listPre.reverse()
     for key in listPre
-      listResult.push format "#{key}:up"
+      listResult.push formatKey "#{key}:up"
 
   # return
   "Send {#{listResult.join '}{'}}"

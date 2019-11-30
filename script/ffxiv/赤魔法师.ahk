@@ -259,6 +259,10 @@ attackCombo() {
 
 attackMulti() {
   索敌()
+  if (isMoving()) {
+    续斩()
+    return
+  }
   white := getWhite()
   black := getBlack()
   if (white > 90 or black > 90) {
@@ -279,6 +283,10 @@ attackMulti() {
 
 attackSingle() {
   索敌()
+  if (isMoving()) {
+    续斩()
+    return
+  }
   white := getWhite()
   black := getBlack()
   total := white + black
@@ -346,6 +354,24 @@ getWhite() {
   return percent - 1
 }
 
+isMoving() {
+  GetKeyState dis, 2joyx
+  if (dis < 40) {
+    return true
+  }
+  if (dis > 60) {
+    return true
+  }
+  GetKeyState dis, 2joyy
+  if (dis < 40) {
+    return true
+  }
+  if (dis > 60) {
+    return true
+  }
+  return false
+}
+
 ; bind
 
 f12::
@@ -353,19 +379,19 @@ f12::
   ExitApp
 return
 
-f9::
+f6::
   MouseGetPos x, y
   PixelGetColor color, x, y, RGB
   ToolTip % "" . x . ", " . y . ", " . color . ""
 return
 
-f10::
+f7::
   white := getWhite()
   black := getBlack()
   ToolTip % "" . white . " / " . black . ""
 return
 
-f11::
+f8::
   x := 1100
   y := 935
   PixelGetColor color, x, y, RGB

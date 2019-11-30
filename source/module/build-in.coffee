@@ -1,5 +1,7 @@
 _ = require 'lodash'
 
+formatKey = require '../fn/formatKey'
+
 # const
 
 Rule =
@@ -36,6 +38,9 @@ Rule =
     unless argument[0]
       'Click'
     else "Click % #{argument[0].replace /:/g, ' '}"
+
+  '$.getState': ({argument, output}) ->
+    "GetKeyState #{output}, #{formatKey argument[0]}"
 
   '$.move': ({argument}) ->
     "MouseMove #{argument[0] or 0}, #{argument[1] or 0}, #{argument[2] or 0}"

@@ -160,6 +160,11 @@ attackMulti = ->
 
   索敌()
 
+  if isMoving()
+    续斩()
+    delay '能力技'
+    return
+
   white = getWhite()
   black = getBlack()
 
@@ -179,6 +184,11 @@ attackMulti = ->
 attackSingle = ->
   
   索敌()
+
+  if isMoving()
+    续斩()
+    delay '能力技'
+    return
 
   white = getWhite()
   black = getBlack()
@@ -244,23 +254,39 @@ getWhite = ->
   percent = Math.round percent
   return percent - 1
 
+isMoving = ->
+
+  dis = $.getState '2-joy-x'
+  if dis < 40
+    return true
+  if dis > 60
+    return true
+
+  dis = $.getState '2-joy-y'
+  if dis < 40
+    return true
+  if dis > 60
+    return true
+
+  return false
+
 # bind
 
 $.on 'f12', ->
   $.beep()
   $.exit()
 
-$.on 'f9', ->
+$.on 'f6', ->
   [x, y] = $.getPosition()
   color = $.getColor x, y
   $.tip "#{x}, #{y}, #{color}"
 
-$.on 'f10', ->
+$.on 'f7', ->
   white = getWhite()
   black = getBlack()
   $.tip "#{white} / #{black}"
 
-$.on 'f11', ->
+$.on 'f8', ->
   x = 1100
   y = 935
   color = $.getColor x, y
@@ -271,7 +297,7 @@ $.on 'f2', ->
 
 # ---
 
-$.on '2joy4', ->
+$.on '2-joy-4', ->
 
   group = getGroup()
 
@@ -285,7 +311,7 @@ $.on '2joy4', ->
     attackMulti()
     return
 
-$.on '2joy2', ->
+$.on '2-joy-2', ->
 
   group = getGroup()
 
@@ -311,7 +337,7 @@ $.on '2joy2', ->
     delay '能力技'
     return
 
-$.on '2joy1', ->
+$.on '2-joy-1', ->
 
   group = getGroup()
 
@@ -326,7 +352,7 @@ $.on '2joy1', ->
     delay '能力技'
     return
 
-$.on '2joy3', ->
+$.on '2-joy-3', ->
 
   group = getGroup()
 
