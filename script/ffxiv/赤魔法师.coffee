@@ -1,9 +1,5 @@
 # use admin
 
-# const
-
-isViewFar = false
-
 # skill
 
 回刺 = -> $.press 'alt + 1'
@@ -73,6 +69,16 @@ delay = (name, time = 300, n = 1) ->
     $.clearTimeout name
     $.setTimeout name, time
 
+getBlack = ->
+  [x, y] = $.findColor '#56463c', 1027, 810, 1166, 810
+  
+  unless x
+    return 100
+  
+  percent = (x - 1023) * 100 / (1170 - 1023)
+  percent = Math.round percent
+  return percent - 1
+
 getGroup = ->
 
   isLT = false
@@ -92,6 +98,16 @@ getGroup = ->
 
   return 'none'
 
+getWhite = ->
+  [x, y] = $.findColor '#2e1e14', 1027, 801, 1166, 801
+  
+  unless x
+    return 100
+  
+  percent = (x - 1023) * 100 / (1170 - 1023)
+  percent = Math.round percent
+  return percent - 1
+
 hasStatus = (name) ->
 
   [x, y] = $.findImage "#{name}.png", 725, 840, 925, 875
@@ -100,6 +116,23 @@ hasStatus = (name) ->
     return true
   return false
 
+isMoving = ->
+
+  dis = $.getState '2-joy-x'
+  if dis < 40
+    return true
+  if dis > 60
+    return true
+
+  dis = $.getState '2-joy-y'
+  if dis < 40
+    return true
+  if dis > 60
+    return true
+
+  return false
+
+isViewFar = false
 toggleView = ->
 
   if isViewFar == false
@@ -122,7 +155,116 @@ toggleView = ->
 
 # ---
 
-attackCombo = ->
+魔元报警 = (black, white) ->
+  total = white + black
+  if total > 170 and total < 200
+    $.beep()
+
+施放赤飞石 = (black, white, isBR, isWR) ->
+
+  if black - white > 21
+    赤飞石()
+    return true
+
+  if white - black > 21
+    赤火炎()
+    return true
+
+  if isWR and isBR
+    if white >= black
+      赤火炎()
+    else
+      赤飞石()
+    return true
+
+  if isWR
+    赤飞石()
+    return true
+
+  if isBR
+    赤火炎()
+    return true
+
+  return false
+
+施放赤疾风 = (black, white, isBR, isWR) ->
+
+  unless hasStatus '连续咏唱'
+    return false
+
+  if black - white > 19
+    赤疾风()
+    return true
+
+  if white - black > 19
+    赤闪雷()
+    return true
+  
+  if isWR
+    赤闪雷()
+    return true
+  
+  if isBR
+    赤疾风()
+    return true
+
+  if white >= black
+    赤闪雷()
+  else
+    赤疾风()
+
+  return true
+
+单体攻击 = ->
+  
+  索敌()
+
+  black = getBlack()
+  white = getWhite()
+  魔元报警 black, white
+
+  isWR = hasStatus '赤飞石预备'
+  isBR = hasStatus '赤火炎预备'
+
+  if 施放赤疾风 black, white, isBR, isWR
+    delay '促进'
+    delay '能力技'
+    return
+
+  if isMoving()
+    续斩()
+    delay '能力技'
+    return
+
+  if 施放赤飞石 black, white, isBR, isWR
+    return
+  
+  摇荡()
+
+群体攻击 = ->
+
+  索敌()
+
+  black = getBlack()
+  white = getWhite()
+  魔元报警 black, white
+
+  if hasStatus '连续咏唱'
+    散碎()
+    delay '能力技'
+    return
+
+  if isMoving()
+    续斩()
+    delay '能力技'
+    return
+
+  if white >= black
+    赤震雷()
+  else
+    赤烈风()
+
+魔三连 = ->
 
   if hasStatus '连续咏唱'
     $.beep()
@@ -155,120 +297,6 @@ attackCombo = ->
     赤疾风()
     
   delay '能力技'
-
-attackMulti = ->
-
-  索敌()
-
-  if isMoving()
-    续斩()
-    delay '能力技'
-    return
-
-  white = getWhite()
-  black = getBlack()
-
-  if white > 90 or black > 90
-    $.beep()
-
-  if hasStatus '连续咏唱'
-    散碎()
-    delay '能力技'
-    return
-
-  if white >= black
-    赤震雷()
-  else
-    赤烈风()
-
-attackSingle = ->
-  
-  索敌()
-
-  if isMoving()
-    续斩()
-    delay '能力技'
-    return
-
-  white = getWhite()
-  black = getBlack()
-
-  # $.tip "#{white} / #{black}"
-  total = white + black
-  if total > 170 and total < 200
-    $.beep()
-
-  isW = hasStatus '赤飞石预备'
-  isB = hasStatus '赤火炎预备'
-
-  if hasStatus '连续咏唱'
-
-    if isW
-      赤闪雷()
-    else if isB
-      赤疾风()
-    else
-      if white >= black
-        赤闪雷()
-      else
-        赤疾风()
-
-    delay '促进'
-    delay '能力技'
-    return
-
-  if isW and isB
-    if white >= black
-      赤火炎()
-    else
-      赤飞石()
-    return
-
-  if isW
-    赤飞石()
-    return
-
-  if isB
-    赤火炎()
-    return
-  
-  摇荡()
-
-getBlack = ->
-  [x, y] = $.findColor '#56463c', 1027, 810, 1166, 810
-  
-  unless x
-    return 100
-  
-  percent = (x - 1023) * 100 / (1170 - 1023)
-  percent = Math.round percent
-  return percent - 1
-
-getWhite = ->
-  [x, y] = $.findColor '#2e1e14', 1027, 801, 1166, 801
-  
-  unless x
-    return 100
-  
-  percent = (x - 1023) * 100 / (1170 - 1023)
-  percent = Math.round percent
-  return percent - 1
-
-isMoving = ->
-
-  dis = $.getState '2-joy-x'
-  if dis < 40
-    return true
-  if dis > 60
-    return true
-
-  dis = $.getState '2-joy-y'
-  if dis < 40
-    return true
-  if dis > 60
-    return true
-
-  return false
 
 # bind
 
@@ -303,12 +331,12 @@ $.on '2-joy-4', ->
 
   # 单体攻击
   if group == 'right'
-    attackSingle()
+    单体攻击()
     return
 
   # 群体攻击
   if group == 'both'
-    attackMulti()
+    群体攻击()
     return
 
 $.on '2-joy-2', ->
@@ -316,7 +344,7 @@ $.on '2-joy-2', ->
   group = getGroup()
 
   if group == 'right'
-    attackCombo()
+    魔三连()
     return
 
   if group == 'both'

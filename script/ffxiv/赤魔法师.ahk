@@ -181,6 +181,16 @@ delay(name, time := 300, n := 1) {
   }
 }
 
+getBlack() {
+  PixelSearch x, y, 1027, 810, 1166, 810, 0x56463C, 0, Fast RGB
+  if !(x) {
+    return 100
+  }
+  percent := (x - 1023) * 100 / (1170 - 1023)
+  percent := Round(percent)
+  return percent - 1
+}
+
 getGroup() {
   isLT := false
   isRT := false
@@ -200,9 +210,37 @@ getGroup() {
   return "none"
 }
 
+getWhite() {
+  PixelSearch x, y, 1027, 801, 1166, 801, 0x2E1E14, 0, Fast RGB
+  if !(x) {
+    return 100
+  }
+  percent := (x - 1023) * 100 / (1170 - 1023)
+  percent := Round(percent)
+  return percent - 1
+}
+
 hasStatus(name) {
   ImageSearch x, y, 725, 840, 925, 875, % A_ScriptDir . "\" . name . ".png"
   if (x > 0 and y > 0) {
+    return true
+  }
+  return false
+}
+
+isMoving() {
+  GetKeyState dis, 2joyx
+  if (dis < 40) {
+    return true
+  }
+  if (dis > 60) {
+    return true
+  }
+  GetKeyState dis, 2joyy
+  if (dis < 40) {
+    return true
+  }
+  if (dis > 60) {
     return true
   }
   return false
@@ -224,7 +262,118 @@ toggleView() {
   SoundBeep
 }
 
-attackCombo() {
+魔元报警(black, white) {
+  total := white + black
+  if (total > 170 and total < 200) {
+    SoundBeep
+  }
+}
+
+施放赤飞石(black, white, isBR, isWR) {
+  if (black - white > 21) {
+    赤飞石()
+    return true
+  }
+  if (white - black > 21) {
+    赤火炎()
+    return true
+  }
+  if (isWR and isBR) {
+    if (white >= black) {
+      赤火炎()
+    }
+    else {
+      赤飞石()
+    }
+    return true
+  }
+  if (isWR) {
+    赤飞石()
+    return true
+  }
+  if (isBR) {
+    赤火炎()
+    return true
+  }
+  return false
+}
+
+施放赤疾风(black, white, isBR, isWR) {
+  if !(hasStatus("连续咏唱")) {
+    return false
+  }
+  if (black - white > 19) {
+    赤疾风()
+    return true
+  }
+  if (white - black > 19) {
+    赤闪雷()
+    return true
+  }
+  if (isWR) {
+    赤闪雷()
+    return true
+  }
+  if (isBR) {
+    赤疾风()
+    return true
+  }
+  if (white >= black) {
+    赤闪雷()
+  }
+  else {
+    赤疾风()
+  }
+  return true
+}
+
+单体攻击() {
+  索敌()
+  black := getBlack()
+  white := getWhite()
+  魔元报警(black, white)
+  isWR := hasStatus("赤飞石预备")
+  isBR := hasStatus("赤火炎预备")
+  if (施放赤疾风(black, white, isBR, isWR)) {
+    delay("促进")
+    delay("能力技")
+    return
+  }
+  if (isMoving()) {
+    续斩()
+    delay("能力技")
+    return
+  }
+  if (施放赤飞石(black, white, isBR, isWR)) {
+    return
+  }
+  摇荡()
+}
+
+群体攻击() {
+  索敌()
+  black := getBlack()
+  white := getWhite()
+  魔元报警(black, white)
+  if (hasStatus("连续咏唱")) {
+    散碎()
+    delay("能力技")
+    return
+  }
+  if (isMoving()) {
+    续斩()
+    delay("能力技")
+    return
+  }
+  if (white >= black) {
+    赤震雷()
+  }
+  else {
+    赤烈风()
+  }
+}
+
+魔三连() {
   if (hasStatus("连续咏唱")) {
     SoundBeep
     return
@@ -255,121 +404,6 @@ attackCombo() {
     赤疾风()
   }
   delay("能力技")
-}
-
-attackMulti() {
-  索敌()
-  if (isMoving()) {
-    续斩()
-    return
-  }
-  white := getWhite()
-  black := getBlack()
-  if (white > 90 or black > 90) {
-    SoundBeep
-  }
-  if (hasStatus("连续咏唱")) {
-    散碎()
-    delay("能力技")
-    return
-  }
-  if (white >= black) {
-    赤震雷()
-  }
-  else {
-    赤烈风()
-  }
-}
-
-attackSingle() {
-  索敌()
-  if (isMoving()) {
-    续斩()
-    return
-  }
-  white := getWhite()
-  black := getBlack()
-  total := white + black
-  if (total > 170 and total < 200) {
-    SoundBeep
-  }
-  isW := hasStatus("赤飞石预备")
-  isB := hasStatus("赤火炎预备")
-  if (hasStatus("连续咏唱")) {
-    if (isW) {
-      赤闪雷()
-    }
-    else if (isB) {
-      赤疾风()
-    }
-    else {
-      if (white >= black) {
-        赤闪雷()
-      }
-      else {
-        赤疾风()
-      }
-    }
-    delay("促进")
-    delay("能力技")
-    return
-  }
-  if (isW and isB) {
-    if (white >= black) {
-      赤火炎()
-    }
-    else {
-      赤飞石()
-    }
-    return
-  }
-  if (isW) {
-    赤飞石()
-    return
-  }
-  if (isB) {
-    赤火炎()
-    return
-  }
-  摇荡()
-}
-
-getBlack() {
-  PixelSearch x, y, 1027, 810, 1166, 810, 0x56463C, 0, Fast RGB
-  if !(x) {
-    return 100
-  }
-  percent := (x - 1023) * 100 / (1170 - 1023)
-  percent := Round(percent)
-  return percent - 1
-}
-
-getWhite() {
-  PixelSearch x, y, 1027, 801, 1166, 801, 0x2E1E14, 0, Fast RGB
-  if !(x) {
-    return 100
-  }
-  percent := (x - 1023) * 100 / (1170 - 1023)
-  percent := Round(percent)
-  return percent - 1
-}
-
-isMoving() {
-  GetKeyState dis, 2joyx
-  if (dis < 40) {
-    return true
-  }
-  if (dis > 60) {
-    return true
-  }
-  GetKeyState dis, 2joyy
-  if (dis < 40) {
-    return true
-  }
-  if (dis > 60) {
-    return true
-  }
-  return false
 }
 
 ; bind
@@ -405,11 +439,11 @@ return
 2joy4::
   group := getGroup()
   if (group == "right") {
-    attackSingle()
+    单体攻击()
     return
   }
   if (group == "both") {
-    attackMulti()
+    群体攻击()
     return
   }
 return
@@ -417,7 +451,7 @@ return
 2joy2::
   group := getGroup()
   if (group == "right") {
-    attackCombo()
+    魔三连()
     return
   }
   if (group == "both") {
