@@ -1,3 +1,6 @@
+getDepth = require '../fn/getDepth'
+setDepth = require '../fn/setDepth'
+
 # function
 
 format = (line) ->
@@ -10,7 +13,7 @@ format = (line) ->
   unless validate line
     return line
 
-  depth = @getDepth line
+  depth = getDepth line
   line = line.trim()
 
   # if/unless/else if
@@ -66,7 +69,7 @@ format = (line) ->
   else if isElseIf
     result = "else if (#{result}) {"
 
-  "#{@setDepth depth}#{result}" # return
+  "#{setDepth depth}#{result}" # return
 
 validate = (string) ->
 
@@ -87,7 +90,7 @@ validate = (string) ->
 module.exports = ->
 
   for line, i in @global
-    @global[i] = format.call @, line
+    @global[i] = format line
 
   for block in [@function..., @bind...]
-    block.content = (format.call @, line for line in block.content)
+    block.content = (format line for line in block.content)

@@ -1,4 +1,22 @@
-﻿
+﻿; transpiled by coffee-basic
+
+if (A_IsAdmin != true) {
+  Run *RunAs "%A_ScriptFullPath%"
+  ExitApp
+}
+
+#NoEnv
+#Persistent
+#SingleInstance Force
+#UseHook
+
+CoordMode Mouse, Client
+CoordMode Pixel, Client
+CoordMode ToolTip, Client
+SendMode Event
+SetKeyDelay 0, 50
+SetMouseDelay 0, 50
+
 ; global
 
 global isViewFar := false
@@ -506,3 +524,5 @@ return
     return
   }
 return
+
+; eof

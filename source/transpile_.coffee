@@ -22,13 +22,6 @@ class Content
 
   # ---
 
-  getDepth: require './fn/getDepth'
-  setDepth: require './fn/setDepth'
-  trim: require './fn/trim'
-  unquote: require './fn/unquote'
-
-  # ---
-
   i: (input) ->
     console.log input
     input # return

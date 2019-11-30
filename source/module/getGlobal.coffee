@@ -1,8 +1,10 @@
+getDepth = require '../fn/getDepth'
+
 # function
 
 validate = (line) ->
 
-  if @getDepth line
+  if getDepth line
     return
 
   unless line.includes '='
@@ -27,7 +29,7 @@ module.exports = ->
 
   for line in @main
 
-    unless validate.call @, line
+    unless validate line
       result.push line
       continue
 

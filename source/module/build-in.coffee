@@ -1,6 +1,9 @@
 _ = require 'lodash'
 
 formatKey = require '../fn/formatKey'
+getDepth = require '../fn/getDepth'
+setDepth = require '../fn/setDepth'
+trim = require '../fn/trim'
 
 # const
 
@@ -46,7 +49,7 @@ Rule =
     "MouseMove #{argument[0] or 0}, #{argument[1] or 0}, #{argument[2] or 0}"
   
   '$.open': ({argument}) ->
-    "Run #{@trim argument[0]}"
+    "Run #{trim argument[0]}"
   
   '$.setInterval': ({argument}) ->
     "SetTimer #{wrap.call @, argument[0]}, #{argument[1] or 0}"
@@ -70,7 +73,7 @@ format = (line) ->
   unless line.includes '('
     return line
 
-  unless data = getData.call @, line
+  unless data = getData line
     return line
   {argument, depth, name, output} = data
 
@@ -79,35 +82,35 @@ format = (line) ->
     result = "#{name}(#{argument.join ', '})"
     if output
       result = "#{output} = #{result}"
-    return "#{@setDepth depth}#{result}"
+    return "#{setDepth depth}#{result}"
 
   # string
   if (typeof transformer) == 'string'
-    return formatString.call @, _.assign {transformer}, data
+    return formatString _.assign {transformer}, data
 
   # function
   result = transformer.call @, data
   if (typeof result) == 'string'
-    return "#{@setDepth depth}#{result}"
-  ("#{@setDepth depth}#{line}" for line in result)
+    return "#{setDepth depth}#{result}"
+  ("#{setDepth depth}#{line}" for line in result)
 
 formatString = (data) ->
 
   {argument, depth, output, transformer} = data
 
   if argument.length == 1 and argument[0] == ''
-    return "#{@setDepth depth}#{transformer}"
+    return "#{setDepth depth}#{transformer}"
   
   result = '"#{' + (argument.join '}, #{') + '}"'
   result = "#{transformer} #{result}"
   if output
     result = "#{output} = #{result}"
   
-  return "#{@setDepth depth}#{result}"
+  return "#{setDepth depth}#{result}"
 
 getData = (line) ->
   
-  depth = @getDepth line
+  depth = getDepth line
 
   [name, arg...] = line
   .trim()
