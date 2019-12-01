@@ -17,6 +17,9 @@ module.exports = ({argument, output}) ->
   x2 or= 'A_ScreenWidth'
   y2 or= 'A_ScreenHeight'
 
+  target = target
+  .replace /\//g, '\\'
+
   # return
   "ImageSearch #{oX}, #{oY},
   #{x1}, #{y1}, #{x2}, #{y2},

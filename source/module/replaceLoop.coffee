@@ -12,10 +12,10 @@ execute = (content) ->
 
   for line in content
 
-    n = getDepth line
-    if n <= _.last cache
+    depth = getDepth line
+    if depth <= _.last cache
 
-      m = _.indexOf cache, n
+      m = _.indexOf cache, depth
       (list = cache[m...]).reverse()
 
       for j in list
@@ -24,7 +24,7 @@ execute = (content) ->
         result.push "#{setDepth j}}"
 
     if line.startsWith '$.loop'
-      cache.push n
+      cache.push depth
 
       _line = line
       .replace /\$\.loop\s+([^,]+,\s+)?->/g, (text) ->
@@ -55,7 +55,7 @@ execute = (content) ->
 # return
 module.exports = ->
 
-  unless @raw.includes 'loop'
+  unless @raw.includes '$.loop'
     return
 
   for block in [@function..., @bind...]

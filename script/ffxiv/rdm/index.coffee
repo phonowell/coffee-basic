@@ -1,8 +1,8 @@
 # use admin
-
-# skill
-
-# include 技能
+# include ../common/function
+# include skill
+# include function
+# include binding
 
 能力技 = ->
   索敌()
@@ -12,101 +12,6 @@
   交剑()
   昏乱()
   醒梦()
-
-# function
-
-delay = (name, time = 300, n = 1) ->
-  $.loop n, ->
-    if n != 1
-      await $.sleep time
-    $.clearTimeout name
-    $.setTimeout name, time
-
-getBlack = ->
-  [x, y] = $.findColor '#56463c', 1027, 810, 1166, 810
-  
-  unless x
-    return 100
-  
-  percent = (x - 1023) * 100 / (1170 - 1023)
-  percent = Math.round percent
-  return percent - 1
-
-getGroup = ->
-
-  isLT = false
-  isRT = false
-
-  isLT = $.isPressing '2joy7'
-  isRT = $.isPressing '2joy8'
-
-  if isLT and isRT
-    return 'both'
-
-  if isLT
-    return 'left'
-
-  if isRT
-    return 'right'
-
-  return 'none'
-
-getWhite = ->
-  [x, y] = $.findColor '#2e1e14', 1027, 801, 1166, 801
-  
-  unless x
-    return 100
-  
-  percent = (x - 1023) * 100 / (1170 - 1023)
-  percent = Math.round percent
-  return percent - 1
-
-hasStatus = (name) ->
-
-  [x, y] = $.findImage "#{name}.png", 725, 840, 925, 875
-  
-  if x > 0 and y > 0
-    return true
-  return false
-
-isMoving = ->
-
-  dis = $.getState '2-joy-x'
-  if dis < 40
-    return true
-  if dis > 60
-    return true
-
-  dis = $.getState '2-joy-y'
-  if dis < 40
-    return true
-  if dis > 60
-    return true
-
-  return false
-
-isViewFar = false
-toggleView = ->
-
-  if isViewFar == false
-
-    $.press 'ctrl:down', 'up:down', 'page-down:down'
-    await $.sleep 3e3
-    $.press 'ctrl:up', 'up:up', 'page-down:up'
-
-    isViewFar = true
-
-  else
-
-    $.press 'ctrl:down', 'down:down', 'page-up:down'
-    await $.sleep 3e3
-    $.press 'ctrl:up', 'down:up', 'page-up:up'
-
-    isViewFar = false
-
-  $.beep()
-
-# ---
 
 魔元报警 = (black, white) ->
   total = white + black
@@ -169,6 +74,9 @@ toggleView = ->
   return true
 
 单体攻击 = ->
+
+  if isChanting()
+    return
   
   索敌()
 
@@ -195,6 +103,9 @@ toggleView = ->
   摇荡()
 
 群体攻击 = ->
+
+  if isChanting()
+    return
 
   索敌()
 
@@ -250,33 +161,7 @@ toggleView = ->
     赤疾风()
     
   delay '能力技'
-
-# bind
-
-$.on 'f12', ->
   $.beep()
-  $.exit()
-
-$.on 'f6', ->
-  [x, y] = $.getPosition()
-  color = $.getColor x, y
-  $.tip "#{x}, #{y}, #{color}"
-
-$.on 'f7', ->
-  white = getWhite()
-  black = getBlack()
-  $.tip "#{white} / #{black}"
-
-$.on 'f8', ->
-  x = 1100
-  y = 935
-  color = $.getColor x, y
-  $.tip "#{x}, #{y}, #{color}"
-
-$.on 'f2', ->
-  toggleView()
-
-# ---
 
 攻击 = ->
 
@@ -291,17 +176,6 @@ $.on 'f2', ->
   if group == 'both'
     群体攻击()
     return
-
-$.on '2-joy-4', ->
-  $.loop ->
-
-    isPressing = $.isPressing '2-joy-4'
-    unless isPressing
-      break
-
-    攻击()
-
-    await $.sleep 300
 
 特殊攻击 = ->
 
@@ -321,49 +195,10 @@ $.on '2-joy-4', ->
       return
     
     if hasStatus '连续咏唱'
-      $.beep()
+      攻击()
       return
     
     索敌()
     划圆斩()
-    delay '能力技'
-    return
-
-$.on '2-joy-2', ->
-  $.loop ->
-
-    isPressing = $.isPressing '2-joy-2'
-    unless isPressing
-      break
-
-    特殊攻击()
-
-    await $.sleep 300
-
-$.on '2-joy-1', ->
-
-  group = getGroup()
-
-  if group == 'right'
-    
-    if hasStatus '连续咏唱'
-      $.beep()
-      return
-    
-    索敌()
-    摇荡()
-    delay '能力技'
-    return
-
-$.on '2-joy-3', ->
-
-  group = getGroup()
-
-  if group == 'right'
-    赤治疗()
-    return
-
-  if group == 'both'
-    赤复活()
     delay '能力技'
     return

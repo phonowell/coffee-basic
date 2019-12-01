@@ -13,11 +13,6 @@ class Content
     @head = []
     @mode = []
 
-    @main = @raw
-    .replace /\r/g, ''
-    .replace /\n{2,}/g, '\n'
-    .split '\n'
-
     @ # return
 
   # ---
@@ -49,10 +44,11 @@ class Content
 
   execute: ->
 
+    await @include_()
+
     unless @validate()
       return ''
-    
-    await @include_()
+
     @getMode()
     @format()
 

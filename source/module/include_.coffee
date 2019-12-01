@@ -4,12 +4,14 @@ getDepth = require '../fn/getDepth'
 # return
 module.exports = ->
 
-  unless @raw.includes '# include'
-    return
+  list = @raw
+  .replace /\r/g, ''
+  .replace /\n{2,}/g, '\n'
+  .split '\n'
 
   result = []
 
-  for line in @main
+  for line in list
 
     if getDepth line
       result.push line
@@ -27,8 +29,11 @@ module.exports = ->
     result.push await $.read_ path
 
   # return
-  @main = result
+  
+  @raw = result
   .join '\n'
   .replace /\r/g, ''
   .replace /\n{2,}/g, '\n'
+
+  @main = @raw
   .split '\n'

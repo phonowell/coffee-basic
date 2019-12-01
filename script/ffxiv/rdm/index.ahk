@@ -23,6 +23,82 @@ global isViewFar := false
 
 ; function
 
+delay(name, time := 300, n := 1) {
+  loop %n% {
+    if (n != 1) {
+      Sleep % "" . time . ""
+    }
+    SetTimer %name%, Off
+    SetTimer %name%, % 0 - time
+  }
+}
+
+getGroup() {
+  isLT := false
+  isRT := false
+  GetKeyState __value__, 2joy7
+  isLT := __value__ == "D"
+  GetKeyState __value__, 2joy8
+  isRT := __value__ == "D"
+  if (isLT and isRT) {
+    return "both"
+  }
+  if (isLT) {
+    return "left"
+  }
+  if (isRT) {
+    return "right"
+  }
+  return "none"
+}
+
+hasStatus(name) {
+  ImageSearch x, y, 725, 840, 925, 875, % A_ScriptDir . "\" . "image\" . name . ".png"
+  if (x > 0 and y > 0) {
+    return true
+  }
+  return false
+}
+
+isChanting() {
+  PixelGetColor color, 1010, 620, RGB
+  return color == 0x2B1B13
+}
+
+isMoving() {
+  GetKeyState dis, 2joyx
+  if (dis < 40) {
+    return true
+  }
+  if (dis > 60) {
+    return true
+  }
+  GetKeyState dis, 2joyy
+  if (dis < 40) {
+    return true
+  }
+  if (dis > 60) {
+    return true
+  }
+  return false
+}
+
+toggleView() {
+  if (isViewFar == false) {
+    Send {ctrl down}{up down}{pgdn down}
+    Sleep % "" . 3000 . ""
+    Send {ctrl up}{up up}{pgdn up}
+    isViewFar := true
+  }
+  else {
+    Send {ctrl down}{down down}{pgup down}
+    Sleep % "" . 3000 . ""
+    Send {ctrl up}{down up}{pgup up}
+    isViewFar := false
+  }
+  SoundBeep
+}
+
 回刺() {
   Send {alt down}{1}{alt up}
 }
@@ -161,26 +237,6 @@ global isViewFar := false
   Send {shift down}{7}{shift up}
 }
 
-能力技() {
-  索敌()
-  倍增()
-  飞刺()
-  六分反击()
-  交剑()
-  昏乱()
-  醒梦()
-}
-
-delay(name, time := 300, n := 1) {
-  loop %n% {
-    if (n != 1) {
-      Sleep % "" . time . ""
-    }
-    SetTimer %name%, Off
-    SetTimer %name%, % 0 - time
-  }
-}
-
 getBlack() {
   PixelSearch x, y, 1027, 810, 1166, 810, 0x56463C, 0, Fast RGB
   if !(x) {
@@ -189,25 +245,6 @@ getBlack() {
   percent := (x - 1023) * 100 / (1170 - 1023)
   percent := Round(percent)
   return percent - 1
-}
-
-getGroup() {
-  isLT := false
-  isRT := false
-  GetKeyState __value__, 2joy7
-  isLT := __value__ == "D"
-  GetKeyState __value__, 2joy8
-  isRT := __value__ == "D"
-  if (isLT and isRT) {
-    return "both"
-  }
-  if (isLT) {
-    return "left"
-  }
-  if (isRT) {
-    return "right"
-  }
-  return "none"
 }
 
 getWhite() {
@@ -220,46 +257,14 @@ getWhite() {
   return percent - 1
 }
 
-hasStatus(name) {
-  ImageSearch x, y, 725, 840, 925, 875, % A_ScriptDir . "\" . name . ".png"
-  if (x > 0 and y > 0) {
-    return true
-  }
-  return false
-}
-
-isMoving() {
-  GetKeyState dis, 2joyx
-  if (dis < 40) {
-    return true
-  }
-  if (dis > 60) {
-    return true
-  }
-  GetKeyState dis, 2joyy
-  if (dis < 40) {
-    return true
-  }
-  if (dis > 60) {
-    return true
-  }
-  return false
-}
-
-toggleView() {
-  if (isViewFar == false) {
-    Send {ctrl down}{up down}{pgdn down}
-    Sleep % "" . 3000 . ""
-    Send {ctrl up}{up up}{pgdn up}
-    isViewFar := true
-  }
-  else {
-    Send {ctrl down}{down down}{pgup down}
-    Sleep % "" . 3000 . ""
-    Send {ctrl up}{down up}{pgup up}
-    isViewFar := false
-  }
-  SoundBeep
+能力技() {
+  索敌()
+  倍增()
+  飞刺()
+  六分反击()
+  交剑()
+  昏乱()
+  醒梦()
 }
 
 魔元报警(black, white) {
@@ -328,6 +333,9 @@ toggleView() {
 }
 
 单体攻击() {
+  if (isChanting()) {
+    return
+  }
   索敌()
   black := getBlack()
   white := getWhite()
@@ -351,6 +359,9 @@ toggleView() {
 }
 
 群体攻击() {
+  if (isChanting()) {
+    return
+  }
   索敌()
   black := getBlack()
   white := getWhite()
@@ -404,6 +415,7 @@ toggleView() {
     赤疾风()
   }
   delay("能力技")
+  SoundBeep
 }
 
 攻击() {
@@ -434,7 +446,7 @@ toggleView() {
       return
     }
     if (hasStatus("连续咏唱")) {
-      SoundBeep
+      攻击()
       return
     }
     索敌()
