@@ -29,8 +29,6 @@ delay(name, time := 300, n := 1) {
 }
 
 getGroup() {
-  isLT := false
-  isRT := false
   GetKeyState __value__, 2joy7
   isLT := __value__ == "D"
   GetKeyState __value__, 2joy8
@@ -44,11 +42,19 @@ getGroup() {
   if (isRT) {
     return "right"
   }
-  return "none"
+  return false
 }
 
 hasStatus(name) {
   ImageSearch x, y, 725, 840, 925, 875, % A_ScriptDir . "\" . "image\" . name . ".png"
+  if (x > 0 and y > 0) {
+    return true
+  }
+  return false
+}
+
+isChanted(name) {
+  ImageSearch x, y, 20, 885, 285, 975, % A_ScriptDir . "\" . "image\" . name . ".png"
   if (x > 0 and y > 0) {
     return true
   }

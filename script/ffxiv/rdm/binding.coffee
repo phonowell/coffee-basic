@@ -2,48 +2,116 @@ $.on 'f12', ->
   $.beep()
   $.exit()
 
-$.on 'f6', ->
+$.on 'f5', ->
   [x, y] = $.getPosition()
-  color = $.getColor x, y
-  $.tip "#{x}, #{y}, #{color}"
-
-$.on 'f7', ->
-  white = getWhite()
-  black = getBlack()
-  $.tip "#{white} / #{black}"
-
-$.on 'f8', ->
-  x = 1100
-  y = 935
   color = $.getColor x, y
   $.tip "#{x}, #{y}, #{color}"
 
 $.on 'f2', ->
   toggleView()
 
+$.on 'f3', ->
+  isReporting = !isReporting
+  if !isReporting
+    $.tip()
+
 # ---
 
+攻击 = ->
+
+  group = getGroup()
+
+  unless group
+    return
+
+  索敌()
+  魔元警告()
+
+  # 单体攻击
+  if group == 'right'
+    单体攻击()
+    return
+
+  # 群体攻击
+  if group == 'both'
+    群体攻击()
+    return
+
+绑定攻击 = ->
+
+  isPressing = $.isPressing '2-joy-4'
+  unless isPressing
+    $.clearInterval 绑定攻击
+    $.setTimeout 清空信息, 3e3
+    return
+
+  $.clearTimeout 清空信息
+  攻击()
+
 $.on '2-joy-4', ->
-  $.loop ->
 
-    isPressing = $.isPressing '2-joy-4'
-    unless isPressing
-      break
+  unless getGroup()
+    return
 
-    攻击()
+  $.clearInterval 绑定攻击
+  $.setInterval 绑定攻击, 350
+  攻击()
 
-    await $.sleep 300
+# ---
+
+特殊攻击 = ->
+
+  group = getGroup()
+
+  unless group
+    return
+
+  索敌()
+  魔元警告()
+
+  if group == 'right'
+    魔三连()
+    return
+
+  if group == 'both'
+    
+    isA = hasStatus '连续咏唱'
+    isB = hasStatus '即刻咏唱'
+    if isA or isB
+      攻击()
+      asr = 2
+
+    if 划圆斩()
+      asr = 2
+    else
+      群体攻击()
+      $.beep()
+
+    短兵相接()
+    能力技()
+    return
+
+绑定特殊攻击 = ->
+
+  isPressing = $.isPressing '2-joy-2'
+  unless isPressing
+    $.clearInterval 绑定特殊攻击
+    $.setTimeout 清空信息, 3e3
+    return
+
+  $.clearTimeout 清空信息
+  特殊攻击()
 
 $.on '2-joy-2', ->
-  $.loop ->
 
-    isPressing = $.isPressing '2-joy-2'
-    unless isPressing
-      break
+  unless getGroup()
+    return
 
-    特殊攻击()
+  $.clearInterval 绑定特殊攻击
+  $.setInterval 绑定特殊攻击, 350
+  特殊攻击()
 
-    await $.sleep 300
+# ---
 
 $.on '2-joy-1', ->
 
@@ -51,11 +119,12 @@ $.on '2-joy-1', ->
 
   if group == 'right'
     
-    if hasStatus '连续咏唱'
+    isA = hasStatus '连续咏唱'
+    isB = hasStatus '即刻咏唱'
+    if isA or isB
       $.beep()
       return
-    
-    索敌()
+
     摇荡()
     delay '能力技'
     return

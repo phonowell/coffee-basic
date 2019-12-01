@@ -7,9 +7,6 @@ delay = (name, time = 300, n = 1) ->
 
 getGroup = ->
 
-  isLT = false
-  isRT = false
-
   isLT = $.isPressing '2-joy-7'
   isRT = $.isPressing '2-joy-8'
 
@@ -22,11 +19,19 @@ getGroup = ->
   if isRT
     return 'right'
 
-  return 'none'
+  return false
 
 hasStatus = (name) ->
 
   [x, y] = $.findImage "image/#{name}.png", 725, 840, 925, 875
+  
+  if x > 0 and y > 0
+    return true
+  return false
+
+isChanted = (name) ->
+
+  [x, y] = $.findImage "image/#{name}.png", 20, 885, 285, 975
   
   if x > 0 and y > 0
     return true
