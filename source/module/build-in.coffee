@@ -14,11 +14,12 @@ Rule =
   '$.info': 'TrayTip %'
   '$.pause': 'Pause'
   '$.play': 'SoundPlay'
+  '$.reload': 'Reload'
+  '$.sleep': 'Sleep %'
   '$.trim': 'Trim'
   '$.trimEnd': 'RTrim'
   '$.trimStart': 'LTrim'
   'alert': 'MsgBox %'
-  '$.sleep': 'Sleep %'
 
   # ---
   
@@ -60,7 +61,7 @@ Rule =
   '$.tip': ({argument}) ->
     unless argument[0]
       'ToolTip'
-    else "ToolTip % #{argument[0]}"
+    else "ToolTip % #{argument.join ', '}"
 
   'Math.abs': ({argument, output}) -> "#{output} = Abs(#{argument[0]})"
   'Math.ceil': ({argument, output}) -> "#{output} = Ceil(#{argument[0]})"

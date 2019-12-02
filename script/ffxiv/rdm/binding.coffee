@@ -1,19 +1,22 @@
-$.on 'f12', ->
-  $.beep()
-  $.exit()
+$.on 'f2', -> toggleView()
+
+$.on 'f4', ->
+  isReporting = !isReporting
+  if !isReporting
+    $.tip()
 
 $.on 'f5', ->
+  $.beep()
+  $.reload()
+
+$.on 'f9', ->
   [x, y] = $.getPosition()
   color = $.getColor x, y
   $.tip "#{x}, #{y}, #{color}"
 
-$.on 'f2', ->
-  toggleView()
-
-$.on 'f3', ->
-  isReporting = !isReporting
-  if !isReporting
-    $.tip()
+$.on 'f12', ->
+  $.beep()
+  $.exit()
 
 # ---
 
@@ -113,21 +116,9 @@ $.on '2-joy-2', ->
 
 # ---
 
-$.on '2-joy-1', ->
+# $.on '2-joy-1', ->
 
-  group = getGroup()
-
-  if group == 'right'
-    
-    isA = hasStatus '连续咏唱'
-    isB = hasStatus '即刻咏唱'
-    if isA or isB
-      $.beep()
-      return
-
-    摇荡()
-    delay '能力技'
-    return
+# ---
 
 $.on '2-joy-3', ->
 
@@ -139,5 +130,6 @@ $.on '2-joy-3', ->
 
   if group == 'both'
     赤复活()
-    delay '能力技'
+    asr = 2
+    能力技()
     return

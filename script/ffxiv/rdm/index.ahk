@@ -19,6 +19,8 @@ SetMouseDelay 0, 50
 
 ; global
 
+global hp := 0
+global mp := 0
 global isViewFar := false
 global 回刺时间戳 := 0
 global 回刺冷却 := 10000
@@ -60,16 +62,6 @@ global isReporting := true
 
 ; function
 
-delay(name, time := 300, n := 1) {
-  loop %n% {
-    if (n != 1) {
-      Sleep % "" . time . ""
-    }
-    SetTimer %name%, Off
-    SetTimer %name%, % 0 - time
-  }
-}
-
 getGroup() {
   GetKeyState __value__, 2joy7
   isLT := __value__ == "D"
@@ -85,6 +77,14 @@ getGroup() {
     return "right"
   }
   return false
+}
+
+getHp() {
+  return 0
+}
+
+getMp() {
+  return 0
 }
 
 hasStatus(name) {
@@ -380,6 +380,9 @@ toggleView() {
   if !(A_TickCount - 倍增时间戳 > 倍增冷却) {
     return false
   }
+  if !(A_TickCount - 回刺时间戳 > 回刺冷却) {
+    return false
+  }
   if !(white >= 40 and white < 70) {
     return false
   }
@@ -450,6 +453,9 @@ toggleView() {
     return
   }
   if !(A_TickCount - 即刻咏唱时间戳 > 即刻咏唱冷却) {
+    return false
+  }
+  if !(A_TickCount - 回刺时间戳 > 回刺冷却) {
     return false
   }
   if (black > 80 and white > 80) {
@@ -601,6 +607,8 @@ toggleView() {
 
 监听() {
   report()
+  hp := getHp()
+  mp := getMp()
   black := getBlack()
   white := getWhite()
   监听回刺()
@@ -652,26 +660,45 @@ report() {
   if !(isReporting) {
     return
   }
-  msg := "黑：" . black . " / 白：" . white . "`n"
+  msg := "体力：" . hp . " / 魔力：" . mp . ""
+  msg := "" . msg . "`n黑：" . black . " / 白：" . white . "`n"
   res := calcCD(短兵相接时间戳, 短兵相接冷却)
-  msg := "" . msg . "`n短兵相接：" . res . "s"
+  if (res) {
+    msg := "" . msg . "`n短兵相接：" . res . "s"
+  }
   res := calcCD(飞刺时间戳, 飞刺冷却)
-  msg := "" . msg . "`n飞刺：" . res . "s"
+  if (res) {
+    msg := "" . msg . "`n飞刺：" . res . "s"
+  }
   res := calcCD(促进时间戳, 促进冷却)
-  msg := "" . msg . "`n促进：" . res . "s"
+  if (res) {
+    msg := "" . msg . "`n促进：" . res . "s"
+  }
   res := calcCD(六分反击时间戳, 六分反击冷却)
-  msg := "" . msg . "`n六分反击：" . res . "s"
+  if (res) {
+    msg := "" . msg . "`n六分反击：" . res . "s"
+  }
   res := calcCD(鼓励时间戳, 鼓励冷却)
-  msg := "" . msg . "`n鼓励：" . res . "s"
+  if (res) {
+    msg := "" . msg . "`n鼓励：" . res . "s"
+  }
   res := calcCD(倍增时间戳, 倍增冷却)
-  msg := "" . msg . "`n倍增：" . res . "s"
+  if (res) {
+    msg := "" . msg . "`n倍增：" . res . "s"
+  }
   res := calcCD(交剑时间戳, 交剑冷却)
-  msg := "" . msg . "`n交剑：" . res . "s"
+  if (res) {
+    msg := "" . msg . "`n交剑：" . res . "s"
+  }
   res := calcCD(即刻咏唱时间戳, 即刻咏唱冷却)
-  msg := "" . msg . "`n即刻咏唱：" . res . "s"
+  if (res) {
+    msg := "" . msg . "`n即刻咏唱：" . res . "s"
+  }
   res := calcCD(醒梦时间戳, 醒梦冷却)
-  msg := "" . msg . "`n醒梦：" . res . "s"
-  ToolTip % msg
+  if (res) {
+    msg := "" . msg . "`n醒梦：" . res . "s"
+  }
+  ToolTip % msg, 1210, 800
 }
 
 攻击() {
@@ -898,26 +925,31 @@ default()
 
 ; bind
 
-f12::
-  SoundBeep
-  ExitApp
+f2::
+  toggleView()
+return
+
+f4::
+  isReporting := !isReporting
+  if (!isReporting) {
+    ToolTip
+  }
 return
 
 f5::
+  SoundBeep
+  Reload
+return
+
+f9::
   MouseGetPos x, y
   PixelGetColor color, x, y, RGB
   ToolTip % "" . x . ", " . y . ", " . color . ""
 return
 
-f2::
-  toggleView()
-return
-
-f3::
-  isReporting := !isReporting
-  if (!isReporting) {
-    ToolTip
-  }
+f12::
+  SoundBeep
+  ExitApp
 return
 
 2joy4::
@@ -938,21 +970,6 @@ return
   特殊攻击()
 return
 
-2joy1::
-  group := getGroup()
-  if (group == "right") {
-    isA := hasStatus("连续咏唱")
-    isB := hasStatus("即刻咏唱")
-    if (isA or isB) {
-      SoundBeep
-      return
-    }
-    摇荡()
-    delay("能力技")
-    return
-  }
-return
-
 2joy3::
   group := getGroup()
   if (group == "right") {
@@ -961,7 +978,8 @@ return
   }
   if (group == "both") {
     赤复活()
-    delay("能力技")
+    asr := 2
+    能力技()
     return
   }
 return

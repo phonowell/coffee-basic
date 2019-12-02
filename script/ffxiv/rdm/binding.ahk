@@ -88,26 +88,31 @@ SetMouseDelay 0, 50
 
 ; bind
 
-f12::
-  SoundBeep
-  ExitApp
+f2::
+  toggleView()
+return
+
+f4::
+  isReporting := !isReporting
+  if (!isReporting) {
+    ToolTip
+  }
 return
 
 f5::
+  SoundBeep
+  Reload
+return
+
+f9::
   MouseGetPos x, y
   PixelGetColor color, x, y, RGB
   ToolTip % "" . x . ", " . y . ", " . color . ""
 return
 
-f2::
-  toggleView()
-return
-
-f3::
-  isReporting := !isReporting
-  if (!isReporting) {
-    ToolTip
-  }
+f12::
+  SoundBeep
+  ExitApp
 return
 
 2joy4::
@@ -128,21 +133,6 @@ return
   特殊攻击()
 return
 
-2joy1::
-  group := getGroup()
-  if (group == "right") {
-    isA := hasStatus("连续咏唱")
-    isB := hasStatus("即刻咏唱")
-    if (isA or isB) {
-      SoundBeep
-      return
-    }
-    摇荡()
-    delay("能力技")
-    return
-  }
-return
-
 2joy3::
   group := getGroup()
   if (group == "right") {
@@ -151,7 +141,8 @@ return
   }
   if (group == "both") {
     赤复活()
-    delay("能力技")
+    asr := 2
+    能力技()
     return
   }
 return

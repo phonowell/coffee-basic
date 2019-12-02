@@ -14,19 +14,11 @@ SetMouseDelay 0, 50
 
 ; global
 
+global hp := 0
+global mp := 0
 global isViewFar := false
 
 ; function
-
-delay(name, time := 300, n := 1) {
-  loop %n% {
-    if (n != 1) {
-      Sleep % "" . time . ""
-    }
-    SetTimer %name%, Off
-    SetTimer %name%, % 0 - time
-  }
-}
 
 getGroup() {
   GetKeyState __value__, 2joy7
@@ -43,6 +35,14 @@ getGroup() {
     return "right"
   }
   return false
+}
+
+getHp() {
+  return 0
+}
+
+getMp() {
+  return 0
 }
 
 hasStatus(name) {

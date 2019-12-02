@@ -1,10 +1,3 @@
-delay = (name, time = 300, n = 1) ->
-  $.loop n, ->
-    if n != 1
-      await $.sleep time
-    $.clearTimeout name
-    $.setTimeout name, time
-
 getGroup = ->
 
   isLT = $.isPressing '2-joy-7'
@@ -20,6 +13,12 @@ getGroup = ->
     return 'right'
 
   return false
+
+hp = 0
+getHp = -> return 0
+
+mp = 0
+getMp = -> return 0
 
 hasStatus = (name) ->
 

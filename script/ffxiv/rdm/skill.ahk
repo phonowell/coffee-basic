@@ -291,6 +291,9 @@ global white := 0
   if !(A_TickCount - 倍增时间戳 > 倍增冷却) {
     return false
   }
+  if !(A_TickCount - 回刺时间戳 > 回刺冷却) {
+    return false
+  }
   if !(white >= 40 and white < 70) {
     return false
   }
@@ -361,6 +364,9 @@ global white := 0
     return
   }
   if !(A_TickCount - 即刻咏唱时间戳 > 即刻咏唱冷却) {
+    return false
+  }
+  if !(A_TickCount - 回刺时间戳 > 回刺冷却) {
     return false
   }
   if (black > 80 and white > 80) {
@@ -512,6 +518,8 @@ global white := 0
 
 监听() {
   report()
+  hp := getHp()
+  mp := getMp()
   black := getBlack()
   white := getWhite()
   监听回刺()
