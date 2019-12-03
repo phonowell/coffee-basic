@@ -14,6 +14,11 @@ $.on 'f9', ->
   color = $.getColor x, y
   $.tip "#{x}, #{y}, #{color}"
 
+$.on 'f6', ->
+  [x, y] = $.findColor '#58483e'
+  $.move x, y
+  $.tip "#{x}, #{y}"
+
 $.on 'f12', ->
   $.beep()
   $.exit()
@@ -28,7 +33,6 @@ $.on 'f12', ->
     return
 
   索敌()
-  魔元警告()
 
   # 单体攻击
   if group == 'right'
@@ -57,7 +61,7 @@ $.on '2-joy-4', ->
     return
 
   $.clearInterval 绑定攻击
-  $.setInterval 绑定攻击, 350
+  $.setInterval 绑定攻击, 300
   攻击()
 
 # ---
@@ -70,7 +74,6 @@ $.on '2-joy-4', ->
     return
 
   索敌()
-  魔元警告()
 
   if group == 'right'
     魔三连()
@@ -111,7 +114,7 @@ $.on '2-joy-2', ->
     return
 
   $.clearInterval 绑定特殊攻击
-  $.setInterval 绑定特殊攻击, 350
+  $.setInterval 绑定特殊攻击, 300
   特殊攻击()
 
 # ---

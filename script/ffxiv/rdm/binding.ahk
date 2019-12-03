@@ -20,7 +20,6 @@ SetMouseDelay 0, 50
     return
   }
   索敌()
-  魔元警告()
   if (group == "right") {
     单体攻击()
     return
@@ -49,7 +48,6 @@ SetMouseDelay 0, 50
     return
   }
   索敌()
-  魔元警告()
   if (group == "right") {
     魔三连()
     return
@@ -110,6 +108,12 @@ f9::
   ToolTip % "" . x . ", " . y . ", " . color . ""
 return
 
+f6::
+  PixelSearch x, y, 0, 0, A_ScreenWidth, A_ScreenHeight, 0x58483E, 0, Fast RGB
+  MouseMove x, y, 0
+  ToolTip % "" . x . ", " . y . ""
+return
+
 f12::
   SoundBeep
   ExitApp
@@ -120,7 +124,7 @@ return
     return
   }
   SetTimer 绑定攻击, Off
-  SetTimer 绑定攻击, 350
+  SetTimer 绑定攻击, 300
   攻击()
 return
 
@@ -129,7 +133,7 @@ return
     return
   }
   SetTimer 绑定特殊攻击, Off
-  SetTimer 绑定特殊攻击, 350
+  SetTimer 绑定特殊攻击, 300
   特殊攻击()
 return
 

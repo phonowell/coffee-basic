@@ -65,6 +65,7 @@ Rule =
 
   'Math.abs': ({argument, output}) -> "#{output} = Abs(#{argument[0]})"
   'Math.ceil': ({argument, output}) -> "#{output} = Ceil(#{argument[0]})"
+  'Math.floor': ({argument, output}) -> "#{output} = Floor(#{argument[0]})"
   'Math.round': ({argument, output}) -> "#{output} = Round(#{argument[0]})"
 
 # function

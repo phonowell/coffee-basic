@@ -15,6 +15,7 @@ SetMouseDelay 0, 50
 ; global
 
 global isReporting := true
+global tsReport := 0
 
 ; function
 
@@ -29,31 +30,33 @@ calcCD(ts, cd) {
 }
 
 getBlack() {
-  PixelSearch x, y, 1027, 810, 1166, 810, 0x56463C, 0, Fast RGB
+  PixelSearch x, y, 1023, 811, 1170, 811, 0x58483E, 10, Fast RGB
   if !(x) {
     return 100
   }
   percent := (x - 1023) * 100 / (1170 - 1023)
-  percent := Round(percent)
-  return percent - 1
+  percent := Floor(percent)
+  return percent
 }
 
 getWhite() {
-  PixelSearch x, y, 1027, 801, 1166, 801, 0x2E1E14, 0, Fast RGB
+  PixelSearch x, y, 1023, 798, 1170, 798, 0x58483E, 10, Fast RGB
   if !(x) {
     return 100
   }
   percent := (x - 1023) * 100 / (1170 - 1023)
-  percent := Round(percent)
-  return percent - 1
+  percent := Floor(percent)
+  return percent
 }
 
 report() {
   if !(isReporting) {
     return
   }
-  msg := "体力：" . hp . " / 魔力：" . mp . ""
-  msg := "" . msg . "`n黑：" . black . " / 白：" . white . "`n"
+  msg := "体力：" . hp . "% / 魔力：" . mp . "%"
+  msg := "" . msg . "`n黑：" . black . " / 白：" . white . ""
+  msg := "" . msg . "`n耗时：" . A_TickCount - tsReport . "ms`n"
+  tsReport := A_TickCount
   res := calcCD(短兵相接时间戳, 短兵相接冷却)
   if (res) {
     msg := "" . msg . "`n短兵相接：" . res . "s"
@@ -90,7 +93,7 @@ report() {
   if (res) {
     msg := "" . msg . "`n醒梦：" . res . "s"
   }
-  ToolTip % msg, 1210, 800
+  ToolTip % msg, 410, 640
 }
 
 ; eof

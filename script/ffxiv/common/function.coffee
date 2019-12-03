@@ -15,10 +15,26 @@ getGroup = ->
   return false
 
 hp = 0
-getHp = -> return 0
+getHp = ->
+  [x, y] = $.findColor '#58483e', 21, 36, 168, 36, 10
+  
+  unless x
+    return 100
+  
+  percent = (x - 21) * 100 / (168 - 21)
+  percent = Math.floor percent
+  return percent
 
 mp = 0
-getMp = -> return 0
+getMp = ->
+  [x, y] = $.findColor '#58483e', 181, 36, 328, 36, 10
+  
+  unless x
+    return 100
+  
+  percent = (x - 181) * 100 / (328 - 181)
+  percent = Math.floor percent
+  return percent
 
 hasStatus = (name) ->
 
@@ -30,15 +46,15 @@ hasStatus = (name) ->
 
 isChanted = (name) ->
 
-  [x, y] = $.findImage "image/#{name}.png", 20, 885, 285, 975
+  [x, y] = $.findImage "image/#{name}.png", 60, 885, 225, 975
   
   if x > 0 and y > 0
     return true
   return false
 
 isChanting = ->
-  color = $.getColor 1010, 620
-  return color == 0x2B1B13
+  color = $.getColor 1010, 612
+  return color == 0x58483E
 
 isMoving = ->
 

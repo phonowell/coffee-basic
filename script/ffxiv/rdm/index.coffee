@@ -6,7 +6,10 @@
 
 # ---
 
-短单体 = (isBR, isWR) ->
+短单体 = (isA, isB, isBR, isWR) ->
+
+  if isA or isB
+    return
 
   if black - white > 21
     if isWR
@@ -41,10 +44,7 @@
 
 # ---
 
-长单体 = (isBR, isWR) ->
-
-  isA = hasStatus '连续咏唱'
-  isB = hasStatus '即刻咏唱'
+长单体 = (isA, isB, isBR, isWR) ->
 
   unless isA or isB
     return false
@@ -79,18 +79,23 @@
   if isChanting()
     return
 
+  isA = hasStatus '连续咏唱'
+  isB = hasStatus '即刻咏唱'
   isBR = hasStatus '赤火炎预备'
   isWR = hasStatus '赤飞石预备'
 
-  if 长单体 isBR, isWR
+  if 长单体 isA, isB, isBR, isWR
     asr = 2
+    return
 
   if isMoving()
     续斩()
     asr = 2
+    return
 
-  短单体 isBR, isWR
+  短单体 isA, isB, isBR, isWR
 
+  倍增()
   促进()
   即刻咏唱()
   能力技()
@@ -107,16 +112,19 @@
   if isA or isB
     散碎()
     asr = 2
+    return
 
   if isMoving()
     续斩()
     asr = 2
+    return
 
   if white >= black
     赤震雷()
   else
     赤烈风()
 
+  倍增()
   即刻咏唱()
   能力技()
 
@@ -126,27 +134,33 @@
 
   isA = hasStatus '连续咏唱'
   isB = hasStatus '即刻咏唱'
+
   if isA or isB
-    攻击()
-    asr = 2
+    单体攻击()
+    return
 
-  if 焦热()
+  if 回刺()
     asr = 2
+    短兵相接()
+    return
 
-  if 赤神圣()
+  if 交击斩()
     asr = 2
+    鼓励()
+    return
 
   if 连攻()
     asr = 2
     交剑()
     短兵相接()
+    return
 
-  if 交击斩()
+  if 赤神圣()
     asr = 2
-    鼓励()
+    return
 
-  if 回刺()
+  if 焦热()
     asr = 2
-    短兵相接()
-  
+    return
+    
   能力技()

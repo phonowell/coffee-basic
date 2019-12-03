@@ -27,11 +27,12 @@ module.exports = ({argument, output}) ->
   .split ','
 
   # argument
-  [target, x1, y1, x2, y2] = argument
+  [target, x1, y1, x2, y2, variation] = argument
   x1 or= 0
   y1 or= 0
   x2 or= 'A_ScreenWidth'
   y2 or= 'A_ScreenHeight'
+  variation or= 0
 
   if target.startsWith '"#'
     target = format target
@@ -39,4 +40,4 @@ module.exports = ({argument, output}) ->
   # return
   "PixelSearch #{oX}, #{oY},
   #{x1}, #{y1}, #{x2}, #{y2},
-  #{target}, 0, Fast RGB"
+  #{target}, #{variation}, Fast RGB"

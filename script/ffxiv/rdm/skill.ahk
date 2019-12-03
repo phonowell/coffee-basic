@@ -40,14 +40,10 @@ global 即刻咏唱冷却 := 60000
 global 醒梦时间戳 := 0
 global 醒梦冷却 := 60000
 global 索敌时间戳 := 0
-global 索敌冷却 := 10000
-global 魔元警告时间戳 := 0
-global 魔元警告冷却 := 10000
+global 索敌冷却 := 3000
 global asr := 0
 global 赤神圣时间戳 := 0
 global 赤神圣冷却 := 10000
-global 焦热时间戳 := 0
-global 焦热冷却 := 10000
 global black := 0
 global white := 0
 
@@ -132,7 +128,7 @@ global white := 0
   if !(A_TickCount - 交击斩时间戳 > 交击斩冷却) {
     return false
   }
-  if !(A_TickCount - 回刺时间戳 < 10000) {
+  if !(A_TickCount - 回刺时间戳 < 15000) {
     return false
   }
   if !(black >= 50 and white >= 50) {
@@ -182,7 +178,7 @@ global white := 0
   if !(A_TickCount - 连攻时间戳 > 连攻冷却) {
     return false
   }
-  if !(A_TickCount - 交击斩时间戳 < 10000) {
+  if !(A_TickCount - 交击斩时间戳 < 15000) {
     return false
   }
   if !(black >= 25 and white >= 25) {
@@ -209,6 +205,14 @@ global white := 0
   if !(A_TickCount - 促进时间戳 > 促进冷却) {
     return false
   }
+  if (black > 80 or white > 80) {
+    return false
+  }
+  isBR := hasStatus("赤火炎预备")
+  isWR := hasStatus("赤飞石预备")
+  if (isBR and isWR) {
+    return false
+  }
   Send {ctrl down}{3}{ctrl up}
   asr--
   return true
@@ -218,7 +222,7 @@ global white := 0
   if !(A_TickCount - 促进时间戳 > 促进冷却) {
     return
   }
-  if !(isChanted("促进")) {
+  if !(isChanted("促进2")) {
     return
   }
   促进时间戳 := A_TickCount - 2000
@@ -287,12 +291,6 @@ global white := 0
 倍增() {
   if !(asr > 0) {
     return
-  }
-  if !(A_TickCount - 倍增时间戳 > 倍增冷却) {
-    return false
-  }
-  if !(A_TickCount - 回刺时间戳 > 回刺冷却) {
-    return false
   }
   if !(white >= 40 and white < 70) {
     return false
@@ -366,14 +364,16 @@ global white := 0
   if !(A_TickCount - 即刻咏唱时间戳 > 即刻咏唱冷却) {
     return false
   }
-  if !(A_TickCount - 回刺时间戳 > 回刺冷却) {
-    return false
-  }
-  if (black > 80 and white > 80) {
+  if (black > 60 or white > 60) {
     return false
   }
   if (hasStatus("连续咏唱")) {
     return false
+  }
+  isBR := hasStatus("赤火炎预备")
+  isWR := hasStatus("赤飞石预备")
+  if (isBR and isWR) {
+    return
   }
   Send {shift down}{3}{shift up}
   asr--
@@ -397,8 +397,7 @@ global white := 0
   if !(A_TickCount - 醒梦时间戳 > 醒梦冷却) {
     return false
   }
-  PixelGetColor color, 260, 35, RGB
-  if !(color == 0x56463C) {
+  if (mp > 65) {
     return false
   }
   Send {shift down}{4}{shift up}
@@ -433,25 +432,9 @@ global white := 0
   Send {shift down}{=}{shift up}
 }
 
-魔元警告() {
-  if !(A_TickCount - 魔元警告时间戳 > 魔元警告冷却) {
-    return false
-  }
-  total := black + white
-  if !(170 < total and total < 200) {
-    return false
-  }
-  SoundBeep
-  魔元警告时间戳 := A_TickCount - 2000
-  return true
-}
-
 能力技() {
   if !(asr > 0) {
     return false
-  }
-  if (倍增()) {
-    return true
   }
   if (飞刺()) {
     return true
@@ -471,8 +454,35 @@ global white := 0
   if !(A_TickCount - 赤神圣时间戳 > 赤神圣冷却) {
     return false
   }
-  if !(A_TickCount - 连攻时间戳 < 10000) {
+  if !(A_TickCount - 连攻时间戳 < 15000) {
     return false
+  }
+  if (black - white > 9) {
+    赤疾风()
+    return true
+  }
+  if (white - black > 9) {
+    赤闪雷()
+    return true
+  }
+  isBR := hasStatus("赤火炎预备")
+  isWR := hasStatus("赤飞石预备")
+  if (isBR and isWR) {
+    if (black > white) {
+      赤疾风()
+    }
+    else {
+      赤闪雷()
+    }
+    return true
+  }
+  if (isBR) {
+    赤疾风()
+    return true
+  }
+  if (isWR) {
+    赤闪雷()
+    return true
   }
   if (black > white) {
     赤疾风()
@@ -496,29 +506,19 @@ global white := 0
 }
 
 焦热() {
-  if !(A_TickCount - 焦热时间戳 > 焦热冷却) {
-    return false
-  }
-  if !(A_TickCount - 赤神圣时间戳 < 10000) {
+  if !(A_TickCount - 赤神圣时间戳 < 15000) {
     return false
   }
   摇荡()
+  回刺时间戳 := 0
+  交击斩时间戳 := 0
+  连攻时间戳 := 0
+  赤神圣时间戳 := 0
+  SoundBeep
   return true
 }
 
-监听焦热() {
-  if !(A_TickCount - 焦热时间戳 > 焦热冷却) {
-    return
-  }
-  if !(isChanted("焦热")) {
-    return
-  }
-  焦热时间戳 := A_TickCount - 2000
-}
-
 监听() {
-  report()
-  hp := getHp()
   mp := getMp()
   black := getBlack()
   white := getWhite()
@@ -535,6 +535,7 @@ global white := 0
   监听即刻咏唱()
   监听醒梦()
   监听赤神圣()
+  report()
 }
 
 default() {

@@ -7,33 +7,40 @@ calcCD = (ts, cd) ->
   return result
 
 getBlack = ->
-  [x, y] = $.findColor '#56463c', 1027, 810, 1166, 810
+  [x, y] = $.findColor '#58483e', 1023, 811, 1170, 811, 10
   
   unless x
     return 100
   
   percent = (x - 1023) * 100 / (1170 - 1023)
-  percent = Math.round percent
-  return percent - 1
+  percent = Math.floor percent
+  return percent
 
 getWhite = ->
-  [x, y] = $.findColor '#2e1e14', 1027, 801, 1166, 801
+  [x, y] = $.findColor '#58483e', 1023, 798, 1170, 798, 10
   
   unless x
     return 100
   
   percent = (x - 1023) * 100 / (1170 - 1023)
-  percent = Math.round percent
-  return percent - 1
+  percent = Math.floor percent
+  return percent
+
+# ---
 
 isReporting = true
+tsReport = 0
+
 report = ->
 
   unless isReporting
     return
 
-  msg = "体力：#{hp} / 魔力：#{mp}"
-  msg = "#{msg}`n黑：#{black} / 白：#{white}`n"
+  msg = "体力：#{hp}% / 魔力：#{mp}%"
+  msg = "#{msg}`n黑：#{black} / 白：#{white}"
+  msg = "#{msg}`n耗时：#{A_TickCount - tsReport}ms`n"
+  
+  tsReport = A_TickCount
 
   res = calcCD 短兵相接时间戳, 短兵相接冷却
   if res
@@ -71,4 +78,4 @@ report = ->
   if res
     msg = "#{msg}`n醒梦：#{res}s"
   
-  $.tip msg, 1210, 800
+  $.tip msg, 410, 640

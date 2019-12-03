@@ -38,11 +38,23 @@ getGroup() {
 }
 
 getHp() {
-  return 0
+  PixelSearch x, y, 21, 36, 168, 36, 0x58483E, 10, Fast RGB
+  if !(x) {
+    return 100
+  }
+  percent := (x - 21) * 100 / (168 - 21)
+  percent := Floor(percent)
+  return percent
 }
 
 getMp() {
-  return 0
+  PixelSearch x, y, 181, 36, 328, 36, 0x58483E, 10, Fast RGB
+  if !(x) {
+    return 100
+  }
+  percent := (x - 181) * 100 / (328 - 181)
+  percent := Floor(percent)
+  return percent
 }
 
 hasStatus(name) {
@@ -54,7 +66,7 @@ hasStatus(name) {
 }
 
 isChanted(name) {
-  ImageSearch x, y, 20, 885, 285, 975, % A_ScriptDir . "\" . "image\" . name . ".png"
+  ImageSearch x, y, 60, 885, 225, 975, % A_ScriptDir . "\" . "image\" . name . ".png"
   if (x > 0 and y > 0) {
     return true
   }
@@ -62,8 +74,8 @@ isChanted(name) {
 }
 
 isChanting() {
-  PixelGetColor color, 1010, 620, RGB
-  return color == 0x2B1B13
+  PixelGetColor color, 1010, 612, RGB
+  return color == 0x58483E
 }
 
 isMoving() {

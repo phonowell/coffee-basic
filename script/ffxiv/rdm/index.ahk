@@ -48,17 +48,14 @@ global 即刻咏唱冷却 := 60000
 global 醒梦时间戳 := 0
 global 醒梦冷却 := 60000
 global 索敌时间戳 := 0
-global 索敌冷却 := 10000
-global 魔元警告时间戳 := 0
-global 魔元警告冷却 := 10000
+global 索敌冷却 := 3000
 global asr := 0
 global 赤神圣时间戳 := 0
 global 赤神圣冷却 := 10000
-global 焦热时间戳 := 0
-global 焦热冷却 := 10000
 global black := 0
 global white := 0
 global isReporting := true
+global tsReport := 0
 
 ; function
 
@@ -80,11 +77,23 @@ getGroup() {
 }
 
 getHp() {
-  return 0
+  PixelSearch x, y, 21, 36, 168, 36, 0x58483E, 10, Fast RGB
+  if !(x) {
+    return 100
+  }
+  percent := (x - 21) * 100 / (168 - 21)
+  percent := Floor(percent)
+  return percent
 }
 
 getMp() {
-  return 0
+  PixelSearch x, y, 181, 36, 328, 36, 0x58483E, 10, Fast RGB
+  if !(x) {
+    return 100
+  }
+  percent := (x - 181) * 100 / (328 - 181)
+  percent := Floor(percent)
+  return percent
 }
 
 hasStatus(name) {
@@ -96,7 +105,7 @@ hasStatus(name) {
 }
 
 isChanted(name) {
-  ImageSearch x, y, 20, 885, 285, 975, % A_ScriptDir . "\" . "image\" . name . ".png"
+  ImageSearch x, y, 60, 885, 225, 975, % A_ScriptDir . "\" . "image\" . name . ".png"
   if (x > 0 and y > 0) {
     return true
   }
@@ -104,8 +113,8 @@ isChanted(name) {
 }
 
 isChanting() {
-  PixelGetColor color, 1010, 620, RGB
-  return color == 0x2B1B13
+  PixelGetColor color, 1010, 612, RGB
+  return color == 0x58483E
 }
 
 isMoving() {
@@ -221,7 +230,7 @@ toggleView() {
   if !(A_TickCount - 交击斩时间戳 > 交击斩冷却) {
     return false
   }
-  if !(A_TickCount - 回刺时间戳 < 10000) {
+  if !(A_TickCount - 回刺时间戳 < 15000) {
     return false
   }
   if !(black >= 50 and white >= 50) {
@@ -271,7 +280,7 @@ toggleView() {
   if !(A_TickCount - 连攻时间戳 > 连攻冷却) {
     return false
   }
-  if !(A_TickCount - 交击斩时间戳 < 10000) {
+  if !(A_TickCount - 交击斩时间戳 < 15000) {
     return false
   }
   if !(black >= 25 and white >= 25) {
@@ -298,6 +307,14 @@ toggleView() {
   if !(A_TickCount - 促进时间戳 > 促进冷却) {
     return false
   }
+  if (black > 80 or white > 80) {
+    return false
+  }
+  isBR := hasStatus("赤火炎预备")
+  isWR := hasStatus("赤飞石预备")
+  if (isBR and isWR) {
+    return false
+  }
   Send {ctrl down}{3}{ctrl up}
   asr--
   return true
@@ -307,7 +324,7 @@ toggleView() {
   if !(A_TickCount - 促进时间戳 > 促进冷却) {
     return
   }
-  if !(isChanted("促进")) {
+  if !(isChanted("促进2")) {
     return
   }
   促进时间戳 := A_TickCount - 2000
@@ -376,12 +393,6 @@ toggleView() {
 倍增() {
   if !(asr > 0) {
     return
-  }
-  if !(A_TickCount - 倍增时间戳 > 倍增冷却) {
-    return false
-  }
-  if !(A_TickCount - 回刺时间戳 > 回刺冷却) {
-    return false
   }
   if !(white >= 40 and white < 70) {
     return false
@@ -455,14 +466,16 @@ toggleView() {
   if !(A_TickCount - 即刻咏唱时间戳 > 即刻咏唱冷却) {
     return false
   }
-  if !(A_TickCount - 回刺时间戳 > 回刺冷却) {
-    return false
-  }
-  if (black > 80 and white > 80) {
+  if (black > 60 or white > 60) {
     return false
   }
   if (hasStatus("连续咏唱")) {
     return false
+  }
+  isBR := hasStatus("赤火炎预备")
+  isWR := hasStatus("赤飞石预备")
+  if (isBR and isWR) {
+    return
   }
   Send {shift down}{3}{shift up}
   asr--
@@ -486,8 +499,7 @@ toggleView() {
   if !(A_TickCount - 醒梦时间戳 > 醒梦冷却) {
     return false
   }
-  PixelGetColor color, 260, 35, RGB
-  if !(color == 0x56463C) {
+  if (mp > 65) {
     return false
   }
   Send {shift down}{4}{shift up}
@@ -522,25 +534,9 @@ toggleView() {
   Send {shift down}{=}{shift up}
 }
 
-魔元警告() {
-  if !(A_TickCount - 魔元警告时间戳 > 魔元警告冷却) {
-    return false
-  }
-  total := black + white
-  if !(170 < total and total < 200) {
-    return false
-  }
-  SoundBeep
-  魔元警告时间戳 := A_TickCount - 2000
-  return true
-}
-
 能力技() {
   if !(asr > 0) {
     return false
-  }
-  if (倍增()) {
-    return true
   }
   if (飞刺()) {
     return true
@@ -560,8 +556,35 @@ toggleView() {
   if !(A_TickCount - 赤神圣时间戳 > 赤神圣冷却) {
     return false
   }
-  if !(A_TickCount - 连攻时间戳 < 10000) {
+  if !(A_TickCount - 连攻时间戳 < 15000) {
     return false
+  }
+  if (black - white > 9) {
+    赤疾风()
+    return true
+  }
+  if (white - black > 9) {
+    赤闪雷()
+    return true
+  }
+  isBR := hasStatus("赤火炎预备")
+  isWR := hasStatus("赤飞石预备")
+  if (isBR and isWR) {
+    if (black > white) {
+      赤疾风()
+    }
+    else {
+      赤闪雷()
+    }
+    return true
+  }
+  if (isBR) {
+    赤疾风()
+    return true
+  }
+  if (isWR) {
+    赤闪雷()
+    return true
   }
   if (black > white) {
     赤疾风()
@@ -585,29 +608,19 @@ toggleView() {
 }
 
 焦热() {
-  if !(A_TickCount - 焦热时间戳 > 焦热冷却) {
-    return false
-  }
-  if !(A_TickCount - 赤神圣时间戳 < 10000) {
+  if !(A_TickCount - 赤神圣时间戳 < 15000) {
     return false
   }
   摇荡()
+  回刺时间戳 := 0
+  交击斩时间戳 := 0
+  连攻时间戳 := 0
+  赤神圣时间戳 := 0
+  SoundBeep
   return true
 }
 
-监听焦热() {
-  if !(A_TickCount - 焦热时间戳 > 焦热冷却) {
-    return
-  }
-  if !(isChanted("焦热")) {
-    return
-  }
-  焦热时间戳 := A_TickCount - 2000
-}
-
 监听() {
-  report()
-  hp := getHp()
   mp := getMp()
   black := getBlack()
   white := getWhite()
@@ -624,6 +637,7 @@ toggleView() {
   监听即刻咏唱()
   监听醒梦()
   监听赤神圣()
+  report()
 }
 
 calcCD(ts, cd) {
@@ -637,31 +651,33 @@ calcCD(ts, cd) {
 }
 
 getBlack() {
-  PixelSearch x, y, 1027, 810, 1166, 810, 0x56463C, 0, Fast RGB
+  PixelSearch x, y, 1023, 811, 1170, 811, 0x58483E, 10, Fast RGB
   if !(x) {
     return 100
   }
   percent := (x - 1023) * 100 / (1170 - 1023)
-  percent := Round(percent)
-  return percent - 1
+  percent := Floor(percent)
+  return percent
 }
 
 getWhite() {
-  PixelSearch x, y, 1027, 801, 1166, 801, 0x2E1E14, 0, Fast RGB
+  PixelSearch x, y, 1023, 798, 1170, 798, 0x58483E, 10, Fast RGB
   if !(x) {
     return 100
   }
   percent := (x - 1023) * 100 / (1170 - 1023)
-  percent := Round(percent)
-  return percent - 1
+  percent := Floor(percent)
+  return percent
 }
 
 report() {
   if !(isReporting) {
     return
   }
-  msg := "体力：" . hp . " / 魔力：" . mp . ""
-  msg := "" . msg . "`n黑：" . black . " / 白：" . white . "`n"
+  msg := "体力：" . hp . "% / 魔力：" . mp . "%"
+  msg := "" . msg . "`n黑：" . black . " / 白：" . white . ""
+  msg := "" . msg . "`n耗时：" . A_TickCount - tsReport . "ms`n"
+  tsReport := A_TickCount
   res := calcCD(短兵相接时间戳, 短兵相接冷却)
   if (res) {
     msg := "" . msg . "`n短兵相接：" . res . "s"
@@ -698,7 +714,7 @@ report() {
   if (res) {
     msg := "" . msg . "`n醒梦：" . res . "s"
   }
-  ToolTip % msg, 1210, 800
+  ToolTip % msg, 410, 640
 }
 
 攻击() {
@@ -707,7 +723,6 @@ report() {
     return
   }
   索敌()
-  魔元警告()
   if (group == "right") {
     单体攻击()
     return
@@ -736,7 +751,6 @@ report() {
     return
   }
   索敌()
-  魔元警告()
   if (group == "right") {
     魔三连()
     return
@@ -773,7 +787,10 @@ report() {
   特殊攻击()
 }
 
-短单体(isBR, isWR) {
+短单体(isA, isB, isBR, isWR) {
+  if (isA or isB) {
+    return
+  }
   if (black - white > 21) {
     if (isWR) {
       赤飞石()
@@ -812,9 +829,7 @@ report() {
   摇荡()
 }
 
-长单体(isBR, isWR) {
-  isA := hasStatus("连续咏唱")
-  isB := hasStatus("即刻咏唱")
+长单体(isA, isB, isBR, isWR) {
   if !(isA or isB) {
     return false
   }
@@ -847,16 +862,21 @@ report() {
   if (isChanting()) {
     return
   }
+  isA := hasStatus("连续咏唱")
+  isB := hasStatus("即刻咏唱")
   isBR := hasStatus("赤火炎预备")
   isWR := hasStatus("赤飞石预备")
-  if (长单体(isBR, isWR)) {
+  if (长单体(isA, isB, isBR, isWR)) {
     asr := 2
+    return
   }
   if (isMoving()) {
     续斩()
     asr := 2
+    return
   }
-  短单体(isBR, isWR)
+  短单体(isA, isB, isBR, isWR)
+  倍增()
   促进()
   即刻咏唱()
   能力技()
@@ -871,10 +891,12 @@ report() {
   if (isA or isB) {
     散碎()
     asr := 2
+    return
   }
   if (isMoving()) {
     续斩()
     asr := 2
+    return
   }
   if (white >= black) {
     赤震雷()
@@ -882,6 +904,7 @@ report() {
   else {
     赤烈风()
   }
+  倍增()
   即刻咏唱()
   能力技()
 }
@@ -890,27 +913,32 @@ report() {
   isA := hasStatus("连续咏唱")
   isB := hasStatus("即刻咏唱")
   if (isA or isB) {
-    攻击()
-    asr := 2
+    单体攻击()
+    return
   }
-  if (焦热()) {
+  if (回刺()) {
     asr := 2
+    短兵相接()
+    return
   }
-  if (赤神圣()) {
+  if (交击斩()) {
     asr := 2
+    鼓励()
+    return
   }
   if (连攻()) {
     asr := 2
     交剑()
     短兵相接()
+    return
   }
-  if (交击斩()) {
+  if (赤神圣()) {
     asr := 2
-    鼓励()
+    return
   }
-  if (回刺()) {
+  if (焦热()) {
     asr := 2
-    短兵相接()
+    return
   }
   能力技()
 }
@@ -947,6 +975,12 @@ f9::
   ToolTip % "" . x . ", " . y . ", " . color . ""
 return
 
+f6::
+  PixelSearch x, y, 0, 0, A_ScreenWidth, A_ScreenHeight, 0x58483E, 0, Fast RGB
+  MouseMove x, y, 0
+  ToolTip % "" . x . ", " . y . ""
+return
+
 f12::
   SoundBeep
   ExitApp
@@ -957,7 +991,7 @@ return
     return
   }
   SetTimer 绑定攻击, Off
-  SetTimer 绑定攻击, 350
+  SetTimer 绑定攻击, 300
   攻击()
 return
 
@@ -966,7 +1000,7 @@ return
     return
   }
   SetTimer 绑定特殊攻击, Off
-  SetTimer 绑定特殊攻击, 350
+  SetTimer 绑定特殊攻击, 300
   特殊攻击()
 return
 
