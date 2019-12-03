@@ -6,5 +6,10 @@ module.exports = ->
   await $.remove_ './script/**/*.ahk'
   
   parse_ = $.require './source/index'
-  for source in await $.source_ './script/**/*.coffee'
+
+  listSource = [
+    './script/**/index.coffee'
+    './script/test/*.coffee'
+  ]
+  for source in await $.source_ listSource
     await parse_ source

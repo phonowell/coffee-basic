@@ -44,6 +44,14 @@ hasStatus = (name) ->
     return true
   return false
 
+hasStatusTarget = (name) ->
+
+  [x, y] = $.findImage "image/#{name}.png", 725, 765, 925, 800
+  
+  if x > 0 and y > 0
+    return true
+  return false
+
 isChanted = (name) ->
 
   [x, y] = $.findImage "image/#{name}.png", 60, 885, 225, 975

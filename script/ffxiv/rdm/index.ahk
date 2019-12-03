@@ -22,6 +22,10 @@ SetMouseDelay 0, 50
 global hp := 0
 global mp := 0
 global isViewFar := false
+global black := 0
+global white := 0
+global isReporting := true
+global tsReport := 0
 global 回刺时间戳 := 0
 global 回刺冷却 := 10000
 global 短兵相接时间戳 := 0
@@ -52,10 +56,6 @@ global 索敌冷却 := 3000
 global asr := 0
 global 赤神圣时间戳 := 0
 global 赤神圣冷却 := 10000
-global black := 0
-global white := 0
-global isReporting := true
-global tsReport := 0
 
 ; function
 
@@ -98,6 +98,14 @@ getMp() {
 
 hasStatus(name) {
   ImageSearch x, y, 725, 840, 925, 875, % A_ScriptDir . "\" . "image\" . name . ".png"
+  if (x > 0 and y > 0) {
+    return true
+  }
+  return false
+}
+
+hasStatusTarget(name) {
+  ImageSearch x, y, 725, 765, 925, 800, % A_ScriptDir . "\" . "image\" . name . ".png"
   if (x > 0 and y > 0) {
     return true
   }
@@ -149,6 +157,173 @@ toggleView() {
     isViewFar := false
   }
   SoundBeep
+}
+
+攻击() {
+  group := getGroup()
+  if !(group) {
+    return
+  }
+  索敌()
+  if (group == "right") {
+    单体攻击()
+    return
+  }
+  if (group == "both") {
+    群体攻击()
+    return
+  }
+}
+
+绑定攻击() {
+  GetKeyState __value__, 2joy4
+  isPressing := __value__ == "D"
+  if !(isPressing) {
+    SetTimer 绑定攻击, Off
+    SetTimer 清空信息, % 0 - 3000
+    return
+  }
+  SetTimer 清空信息, Off
+  攻击()
+}
+
+特殊攻击() {
+  group := getGroup()
+  if !(group) {
+    return
+  }
+  索敌()
+  if (group == "right") {
+    魔三连()
+    return
+  }
+  if (group == "both") {
+    isA := hasStatus("连续咏唱")
+    isB := hasStatus("即刻咏唱")
+    if (isA or isB) {
+      攻击()
+      asr := 2
+    }
+    if (划圆斩()) {
+      asr := 2
+    }
+    else {
+      群体攻击()
+      SoundBeep
+    }
+    短兵相接()
+    能力技()
+    return
+  }
+}
+
+绑定特殊攻击() {
+  GetKeyState __value__, 2joy2
+  isPressing := __value__ == "D"
+  if !(isPressing) {
+    SetTimer 绑定特殊攻击, Off
+    SetTimer 清空信息, % 0 - 3000
+    return
+  }
+  SetTimer 清空信息, Off
+  特殊攻击()
+}
+
+calcCD(ts, cd) {
+  result := cd - (A_TickCount - ts)
+  if (result < 0) {
+    result := 0
+  }
+  result := result / 1000
+  result := Round(result)
+  return result
+}
+
+getBlack() {
+  PixelSearch x, y, 1023, 811, 1170, 811, 0x58483E, 10, Fast RGB
+  if !(x) {
+    return 100
+  }
+  percent := (x - 1023) * 100 / (1170 - 1023)
+  percent := Floor(percent)
+  return percent
+}
+
+getWhite() {
+  PixelSearch x, y, 1023, 798, 1170, 798, 0x58483E, 10, Fast RGB
+  if !(x) {
+    return 100
+  }
+  percent := (x - 1023) * 100 / (1170 - 1023)
+  percent := Floor(percent)
+  return percent
+}
+
+report() {
+  if !(isReporting) {
+    return
+  }
+  msg := "体力：" . hp . "% / 魔力：" . mp . "%"
+  msg := "" . msg . "`n黑：" . black . " / 白：" . white . ""
+  msg := "" . msg . "`n耗时：" . A_TickCount - tsReport . "ms`n"
+  tsReport := A_TickCount
+  res := calcCD(短兵相接时间戳, 短兵相接冷却)
+  if (res) {
+    msg := "" . msg . "`n短兵相接：" . res . "s"
+  }
+  res := calcCD(飞刺时间戳, 飞刺冷却)
+  if (res) {
+    msg := "" . msg . "`n飞刺：" . res . "s"
+  }
+  res := calcCD(促进时间戳, 促进冷却)
+  if (res) {
+    msg := "" . msg . "`n促进：" . res . "s"
+  }
+  res := calcCD(六分反击时间戳, 六分反击冷却)
+  if (res) {
+    msg := "" . msg . "`n六分反击：" . res . "s"
+  }
+  res := calcCD(鼓励时间戳, 鼓励冷却)
+  if (res) {
+    msg := "" . msg . "`n鼓励：" . res . "s"
+  }
+  res := calcCD(倍增时间戳, 倍增冷却)
+  if (res) {
+    msg := "" . msg . "`n倍增：" . res . "s"
+  }
+  res := calcCD(交剑时间戳, 交剑冷却)
+  if (res) {
+    msg := "" . msg . "`n交剑：" . res . "s"
+  }
+  res := calcCD(即刻咏唱时间戳, 即刻咏唱冷却)
+  if (res) {
+    msg := "" . msg . "`n即刻咏唱：" . res . "s"
+  }
+  res := calcCD(醒梦时间戳, 醒梦冷却)
+  if (res) {
+    msg := "" . msg . "`n醒梦：" . res . "s"
+  }
+  ToolTip % msg, 410, 640
+}
+
+监听() {
+  mp := getMp()
+  black := getBlack()
+  white := getWhite()
+  监听回刺()
+  监听短兵相接()
+  监听交击斩()
+  监听飞刺()
+  监听连攻()
+  监听促进()
+  监听六分反击()
+  监听鼓励()
+  监听倍增()
+  监听交剑()
+  监听即刻咏唱()
+  监听醒梦()
+  监听赤神圣()
+  report()
 }
 
 回刺() {
@@ -525,6 +700,9 @@ toggleView() {
   if !(A_TickCount - 索敌时间戳 > 索敌冷却) {
     return false
   }
+  if (isChanting()) {
+    return false
+  }
   Send {shift down}{-}{shift up}
   索敌时间戳 := A_TickCount - 2000
   return true
@@ -620,244 +798,6 @@ toggleView() {
   return true
 }
 
-监听() {
-  mp := getMp()
-  black := getBlack()
-  white := getWhite()
-  监听回刺()
-  监听短兵相接()
-  监听交击斩()
-  监听飞刺()
-  监听连攻()
-  监听促进()
-  监听六分反击()
-  监听鼓励()
-  监听倍增()
-  监听交剑()
-  监听即刻咏唱()
-  监听醒梦()
-  监听赤神圣()
-  report()
-}
-
-calcCD(ts, cd) {
-  result := cd - (A_TickCount - ts)
-  if (result < 0) {
-    result := 0
-  }
-  result := result / 1000
-  result := Round(result)
-  return result
-}
-
-getBlack() {
-  PixelSearch x, y, 1023, 811, 1170, 811, 0x58483E, 10, Fast RGB
-  if !(x) {
-    return 100
-  }
-  percent := (x - 1023) * 100 / (1170 - 1023)
-  percent := Floor(percent)
-  return percent
-}
-
-getWhite() {
-  PixelSearch x, y, 1023, 798, 1170, 798, 0x58483E, 10, Fast RGB
-  if !(x) {
-    return 100
-  }
-  percent := (x - 1023) * 100 / (1170 - 1023)
-  percent := Floor(percent)
-  return percent
-}
-
-report() {
-  if !(isReporting) {
-    return
-  }
-  msg := "体力：" . hp . "% / 魔力：" . mp . "%"
-  msg := "" . msg . "`n黑：" . black . " / 白：" . white . ""
-  msg := "" . msg . "`n耗时：" . A_TickCount - tsReport . "ms`n"
-  tsReport := A_TickCount
-  res := calcCD(短兵相接时间戳, 短兵相接冷却)
-  if (res) {
-    msg := "" . msg . "`n短兵相接：" . res . "s"
-  }
-  res := calcCD(飞刺时间戳, 飞刺冷却)
-  if (res) {
-    msg := "" . msg . "`n飞刺：" . res . "s"
-  }
-  res := calcCD(促进时间戳, 促进冷却)
-  if (res) {
-    msg := "" . msg . "`n促进：" . res . "s"
-  }
-  res := calcCD(六分反击时间戳, 六分反击冷却)
-  if (res) {
-    msg := "" . msg . "`n六分反击：" . res . "s"
-  }
-  res := calcCD(鼓励时间戳, 鼓励冷却)
-  if (res) {
-    msg := "" . msg . "`n鼓励：" . res . "s"
-  }
-  res := calcCD(倍增时间戳, 倍增冷却)
-  if (res) {
-    msg := "" . msg . "`n倍增：" . res . "s"
-  }
-  res := calcCD(交剑时间戳, 交剑冷却)
-  if (res) {
-    msg := "" . msg . "`n交剑：" . res . "s"
-  }
-  res := calcCD(即刻咏唱时间戳, 即刻咏唱冷却)
-  if (res) {
-    msg := "" . msg . "`n即刻咏唱：" . res . "s"
-  }
-  res := calcCD(醒梦时间戳, 醒梦冷却)
-  if (res) {
-    msg := "" . msg . "`n醒梦：" . res . "s"
-  }
-  ToolTip % msg, 410, 640
-}
-
-攻击() {
-  group := getGroup()
-  if !(group) {
-    return
-  }
-  索敌()
-  if (group == "right") {
-    单体攻击()
-    return
-  }
-  if (group == "both") {
-    群体攻击()
-    return
-  }
-}
-
-绑定攻击() {
-  GetKeyState __value__, 2joy4
-  isPressing := __value__ == "D"
-  if !(isPressing) {
-    SetTimer 绑定攻击, Off
-    SetTimer 清空信息, % 0 - 3000
-    return
-  }
-  SetTimer 清空信息, Off
-  攻击()
-}
-
-特殊攻击() {
-  group := getGroup()
-  if !(group) {
-    return
-  }
-  索敌()
-  if (group == "right") {
-    魔三连()
-    return
-  }
-  if (group == "both") {
-    isA := hasStatus("连续咏唱")
-    isB := hasStatus("即刻咏唱")
-    if (isA or isB) {
-      攻击()
-      asr := 2
-    }
-    if (划圆斩()) {
-      asr := 2
-    }
-    else {
-      群体攻击()
-      SoundBeep
-    }
-    短兵相接()
-    能力技()
-    return
-  }
-}
-
-绑定特殊攻击() {
-  GetKeyState __value__, 2joy2
-  isPressing := __value__ == "D"
-  if !(isPressing) {
-    SetTimer 绑定特殊攻击, Off
-    SetTimer 清空信息, % 0 - 3000
-    return
-  }
-  SetTimer 清空信息, Off
-  特殊攻击()
-}
-
-短单体(isA, isB, isBR, isWR) {
-  if (isA or isB) {
-    return
-  }
-  if (black - white > 21) {
-    if (isWR) {
-      赤飞石()
-    }
-    else {
-      摇荡()
-    }
-    return
-  }
-  if (white - black > 21) {
-    if (isBR) {
-      赤火炎()
-    }
-    else {
-      摇荡()
-    }
-    return
-  }
-  if (isWR and isBR) {
-    if (black > white) {
-      赤飞石()
-    }
-    else {
-      赤火炎()
-    }
-    return
-  }
-  if (isWR) {
-    赤飞石()
-    return
-  }
-  if (isBR) {
-    赤火炎()
-    return
-  }
-  摇荡()
-}
-
-长单体(isA, isB, isBR, isWR) {
-  if !(isA or isB) {
-    return false
-  }
-  if (black - white > 19) {
-    赤疾风()
-    return true
-  }
-  if (white - black > 19) {
-    赤闪雷()
-    return true
-  }
-  if (isWR) {
-    赤闪雷()
-    return true
-  }
-  if (isBR) {
-    赤疾风()
-    return true
-  }
-  if (white >= black) {
-    赤闪雷()
-  }
-  else {
-    赤疾风()
-  }
-  return true
-}
-
 单体攻击() {
   if (isChanting()) {
     return
@@ -941,6 +881,77 @@ report() {
     return
   }
   能力技()
+}
+
+短单体(isA, isB, isBR, isWR) {
+  if (isA or isB) {
+    return
+  }
+  if (black - white > 21) {
+    if (isWR) {
+      赤飞石()
+    }
+    else {
+      摇荡()
+    }
+    return
+  }
+  if (white - black > 21) {
+    if (isBR) {
+      赤火炎()
+    }
+    else {
+      摇荡()
+    }
+    return
+  }
+  if (isWR and isBR) {
+    if (black > white) {
+      赤飞石()
+    }
+    else {
+      赤火炎()
+    }
+    return
+  }
+  if (isWR) {
+    赤飞石()
+    return
+  }
+  if (isBR) {
+    赤火炎()
+    return
+  }
+  摇荡()
+}
+
+长单体(isA, isB, isBR, isWR) {
+  if !(isA or isB) {
+    return false
+  }
+  if (black - white > 19) {
+    赤疾风()
+    return true
+  }
+  if (white - black > 19) {
+    赤闪雷()
+    return true
+  }
+  if (isWR) {
+    赤闪雷()
+    return true
+  }
+  if (isBR) {
+    赤疾风()
+    return true
+  }
+  if (white >= black) {
+    赤闪雷()
+  }
+  else {
+    赤疾风()
+  }
+  return true
 }
 
 default() {
