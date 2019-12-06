@@ -5,6 +5,8 @@ if (A_IsAdmin != true) {
   ExitApp
 }
 
+#KeyHistory 0
+#MaxThreads 20
 #NoEnv
 #Persistent
 #SingleInstance Force
@@ -14,6 +16,7 @@ CoordMode Mouse, Client
 CoordMode Pixel, Client
 CoordMode ToolTip, Client
 SendMode Event
+SetBatchLines 100ms
 SetKeyDelay 0, 50
 SetMouseDelay 0, 50
 
@@ -51,6 +54,7 @@ global 即刻咏唱时间戳 := 0
 global 即刻咏唱冷却 := 60000
 global 醒梦时间戳 := 0
 global 醒梦冷却 := 60000
+global isAutoTargeting := true
 global 索敌时间戳 := 0
 global 索敌冷却 := 3000
 global asr := 0
@@ -58,6 +62,10 @@ global 赤神圣时间戳 := 0
 global 赤神圣冷却 := 10000
 
 ; function
+
+clearTip() {
+  ToolTip
+}
 
 getGroup() {
   GetKeyState __value__, 2joy7
@@ -112,8 +120,8 @@ hasStatusTarget(name) {
   return false
 }
 
-isChanted(name) {
-  ImageSearch x, y, 60, 885, 225, 975, % A_ScriptDir . "\" . "image\" . name . ".png"
+isUsed(name) {
+  ImageSearch x, y, 60, 915, 225, 975, % A_ScriptDir . "\" . "image\" . name . ".png"
   if (x > 0 and y > 0) {
     return true
   }
@@ -164,7 +172,10 @@ toggleView() {
   if !(group) {
     return
   }
+  report()
   索敌()
+  black := getBlack()
+  white := getWhite()
   if (group == "right") {
     单体攻击()
     return
@@ -180,7 +191,7 @@ toggleView() {
   isPressing := __value__ == "D"
   if !(isPressing) {
     SetTimer 绑定攻击, Off
-    SetTimer 清空信息, % 0 - 3000
+    SetTimer 清空信息, % 0 - 10000
     return
   }
   SetTimer 清空信息, Off
@@ -192,7 +203,10 @@ toggleView() {
   if !(group) {
     return
   }
+  report()
   索敌()
+  black := getBlack()
+  white := getWhite()
   if (group == "right") {
     魔三连()
     return
@@ -222,7 +236,7 @@ toggleView() {
   isPressing := __value__ == "D"
   if !(isPressing) {
     SetTimer 绑定特殊攻击, Off
-    SetTimer 清空信息, % 0 - 3000
+    SetTimer 清空信息, % 0 - 5000
     return
   }
   SetTimer 清空信息, Off
@@ -265,6 +279,7 @@ report() {
   }
   msg := "体力：" . hp . "% / 魔力：" . mp . "%"
   msg := "" . msg . "`n黑：" . black . " / 白：" . white . ""
+  msg := "" . msg . "`n自动索敌：" . isAutoTargeting . ""
   msg := "" . msg . "`n耗时：" . A_TickCount - tsReport . "ms`n"
   tsReport := A_TickCount
   res := calcCD(短兵相接时间戳, 短兵相接冷却)
@@ -304,26 +319,8 @@ report() {
     msg := "" . msg . "`n醒梦：" . res . "s"
   }
   ToolTip % msg, 410, 640
-}
-
-监听() {
-  mp := getMp()
-  black := getBlack()
-  white := getWhite()
-  监听回刺()
-  监听短兵相接()
-  监听交击斩()
-  监听飞刺()
-  监听连攻()
-  监听促进()
-  监听六分反击()
-  监听鼓励()
-  监听倍增()
-  监听交剑()
-  监听即刻咏唱()
-  监听醒梦()
-  监听赤神圣()
-  report()
+  SetTimer clearTip, Off
+  SetTimer clearTip, % 0 - 5000
 }
 
 回刺() {
@@ -334,17 +331,16 @@ report() {
     return false
   }
   Send {alt down}{1}{alt up}
+  SetTimer 监听回刺, 200
   return true
 }
 
 监听回刺() {
-  if !(A_TickCount - 回刺时间戳 > 回刺冷却) {
-    return
-  }
-  if !(isChanted("魔回刺")) {
+  if !(isUsed("魔回刺")) {
     return
   }
   回刺时间戳 := A_TickCount - 2000
+  SetTimer 监听回刺, Off
 }
 
 摇荡() {
@@ -363,18 +359,17 @@ report() {
     return false
   }
   Send {alt down}{4}{alt up}
+  SetTimer 监听短兵相接, 200
   asr--
   return true
 }
 
 监听短兵相接() {
-  if !(A_TickCount - 短兵相接时间戳 > 短兵相接冷却) {
-    return
-  }
-  if !(isChanted("短兵相接")) {
+  if !(isUsed("短兵相接")) {
     return
   }
   短兵相接时间戳 := A_TickCount - 2000
+  SetTimer 短兵相接, Off
 }
 
 赤疾风() {
@@ -412,17 +407,16 @@ report() {
     return false
   }
   Send {alt down}{-}{alt up}
+  SetTimer 监听交击斩, 200
   return true
 }
 
 监听交击斩() {
-  if !(A_TickCount - 交击斩时间戳 > 交击斩冷却) {
-    return
-  }
-  if !(isChanted("魔交击斩")) {
+  if !(isUsed("魔交击斩")) {
     return
   }
   交击斩时间戳 := A_TickCount - 2000
+  SetTimer 监听交击斩, Off
 }
 
 移转() {
@@ -437,18 +431,17 @@ report() {
     return false
   }
   Send {ctrl down}{1}{ctrl up}
+  SetTimer 监听飞刺, 200
   asr--
   return true
 }
 
 监听飞刺() {
-  if !(A_TickCount - 飞刺时间戳 > 飞刺冷却) {
-    return
-  }
-  if !(isChanted("飞刺")) {
+  if !(isUsed("飞刺")) {
     return
   }
   飞刺时间戳 := A_TickCount - 2000
+  SetTimer 监听飞刺, Off
 }
 
 连攻() {
@@ -463,16 +456,15 @@ report() {
   }
   Send {ctrl down}{2}{ctrl up}
   return true
+  SetTimer 监听连攻, 200
 }
 
 监听连攻() {
-  if !(A_TickCount - 连攻时间戳 > 连攻冷却) {
-    return
-  }
-  if !(isChanted("魔连攻")) {
+  if !(isUsed("魔连攻")) {
     return
   }
   连攻时间戳 := A_TickCount - 2000
+  SetTimer 监听连攻, Off
 }
 
 促进() {
@@ -491,18 +483,17 @@ report() {
     return false
   }
   Send {ctrl down}{3}{ctrl up}
+  SetTimer 监听促进, 200
   asr--
   return true
 }
 
 监听促进() {
-  if !(A_TickCount - 促进时间戳 > 促进冷却) {
-    return
-  }
-  if !(isChanted("促进2")) {
+  if !(isUsed("促进2")) {
     return
   }
   促进时间戳 := A_TickCount - 2000
+  SetTimer 监听促进, Off
 }
 
 划圆斩() {
@@ -510,7 +501,7 @@ report() {
     return false
   }
   Send {ctrl down}{4}{ctrl up}
-  if !(isChanted("魔划圆斩")) {
+  if !(isUsed("魔划圆斩")) {
     return false
   }
   划圆斩时间戳 := A_TickCount - 2000
@@ -529,18 +520,17 @@ report() {
     return false
   }
   Send {ctrl down}{6}{ctrl up}
+  SetTimer 监听六分反击, 0
   asr--
   return true
 }
 
 监听六分反击() {
-  if !(A_TickCount - 六分反击时间戳 > 六分反击冷却) {
-    return
-  }
-  if !(isChanted("六分反击")) {
+  if !(isUsed("六分反击")) {
     return
   }
   六分反击时间戳 := A_TickCount - 2000
+  SetTimer 监听六分反击, Off
 }
 
 鼓励() {
@@ -551,18 +541,17 @@ report() {
     return false
   }
   Send {ctrl down}{7}{ctrl up}
+  SetTimer 监听鼓励, 200
   asr--
   return true
 }
 
 监听鼓励() {
-  if !(A_TickCount - 鼓励时间戳 > 鼓励冷却) {
-    return
-  }
-  if !(isChanted("鼓励")) {
+  if !(isUsed("鼓励")) {
     return
   }
   鼓励时间戳 := A_TickCount - 2000
+  SetTimer 监听鼓励, Off
 }
 
 倍增() {
@@ -576,20 +565,19 @@ report() {
     return false
   }
   Send {ctrl down}{8}{ctrl up}
+  SetTimer 监听倍增, 200
   asr--
   return true
 }
 
 监听倍增() {
-  if !(A_TickCount - 倍增时间戳 > 倍增冷却) {
-    return
-  }
-  if !(isChanted("倍增")) {
+  if !(isUsed("倍增")) {
     return
   }
   倍增时间戳 := A_TickCount - 2000
   短兵相接时间戳 := 0
   交剑时间戳 := 0
+  SetTimer 监听倍增, Off
 }
 
 震荡() {
@@ -612,18 +600,17 @@ report() {
     return false
   }
   Send {ctrl down}{=}{ctrl up}
+  SetTimer 监听交剑, 200
   asr--
   return true
 }
 
 监听交剑() {
-  if !(A_TickCount - 交剑时间戳 > 交剑冷却) {
-    return
-  }
-  if !(isChanted("交剑")) {
+  if !(isUsed("交剑")) {
     return
   }
   交剑时间戳 := A_TickCount - 2000
+  SetTimer 监听交剑, Off
 }
 
 续斩() {
@@ -653,18 +640,17 @@ report() {
     return
   }
   Send {shift down}{3}{shift up}
+  SetTimer 监听即刻咏唱, 200
   asr--
   return true
 }
 
 监听即刻咏唱() {
-  if !(A_TickCount - 即刻咏唱时间戳 > 即刻咏唱冷却) {
-    return
-  }
-  if !(isChanted("即刻咏唱2")) {
+  if !(isUsed("即刻咏唱2")) {
     return
   }
   即刻咏唱时间戳 := A_TickCount - 2000
+  SetTimer 监听即刻咏唱, Off
 }
 
 醒梦() {
@@ -674,22 +660,22 @@ report() {
   if !(A_TickCount - 醒梦时间戳 > 醒梦冷却) {
     return false
   }
-  if (mp > 65) {
+  mp := getMp()
+  if (mp > 50) {
     return false
   }
   Send {shift down}{4}{shift up}
+  SetTimer 监听醒梦, 200
   asr--
   return true
 }
 
 监听醒梦() {
-  if !(A_TickCount - 醒梦时间戳 > 醒梦冷却) {
-    return
-  }
-  if !(isChanted("醒梦")) {
+  if !(isUsed("醒梦")) {
     return
   }
   醒梦时间戳 := A_TickCount - 2000
+  SetTimer 监听醒梦, Off
 }
 
 沉稳咏唱() {
@@ -697,6 +683,9 @@ report() {
 }
 
 索敌() {
+  if !(isAutoTargeting) {
+    return false
+  }
   if !(A_TickCount - 索敌时间戳 > 索敌冷却) {
     return false
   }
@@ -737,6 +726,7 @@ report() {
   if !(A_TickCount - 连攻时间戳 < 15000) {
     return false
   }
+  SetTimer 监听赤神圣, 200
   if (black - white > 9) {
     赤疾风()
     return true
@@ -774,15 +764,13 @@ report() {
 }
 
 监听赤神圣() {
-  if !(A_TickCount - 赤神圣时间戳 > 赤神圣冷却) {
-    return
-  }
-  isBR := isChanted("赤核爆")
-  isWR := isChanted("赤神圣")
+  isBR := isUsed("赤核爆")
+  isWR := isUsed("赤神圣")
   if !(isBR or isWR) {
     return
   }
   赤神圣时间戳 := A_TickCount - 2000
+  SetTimer 监听赤神圣, Off
 }
 
 焦热() {
@@ -790,10 +778,6 @@ report() {
     return false
   }
   摇荡()
-  回刺时间戳 := 0
-  交击斩时间戳 := 0
-  连攻时间戳 := 0
-  赤神圣时间戳 := 0
   SoundBeep
   return true
 }
@@ -956,7 +940,6 @@ report() {
 
 default() {
   SetTimer 清空信息, % 0 - 3000
-  SetTimer 监听, 200
 }
 
 ; default
@@ -1027,6 +1010,11 @@ return
     能力技()
     return
   }
+return
+
+2joy13::
+  isAutoTargeting := !isAutoTargeting
+  SoundBeep
 return
 
 ; eof

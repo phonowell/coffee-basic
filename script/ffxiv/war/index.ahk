@@ -5,6 +5,8 @@ if (A_IsAdmin != true) {
   ExitApp
 }
 
+#KeyHistory 0
+#MaxThreads 20
 #NoEnv
 #Persistent
 #SingleInstance Force
@@ -14,6 +16,7 @@ CoordMode Mouse, Client
 CoordMode Pixel, Client
 CoordMode ToolTip, Client
 SendMode Event
+SetBatchLines 100ms
 SetKeyDelay 0, 50
 SetMouseDelay 0, 50
 
@@ -22,21 +25,20 @@ SetMouseDelay 0, 50
 global hp := 0
 global mp := 0
 global isViewFar := false
-global isDotEnabled := true
-global element := false
-global isMpLacking := false
 global isReporting := true
 global tsReport := 0
-global 闪雷时间戳 := 0
-global 闪雷冷却 := 10000
-global 震雷时间戳 := 0
-global 震雷冷却 := 10000
-global 即刻咏唱时间戳 := 0
-global 即刻咏唱冷却 := 60000
+global 重劈时间戳 := 0
+global 重劈冷却 := 5000
+global 凶残裂时间戳 := 0
+global 凶残裂冷却 := 5000
 global 索敌时间戳 := 0
 global 索敌冷却 := 3000
 
 ; function
+
+clearTip() {
+  ToolTip
+}
 
 getGroup() {
   GetKeyState __value__, 2joy7
@@ -91,8 +93,8 @@ hasStatusTarget(name) {
   return false
 }
 
-isChanted(name) {
-  ImageSearch x, y, 60, 885, 225, 975, % A_ScriptDir . "\" . "image\" . name . ".png"
+isUsed(name) {
+  ImageSearch x, y, 60, 915, 225, 975, % A_ScriptDir . "\" . "image\" . name . ".png"
   if (x > 0 and y > 0) {
     return true
   }
@@ -143,6 +145,7 @@ toggleView() {
   if !(group) {
     return
   }
+  report()
   索敌()
   if (group == "right") {
     单体攻击()
@@ -159,7 +162,7 @@ toggleView() {
   isPressing := __value__ == "D"
   if !(isPressing) {
     SetTimer 绑定攻击, Off
-    SetTimer 清空信息, % 0 - 3000
+    SetTimer 清空信息, % 0 - 5000
     return
   }
   SetTimer 清空信息, Off
@@ -176,143 +179,178 @@ calcCD(ts, cd) {
   return result
 }
 
-checkElement() {
-  PixelGetColor color, 1030, 815, RGB
-  if (color == 0xFFABA7) {
-    element := "fire"
-    return
-  }
-  if (color == 0x93C9FF) {
-    element := "ice"
-    return
-  }
-  element := false
-}
-
-checkMp() {
-  mp := getMp()
-  if (mp < 30 and isMpLacking == false) {
-    isMpLacking := true
-  }
-  else if (mp > 70 and isMpLacking == true) {
-    isMpLacking := false
-  }
-}
-
 report() {
   if !(isReporting) {
     return
   }
   msg := "体力：" . hp . "% / 魔力：" . mp . "%"
-  msg := "" . msg . "`n元素状态：" . element . ""
-  msg := "" . msg . "`n使用Dot：" . isDotEnabled . ""
   msg := "" . msg . "`n耗时：" . A_TickCount - tsReport . "ms`n"
   tsReport := A_TickCount
-  res := calcCD(即刻咏唱时间戳, 即刻咏唱冷却)
-  if (res) {
-    msg := "" . msg . "`n即刻咏唱：" . res . "s"
-  }
   ToolTip % msg, 410, 640
+  SetTimer clearTip, Off
+  SetTimer clearTip, % 0 - 5000
 }
 
-监听() {
-  report()
-}
-
-冰结() {
+重劈() {
+  if !(A_TickCount - 重劈时间戳 > 重劈冷却) {
+    return false
+  }
   Send {alt down}{1}{alt up}
+  SetTimer 监听重劈, 200
+  return true
 }
 
-火炎() {
+监听重劈() {
+  if !(isUsed("重劈")) {
+    return
+  }
+  重劈时间戳 := A_TickCount - 2000
+  SetTimer 监听重劈, Off
+}
+
+凶残裂() {
+  if !(A_TickCount - 凶残裂时间戳 > 凶残裂冷却) {
+    return false
+  }
+  if !(A_TickCount - 重劈时间戳 < 15000) {
+    return false
+  }
   Send {alt down}{2}{alt up}
+  SetTimer 监听凶残裂, 200
+  return true
 }
 
-星灵移位() {
+监听凶残裂() {
+  if !(isUsed("凶残裂")) {
+    return
+  }
+  凶残裂时间戳 := A_TickCount - 2000
+  重劈时间戳 := 0
+  SetTimer 监听凶残裂, Off
+}
+
+狂暴() {
   Send {alt down}{3}{alt up}
 }
 
-闪雷() {
-  if (!isDotEnabled) {
-    return false
-  }
-  if !(A_TickCount - 闪雷时间戳 > 闪雷冷却) {
-    return false
-  }
-  if (hasStatusTarget("闪雷")) {
-    return false
-  }
+超压斧() {
   Send {alt down}{4}{alt up}
-  闪雷时间戳 := A_TickCount - 2000
-  return true
 }
 
-催眠() {
+守护() {
   Send {alt down}{5}{alt up}
 }
 
-冰冻() {
+飞斧() {
   Send {alt down}{6}{alt up}
 }
 
-崩溃() {
+暴风斩() {
   Send {alt down}{7}{alt up}
 }
 
-烈炎() {
+战栗() {
   Send {alt down}{8}{alt up}
 }
 
-震雷() {
-  if !(A_TickCount - 震雷时间戳 > 震雷冷却) {
-    return false
-  }
-  if (hasStatusTarget("震雷")) {
-    return false
-  }
+复仇() {
   Send {alt down}{9}{alt up}
-  震雷时间戳 := A_TickCount - 2000
-  return true
 }
 
-魔罩() {
+死斗() {
   Send {alt down}{0}{alt up}
 }
 
-爆炎() {
+暴风碎() {
   Send {alt down}{-}{alt up}
 }
 
-以太步() {
+原初之魂() {
   Send {alt down}{=}{alt up}
 }
 
-昏乱() {
+秘银暴风() {
   Send {ctrl down}{1}{ctrl up}
 }
 
-即刻咏唱() {
-  if !(A_TickCount - 即刻咏唱时间戳 > 即刻咏唱冷却) {
-    return false
-  }
+钢铁旋风() {
   Send {ctrl down}{2}{ctrl up}
-  SetTimer 监听即刻咏唱, 200
-  return true
 }
 
-监听即刻咏唱() {
-  if !(isChanted("即刻咏唱2")) {
-    return
-  }
-  SetTimer 监听即刻咏唱, Off
-  即刻咏唱时间戳 := A_TickCount - 2000
-}
-
-醒梦() {
+战壕() {
   Send {ctrl down}{3}{ctrl up}
 }
 
-沉稳咏唱() {
+裂石飞环() {
   Send {ctrl down}{4}{ctrl up}
+}
+
+原初的直觉() {
+  Send {ctrl down}{5}{ctrl up}
+}
+
+泰然自若() {
+  Send {ctrl down}{6}{ctrl up}
+}
+
+地毁人亡() {
+  Send {ctrl down}{7}{ctrl up}
+}
+
+猛攻() {
+  Send {ctrl down}{8}{ctrl up}
+}
+
+动乱() {
+  Send {ctrl down}{9}{ctrl up}
+}
+
+摆脱() {
+  Send {ctrl down}{0}{ctrl up}
+}
+
+原初的解放() {
+  Send {ctrl down}{-}{ctrl up}
+}
+
+原初的勇猛() {
+  Send {ctrl down}{=}{ctrl up}
+}
+
+混沌旋风() {
+  Send {shift down}{1}{shift up}
+}
+
+狂魂() {
+  Send {shift down}{2}{shift up}
+}
+
+铁壁() {
+  Send {shift down}{3}{shift up}
+}
+
+下踢() {
+  Send {shift down}{4}{shift up}
+}
+
+挑衅() {
+  Send {shift down}{5}{shift up}
+}
+
+插言() {
+  Send {shift down}{6}{shift up}
+}
+
+雪仇() {
+  Send {shift down}{7}{shift up}
+}
+
+亲疏自行() {
+  Send {shift down}{8}{shift up}
+}
+
+退避() {
+  Send {shift down}{9}{shift up}
 }
 
 索敌() {
@@ -332,64 +370,18 @@ report() {
 }
 
 单体攻击() {
-  if (isChanting()) {
+  if (凶残裂()) {
     return
   }
-  if (isMoving()) {
-    即刻咏唱()
-  }
-  if (闪雷()) {
-    return
-  }
-  checkMp()
-  checkElement()
-  if (isMpLacking) {
-    if (element == "fire") {
-      星灵移位()
-      return
-    }
-    冰结()
-    return
-  }
-  if (element == "ice") {
-    星灵移位()
-    return
-  }
-  火炎()
-  return
+  重劈()
 }
 
 群体攻击() {
-  if (isChanting()) {
-    return
-  }
-  if (isMoving()) {
-    即刻咏唱()
-  }
-  if (震雷()) {
-    return
-  }
-  checkMp()
-  checkElement()
-  if (isMpLacking) {
-    if (element == "fire") {
-      星灵移位()
-      return
-    }
-    冰冻()
-    return
-  }
-  if (element == "ice") {
-    星灵移位()
-    return
-  }
-  烈炎()
   return
 }
 
 default() {
   SetTimer 清空信息, % 0 - 3000
-  SetTimer 监听, 200
 }
 
 ; default
@@ -428,11 +420,6 @@ return
 f12::
   SoundBeep
   ExitApp
-return
-
-2joy13::
-  isDotEnabled := !isDotEnabled
-  SoundBeep
 return
 
 2joy4::

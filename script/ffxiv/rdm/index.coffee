@@ -2,7 +2,6 @@
 # include ../common/function
 # include binding
 # include function
-# include listen
 # include skill
 
 # ---
@@ -165,3 +164,7 @@
     赤疾风()
 
   return true
+
+# ---
+
+$.setTimeout 清空信息, 3e3

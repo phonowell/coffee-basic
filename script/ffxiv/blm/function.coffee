@@ -55,3 +55,5 @@ report = ->
     msg = "#{msg}`n即刻咏唱：#{res}s"
   
   $.tip msg, 410, 640
+  $.clearTimeout clearTip
+  $.setTimeout clearTip, 5e3

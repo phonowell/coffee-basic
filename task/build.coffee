@@ -9,6 +9,7 @@ module.exports = ->
 
   listSource = [
     './script/**/index.coffee'
+    './script/other/*.coffee'
     './script/test/*.coffee'
   ]
   for source in await $.source_ listSource

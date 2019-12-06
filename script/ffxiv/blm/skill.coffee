@@ -53,7 +53,7 @@
 魔罩 = -> $.press 'alt + 0'
 爆炎 = -> $.press 'alt + minus'
 以太步 = -> $.press 'alt + equal'
-昏乱 = -> $.press 'ctrl + 1'
+昏乱 = -> $.press 'shift + 4'
 
 # ---
 
@@ -65,14 +65,14 @@
   unless A_TickCount - 即刻咏唱时间戳 > 即刻咏唱冷却
     return false
 
-  $.press 'ctrl + 2'
+  $.press 'shift + 5'
 
   $.setInterval 监听即刻咏唱, 200
   return true
 
 监听即刻咏唱 = ->
 
-  unless isChanted '即刻咏唱2'
+  unless isUsed '即刻咏唱2'
     return
 
   $.clearInterval 监听即刻咏唱
@@ -80,8 +80,8 @@
 
 # ---
 
-醒梦 = -> $.press 'ctrl + 3'
-沉稳咏唱 = -> $.press 'ctrl + 4'
+醒梦 = -> $.press 'shift + 6'
+沉稳咏唱 = -> $.press 'shift + 7'
 
 # ---
 

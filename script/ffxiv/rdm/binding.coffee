@@ -32,7 +32,11 @@ $.on 'f12', ->
   unless group
     return
 
+  report()
   索敌()
+
+  black = getBlack()
+  white = getWhite()
 
   # 单体攻击
   if group == 'right'
@@ -49,7 +53,7 @@ $.on 'f12', ->
   isPressing = $.isPressing '2-joy-4'
   unless isPressing
     $.clearInterval 绑定攻击
-    $.setTimeout 清空信息, 3e3
+    $.setTimeout 清空信息, 10e3
     return
 
   $.clearTimeout 清空信息
@@ -73,7 +77,11 @@ $.on '2-joy-4', ->
   unless group
     return
 
+  report()
   索敌()
+
+  black = getBlack()
+  white = getWhite()
 
   if group == 'right'
     魔三连()
@@ -102,7 +110,7 @@ $.on '2-joy-4', ->
   isPressing = $.isPressing '2-joy-2'
   unless isPressing
     $.clearInterval 绑定特殊攻击
-    $.setTimeout 清空信息, 3e3
+    $.setTimeout 清空信息, 5e3
     return
 
   $.clearTimeout 清空信息
@@ -136,3 +144,9 @@ $.on '2-joy-3', ->
     asr = 2
     能力技()
     return
+
+# ---
+
+$.on '2-joy-13', ->
+  isAutoTargeting = !isAutoTargeting
+  $.beep()

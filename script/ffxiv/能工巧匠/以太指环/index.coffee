@@ -96,17 +96,17 @@ limit = 20
 
   回收利用()
 
-  模范制作III()
-  count++
+  # 模范制作III()
+  # count++
 
-  # await $.sleep 500
+  await $.sleep 500
 
-  # if hasStatus '再利用'
-  #   模范制作III()
-  #   count++
-  # else
-  #   坯料加工()
-  #   坯料加工()
+  if hasStatus '再利用'
+    模范制作III()
+    count++
+  else
+    坯料加工()
+    坯料加工()
 
   await $.sleep 2e3
 

@@ -40,6 +40,7 @@ report = ->
 
   msg = "体力：#{hp}% / 魔力：#{mp}%"
   msg = "#{msg}`n黑：#{black} / 白：#{white}"
+  msg = "#{msg}`n自动索敌：#{isAutoTargeting}"
   msg = "#{msg}`n耗时：#{A_TickCount - tsReport}ms`n"
   
   tsReport = A_TickCount
@@ -81,3 +82,5 @@ report = ->
     msg = "#{msg}`n醒梦：#{res}s"
   
   $.tip msg, 410, 640
+  $.clearTimeout clearTip
+  $.setTimeout clearTip, 5e3

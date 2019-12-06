@@ -25,13 +25,6 @@ $.on 'f12', ->
 
 # ---
 
-isDotEnabled = true
-$.on '2-joy-13', ->
-  isDotEnabled = !isDotEnabled
-  $.beep()
-
-# ---
-
 攻击 = ->
 
   group = getGroup()
@@ -39,6 +32,7 @@ $.on '2-joy-13', ->
   unless group
     return
 
+  report()
   索敌()
 
   # 单体攻击
@@ -56,7 +50,7 @@ $.on '2-joy-13', ->
   isPressing = $.isPressing '2-joy-4'
   unless isPressing
     $.clearInterval 绑定攻击
-    $.setTimeout 清空信息, 3e3
+    $.setTimeout 清空信息, 5e3
     return
 
   $.clearTimeout 清空信息
