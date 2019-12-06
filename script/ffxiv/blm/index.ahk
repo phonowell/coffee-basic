@@ -37,7 +37,7 @@ global 震雷冷却 := 10000
 global 即刻咏唱时间戳 := 0
 global 即刻咏唱冷却 := 60000
 global 索敌时间戳 := 0
-global 索敌冷却 := 3000
+global 索敌冷却 := 5000
 
 ; function
 

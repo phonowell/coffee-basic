@@ -35,6 +35,8 @@ global 短兵相接时间戳 := 0
 global 短兵相接冷却 := 40000
 global 交击斩时间戳 := 0
 global 交击斩冷却 := 10000
+global 移转时间戳 := 0
+global 移转冷却 := 35000
 global 飞刺时间戳 := 0
 global 飞刺冷却 := 25000
 global 连攻时间戳 := 0
@@ -56,7 +58,7 @@ global 醒梦时间戳 := 0
 global 醒梦冷却 := 60000
 global isAutoTargeting := true
 global 索敌时间戳 := 0
-global 索敌冷却 := 3000
+global 索敌冷却 := 5000
 global asr := 0
 global 赤神圣时间戳 := 0
 global 赤神圣冷却 := 10000
@@ -420,12 +422,35 @@ report() {
 }
 
 移转() {
+  if !(asr > 0) {
+    return false
+  }
+  if !(A_TickCount - 移转时间戳 > 移转冷却) {
+    return false
+  }
+  if !(A_TickCount - 回刺时间戳 > 15000) {
+    return false
+  }
+  if (black > 70 or white > 70) {
+    return false
+  }
   Send {alt down}{=}{alt up}
+  SetTimer 监听移转, 200
+  asr--
+  return true
+}
+
+监听移转() {
+  if !(isUsed("移转")) {
+    return
+  }
+  移转时间戳 := A_TickCount - 2000
+  SetTimer 监听移转, Off
 }
 
 飞刺() {
   if !(asr > 0) {
-    return
+    return false
   }
   if !(A_TickCount - 飞刺时间戳 > 飞刺冷却) {
     return false
@@ -455,8 +480,8 @@ report() {
     return false
   }
   Send {ctrl down}{2}{ctrl up}
-  return true
   SetTimer 监听连攻, 200
+  return true
 }
 
 监听连攻() {
@@ -469,7 +494,7 @@ report() {
 
 促进() {
   if !(asr > 0) {
-    return
+    return false
   }
   if !(A_TickCount - 促进时间戳 > 促进冷却) {
     return false
@@ -514,7 +539,7 @@ report() {
 
 六分反击() {
   if !(asr > 0) {
-    return
+    return false
   }
   if !(A_TickCount - 六分反击时间戳 > 六分反击冷却) {
     return false
@@ -535,7 +560,7 @@ report() {
 
 鼓励() {
   if !(asr > 0) {
-    return
+    return false
   }
   if !(A_TickCount - 鼓励时间戳 > 鼓励冷却) {
     return false
@@ -556,7 +581,7 @@ report() {
 
 倍增() {
   if !(asr > 0) {
-    return
+    return false
   }
   if !(white >= 40 and white < 70) {
     return false
@@ -576,30 +601,23 @@ report() {
   }
   倍增时间戳 := A_TickCount - 2000
   短兵相接时间戳 := 0
+  移转时间戳 := 0
   交剑时间戳 := 0
   SetTimer 监听倍增, Off
 }
 
-震荡() {
-  Send {ctrl down}{9}{ctrl up}
-}
-
 赤复活() {
-  Send {ctrl down}{0}{ctrl up}
-}
-
-冲击() {
-  Send {ctrl down}{-}{ctrl up}
+  Send {ctrl down}{9}{ctrl up}
 }
 
 交剑() {
   if !(asr > 0) {
-    return
+    return false
   }
   if !(A_TickCount - 交剑时间戳 > 交剑冷却) {
     return false
   }
-  Send {ctrl down}{=}{ctrl up}
+  Send {ctrl down}{0}{ctrl up}
   SetTimer 监听交剑, 200
   asr--
   return true
@@ -614,16 +632,16 @@ report() {
 }
 
 续斩() {
-  Send {shift down}{1}{shift up}
+  Send {ctrl down}{-}{ctrl up}
 }
 
 昏乱() {
-  Send {shift down}{2}{shift up}
+  Send {ctrl down}{=}{ctrl up}
 }
 
 即刻咏唱() {
   if !(asr > 0) {
-    return
+    return false
   }
   if !(A_TickCount - 即刻咏唱时间戳 > 即刻咏唱冷却) {
     return false
@@ -639,7 +657,7 @@ report() {
   if (isBR and isWR) {
     return
   }
-  Send {shift down}{3}{shift up}
+  Send {shift down}{1}{shift up}
   SetTimer 监听即刻咏唱, 200
   asr--
   return true
@@ -655,7 +673,7 @@ report() {
 
 醒梦() {
   if !(asr > 0) {
-    return
+    return false
   }
   if !(A_TickCount - 醒梦时间戳 > 醒梦冷却) {
     return false
@@ -664,7 +682,7 @@ report() {
   if (mp > 50) {
     return false
   }
-  Send {shift down}{4}{shift up}
+  Send {shift down}{2}{shift up}
   SetTimer 监听醒梦, 200
   asr--
   return true
@@ -679,7 +697,7 @@ report() {
 }
 
 沉稳咏唱() {
-  Send {shift down}{5}{shift up}
+  Send {shift down}{3}{shift up}
 }
 
 索敌() {
@@ -692,7 +710,7 @@ report() {
   if (isChanting()) {
     return false
   }
-  Send {shift down}{-}{shift up}
+  Send {f11}
   索敌时间戳 := A_TickCount - 2000
   return true
 }
@@ -963,19 +981,19 @@ f5::
   Reload
 return
 
-f9::
-  MouseGetPos x, y
-  PixelGetColor color, x, y, RGB
-  ToolTip % "" . x . ", " . y . ", " . color . ""
-return
-
 f6::
   PixelSearch x, y, 0, 0, A_ScreenWidth, A_ScreenHeight, 0x58483E, 0, Fast RGB
   MouseMove x, y, 0
   ToolTip % "" . x . ", " . y . ""
 return
 
-f12::
+f9::
+  MouseGetPos x, y
+  PixelGetColor color, x, y, RGB
+  ToolTip % "" . x . ", " . y . ", " . color . ""
+return
+
+f10::
   SoundBeep
   ExitApp
 return

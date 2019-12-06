@@ -9,17 +9,17 @@ $.on 'f5', ->
   $.beep()
   $.reload()
 
-$.on 'f9', ->
-  [x, y] = $.getPosition()
-  color = $.getColor x, y
-  $.tip "#{x}, #{y}, #{color}"
-
 $.on 'f6', ->
   [x, y] = $.findColor '#58483e'
   $.move x, y
   $.tip "#{x}, #{y}"
 
-$.on 'f12', ->
+$.on 'f9', ->
+  [x, y] = $.getPosition()
+  color = $.getColor x, y
+  $.tip "#{x}, #{y}, #{color}"
+
+$.on 'f10', ->
   $.beep()
   $.exit()
 

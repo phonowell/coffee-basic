@@ -94,7 +94,36 @@
 
 # ---
 
-移转 = -> $.press 'alt + equal'
+移转时间戳 = 0
+移转冷却 = 35e3
+
+移转 = ->
+
+  unless asr > 0
+    return false
+
+  unless A_TickCount - 移转时间戳 > 移转冷却
+    return false
+
+  unless A_TickCount - 回刺时间戳 > 15e3
+    return false
+
+  if black > 70 or white > 70
+    return false
+
+  $.press 'alt + equal'
+
+  $.setInterval 监听移转, 200
+  asr--
+  return true
+
+监听移转 = ->
+
+  unless isUsed '移转'
+    return
+
+  移转时间戳 = A_TickCount - 2e3
+  $.clearInterval 监听移转
 
 # ---
 
@@ -104,7 +133,7 @@
 飞刺 = ->
 
   unless asr > 0
-    return
+    return false
 
   unless A_TickCount - 飞刺时间戳 > 飞刺冷却
     return false
@@ -141,8 +170,8 @@
 
   $.press 'ctrl + 2'
 
-  return true
   $.setInterval 监听连攻, 200
+  return true
 
 监听连攻 = ->
 
@@ -160,7 +189,7 @@
 促进 = ->
 
   unless asr > 0
-    return
+    return false
 
   unless A_TickCount - 促进时间戳 > 促进冷却
     return false
@@ -215,7 +244,7 @@
 六分反击 = ->
 
   unless asr > 0
-    return
+    return false
 
   unless A_TickCount - 六分反击时间戳 > 六分反击冷却
     return false
@@ -242,7 +271,7 @@
 鼓励 = ->
 
   unless asr > 0
-    return
+    return false
 
   unless A_TickCount - 鼓励时间戳 > 鼓励冷却
     return false
@@ -269,7 +298,7 @@
 倍增 = ->
 
   unless asr > 0
-    return
+    return false
 
   unless white >= 40 and white < 70
     return false
@@ -290,14 +319,13 @@
 
   倍增时间戳 = A_TickCount - 2e3
   短兵相接时间戳 = 0
+  移转时间戳 = 0
   交剑时间戳 = 0
   $.clearInterval 监听倍增
 
 # ---
 
-震荡 = -> $.press 'ctrl + 9'
-赤复活 = -> $.press 'ctrl + 0'
-冲击 = -> $.press 'ctrl + minus'
+赤复活 = -> $.press 'ctrl + 9'
 
 # ---
 
@@ -307,12 +335,12 @@
 交剑 = ->
 
   unless asr > 0
-    return
+    return false
 
   unless A_TickCount - 交剑时间戳 > 交剑冷却
     return false
 
-  $.press 'ctrl + equal'
+  $.press 'ctrl + 0'
 
   $.setInterval 监听交剑, 200
   asr--
@@ -328,11 +356,11 @@
 
 # ---
 
-续斩 = -> $.press 'shift + 1'
+续斩 = -> $.press 'ctrl + minus'
 
 # ---
 
-昏乱 = -> $.press 'shift + 2'
+昏乱 = -> $.press 'ctrl + equal'
 
 # ---
 
@@ -342,7 +370,7 @@
 即刻咏唱 = ->
 
   unless asr > 0
-    return
+    return false
 
   unless A_TickCount - 即刻咏唱时间戳 > 即刻咏唱冷却
     return false
@@ -358,7 +386,7 @@
   if isBR and isWR
     return
 
-  $.press 'shift + 3'
+  $.press 'shift + 1'
 
   $.setInterval 监听即刻咏唱, 200
   asr--
@@ -380,7 +408,7 @@
 醒梦 = ->
 
   unless asr > 0
-    return
+    return false
 
   unless A_TickCount - 醒梦时间戳 > 醒梦冷却
     return false
@@ -389,7 +417,7 @@
   if mp > 50
     return false
 
-  $.press 'shift + 4'
+  $.press 'shift + 2'
 
   $.setInterval 监听醒梦, 200
   asr--
@@ -405,13 +433,13 @@
 
 # ---
 
-沉稳咏唱 = -> $.press 'shift + 5'
+沉稳咏唱 = -> $.press 'shift + 3'
 
 # ---
 
 isAutoTargeting = true
 索敌时间戳 = 0
-索敌冷却 = 3e3
+索敌冷却 = 5e3
 
 索敌 = ->
 
@@ -424,7 +452,7 @@ isAutoTargeting = true
   if isChanting()
     return false
 
-  $.press 'shift + minus'
+  $.press 'f11'
 
   索敌时间戳 = A_TickCount - 2e3
   return true
@@ -445,6 +473,12 @@ asr = 0
 
   if 六分反击()
     return true
+
+  # if 移转()
+  #   return true
+
+  # if 短兵相接()
+  #   return true
 
   if 交剑()
     return true
