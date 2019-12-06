@@ -1,8 +1,9 @@
-$.on 'f12', -> $.exit()
+a = {}
 
-$.on 'f2', ->
-  await $.sleep 1e3
-  $.beep()
+reg = ->
+  a.回刺时间戳 = 0
+  a.回刺冷却 = 10e3
 
-$.on 'f3', ->
-  1
+reg()
+
+$.on 'f2', -> $.tip a.回刺冷却

@@ -5,4 +5,14 @@ module.exports = ->
 
   parse_ = $.require './source/index'
 
-  $.watch './script/**/*.coffee', (e) -> await parse_ e.path
+  listSource = [
+    './script/*.coffee'
+    './script/other/*.coffee'
+    './script/test/*.coffee'
+  ]
+
+  $.watch listSource, (e) -> await parse_ e.path
+
+  $.watch './script/ffxiv/**/*.coffee', (e) ->
+    dirname = $.getDirname e.path
+    await parse_ "#{dirname}/index.coffee"

@@ -9,11 +9,8 @@ trim = require '../fn/trim'
 
 Rule =
   '$.beep': 'SoundBeep'
-  '$.block': 'BlockInput'
   '$.exit': 'ExitApp'
   '$.info': 'TrayTip %'
-  '$.pause': 'Pause'
-  '$.play': 'SoundPlay'
   '$.reload': 'Reload'
   '$.sleep': 'Sleep %'
   '$.trim': 'Trim'

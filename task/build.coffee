@@ -8,7 +8,8 @@ module.exports = ->
   parse_ = $.require './source/index'
 
   listSource = [
-    './script/**/index.coffee'
+    './script/*.coffee'
+    './script/ffxiv/**/index.coffee'
     './script/other/*.coffee'
     './script/test/*.coffee'
   ]
