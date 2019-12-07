@@ -16,6 +16,11 @@
   isBR = hasStatus '赤火炎预备'
   isWR = hasStatus '赤飞石预备'
 
+  if black > 85 and white > 85
+    续斩()
+    asr = 2
+    return
+
   if 长单体 isA, isB, isBR, isWR
     asr = 2
     return

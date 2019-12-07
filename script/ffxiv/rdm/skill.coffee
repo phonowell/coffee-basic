@@ -441,24 +441,13 @@ asr = 0
 
 # ---
 
-isAutoTargeting = true
-索敌时间戳 = 0
-索敌冷却 = 5e3
-
 索敌 = ->
 
-  unless isAutoTargeting
-    return false
-
-  unless A_TickCount - 索敌时间戳 > 索敌冷却
-    return false
-
-  if isChanting()
+  ehp = getEnemyHp()
+  if ehp
     return false
 
   $.press 'f11'
-
-  索敌时间戳 = A_TickCount - 2e3
   return true
 
 # ---

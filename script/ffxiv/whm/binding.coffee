@@ -70,7 +70,7 @@ $.on '2-joy-4', ->
 
 # ---
 
-$.on '2-joy-2', ->
+_治疗 = ->
 
   group = getGroup()
 
@@ -91,6 +91,26 @@ $.on '2-joy-2', ->
   if group == 'both'
     群体治疗()
     return
+
+绑定治疗 = ->
+
+  isPressing = $.isPressing '2-joy-2'
+  unless isPressing
+    $.clearInterval 绑定治疗
+    $.setTimeout 清空信息, 10e3
+    return
+
+  $.clearTimeout 清空信息
+  _治疗()
+
+$.on '2-joy-2', ->
+
+  unless getGroup()
+    return
+
+  $.clearInterval 绑定治疗
+  $.setInterval 绑定治疗, 300
+  _治疗()
 
 # ---
 

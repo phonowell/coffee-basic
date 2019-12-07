@@ -144,9 +144,3 @@ $.on '2-joy-3', ->
     asr = 2
     能力技()
     return
-
-# ---
-
-$.on '2-joy-13', ->
-  isAutoTargeting = !isAutoTargeting
-  $.beep()

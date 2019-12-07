@@ -22,6 +22,7 @@ SetMouseDelay 0, 50
 
 ; global
 
+global ehp := 0
 global hp := 0
 global mp := 0
 global isViewFar := false
@@ -57,9 +58,6 @@ global 即刻咏唱时间戳 := 0
 global 即刻咏唱冷却 := 60000
 global 醒梦时间戳 := 0
 global 醒梦冷却 := 60000
-global isAutoTargeting := true
-global 索敌时间戳 := 0
-global 索敌冷却 := 5000
 global 赤神圣时间戳 := 0
 global 赤神圣冷却 := 10000
 
@@ -67,6 +65,20 @@ global 赤神圣冷却 := 10000
 
 clearTip() {
   ToolTip
+}
+
+getEnemyHp() {
+  PixelGetColor color, 650, 65, RGB
+  if !(color == 0xFF8888) {
+    return 0
+  }
+  PixelSearch x, y, 650, 65, 1084, 65, 0x471515, 0, Fast RGB
+  if !(x) {
+    return 100
+  }
+  percent := (x - 650) * 100 / (1084 - 650)
+  percent := Floor(percent)
+  return percent
 }
 
 getGroup() {
@@ -279,9 +291,8 @@ report() {
   if !(isReporting) {
     return
   }
-  msg := "体力：" . hp . "% / 魔力：" . mp . "%"
+  msg := "目标体力：" . ehp . "% / 魔力：" . mp . "%"
   msg := "" . msg . "`n黑：" . black . " / 白：" . white . ""
-  msg := "" . msg . "`n自动索敌：" . isAutoTargeting . ""
   msg := "" . msg . "`n耗时：" . A_TickCount - tsReport . "ms`n"
   tsReport := A_TickCount
   res := calcCD(短兵相接时间戳, 短兵相接冷却)
@@ -701,17 +712,11 @@ report() {
 }
 
 索敌() {
-  if !(isAutoTargeting) {
-    return false
-  }
-  if !(A_TickCount - 索敌时间戳 > 索敌冷却) {
-    return false
-  }
-  if (isChanting()) {
+  ehp := getEnemyHp()
+  if (ehp) {
     return false
   }
   Send {f11}
-  索敌时间戳 := A_TickCount - 2000
   return true
 }
 
@@ -808,6 +813,11 @@ report() {
   isB := hasStatus("即刻咏唱")
   isBR := hasStatus("赤火炎预备")
   isWR := hasStatus("赤飞石预备")
+  if (black > 85 and white > 85) {
+    续斩()
+    asr := 2
+    return
+  }
   if (长单体(isA, isB, isBR, isWR)) {
     asr := 2
     return
@@ -1028,11 +1038,6 @@ return
     能力技()
     return
   }
-return
-
-2joy13::
-  isAutoTargeting := !isAutoTargeting
-  SoundBeep
 return
 
 ; eof

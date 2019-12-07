@@ -22,6 +22,7 @@ SetMouseDelay 0, 50
 
 ; global
 
+global ehp := 0
 global hp := 0
 global mp := 0
 global isViewFar := false
@@ -44,13 +45,25 @@ global 即刻咏唱时间戳 := 0
 global 即刻咏唱冷却 := 60000
 global 醒梦时间戳 := 0
 global 醒梦冷却 := 60000
-global 索敌时间戳 := 0
-global 索敌冷却 := 5000
 
 ; function
 
 clearTip() {
   ToolTip
+}
+
+getEnemyHp() {
+  PixelGetColor color, 650, 65, RGB
+  if !(color == 0xFF8888) {
+    return 0
+  }
+  PixelSearch x, y, 650, 65, 1084, 65, 0x471515, 0, Fast RGB
+  if !(x) {
+    return 100
+  }
+  percent := (x - 650) * 100 / (1084 - 650)
+  percent := Floor(percent)
+  return percent
 }
 
 getGroup() {
@@ -184,6 +197,36 @@ toggleView() {
   攻击()
 }
 
+_治疗() {
+  group := getGroup()
+  if !(group) {
+    return
+  }
+  report()
+  red := getRed()
+  white := getWhite()
+  if (group == "right") {
+    单体治疗()
+    return
+  }
+  if (group == "both") {
+    群体治疗()
+    return
+  }
+}
+
+绑定治疗() {
+  GetKeyState __value__, 2joy2
+  isPressing := __value__ == "D"
+  if !(isPressing) {
+    SetTimer 绑定治疗, Off
+    SetTimer 清空信息, % 0 - 10000
+    return
+  }
+  SetTimer 清空信息, Off
+  _治疗()
+}
+
 calcCD(ts, cd) {
   result := cd - (A_TickCount - ts)
   if (result < 0) {
@@ -230,7 +273,7 @@ report() {
   if !(isReporting) {
     return
   }
-  msg := "体力：" . hp . "% / 魔力：" . mp . "%"
+  msg := "目标体力：" . ehp . "% / 魔力：" . mp . "%"
   msg := "" . msg . "`n白：" . white . " / 红：" . red . ""
   msg := "" . msg . "`n耗时：" . A_TickCount - tsReport . "ms`n"
   tsReport := A_TickCount
@@ -570,14 +613,11 @@ report() {
 }
 
 索敌() {
-  if !(A_TickCount - 索敌时间戳 > 索敌冷却) {
-    return false
-  }
-  if (isChanting()) {
+  ehp := getEnemyHp()
+  if (ehp) {
     return false
   }
   Send {f11}
-  索敌时间戳 := A_TickCount - 2000
   return true
 }
 
@@ -699,21 +739,12 @@ return
 return
 
 2joy2::
-  group := getGroup()
-  if !(group) {
+  if !(getGroup()) {
     return
   }
-  report()
-  red := getRed()
-  white := getWhite()
-  if (group == "right") {
-    单体治疗()
-    return
-  }
-  if (group == "both") {
-    群体治疗()
-    return
-  }
+  SetTimer 绑定治疗, Off
+  SetTimer 绑定治疗, 300
+  _治疗()
 return
 
 2joy1::

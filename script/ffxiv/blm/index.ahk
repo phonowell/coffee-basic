@@ -22,6 +22,7 @@ SetMouseDelay 0, 50
 
 ; global
 
+global ehp := 0
 global hp := 0
 global mp := 0
 global isViewFar := false
@@ -43,6 +44,20 @@ global 索敌冷却 := 5000
 
 clearTip() {
   ToolTip
+}
+
+getEnemyHp() {
+  PixelGetColor color, 650, 65, RGB
+  if !(color == 0xFF8888) {
+    return 0
+  }
+  PixelSearch x, y, 650, 65, 1084, 65, 0x471515, 0, Fast RGB
+  if !(x) {
+    return 100
+  }
+  percent := (x - 650) * 100 / (1084 - 650)
+  percent := Floor(percent)
+  return percent
 }
 
 getGroup() {
