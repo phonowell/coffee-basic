@@ -29,6 +29,7 @@ global black := 0
 global white := 0
 global isReporting := true
 global tsReport := 0
+global asr := 0
 global 回刺时间戳 := 0
 global 回刺冷却 := 10000
 global 短兵相接时间戳 := 0
@@ -59,7 +60,6 @@ global 醒梦冷却 := 60000
 global isAutoTargeting := true
 global 索敌时间戳 := 0
 global 索敌冷却 := 5000
-global asr := 0
 global 赤神圣时间戳 := 0
 global 赤神圣冷却 := 10000
 
@@ -514,7 +514,7 @@ report() {
 }
 
 监听促进() {
-  if !(isUsed("促进2")) {
+  if !(hasStatus("促进")) {
     return
   }
   促进时间戳 := A_TickCount - 2000
@@ -664,7 +664,7 @@ report() {
 }
 
 监听即刻咏唱() {
-  if !(isUsed("即刻咏唱2")) {
+  if !(hasStatus("即刻咏唱")) {
     return
   }
   即刻咏唱时间戳 := A_TickCount - 2000
@@ -689,7 +689,7 @@ report() {
 }
 
 监听醒梦() {
-  if !(isUsed("醒梦")) {
+  if !(hasStatus("醒梦")) {
     return
   }
   醒梦时间戳 := A_TickCount - 2000

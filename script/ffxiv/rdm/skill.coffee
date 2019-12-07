@@ -1,3 +1,7 @@
+asr = 0
+
+# ---
+
 回刺时间戳 = 0
 回刺冷却 = 10e3
 
@@ -210,7 +214,7 @@
 
 监听促进 = ->
 
-  unless isUsed '促进2'
+  unless hasStatus '促进'
     return
 
   促进时间戳 = A_TickCount - 2e3
@@ -394,7 +398,7 @@
 
 监听即刻咏唱 = ->
 
-  unless isUsed '即刻咏唱2'
+  unless hasStatus '即刻咏唱'
     return
 
   即刻咏唱时间戳 = A_TickCount - 2e3
@@ -425,7 +429,7 @@
 
 监听醒梦 = ->
 
-  unless isUsed '醒梦'
+  unless hasStatus '醒梦'
     return
 
   醒梦时间戳 = A_TickCount - 2e3
@@ -462,7 +466,7 @@ isAutoTargeting = true
 清空信息 = -> $.press 'shift + equal'
 
 # ---
-asr = 0
+
 能力技 = ->
 
   unless asr > 0
