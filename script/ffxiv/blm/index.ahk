@@ -37,8 +37,6 @@ global 震雷时间戳 := 0
 global 震雷冷却 := 10000
 global 即刻咏唱时间戳 := 0
 global 即刻咏唱冷却 := 60000
-global 索敌时间戳 := 0
-global 索敌冷却 := 5000
 
 ; function
 
@@ -142,6 +140,12 @@ isMoving() {
     return true
   }
   return false
+}
+
+reset() {
+  Send {alt up}
+  Send {ctrl up}
+  Send {shift up}
 }
 
 toggleView() {
@@ -337,14 +341,11 @@ report() {
 }
 
 索敌() {
-  if !(A_TickCount - 索敌时间戳 > 索敌冷却) {
+  ehp := getEnemyHp()
+  if (ehp) {
     return false
   }
-  if (isChanting()) {
-    return false
-  }
-  Send {shift down}{-}{shift up}
-  索敌时间戳 := A_TickCount - 2000
+  Send {f11}
   return true
 }
 
@@ -433,19 +434,19 @@ f5::
   Reload
 return
 
-f9::
+f6::
   MouseGetPos x, y
   PixelGetColor color, x, y, RGB
   ToolTip % "" . x . ", " . y . ", " . color . ""
 return
 
-f6::
+f9::
   PixelSearch x, y, 0, 0, A_ScreenWidth, A_ScreenHeight, 0x58483E, 0, Fast RGB
   MouseMove x, y, 0
   ToolTip % "" . x . ", " . y . ""
 return
 
-f12::
+f10::
   SoundBeep
   ExitApp
 return

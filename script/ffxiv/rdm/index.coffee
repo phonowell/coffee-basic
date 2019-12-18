@@ -69,16 +69,24 @@
 
 魔三连 = ->
 
-  isA = hasStatus '连续咏唱'
-  isB = hasStatus '即刻咏唱'
+  isValid = true
 
-  if isA or isB
+  if hasStatus '连续咏唱'
+    isValid = false
+  if hasStatus '即刻咏唱'
+    isValid = false
+
+  unless isValid
     单体攻击()
+    return
+
+  unless distance == 'near'
+    asr = 1
+    短兵相接 true
     return
 
   if 回刺()
     asr = 2
-    短兵相接()
     return
 
   if 交击斩()
@@ -88,8 +96,6 @@
 
   if 连攻()
     asr = 2
-    交剑()
-    短兵相接()
     return
 
   if 赤神圣()
@@ -169,7 +175,3 @@
     赤疾风()
 
   return true
-
-# ---
-
-$.setTimeout 清空信息, 3e3

@@ -27,6 +27,7 @@ global hp := 0
 global mp := 0
 global isViewFar := false
 global black := 0
+global distance := "far"
 global white := 0
 global isReporting := true
 global tsReport := 0
@@ -58,8 +59,12 @@ global 即刻咏唱时间戳 := 0
 global 即刻咏唱冷却 := 60000
 global 醒梦时间戳 := 0
 global 醒梦冷却 := 60000
+global 能力时间戳 := 0
+global 能力冷却 := 300
 global 赤神圣时间戳 := 0
 global 赤神圣冷却 := 10000
+global 焦热时间戳 := 0
+global 焦热冷却 := 10000
 
 ; function
 
@@ -163,6 +168,12 @@ isMoving() {
     return true
   }
   return false
+}
+
+reset() {
+  Send {alt up}
+  Send {ctrl up}
+  Send {shift up}
 }
 
 toggleView() {
@@ -277,6 +288,17 @@ getBlack() {
   return percent
 }
 
+getDistance() {
+  PixelGetColor color, 1079, 961, RGB
+  if (color == 0xD53B3B) {
+    return "far"
+  }
+  if (color == 0x9A1E1F) {
+    return "far"
+  }
+  return "near"
+}
+
 getWhite() {
   PixelSearch x, y, 1023, 798, 1170, 798, 0x58483E, 10, Fast RGB
   if !(x) {
@@ -288,11 +310,16 @@ getWhite() {
 }
 
 report() {
+  black := getBlack()
+  distance := getDistance()
+  ehp := getEnemyHp()
+  white := getWhite()
   if !(isReporting) {
     return
   }
-  msg := "目标体力：" . ehp . "% / 魔力：" . mp . "%"
-  msg := "" . msg . "`n黑：" . black . " / 白：" . white . ""
+  msg := "目标体力：" . ehp . "% / 目标距离：" . distance . ""
+  msg := "" . msg . "`n魔力：" . mp . "% / 黑：" . black . " / 白：" . white . ""
+  msg := "" . msg . "`n能力技余额：" . asr . "`n"
   msg := "" . msg . "`n耗时：" . A_TickCount - tsReport . "ms`n"
   tsReport := A_TickCount
   res := calcCD(短兵相接时间戳, 短兵相接冷却)
@@ -352,7 +379,7 @@ report() {
   if !(isUsed("魔回刺")) {
     return
   }
-  回刺时间戳 := A_TickCount - 2000
+  回刺时间戳 := A_TickCount - 1500
   SetTimer 监听回刺, Off
 }
 
@@ -364,16 +391,19 @@ report() {
   Send {alt down}{3}{alt up}
 }
 
-短兵相接() {
+短兵相接(isForced := false) {
   if !(asr > 0) {
     return false
   }
   if !(A_TickCount - 短兵相接时间戳 > 短兵相接冷却) {
     return false
   }
+  if !(distance == "near" or isForced) {
+    return false
+  }
   Send {alt down}{4}{alt up}
-  SetTimer 监听短兵相接, 200
   asr--
+  SetTimer 监听短兵相接, 200
   return true
 }
 
@@ -381,7 +411,7 @@ report() {
   if !(isUsed("短兵相接")) {
     return
   }
-  短兵相接时间戳 := A_TickCount - 2000
+  短兵相接时间戳 := A_TickCount - 1500
   SetTimer 短兵相接, Off
 }
 
@@ -428,7 +458,7 @@ report() {
   if !(isUsed("魔交击斩")) {
     return
   }
-  交击斩时间戳 := A_TickCount - 2000
+  交击斩时间戳 := A_TickCount - 1500
   SetTimer 监听交击斩, Off
 }
 
@@ -446,8 +476,8 @@ report() {
     return false
   }
   Send {alt down}{=}{alt up}
-  SetTimer 监听移转, 200
   asr--
+  SetTimer 监听移转, 200
   return true
 }
 
@@ -455,7 +485,7 @@ report() {
   if !(isUsed("移转")) {
     return
   }
-  移转时间戳 := A_TickCount - 2000
+  移转时间戳 := A_TickCount - 1500
   SetTimer 监听移转, Off
 }
 
@@ -467,8 +497,8 @@ report() {
     return false
   }
   Send {ctrl down}{1}{ctrl up}
-  SetTimer 监听飞刺, 200
   asr--
+  SetTimer 监听飞刺, 200
   return true
 }
 
@@ -476,7 +506,7 @@ report() {
   if !(isUsed("飞刺")) {
     return
   }
-  飞刺时间戳 := A_TickCount - 2000
+  飞刺时间戳 := A_TickCount - 1500
   SetTimer 监听飞刺, Off
 }
 
@@ -499,7 +529,7 @@ report() {
   if !(isUsed("魔连攻")) {
     return
   }
-  连攻时间戳 := A_TickCount - 2000
+  连攻时间戳 := A_TickCount - 1500
   SetTimer 监听连攻, Off
 }
 
@@ -510,17 +540,17 @@ report() {
   if !(A_TickCount - 促进时间戳 > 促进冷却) {
     return false
   }
-  if (black > 80 or white > 80) {
+  if (black > 70 or white > 70) {
     return false
   }
   isBR := hasStatus("赤火炎预备")
-  isWR := hasStatus("赤飞石预备")
-  if (isBR and isWR) {
+  isWR := hasStatus("赤飞石预备"+)
+  if (isBR or isWR) {
     return false
   }
   Send {ctrl down}{3}{ctrl up}
-  SetTimer 监听促进, 200
   asr--
+  SetTimer 监听促进, 200
   return true
 }
 
@@ -528,7 +558,7 @@ report() {
   if !(hasStatus("促进")) {
     return
   }
-  促进时间戳 := A_TickCount - 2000
+  促进时间戳 := A_TickCount - 1500
   SetTimer 监听促进, Off
 }
 
@@ -540,7 +570,7 @@ report() {
   if !(isUsed("魔划圆斩")) {
     return false
   }
-  划圆斩时间戳 := A_TickCount - 2000
+  划圆斩时间戳 := A_TickCount - 1500
   return true
 }
 
@@ -556,8 +586,8 @@ report() {
     return false
   }
   Send {ctrl down}{6}{ctrl up}
-  SetTimer 监听六分反击, 0
   asr--
+  SetTimer 监听六分反击, 0
   return true
 }
 
@@ -565,7 +595,7 @@ report() {
   if !(isUsed("六分反击")) {
     return
   }
-  六分反击时间戳 := A_TickCount - 2000
+  六分反击时间戳 := A_TickCount - 1500
   SetTimer 监听六分反击, Off
 }
 
@@ -577,8 +607,8 @@ report() {
     return false
   }
   Send {ctrl down}{7}{ctrl up}
-  SetTimer 监听鼓励, 200
   asr--
+  SetTimer 监听鼓励, 200
   return true
 }
 
@@ -586,7 +616,7 @@ report() {
   if !(isUsed("鼓励")) {
     return
   }
-  鼓励时间戳 := A_TickCount - 2000
+  鼓励时间戳 := A_TickCount - 1500
   SetTimer 监听鼓励, Off
 }
 
@@ -601,8 +631,8 @@ report() {
     return false
   }
   Send {ctrl down}{8}{ctrl up}
-  SetTimer 监听倍增, 200
   asr--
+  SetTimer 监听倍增, 200
   return true
 }
 
@@ -610,7 +640,7 @@ report() {
   if !(isUsed("倍增")) {
     return
   }
-  倍增时间戳 := A_TickCount - 2000
+  倍增时间戳 := A_TickCount - 1500
   短兵相接时间戳 := 0
   移转时间戳 := 0
   交剑时间戳 := 0
@@ -628,9 +658,12 @@ report() {
   if !(A_TickCount - 交剑时间戳 > 交剑冷却) {
     return false
   }
+  if !(distance == "near") {
+    return false
+  }
   Send {ctrl down}{0}{ctrl up}
-  SetTimer 监听交剑, 200
   asr--
+  SetTimer 监听交剑, 200
   return true
 }
 
@@ -638,7 +671,7 @@ report() {
   if !(isUsed("交剑")) {
     return
   }
-  交剑时间戳 := A_TickCount - 2000
+  交剑时间戳 := A_TickCount - 1500
   SetTimer 监听交剑, Off
 }
 
@@ -657,7 +690,10 @@ report() {
   if !(A_TickCount - 即刻咏唱时间戳 > 即刻咏唱冷却) {
     return false
   }
-  if (black > 60 or white > 60) {
+  if !(A_TickCount - 回刺时间戳 > 回刺冷却) {
+    return false
+  }
+  if (black > 70 or white > 70) {
     return false
   }
   if (hasStatus("连续咏唱")) {
@@ -669,8 +705,8 @@ report() {
     return
   }
   Send {shift down}{1}{shift up}
-  SetTimer 监听即刻咏唱, 200
   asr--
+  SetTimer 监听即刻咏唱, 200
   return true
 }
 
@@ -678,7 +714,7 @@ report() {
   if !(hasStatus("即刻咏唱")) {
     return
   }
-  即刻咏唱时间戳 := A_TickCount - 2000
+  即刻咏唱时间戳 := A_TickCount - 1500
   SetTimer 监听即刻咏唱, Off
 }
 
@@ -694,8 +730,8 @@ report() {
     return false
   }
   Send {shift down}{2}{shift up}
-  SetTimer 监听醒梦, 200
   asr--
+  SetTimer 监听醒梦, 200
   return true
 }
 
@@ -703,7 +739,7 @@ report() {
   if !(hasStatus("醒梦")) {
     return
   }
-  醒梦时间戳 := A_TickCount - 2000
+  醒梦时间戳 := A_TickCount - 1500
   SetTimer 监听醒梦, Off
 }
 
@@ -712,7 +748,6 @@ report() {
 }
 
 索敌() {
-  ehp := getEnemyHp()
   if (ehp) {
     return false
   }
@@ -728,10 +763,17 @@ report() {
   if !(asr > 0) {
     return false
   }
+  if !(A_TickCount - 能力时间戳 > 能力冷却) {
+    return false
+  }
+  能力时间戳 := A_TickCount
   if (飞刺()) {
     return true
   }
   if (六分反击()) {
+    return true
+  }
+  if (短兵相接()) {
     return true
   }
   if (交剑()) {
@@ -792,17 +834,30 @@ report() {
   if !(isBR or isWR) {
     return
   }
-  赤神圣时间戳 := A_TickCount - 2000
+  赤神圣时间戳 := A_TickCount - 1500
   SetTimer 监听赤神圣, Off
 }
 
 焦热() {
+  if !(A_TickCount - 焦热时间戳 > 焦热冷却) {
+    单体攻击()
+    SoundBeep
+    return false
+  }
   if !(A_TickCount - 赤神圣时间戳 < 15000) {
     return false
   }
   摇荡()
-  SoundBeep
+  SetTimer 监听焦热, 200
   return true
+}
+
+监听焦热() {
+  if !(isUsed("焦热")) {
+    return
+  }
+  焦热时间戳 := A_TickCount - 1500
+  SetTimer 监听焦热, Off
 }
 
 单体攻击() {
@@ -862,15 +917,24 @@ report() {
 }
 
 魔三连() {
-  isA := hasStatus("连续咏唱")
-  isB := hasStatus("即刻咏唱")
-  if (isA or isB) {
+  isValid := true
+  if (hasStatus("连续咏唱")) {
+    isValid := false
+  }
+  if (hasStatus("即刻咏唱")) {
+    isValid := false
+  }
+  if !(isValid) {
     单体攻击()
+    return
+  }
+  if !(distance == "near") {
+    asr := 1
+    短兵相接(true)
     return
   }
   if (回刺()) {
     asr := 2
-    短兵相接()
     return
   }
   if (交击斩()) {
@@ -880,8 +944,6 @@ report() {
   }
   if (连攻()) {
     asr := 2
-    交剑()
-    短兵相接()
     return
   }
   if (赤神圣()) {
@@ -966,13 +1028,6 @@ report() {
   return true
 }
 
-default() {
-  SetTimer 清空信息, % 0 - 3000
-}
-
-; default
-default()
-
 ; bind
 
 f2::
@@ -981,12 +1036,17 @@ return
 
 f4::
   isReporting := !isReporting
-  if (!isReporting) {
+  if (isReporting) {
+    report()
+  }
+  else {
     ToolTip
   }
 return
 
 f5::
+  清空信息()
+  reset()
   SoundBeep
   Reload
 return
@@ -1005,6 +1065,7 @@ return
 
 f10::
   SoundBeep
+  reset()
   ExitApp
 return
 
@@ -1028,6 +1089,9 @@ return
 
 2joy3::
   group := getGroup()
+  if !(group) {
+    return
+  }
   if (group == "right") {
     赤治疗()
     return

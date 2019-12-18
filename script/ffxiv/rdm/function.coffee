@@ -6,6 +6,8 @@ calcCD = (ts, cd) ->
   result = Math.round result
   return result
 
+# ---
+
 black = 0
 getBlack = ->
   [x, y] = $.findColor '#58483e', 1023, 811, 1170, 811, 10
@@ -16,6 +18,19 @@ getBlack = ->
   percent = (x - 1023) * 100 / (1170 - 1023)
   percent = Math.floor percent
   return percent
+
+# ---
+
+distance = 'far'
+getDistance = ->
+  color = $.getColor 1079, 961
+  if color == 0xD53B3B
+    return 'far'
+  if color == 0x9A1E1F
+    return 'far'
+  return 'near'
+
+# ---
 
 white = 0
 getWhite = ->
@@ -35,11 +50,17 @@ tsReport = 0
 
 report = ->
 
+  black = getBlack()
+  distance = getDistance()
+  ehp = getEnemyHp()
+  white = getWhite()
+
   unless isReporting
     return
 
-  msg = "目标体力：#{ehp}% / 魔力：#{mp}%"
-  msg = "#{msg}`n黑：#{black} / 白：#{white}"
+  msg = "目标体力：#{ehp}% / 目标距离：#{distance}"
+  msg = "#{msg}`n魔力：#{mp}% / 黑：#{black} / 白：#{white}"
+  msg = "#{msg}`n能力技余额：#{asr}`n"
   msg = "#{msg}`n耗时：#{A_TickCount - tsReport}ms`n"
   
   tsReport = A_TickCount

@@ -139,6 +139,12 @@ isMoving() {
   return false
 }
 
+reset() {
+  Send {alt up}
+  Send {ctrl up}
+  Send {shift up}
+}
+
 toggleView() {
   if (isViewFar == false) {
     Send {ctrl down}{up down}{pgdn down}

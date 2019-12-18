@@ -23,7 +23,7 @@ asr = 0
   unless isUsed '魔回刺'
     return
       
-  回刺时间戳 = A_TickCount - 2e3
+  回刺时间戳 = A_TickCount - 1500
   $.clearInterval 监听回刺
 
 # ---
@@ -36,7 +36,7 @@ asr = 0
 短兵相接时间戳 = 0
 短兵相接冷却 = 40e3
 
-短兵相接 = ->
+短兵相接 = (isForced = false) ->
 
   unless asr > 0
     return false
@@ -44,10 +44,13 @@ asr = 0
   unless A_TickCount - 短兵相接时间戳 > 短兵相接冷却
     return false
 
+  unless distance == 'near' or isForced
+    return false
+
   $.press 'alt + 4'
+  asr--
 
   $.setInterval 监听短兵相接, 200
-  asr--
   return true
 
 监听短兵相接 = ->
@@ -55,7 +58,7 @@ asr = 0
   unless isUsed '短兵相接'
     return
 
-  短兵相接时间戳 = A_TickCount - 2e3
+  短兵相接时间戳 = A_TickCount - 1500
   $.clearInterval 短兵相接
 
 # ---
@@ -93,7 +96,7 @@ asr = 0
   unless isUsed '魔交击斩'
     return
 
-  交击斩时间戳 = A_TickCount - 2e3
+  交击斩时间戳 = A_TickCount - 1500
   $.clearInterval 监听交击斩
 
 # ---
@@ -116,9 +119,9 @@ asr = 0
     return false
 
   $.press 'alt + equal'
+  asr--
 
   $.setInterval 监听移转, 200
-  asr--
   return true
 
 监听移转 = ->
@@ -126,7 +129,7 @@ asr = 0
   unless isUsed '移转'
     return
 
-  移转时间戳 = A_TickCount - 2e3
+  移转时间戳 = A_TickCount - 1500
   $.clearInterval 监听移转
 
 # ---
@@ -143,9 +146,9 @@ asr = 0
     return false
   
   $.press 'ctrl + 1'
+  asr--
 
   $.setInterval 监听飞刺, 200
-  asr--
   return true
 
 监听飞刺 = ->
@@ -153,7 +156,7 @@ asr = 0
   unless isUsed '飞刺'
     return
 
-  飞刺时间戳 = A_TickCount - 2e3
+  飞刺时间戳 = A_TickCount - 1500
   $.clearInterval 监听飞刺
 
 # ---
@@ -182,7 +185,7 @@ asr = 0
   unless isUsed '魔连攻'
     return
 
-  连攻时间戳 = A_TickCount - 2e3
+  连攻时间戳 = A_TickCount - 1500
   $.clearInterval 监听连攻
 
 # ---
@@ -198,18 +201,18 @@ asr = 0
   unless A_TickCount - 促进时间戳 > 促进冷却
     return false
 
-  if black > 80 or white > 80
+  if black > 70 or white > 70
     return false
 
   isBR = hasStatus '赤火炎预备'
-  isWR = hasStatus '赤飞石预备'
-  if isBR and isWR
+  isWR = hasStatus '赤飞石预备'+
+  if isBR or isWR
     return false
 
   $.press 'ctrl + 3'
+  asr--
 
   $.setInterval 监听促进, 200
-  asr--
   return true
 
 监听促进 = ->
@@ -217,7 +220,7 @@ asr = 0
   unless hasStatus '促进'
     return
 
-  促进时间戳 = A_TickCount - 2e3
+  促进时间戳 = A_TickCount - 1500
   $.clearInterval 监听促进
 
 # ---
@@ -233,7 +236,7 @@ asr = 0
   unless isUsed '魔划圆斩'
     return false
 
-  划圆斩时间戳 = A_TickCount - 2e3
+  划圆斩时间戳 = A_TickCount - 1500
   return true
 
 # ---
@@ -254,9 +257,9 @@ asr = 0
     return false
 
   $.press 'ctrl + 6'
+  asr--
 
   $.setInterval 监听六分反击()
-  asr--
   return true
 
 监听六分反击 = ->
@@ -264,7 +267,7 @@ asr = 0
   unless isUsed '六分反击'
     return
 
-  六分反击时间戳 = A_TickCount - 2e3
+  六分反击时间戳 = A_TickCount - 1500
   $.clearInterval 监听六分反击
 
 # ---
@@ -281,9 +284,9 @@ asr = 0
     return false
 
   $.press 'ctrl + 7'
+  asr--
 
   $.setInterval 监听鼓励, 200
-  asr--
   return true
 
 监听鼓励 = ->
@@ -291,7 +294,7 @@ asr = 0
   unless isUsed '鼓励'
     return
 
-  鼓励时间戳 = A_TickCount - 2e3
+  鼓励时间戳 = A_TickCount - 1500
   $.clearInterval 监听鼓励
 
 # ---
@@ -311,9 +314,9 @@ asr = 0
     return false
 
   $.press 'ctrl + 8'
+  asr--
 
   $.setInterval 监听倍增, 200
-  asr--
   return true
 
 监听倍增 = ->
@@ -321,7 +324,7 @@ asr = 0
   unless isUsed '倍增'
     return
 
-  倍增时间戳 = A_TickCount - 2e3
+  倍增时间戳 = A_TickCount - 1500
   短兵相接时间戳 = 0
   移转时间戳 = 0
   交剑时间戳 = 0
@@ -344,10 +347,13 @@ asr = 0
   unless A_TickCount - 交剑时间戳 > 交剑冷却
     return false
 
+  unless distance == 'near'
+    return false
+
   $.press 'ctrl + 0'
+  asr--
 
   $.setInterval 监听交剑, 200
-  asr--
   return true
 
 监听交剑 = ->
@@ -355,7 +361,7 @@ asr = 0
   unless isUsed '交剑'
     return
 
-  交剑时间戳 = A_TickCount - 2e3
+  交剑时间戳 = A_TickCount - 1500
   $.clearInterval 监听交剑
 
 # ---
@@ -379,7 +385,10 @@ asr = 0
   unless A_TickCount - 即刻咏唱时间戳 > 即刻咏唱冷却
     return false
 
-  if black > 60 or white > 60
+  unless A_TickCount - 回刺时间戳 > 回刺冷却
+    return false
+
+  if black > 70 or white > 70
     return false
 
   if hasStatus '连续咏唱'
@@ -391,9 +400,9 @@ asr = 0
     return
 
   $.press 'shift + 1'
+  asr--
 
   $.setInterval 监听即刻咏唱, 200
-  asr--
   return true
 
 监听即刻咏唱 = ->
@@ -401,7 +410,7 @@ asr = 0
   unless hasStatus '即刻咏唱'
     return
 
-  即刻咏唱时间戳 = A_TickCount - 2e3
+  即刻咏唱时间戳 = A_TickCount - 1500
   $.clearInterval 监听即刻咏唱
 
 # ---
@@ -422,9 +431,9 @@ asr = 0
     return false
 
   $.press 'shift + 2'
+  asr--
 
   $.setInterval 监听醒梦, 200
-  asr--
   return true
 
 监听醒梦 = ->
@@ -432,7 +441,7 @@ asr = 0
   unless hasStatus '醒梦'
     return
 
-  醒梦时间戳 = A_TickCount - 2e3
+  醒梦时间戳 = A_TickCount - 1500
   $.clearInterval 监听醒梦
 
 # ---
@@ -443,7 +452,6 @@ asr = 0
 
 索敌 = ->
 
-  ehp = getEnemyHp()
   if ehp
     return false
 
@@ -456,10 +464,17 @@ asr = 0
 
 # ---
 
+能力时间戳 = 0
+能力冷却 = 300
+
 能力技 = ->
 
   unless asr > 0
     return false
+
+  unless A_TickCount - 能力时间戳 > 能力冷却
+    return false
+  能力时间戳 = A_TickCount
   
   if 飞刺()
     return true
@@ -467,11 +482,8 @@ asr = 0
   if 六分反击()
     return true
 
-  # if 移转()
-  #   return true
-
-  # if 短兵相接()
-  #   return true
+  if 短兵相接()
+    return true
 
   if 交剑()
     return true
@@ -534,17 +546,33 @@ asr = 0
   unless isBR or isWR
     return
 
-  赤神圣时间戳 = A_TickCount - 2e3
+  赤神圣时间戳 = A_TickCount - 1500
   $.clearInterval 监听赤神圣
 
 # ---
 
+焦热时间戳 = 0
+焦热冷却 = 10e3
+
 焦热 = ->
+
+  unless A_TickCount - 焦热时间戳 > 焦热冷却
+    单体攻击()
+    $.beep()
+    return false
 
   unless A_TickCount - 赤神圣时间戳 < 15e3
     return false
 
   摇荡()
-  $.beep()
   
+  $.setInterval 监听焦热, 200
   return true
+
+监听焦热 = ->
+
+  unless isUsed '焦热'
+    return
+
+  焦热时间戳 = A_TickCount - 1500
+  $.clearInterval 监听焦热

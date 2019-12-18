@@ -2,10 +2,14 @@ $.on 'f2', -> toggleView()
 
 $.on 'f4', ->
   isReporting = !isReporting
-  if !isReporting
+  if isReporting
+    report()
+  else
     $.tip()
 
 $.on 'f5', ->
+  清空信息()
+  reset()
   $.beep()
   $.reload()
 
@@ -21,6 +25,7 @@ $.on 'f9', ->
 
 $.on 'f10', ->
   $.beep()
+  reset()
   $.exit()
 
 # ---
@@ -127,13 +132,12 @@ $.on '2-joy-2', ->
 
 # ---
 
-# $.on '2-joy-1', ->
-
-# ---
-
 $.on '2-joy-3', ->
 
   group = getGroup()
+
+  unless group
+    return
 
   if group == 'right'
     赤治疗()

@@ -150,6 +150,12 @@ isMoving() {
   return false
 }
 
+reset() {
+  Send {alt up}
+  Send {ctrl up}
+  Send {shift up}
+}
+
 toggleView() {
   if (isViewFar == false) {
     Send {ctrl down}{up down}{pgdn down}
@@ -668,8 +674,8 @@ report() {
   醒梦()
   法令()
   神名()
-  安慰之心()
   再生()
+  安慰之心()
   救疗()
   治疗()
 }

@@ -85,20 +85,13 @@
 
 # ---
 
-索敌时间戳 = 0
-索敌冷却 = 5e3
-
 索敌 = ->
 
-  unless A_TickCount - 索敌时间戳 > 索敌冷却
+  ehp = getEnemyHp()
+  if ehp
     return false
 
-  if isChanting()
-    return false
-
-  $.press 'shift + minus'
-
-  索敌时间戳 = A_TickCount - 2e3
+  $.press 'f11'
   return true
 
 # ---

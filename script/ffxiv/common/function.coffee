@@ -1,5 +1,7 @@
 clearTip = -> $.tip()
 
+# ---
+
 ehp = 0
 getEnemyHp = ->
   
@@ -15,6 +17,8 @@ getEnemyHp = ->
   percent = (x - 650) * 100 / (1084 - 650)
   percent = Math.floor percent
   return percent
+
+# ---
 
 getGroup = ->
 
@@ -32,6 +36,8 @@ getGroup = ->
 
   return false
 
+# ---
+
 hp = 0
 getHp = ->
   [x, y] = $.findColor '#58483e', 21, 36, 168, 36, 10
@@ -42,6 +48,8 @@ getHp = ->
   percent = (x - 21) * 100 / (168 - 21)
   percent = Math.floor percent
   return percent
+
+# ---
 
 mp = 0
 getMp = ->
@@ -54,6 +62,8 @@ getMp = ->
   percent = Math.floor percent
   return percent
 
+# ---
+
 hasStatus = (name) ->
 
   [x, y] = $.findImage "image/#{name}.png", 725, 840, 925, 875
@@ -61,6 +71,8 @@ hasStatus = (name) ->
   if x > 0 and y > 0
     return true
   return false
+
+# ---
 
 hasStatusTarget = (name) ->
 
@@ -70,6 +82,8 @@ hasStatusTarget = (name) ->
     return true
   return false
 
+# ---
+
 isUsed = (name) ->
 
   [x, y] = $.findImage "image/#{name}.png", 60, 915, 225, 975
@@ -78,9 +92,13 @@ isUsed = (name) ->
     return true
   return false
 
+# ---
+
 isChanting = ->
   color = $.getColor 1010, 612
   return color == 0x58483E
+
+# ---
 
 isMoving = ->
 
@@ -97,6 +115,15 @@ isMoving = ->
     return true
 
   return false
+
+# ---
+
+reset = ->
+  $.press 'alt:up'
+  $.press 'ctrl:up'
+  $.press 'shift:up'
+
+# ---
 
 isViewFar = false
 toggleView = ->
