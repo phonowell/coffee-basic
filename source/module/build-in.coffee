@@ -50,7 +50,7 @@ Rule =
     "Run #{trim argument[0]}"
   
   '$.setInterval': ({argument}) ->
-    "SetTimer #{wrap.call @, argument[0]}, #{argument[1] or 0}"
+    "SetTimer #{wrap.call @, argument[0]}, % #{argument[1] or 0}"
   
   '$.setTimeout': ({argument}) ->
     "SetTimer #{wrap.call @, argument[0]}, % 0 - #{argument[1] or 0}"

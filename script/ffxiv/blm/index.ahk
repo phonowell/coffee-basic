@@ -320,7 +320,7 @@ report() {
     return false
   }
   Send {shift down}{5}{shift up}
-  SetTimer 监听即刻咏唱, 200
+  SetTimer 监听即刻咏唱, % 200
   return true
 }
 
@@ -461,7 +461,7 @@ return
     return
   }
   SetTimer 绑定攻击, Off
-  SetTimer 绑定攻击, 300
+  SetTimer 绑定攻击, % 300
   攻击()
 return
 

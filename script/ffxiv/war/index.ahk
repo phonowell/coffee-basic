@@ -217,7 +217,7 @@ report() {
     return false
   }
   Send {alt down}{1}{alt up}
-  SetTimer 监听重劈, 200
+  SetTimer 监听重劈, % 200
   return true
 }
 
@@ -237,7 +237,7 @@ report() {
     return false
   }
   Send {alt down}{2}{alt up}
-  SetTimer 监听凶残裂, 200
+  SetTimer 监听凶残裂, % 200
   return true
 }
 
@@ -448,7 +448,7 @@ return
     return
   }
   SetTimer 绑定攻击, Off
-  SetTimer 绑定攻击, 300
+  SetTimer 绑定攻击, % 300
   攻击()
 return
 

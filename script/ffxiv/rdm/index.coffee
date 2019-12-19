@@ -2,6 +2,7 @@
 # include ../common/function
 # include binding
 # include function
+# include report
 # include skill
 
 # ---
@@ -16,26 +17,16 @@
   isBR = hasStatus '赤火炎预备'
   isWR = hasStatus '赤飞石预备'
 
-  if black > 85 and white > 85
-    续斩()
-    asr = 2
-    return
-
   if 长单体 isA, isB, isBR, isWR
-    asr = 2
+    能力技()
     return
 
   if isMoving()
     续斩()
-    asr = 2
+    能力技()
     return
 
   短单体 isA, isB, isBR, isWR
-
-  倍增()
-  促进()
-  即刻咏唱()
-  能力技()
 
 # ---
 
@@ -48,22 +39,18 @@
   isB = hasStatus '即刻咏唱'
   if isA or isB
     散碎()
-    asr = 2
+    能力技()
     return
 
   if isMoving()
     续斩()
-    asr = 2
+    能力技()
     return
 
   if white >= black
     赤震雷()
   else
     赤烈风()
-
-  倍增()
-  即刻咏唱()
-  能力技()
 
 # ---
 
@@ -80,33 +67,25 @@
     单体攻击()
     return
 
-  unless distance == 'near'
-    asr = 1
-    短兵相接 true
-    return
-
   if 回刺()
-    asr = 2
+    能力技()
     return
 
   if 交击斩()
-    asr = 2
-    鼓励()
+    能力技()
     return
 
   if 连攻()
-    asr = 2
+    能力技()
     return
 
   if 赤神圣()
-    asr = 2
+    能力技()
     return
 
   if 焦热()
-    asr = 2
+    能力技()
     return
-    
-  能力技()
 
 # ---
 

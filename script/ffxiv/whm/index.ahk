@@ -395,7 +395,7 @@ report() {
     return false
   }
   Send {alt down}{9}{alt up}
-  SetTimer 监听神速咏唱, 200
+  SetTimer 监听神速咏唱, % 200
   asr--
   return true
 }
@@ -456,7 +456,7 @@ report() {
     return false
   }
   Send {ctrl down}{4}{ctrl up}
-  SetTimer 监听法令, 200
+  SetTimer 监听法令, % 200
   asr--
   return true
 }
@@ -477,7 +477,7 @@ report() {
     return false
   }
   Send {ctrl down}{5}{ctrl up}
-  SetTimer 监听无中生有, 200
+  SetTimer 监听无中生有, % 200
   asr--
   return true
 }
@@ -498,7 +498,7 @@ report() {
     return false
   }
   Send {ctrl down}{6}{ctrl up}
-  SetTimer 监听神名, 200
+  SetTimer 监听神名, % 200
   asr--
   return true
 }
@@ -523,7 +523,7 @@ report() {
     return false
   }
   Send {ctrl down}{8}{ctrl up}
-  SetTimer 监听全大赦, 200
+  SetTimer 监听全大赦, % 200
   asr--
   return true
 }
@@ -576,7 +576,7 @@ report() {
     return false
   }
   Send {shift down}{2}{shift up}
-  SetTimer 监听即刻咏唱, 200
+  SetTimer 监听即刻咏唱, % 200
   asr--
   return true
 }
@@ -598,7 +598,7 @@ report() {
     return false
   }
   Send {shift down}{3}{shift up}
-  SetTimer 监听醒梦, 200
+  SetTimer 监听醒梦, % 200
   return true
 }
 
@@ -740,7 +740,7 @@ return
     return
   }
   SetTimer 绑定攻击, Off
-  SetTimer 绑定攻击, 300
+  SetTimer 绑定攻击, % 300
   攻击()
 return
 
@@ -749,7 +749,7 @@ return
     return
   }
   SetTimer 绑定治疗, Off
-  SetTimer 绑定治疗, 300
+  SetTimer 绑定治疗, % 300
   _治疗()
 return
 

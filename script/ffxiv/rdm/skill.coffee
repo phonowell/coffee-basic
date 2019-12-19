@@ -1,4 +1,6 @@
-asr = 0
+技能施放判断间隔 = 100
+技能施放时间戳补正 = 1500
+魔三连冷却 = 15e3
 
 # ---
 
@@ -13,23 +15,33 @@ asr = 0
   unless black >= 80 and white >= 80
     return false
 
+  中断咏唱()
+
+  distance = getDistance()
+  unless distance == 'near'
+    短兵相接 true
+    return false
+
   $.press 'alt + 1'
 
-  $.setInterval 监听回刺, 200
+  $.setInterval 监听回刺, 技能施放判断间隔
   return true
 
 监听回刺 = ->
-
   unless isUsed '魔回刺'
     return
-      
-  回刺时间戳 = A_TickCount - 1500
   $.clearInterval 监听回刺
+  回刺时间戳 = A_TickCount - 技能施放时间戳补正
 
 # ---
 
 摇荡 = -> $.press 'alt + 2'
-赤闪雷 = -> $.press 'alt + 3'
+
+# ---
+
+赤闪雷 = ->
+  $.press 'alt + 3'
+  赤疾风时间戳 = A_TickCount
 
 # ---
 
@@ -38,32 +50,34 @@ asr = 0
 
 短兵相接 = (isForced = false) ->
 
-  unless asr > 0
-    return false
-
   unless A_TickCount - 短兵相接时间戳 > 短兵相接冷却
     return false
 
+  distance = getDistance()
   unless distance == 'near' or isForced
     return false
 
   $.press 'alt + 4'
-  asr--
 
-  $.setInterval 监听短兵相接, 200
+  短兵相接时间戳 = A_TickCount - 短兵相接冷却 + 技能施放时间戳补正
+  $.setInterval 监听短兵相接, 技能施放判断间隔
   return true
 
 监听短兵相接 = ->
-
   unless isUsed '短兵相接'
     return
-
-  短兵相接时间戳 = A_TickCount - 1500
-  $.clearInterval 短兵相接
+  $.clearInterval 监听短兵相接
+  短兵相接时间戳 = A_TickCount - 技能施放时间戳补正
 
 # ---
 
-赤疾风 = -> $.press 'alt + 5'
+赤疾风时间戳 = 0
+赤疾风 = ->
+  $.press 'alt + 5'
+  赤疾风时间戳 = A_TickCount
+
+# ---
+
 散碎 = -> $.press 'alt + 6'
 赤震雷 = -> $.press 'alt + 7'
 赤烈风 = -> $.press 'alt + 8'
@@ -80,57 +94,26 @@ asr = 0
   unless A_TickCount - 交击斩时间戳 > 交击斩冷却
     return false
 
-  unless A_TickCount - 回刺时间戳 < 15e3
+  unless A_TickCount - 回刺时间戳 < 魔三连冷却
     return false
 
   unless black >= 50 and white >= 50
     return false
 
   $.press 'alt + minus'
-
-  $.setInterval 监听交击斩, 200
+  
+  $.setInterval 监听交击斩, 技能施放判断间隔
   return true
 
 监听交击斩 = ->
-
   unless isUsed '魔交击斩'
     return
-
-  交击斩时间戳 = A_TickCount - 1500
   $.clearInterval 监听交击斩
+  交击斩时间戳 = A_TickCount - 技能施放时间戳补正
 
 # ---
 
-移转时间戳 = 0
-移转冷却 = 35e3
-
-移转 = ->
-
-  unless asr > 0
-    return false
-
-  unless A_TickCount - 移转时间戳 > 移转冷却
-    return false
-
-  unless A_TickCount - 回刺时间戳 > 15e3
-    return false
-
-  if black > 70 or white > 70
-    return false
-
-  $.press 'alt + equal'
-  asr--
-
-  $.setInterval 监听移转, 200
-  return true
-
-监听移转 = ->
-
-  unless isUsed '移转'
-    return
-
-  移转时间戳 = A_TickCount - 1500
-  $.clearInterval 监听移转
+移转 = -> $.press 'alt + equal'
 
 # ---
 
@@ -139,25 +122,20 @@ asr = 0
 
 飞刺 = ->
 
-  unless asr > 0
-    return false
-
   unless A_TickCount - 飞刺时间戳 > 飞刺冷却
     return false
   
   $.press 'ctrl + 1'
-  asr--
-
-  $.setInterval 监听飞刺, 200
+  
+  飞刺时间戳 = A_TickCount - 飞刺冷却 + 技能施放时间戳补正
+  $.setInterval 监听飞刺, 技能施放判断间隔
   return true
 
 监听飞刺 = ->
-
   unless isUsed '飞刺'
     return
-
-  飞刺时间戳 = A_TickCount - 1500
   $.clearInterval 监听飞刺
+  飞刺时间戳 = A_TickCount - 技能施放时间戳补正
 
 # ---
 
@@ -169,24 +147,22 @@ asr = 0
   unless A_TickCount - 连攻时间戳 > 连攻冷却
     return false
 
-  unless A_TickCount - 交击斩时间戳 < 15e3
+  unless A_TickCount - 交击斩时间戳 < 魔三连冷却
     return false
 
   unless black >= 25 and white >= 25
     return false
 
   $.press 'ctrl + 2'
-
-  $.setInterval 监听连攻, 200
+  
+  $.setInterval 监听连攻, 技能施放判断间隔
   return true
 
 监听连攻 = ->
-
   unless isUsed '魔连攻'
     return
-
-  连攻时间戳 = A_TickCount - 1500
   $.clearInterval 监听连攻
+  连攻时间戳 = A_TickCount - 技能施放时间戳补正
 
 # ---
 
@@ -195,48 +171,43 @@ asr = 0
 
 促进 = ->
 
-  unless asr > 0
+  unless A_TickCount - 促进时间戳 > 促进冷却
     return false
 
-  unless A_TickCount - 促进时间戳 > 促进冷却
+  unless A_TickCount - 赤疾风时间戳 < 2e3
+    return false
+
+  unless A_TickCount - 回刺时间戳 > 魔三连冷却
     return false
 
   if black > 70 or white > 70
     return false
 
   isBR = hasStatus '赤火炎预备'
-  isWR = hasStatus '赤飞石预备'+
+  isWR = hasStatus '赤飞石预备'
   if isBR or isWR
     return false
 
   $.press 'ctrl + 3'
-  asr--
-
-  $.setInterval 监听促进, 200
+  
+  促进时间戳 = A_TickCount - 促进冷却 + 技能施放时间戳补正
+  $.setInterval 监听促进, 技能施放判断间隔
   return true
 
 监听促进 = ->
-
   unless hasStatus '促进'
     return
-
-  促进时间戳 = A_TickCount - 1500
   $.clearInterval 监听促进
+  促进时间戳 = A_TickCount - 技能施放时间戳补正
 
 # ---
 
-划圆斩时间戳 = 0
 划圆斩 = ->
 
   unless black >= 20 and white >= 20
     return false
 
   $.press 'ctrl + 4'
-
-  unless isUsed '魔划圆斩'
-    return false
-
-  划圆斩时间戳 = A_TickCount - 1500
   return true
 
 # ---
@@ -250,25 +221,20 @@ asr = 0
 
 六分反击 = ->
 
-  unless asr > 0
-    return false
-
   unless A_TickCount - 六分反击时间戳 > 六分反击冷却
     return false
 
   $.press 'ctrl + 6'
-  asr--
-
-  $.setInterval 监听六分反击()
+  
+  六分反击时间戳 = A_TickCount - 六分反击冷却 + 技能施放时间戳补正
+  $.setInterval 监听六分反击, 技能施放判断间隔
   return true
 
 监听六分反击 = ->
-
   unless isUsed '六分反击'
     return
-
-  六分反击时间戳 = A_TickCount - 1500
   $.clearInterval 监听六分反击
+  六分反击时间戳 = A_TickCount - 技能施放时间戳补正
 
 # ---
 
@@ -277,25 +243,23 @@ asr = 0
 
 鼓励 = ->
 
-  unless asr > 0
-    return false
-
   unless A_TickCount - 鼓励时间戳 > 鼓励冷却
     return false
 
-  $.press 'ctrl + 7'
-  asr--
+  unless A_TickCount - 交击斩时间戳 < 5e3
+    return false
 
-  $.setInterval 监听鼓励, 200
+  $.press 'ctrl + 7'
+  
+  鼓励时间戳 = A_TickCount - 鼓励冷却 + 技能施放时间戳补正
+  $.setInterval 监听鼓励, 技能施放判断间隔
   return true
 
 监听鼓励 = ->
-
   unless isUsed '鼓励'
     return
-
-  鼓励时间戳 = A_TickCount - 1500
   $.clearInterval 监听鼓励
+  鼓励时间戳 = A_TickCount - 技能施放时间戳补正
 
 # ---
 
@@ -304,31 +268,32 @@ asr = 0
 
 倍增 = ->
 
-  unless asr > 0
+  unless A_TickCount - 倍增时间戳 > 倍增冷却
     return false
 
-  unless white >= 40 and white < 70
+  if A_TickCount - 回刺时间戳 < 魔三连冷却
     return false
 
-  unless black >= 40 and black < 70
+  unless white >= 40 and white < 65
+    return false
+
+  unless black >= 40 and black < 65
     return false
 
   $.press 'ctrl + 8'
-  asr--
-
-  $.setInterval 监听倍增, 200
+  
+  倍增时间戳 = A_TickCount - 倍增冷却 + 技能施放时间戳补正
+  $.setInterval 监听倍增, 技能施放判断间隔
   return true
 
 监听倍增 = ->
-
   unless isUsed '倍增'
     return
-
-  倍增时间戳 = A_TickCount - 1500
+  $.clearInterval 监听倍增
+  倍增时间戳 = A_TickCount - 技能施放时间戳补正
   短兵相接时间戳 = 0
   移转时间戳 = 0
   交剑时间戳 = 0
-  $.clearInterval 监听倍增
 
 # ---
 
@@ -341,35 +306,28 @@ asr = 0
 
 交剑 = ->
 
-  unless asr > 0
-    return false
-
   unless A_TickCount - 交剑时间戳 > 交剑冷却
     return false
 
+  distance = getDistance()
   unless distance == 'near'
     return false
 
   $.press 'ctrl + 0'
-  asr--
-
-  $.setInterval 监听交剑, 200
+  
+  交剑时间戳 = A_TickCount - 交剑冷却 + 技能施放时间戳补正
+  $.setInterval 监听交剑, 技能施放判断间隔
   return true
 
 监听交剑 = ->
-
   unless isUsed '交剑'
     return
-
-  交剑时间戳 = A_TickCount - 1500
   $.clearInterval 监听交剑
+  交剑时间戳 = A_TickCount - 技能施放时间戳补正
 
 # ---
 
 续斩 = -> $.press 'ctrl + minus'
-
-# ---
-
 昏乱 = -> $.press 'ctrl + equal'
 
 # ---
@@ -378,9 +336,6 @@ asr = 0
 即刻咏唱冷却 = 60e3
 
 即刻咏唱 = ->
-
-  unless asr > 0
-    return false
 
   unless A_TickCount - 即刻咏唱时间戳 > 即刻咏唱冷却
     return false
@@ -400,18 +355,16 @@ asr = 0
     return
 
   $.press 'shift + 1'
-  asr--
-
-  $.setInterval 监听即刻咏唱, 200
+  
+  即刻咏唱时间戳 = A_TickCount - 即刻咏唱冷却 + 技能施放时间戳补正
+  $.setInterval 监听即刻咏唱, 技能施放判断间隔
   return true
 
 监听即刻咏唱 = ->
-
   unless hasStatus '即刻咏唱'
     return
-
-  即刻咏唱时间戳 = A_TickCount - 1500
   $.clearInterval 监听即刻咏唱
+  即刻咏唱时间戳 = A_TickCount - 技能施放时间戳补正
 
 # ---
 
@@ -419,9 +372,6 @@ asr = 0
 醒梦冷却 = 60e3
 
 醒梦 = ->
-
-  unless asr > 0
-    return false
 
   unless A_TickCount - 醒梦时间戳 > 醒梦冷却
     return false
@@ -431,66 +381,22 @@ asr = 0
     return false
 
   $.press 'shift + 2'
-  asr--
-
-  $.setInterval 监听醒梦, 200
+  
+  醒梦时间戳 = A_TickCount - 醒梦冷却 + 技能施放时间戳补正
+  $.setInterval 监听醒梦, 技能施放判断间隔
   return true
 
 监听醒梦 = ->
-
   unless hasStatus '醒梦'
     return
-
-  醒梦时间戳 = A_TickCount - 1500
   $.clearInterval 监听醒梦
+  醒梦时间戳 = A_TickCount - 技能施放时间戳补正
 
 # ---
 
 沉稳咏唱 = -> $.press 'shift + 3'
-
-# ---
-
-索敌 = ->
-
-  if ehp
-    return false
-
-  $.press 'f11'
-  return true
-
-# ---
-
 清空信息 = -> $.press 'shift + equal'
-
-# ---
-
-能力时间戳 = 0
-能力冷却 = 300
-
-能力技 = ->
-
-  unless asr > 0
-    return false
-
-  unless A_TickCount - 能力时间戳 > 能力冷却
-    return false
-  能力时间戳 = A_TickCount
   
-  if 飞刺()
-    return true
-
-  if 六分反击()
-    return true
-
-  if 短兵相接()
-    return true
-
-  if 交剑()
-    return true
-  
-  if 醒梦()
-    return true
-
 # ---
 
 赤神圣时间戳 = 0
@@ -504,7 +410,7 @@ asr = 0
   unless A_TickCount - 连攻时间戳 < 15e3
     return false
 
-  $.setInterval 监听赤神圣, 200
+  $.setInterval 监听赤神圣, 技能施放判断间隔
 
   if black - white > 9
     赤疾风()
@@ -539,15 +445,12 @@ asr = 0
   return true
 
 监听赤神圣 = ->
-
-  isBR = isUsed '赤核爆'
-  isWR = isUsed '赤神圣'
-
-  unless isBR or isWR
+  isA = isUsed '赤核爆'
+  isB = isUsed '赤神圣'
+  unless isA or isB
     return
-
-  赤神圣时间戳 = A_TickCount - 1500
   $.clearInterval 监听赤神圣
+  赤神圣时间戳 = A_TickCount - 技能施放时间戳补正
 
 # ---
 
@@ -557,7 +460,6 @@ asr = 0
 焦热 = ->
 
   unless A_TickCount - 焦热时间戳 > 焦热冷却
-    单体攻击()
     $.beep()
     return false
 
@@ -566,13 +468,86 @@ asr = 0
 
   摇荡()
   
-  $.setInterval 监听焦热, 200
+  $.setInterval 监听焦热, 技能施放判断间隔
   return true
 
 监听焦热 = ->
-
   unless isUsed '焦热'
     return
-
-  焦热时间戳 = A_TickCount - 1500
   $.clearInterval 监听焦热
+  焦热时间戳 = A_TickCount - 技能施放时间戳补正
+
+# ---
+
+索敌 = ->
+
+  if ehp
+    return false
+
+  $.press 'f11'
+  return true
+
+# ---
+
+中断咏唱 = ->
+  unless isChanting()
+    return
+  $.press 'space'
+
+# ---
+
+能力技时间戳 = 0
+能力技冷却 = 1e3
+能力技余额 = 0
+
+能力技 = (n = 2) ->
+  
+  unless A_TickCount - 能力技时间戳 > 能力技冷却
+    return
+  
+  能力技时间戳 = A_TickCount
+  能力技余额 = -n
+
+  $.setInterval 施放能力技, 500
+
+施放能力技 = ->
+
+  if 能力技余额 < 0
+    能力技余额 = -能力技余额
+    return
+
+  unless 能力技余额 > 0
+    $.clearInterval 施放能力技
+    return
+  能力技余额--
+
+  能力技施放()
+
+能力技施放 = ->
+
+  if 倍增()
+    return
+
+  if 鼓励()
+    return
+
+  if 促进()
+    return
+
+  if 即刻咏唱()
+    return
+
+  if 飞刺()
+    return
+
+  if 六分反击()
+    return
+
+  if 短兵相接()
+    return
+
+  if 交剑()
+    return
+  
+  if 醒梦()
+    return

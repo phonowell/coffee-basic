@@ -98,13 +98,10 @@ $.on '2-joy-4', ->
     isB = hasStatus '即刻咏唱'
     if isA or isB
       攻击()
-      asr = 2
 
     if 划圆斩()
-      asr = 2
     else
       群体攻击()
-      $.beep()
 
     短兵相接()
     能力技()
@@ -145,6 +142,6 @@ $.on '2-joy-3', ->
 
   if group == 'both'
     赤复活()
-    asr = 2
+    $.beep()
     能力技()
     return
