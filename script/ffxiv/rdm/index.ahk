@@ -200,8 +200,6 @@ toggleView() {
   }
   report()
   索敌()
-  black := getBlack()
-  white := getWhite()
   if (group == "right") {
     单体攻击()
     return
@@ -231,25 +229,12 @@ toggleView() {
   }
   report()
   索敌()
-  black := getBlack()
-  white := getWhite()
   if (group == "right") {
     魔三连()
     return
   }
   if (group == "both") {
-    isA := hasStatus("连续咏唱")
-    isB := hasStatus("即刻咏唱")
-    if (isA or isB) {
-      攻击()
-    }
-    if (划圆斩()) {
-    }
-    else {
-      群体攻击()
-    }
-    短兵相接()
-    能力技()
+    魔划圆斩()
     return
   }
 }
@@ -264,6 +249,34 @@ toggleView() {
   }
   SetTimer 清空信息, Off
   特殊攻击()
+}
+
+治疗() {
+  group := getGroup()
+  if !(group) {
+    return
+  }
+  report()
+  if (group == "right") {
+    单体治疗()
+    return
+  }
+  if (group == "both") {
+    复活()
+    return
+  }
+}
+
+绑定治疗() {
+  GetKeyState __value__, 2joy3
+  isPressing := __value__ == "D"
+  if !(isPressing) {
+    SetTimer 绑定治疗, Off
+    SetTimer 清空信息, % 0 - 10000
+    return
+  }
+  SetTimer 清空信息, Off
+  治疗()
 }
 
 getBlack() {
@@ -526,6 +539,11 @@ report() {
   if !(black >= 20 and white >= 20) {
     return false
   }
+  distance := getDistance()
+  if !(distance == "near") {
+    短兵相接(true)
+    return false
+  }
   Send {ctrl down}{4}{ctrl up}
   return true
 }
@@ -556,7 +574,7 @@ report() {
   if !(A_TickCount - 鼓励时间戳 > 鼓励冷却) {
     return false
   }
-  if !(A_TickCount - 交击斩时间戳 < 5000) {
+  if !(A_TickCount - 回刺时间戳 < 回刺冷却) {
     return false
   }
   Send {ctrl down}{7}{ctrl up}
@@ -580,10 +598,10 @@ report() {
   if (A_TickCount - 回刺时间戳 < 魔三连冷却) {
     return false
   }
-  if !(white >= 40 and white < 65) {
+  if !(black >= 40 and black <= 65) {
     return false
   }
-  if !(black >= 40 and black < 65) {
+  if !(white >= 40 and white <= 65) {
     return false
   }
   Send {ctrl down}{8}{ctrl up}
@@ -706,40 +724,8 @@ report() {
   if !(A_TickCount - 连攻时间戳 < 15000) {
     return false
   }
+  赤神圣施放()
   SetTimer 监听赤神圣, % 技能施放判断间隔
-  if (black - white > 9) {
-    赤疾风()
-    return true
-  }
-  if (white - black > 9) {
-    赤闪雷()
-    return true
-  }
-  isBR := hasStatus("赤火炎预备")
-  isWR := hasStatus("赤飞石预备")
-  if (isBR and isWR) {
-    if (black > white) {
-      赤疾风()
-    }
-    else {
-      赤闪雷()
-    }
-    return true
-  }
-  if (isBR) {
-    赤疾风()
-    return true
-  }
-  if (isWR) {
-    赤闪雷()
-    return true
-  }
-  if (black > white) {
-    赤疾风()
-  }
-  else {
-    赤闪雷()
-  }
   return true
 }
 
@@ -751,6 +737,42 @@ report() {
   }
   SetTimer 监听赤神圣, Off
   赤神圣时间戳 := A_TickCount - 技能施放时间戳补正
+}
+
+赤神圣施放() {
+  if (black - white > 9) {
+    赤疾风()
+    return
+  }
+  if (white - black > 9) {
+    赤闪雷()
+    return
+  }
+  isBR := hasStatus("赤火炎预备")
+  isWR := hasStatus("赤飞石预备")
+  if (isBR and isWR) {
+    if (black > white) {
+      赤疾风()
+    }
+    else {
+      赤闪雷()
+    }
+    return
+  }
+  if (isBR) {
+    赤疾风()
+    return
+  }
+  if (isWR) {
+    赤闪雷()
+    return
+  }
+  if (black > white) {
+    赤疾风()
+  }
+  else {
+    赤闪雷()
+  }
 }
 
 焦热() {
@@ -919,8 +941,26 @@ report() {
   }
 }
 
+魔划圆斩() {
+  isA := hasStatus("连续咏唱")
+  isB := hasStatus("即刻咏唱")
+  if (isA or isB) {
+    群体攻击()
+    return
+  }
+  if (划圆斩()) {
+    能力技()
+    return
+  }
+  群体攻击()
+}
+
 短单体(isA, isB, isBR, isWR) {
   if (isA or isB) {
+    return
+  }
+  if (调整魔元()) {
+    能力技()
     return
   }
   if (black - white > 21) {
@@ -961,6 +1001,21 @@ report() {
   摇荡()
 }
 
+调整魔元() {
+  if !(A_TickCount - 倍增时间戳 > 倍增冷却 - 2000) {
+    return false
+  }
+  if !(black >= 60 and white >= 60) {
+    return false
+  }
+  distance := getDistance()
+  if !(distance == "near") {
+    return false
+  }
+  划圆斩()
+  return true
+}
+
 长单体(isA, isB, isBR, isWR) {
   if !(isA or isB) {
     return false
@@ -988,6 +1043,48 @@ report() {
     赤疾风()
   }
   return true
+}
+
+单体治疗() {
+  if (isChanting()) {
+    return
+  }
+  isA := hasStatus("连续咏唱")
+  isB := hasStatus("即刻咏唱")
+  isBR := hasStatus("赤火炎预备")
+  isWR := hasStatus("赤飞石预备")
+  if (isA or isB) {
+    索敌()
+  }
+  if (长单体(isA, isB, isBR, isWR)) {
+    能力技()
+    return
+  }
+  if (isMoving()) {
+    续斩()
+    能力技()
+    return
+  }
+  赤治疗()
+}
+
+复活() {
+  if (isChanting()) {
+    return
+  }
+  isA := hasStatus("连续咏唱")
+  isB := hasStatus("即刻咏唱")
+  if !(isA or isB) {
+    赤治疗()
+    return
+  }
+  if (isMoving()) {
+    续斩()
+    能力技()
+    return
+  }
+  赤复活()
+  能力技()
 }
 
 ; bind
@@ -1050,20 +1147,12 @@ return
 return
 
 2joy3::
-  group := getGroup()
-  if !(group) {
+  if !(getGroup()) {
     return
   }
-  if (group == "right") {
-    赤治疗()
-    return
-  }
-  if (group == "both") {
-    赤复活()
-    SoundBeep
-    能力技()
-    return
-  }
+  SetTimer 绑定治疗, Off
+  SetTimer 绑定治疗, % 300
+  治疗()
 return
 
 ; eof

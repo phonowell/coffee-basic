@@ -207,6 +207,11 @@
   unless black >= 20 and white >= 20
     return false
 
+  distance = getDistance()
+  unless distance == 'near'
+    短兵相接 true
+    return false
+
   $.press 'ctrl + 4'
   return true
 
@@ -246,7 +251,7 @@
   unless A_TickCount - 鼓励时间戳 > 鼓励冷却
     return false
 
-  unless A_TickCount - 交击斩时间戳 < 5e3
+  unless A_TickCount - 回刺时间戳 < 回刺冷却
     return false
 
   $.press 'ctrl + 7'
@@ -274,10 +279,10 @@
   if A_TickCount - 回刺时间戳 < 魔三连冷却
     return false
 
-  unless white >= 40 and white < 65
+  unless black >= 40 and black <= 65
     return false
 
-  unless black >= 40 and black < 65
+  unless white >= 40 and white <= 65
     return false
 
   $.press 'ctrl + 8'
@@ -410,38 +415,9 @@
   unless A_TickCount - 连攻时间戳 < 15e3
     return false
 
+  赤神圣施放()
+
   $.setInterval 监听赤神圣, 技能施放判断间隔
-
-  if black - white > 9
-    赤疾风()
-    return true
-
-  if white - black > 9
-    赤闪雷()
-    return true
-
-  isBR = hasStatus '赤火炎预备'
-  isWR = hasStatus '赤飞石预备'
-
-  if isBR and isWR
-    if black > white
-      赤疾风()
-    else
-      赤闪雷()
-    return true
-
-  if isBR
-    赤疾风()
-    return true
-
-  if isWR
-    赤闪雷()
-    return true
-
-  if black > white
-    赤疾风()
-  else
-    赤闪雷()
   return true
 
 监听赤神圣 = ->
@@ -451,6 +427,39 @@
     return
   $.clearInterval 监听赤神圣
   赤神圣时间戳 = A_TickCount - 技能施放时间戳补正
+
+赤神圣施放 = ->
+
+  if black - white > 9
+    赤疾风()
+    return
+
+  if white - black > 9
+    赤闪雷()
+    return
+
+  isBR = hasStatus '赤火炎预备'
+  isWR = hasStatus '赤飞石预备'
+
+  if isBR and isWR
+    if black > white
+      赤疾风()
+    else
+      赤闪雷()
+    return
+
+  if isBR
+    赤疾风()
+    return
+
+  if isWR
+    赤闪雷()
+    return
+
+  if black > white
+    赤疾风()
+  else
+    赤闪雷()
 
 # ---
 

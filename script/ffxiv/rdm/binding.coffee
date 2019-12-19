@@ -40,9 +40,6 @@ $.on 'f10', ->
   report()
   索敌()
 
-  black = getBlack()
-  white = getWhite()
-
   # 单体攻击
   if group == 'right'
     单体攻击()
@@ -85,26 +82,12 @@ $.on '2-joy-4', ->
   report()
   索敌()
 
-  black = getBlack()
-  white = getWhite()
-
   if group == 'right'
     魔三连()
     return
 
   if group == 'both'
-    
-    isA = hasStatus '连续咏唱'
-    isB = hasStatus '即刻咏唱'
-    if isA or isB
-      攻击()
-
-    if 划圆斩()
-    else
-      群体攻击()
-
-    短兵相接()
-    能力技()
+    魔划圆斩()
     return
 
 绑定特殊攻击 = ->
@@ -129,19 +112,42 @@ $.on '2-joy-2', ->
 
 # ---
 
-$.on '2-joy-3', ->
+治疗 = ->
 
   group = getGroup()
 
   unless group
     return
 
+  report()
+  # 索敌()
+
+  # 治疗
   if group == 'right'
-    赤治疗()
+    单体治疗()
     return
 
+  # 复活
   if group == 'both'
-    赤复活()
-    $.beep()
-    能力技()
+    复活()
     return
+
+绑定治疗 = ->
+
+  isPressing = $.isPressing '2-joy-3'
+  unless isPressing
+    $.clearInterval 绑定治疗
+    $.setTimeout 清空信息, 10e3
+    return
+
+  $.clearTimeout 清空信息
+  治疗()
+
+$.on '2-joy-3', ->
+
+  unless getGroup()
+    return
+
+  $.clearInterval 绑定治疗
+  $.setInterval 绑定治疗, 300
+  治疗()

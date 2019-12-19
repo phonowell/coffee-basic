@@ -89,9 +89,29 @@
 
 # ---
 
+魔划圆斩 = ->
+
+  isA = hasStatus '连续咏唱'
+  isB = hasStatus '即刻咏唱'
+  if isA or isB
+    群体攻击()
+    return
+
+  if 划圆斩()
+    能力技()
+    return
+
+  群体攻击()
+
+# ---
+
 短单体 = (isA, isB, isBR, isWR) ->
 
   if isA or isB
+    return
+
+  if 调整魔元()
+    能力技()
     return
 
   if black - white > 21
@@ -127,6 +147,23 @@
 
 # ---
 
+调整魔元 = ->
+  
+  unless A_TickCount - 倍增时间戳 > 倍增冷却 - 2e3
+    return false
+  
+  unless black >= 60 and white >= 60
+    return false
+  
+  distance = getDistance()
+  unless distance == 'near'
+    return false
+  
+  划圆斩()
+  return true
+
+# ---
+
 长单体 = (isA, isB, isBR, isWR) ->
 
   unless isA or isB
@@ -154,3 +191,51 @@
     赤疾风()
 
   return true
+
+# ---
+
+单体治疗 = ->
+
+  if isChanting()
+    return
+
+  isA = hasStatus '连续咏唱'
+  isB = hasStatus '即刻咏唱'
+  isBR = hasStatus '赤火炎预备'
+  isWR = hasStatus '赤飞石预备'
+
+  if isA or isB
+    索敌()
+
+  if 长单体 isA, isB, isBR, isWR
+    能力技()
+    return
+
+  if isMoving()
+    续斩()
+    能力技()
+    return
+
+  赤治疗()
+
+# ---
+
+复活 = ->
+
+  if isChanting()
+    return
+
+  isA = hasStatus '连续咏唱'
+  isB = hasStatus '即刻咏唱'
+
+  unless isA or isB
+    赤治疗()
+    return
+
+  if isMoving()
+    续斩()
+    能力技()
+    return
+
+  赤复活()
+  能力技()
