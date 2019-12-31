@@ -24,13 +24,12 @@ tsReport = 0
 report = ->
 
   black = getBlack()
-  ehp = getEnemyHp()
   white = getWhite()
 
   unless isReporting
     return
 
-  msg = "目标体力：#{ehp}% / 目标距离：#{distance}"
+  msg = "目标距离：#{distance}"
   msg = "#{msg}`n魔力：#{mp}% / 黑：#{black} / 白：#{white}"
   msg = "#{msg}`n耗时：#{A_TickCount - tsReport}ms`n"
   

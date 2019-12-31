@@ -25,6 +25,7 @@ SetMouseDelay 0, 50
 global ehp := 0
 global hp := 0
 global mp := 0
+global hasTarget := false
 global isViewFar := false
 global isReporting := true
 global tsReport := 0
@@ -134,6 +135,17 @@ isMoving() {
     return true
   }
   if (dis > 60) {
+    return true
+  }
+  return false
+}
+
+isTargeting() {
+  PixelGetColor color, 650, 65, RGB
+  if (color == 0xFF8888) {
+    return true
+  }
+  if (color == 0xEBD788) {
     return true
   }
   return false

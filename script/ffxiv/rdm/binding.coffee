@@ -21,6 +21,7 @@ $.on 'f6', ->
 $.on 'f9', ->
   [x, y] = $.getPosition()
   color = $.getColor x, y
+  # $.move x, y
   $.tip "#{x}, #{y}, #{color}"
 
 $.on 'f10', ->
@@ -38,7 +39,9 @@ $.on 'f10', ->
     return
 
   report()
-  索敌()
+
+  unless 索敌()
+    return
 
   # 单体攻击
   if group == 'right'
@@ -80,7 +83,9 @@ $.on '2-joy-4', ->
     return
 
   report()
-  索敌()
+
+  unless 索敌()
+    return
 
   if group == 'right'
     魔三连()
@@ -120,7 +125,6 @@ $.on '2-joy-2', ->
     return
 
   report()
-  # 索敌()
 
   # 治疗
   if group == 'right'
@@ -151,3 +155,19 @@ $.on '2-joy-3', ->
   $.clearInterval 绑定治疗
   $.setInterval 绑定治疗, 300
   治疗()
+
+# ---
+
+$.on '2-joy-5', ->
+  
+  unless getGroup() == 'both'
+    return
+
+  $.press 'shift + tab'
+
+$.on '2-joy-6', ->
+
+  unless getGroup() == 'both'
+    return
+
+  $.press 'tab'

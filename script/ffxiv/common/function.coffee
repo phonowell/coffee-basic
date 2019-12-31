@@ -118,6 +118,21 @@ isMoving = ->
 
 # ---
 
+hasTarget = false
+isTargeting = ->
+
+  color = $.getColor 650, 65
+
+  if color == 0xFF8888
+    return true
+
+  if color == 0xEBD788
+    return true
+
+  return false
+
+# ---
+
 reset = ->
   $.press 'alt:up'
   $.press 'ctrl:up'

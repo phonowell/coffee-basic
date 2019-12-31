@@ -490,11 +490,14 @@
 
 索敌 = ->
 
-  if ehp
-    return false
+  hasTarget = isTargeting()
+  if hasTarget
+    return true
 
   $.press 'f11'
-  return true
+
+  hasTarget = isTargeting()
+  return hasTarget
 
 # ---
 

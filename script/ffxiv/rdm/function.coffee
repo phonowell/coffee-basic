@@ -13,11 +13,18 @@ getBlack = ->
 
 distance = 'far'
 getDistance = ->
+
+  unless hasTarget
+    return 'far'
+
   color = $.getColor 1079, 961
+
   if color == 0xD53B3B
     return 'far'
+  
   if color == 0x9A1E1F
     return 'far'
+  
   return 'near'
 
 # ---

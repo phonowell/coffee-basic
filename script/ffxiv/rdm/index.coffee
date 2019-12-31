@@ -205,7 +205,9 @@
   isWR = hasStatus '赤飞石预备'
 
   if isA or isB
-    索敌()
+    unless 索敌()
+      赤治疗()
+      return
 
   if 长单体 isA, isB, isBR, isWR
     能力技()
@@ -227,9 +229,15 @@
 
   isA = hasStatus '连续咏唱'
   isB = hasStatus '即刻咏唱'
+  isBR = hasStatus '赤火炎预备'
+  isWR = hasStatus '赤飞石预备'
 
   unless isA or isB
-    赤治疗()
+    unless 索敌()
+      赤治疗()
+      return
+
+  if 短单体 isA, isB, isBR, isWR
     return
 
   if isMoving()

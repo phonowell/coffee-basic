@@ -25,6 +25,7 @@ SetMouseDelay 0, 50
 global ehp := 0
 global hp := 0
 global mp := 0
+global hasTarget := false
 global isViewFar := false
 global black := 0
 global distance := "far"
@@ -171,6 +172,17 @@ isMoving() {
   return false
 }
 
+isTargeting() {
+  PixelGetColor color, 650, 65, RGB
+  if (color == 0xFF8888) {
+    return true
+  }
+  if (color == 0xEBD788) {
+    return true
+  }
+  return false
+}
+
 reset() {
   Send {alt up}
   Send {ctrl up}
@@ -199,7 +211,9 @@ toggleView() {
     return
   }
   report()
-  索敌()
+  if !(索敌()) {
+    return
+  }
   if (group == "right") {
     单体攻击()
     return
@@ -228,7 +242,9 @@ toggleView() {
     return
   }
   report()
-  索敌()
+  if !(索敌()) {
+    return
+  }
   if (group == "right") {
     魔三连()
     return
@@ -290,6 +306,9 @@ getBlack() {
 }
 
 getDistance() {
+  if !(hasTarget) {
+    return "far"
+  }
   PixelGetColor color, 1079, 961, RGB
   if (color == 0xD53B3B) {
     return "far"
@@ -330,12 +349,11 @@ makeMsg(msg, prefix, ts, cd) {
 
 report() {
   black := getBlack()
-  ehp := getEnemyHp()
   white := getWhite()
   if !(isReporting) {
     return
   }
-  msg := "目标体力：" . ehp . "% / 目标距离：" . distance . ""
+  msg := "目标距离：" . distance . ""
   msg := "" . msg . "`n魔力：" . mp . "% / 黑：" . black . " / 白：" . white . ""
   msg := "" . msg . "`n耗时：" . A_TickCount - tsReport . "ms`n"
   tsReport := A_TickCount
@@ -797,11 +815,13 @@ report() {
 }
 
 索敌() {
-  if (ehp) {
-    return false
+  hasTarget := isTargeting()
+  if (hasTarget) {
+    return true
   }
   Send {f11}
-  return true
+  hasTarget := isTargeting()
+  return hasTarget
 }
 
 中断咏唱() {
@@ -1054,7 +1074,10 @@ report() {
   isBR := hasStatus("赤火炎预备")
   isWR := hasStatus("赤飞石预备")
   if (isA or isB) {
-    索敌()
+    if !(索敌()) {
+      赤治疗()
+      return
+    }
   }
   if (长单体(isA, isB, isBR, isWR)) {
     能力技()
@@ -1074,8 +1097,15 @@ report() {
   }
   isA := hasStatus("连续咏唱")
   isB := hasStatus("即刻咏唱")
+  isBR := hasStatus("赤火炎预备")
+  isWR := hasStatus("赤飞石预备")
   if !(isA or isB) {
-    赤治疗()
+    if !(索敌()) {
+      赤治疗()
+      return
+    }
+  }
+  if (短单体(isA, isB, isBR, isWR)) {
     return
   }
   if (isMoving()) {
@@ -1153,6 +1183,20 @@ return
   SetTimer 绑定治疗, Off
   SetTimer 绑定治疗, % 300
   治疗()
+return
+
+2joy5::
+  if !(getGroup() == "both") {
+    return
+  }
+  Send {shift down}{tab}{shift up}
+return
+
+2joy6::
+  if !(getGroup() == "both") {
+    return
+  }
+  Send {tab}
 return
 
 ; eof
