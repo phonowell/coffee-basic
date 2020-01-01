@@ -20,6 +20,8 @@ $.on 'f6', ->
 
 $.on 'f9', ->
   [x, y] = $.getPosition()
+  # x = 650
+  # y = 65
   color = $.getColor x, y
   # $.move x, y
   $.tip "#{x}, #{y}, #{color}"

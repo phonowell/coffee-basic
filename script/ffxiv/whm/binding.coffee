@@ -2,25 +2,33 @@ $.on 'f2', -> toggleView()
 
 $.on 'f4', ->
   isReporting = !isReporting
-  if !isReporting
+  if isReporting
+    report()
+  else
     $.tip()
 
 $.on 'f5', ->
+  清空信息()
+  reset()
   $.beep()
   $.reload()
 
 $.on 'f6', ->
-  [x, y] = $.findColor '#DEB673', 900, 800
+  [x, y] = $.findColor '#58483e'
   $.move x, y
   $.tip "#{x}, #{y}"
 
 $.on 'f9', ->
   [x, y] = $.getPosition()
-  color = $.getColor x, y+
+  # x = 650
+  # y = 65
+  color = $.getColor x, y
+  # $.move x, y
   $.tip "#{x}, #{y}, #{color}"
 
 $.on 'f10', ->
   $.beep()
+  reset()
   $.exit()
 
 # ---
@@ -33,10 +41,9 @@ $.on 'f10', ->
     return
 
   report()
-  索敌()
-
-  red = getRed()
-  white = getWhite()
+  
+  unless 索敌()
+    return
 
   # 单体攻击
   if group == 'right'
@@ -78,9 +85,6 @@ _治疗 = ->
     return
 
   report()
-
-  red = getRed()
-  white = getWhite()
 
   # 单体治疗
   if group == 'right'
@@ -133,6 +137,8 @@ $.on '2-joy-1', ->
 
   # 复活
   if group == 'left'
+    即刻咏唱()
+    无中生有()
     复活()
     return
 
@@ -150,7 +156,6 @@ $.on '2-joy-3', ->
     return
 
   if group == 'both'
-    asr = 1
     无中生有()
     愈疗()
     return

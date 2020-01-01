@@ -22,8 +22,6 @@ SetMouseDelay 0, 50
 
 ; global
 
-global ehp := 0
-global hp := 0
 global mp := 0
 global hasTarget := false
 global isViewFar := false
@@ -31,7 +29,8 @@ global red := 0
 global white := 0
 global isReporting := true
 global tsReport := 0
-global asr := 0
+global 技能施放判断间隔 := 100
+global 技能施放时间戳补正 := 1500
 global 神速咏唱时间戳 := 0
 global 神速咏唱冷却 := 150000
 global 法令时间戳 := 0
@@ -46,25 +45,13 @@ global 即刻咏唱时间戳 := 0
 global 即刻咏唱冷却 := 60000
 global 醒梦时间戳 := 0
 global 醒梦冷却 := 60000
+global 能力技时间戳 := 0
+global 能力技冷却 := 300
 
 ; function
 
 clearTip() {
   ToolTip
-}
-
-getEnemyHp() {
-  PixelGetColor color, 650, 65, RGB
-  if !(color == 0xFF8888) {
-    return 0
-  }
-  PixelSearch x, y, 650, 65, 1084, 65, 0x471515, 0, Fast RGB
-  if !(x) {
-    return 100
-  }
-  percent := (x - 650) * 100 / (1084 - 650)
-  percent := Floor(percent)
-  return percent
 }
 
 getGroup() {
@@ -82,16 +69,6 @@ getGroup() {
     return "right"
   }
   return false
-}
-
-getHp() {
-  PixelSearch x, y, 21, 36, 168, 36, 0x58483E, 10, Fast RGB
-  if !(x) {
-    return 100
-  }
-  percent := (x - 21) * 100 / (168 - 21)
-  percent := Floor(percent)
-  return percent
 }
 
 getMp() {
@@ -156,6 +133,9 @@ isTargeting() {
   if (color == 0xFF8888) {
     return true
   }
+  if (color == 0xFFC888) {
+    return true
+  }
   if (color == 0xEBD788) {
     return true
   }
@@ -190,9 +170,9 @@ toggleView() {
     return
   }
   report()
-  索敌()
-  red := getRed()
-  white := getWhite()
+  if !(索敌()) {
+    return
+  }
   if (group == "right") {
     单体攻击()
     return
@@ -221,8 +201,6 @@ _治疗() {
     return
   }
   report()
-  red := getRed()
-  white := getWhite()
   if (group == "right") {
     单体治疗()
     return
@@ -243,16 +221,6 @@ _治疗() {
   }
   SetTimer 清空信息, Off
   _治疗()
-}
-
-calcCD(ts, cd) {
-  result := cd - (A_TickCount - ts)
-  if (result < 0) {
-    result := 0
-  }
-  result := result / 1000
-  result := Round(result)
-  return result
 }
 
 getRed() {
@@ -287,42 +255,40 @@ getWhite() {
   return 0
 }
 
+calcCD(ts, cd) {
+  result := cd - (A_TickCount - ts)
+  if !(result > 0) {
+    return 0
+  }
+  result := result / 1000
+  result := Round(result)
+  return result
+}
+
+makeMsg(msg, prefix, ts, cd) {
+  res := calcCD(ts, cd)
+  if !(res) {
+    return msg
+  }
+  return "" . msg . "`n" . prefix . "：" . res . "s"
+}
+
 report() {
+  red := getRed()
+  white := getWhite()
   if !(isReporting) {
     return
   }
-  msg := "目标体力：" . ehp . "% / 魔力：" . mp . "%"
-  msg := "" . msg . "`n白：" . white . " / 红：" . red . ""
+  msg := "魔力：" . mp . "% / 白：" . white . " / 红：" . red . ""
   msg := "" . msg . "`n耗时：" . A_TickCount - tsReport . "ms`n"
   tsReport := A_TickCount
-  res := calcCD(神速咏唱时间戳, 神速咏唱冷却)
-  if (res) {
-    msg := "" . msg . "`n神速咏唱：" . res . "s"
-  }
-  res := calcCD(法令时间戳, 法令冷却)
-  if (res) {
-    msg := "" . msg . "`n法令：" . res . "s"
-  }
-  res := calcCD(无中生有时间戳, 无中生有冷却)
-  if (res) {
-    msg := "" . msg . "`n无中生有：" . res . "s"
-  }
-  res := calcCD(神名时间戳, 神名冷却)
-  if (res) {
-    msg := "" . msg . "`n神名：" . res . "s"
-  }
-  res := calcCD(全大赦时间戳, 全大赦冷却)
-  if (res) {
-    msg := "" . msg . "`n全大赦：" . res . "s"
-  }
-  res := calcCD(即刻咏唱时间戳, 即刻咏唱冷却)
-  if (res) {
-    msg := "" . msg . "`n即刻咏唱：" . res . "s"
-  }
-  res := calcCD(醒梦时间戳, 醒梦冷却)
-  if (res) {
-    msg := "" . msg . "`n醒梦：" . res . "s"
-  }
+  msg := makeMsg(msg, "神速咏唱", 神速咏唱时间戳, 神速咏唱冷却)
+  msg := makeMsg(msg, "法令", 法令时间戳, 法令冷却)
+  msg := makeMsg(msg, "无中生有", 无中生有时间戳, 无中生有冷却)
+  msg := makeMsg(msg, "神名", 神名时间戳, 神名冷却)
+  msg := makeMsg(msg, "全大赦", 全大赦时间戳, 全大赦冷却)
+  msg := makeMsg(msg, "即刻咏唱", 即刻咏唱时间戳, 即刻咏唱冷却)
+  msg := makeMsg(msg, "醒梦", 醒梦时间戳, 醒梦冷却)
   ToolTip % msg, 410, 640
   SetTimer clearTip, Off
   SetTimer clearTip, % 0 - 5000
@@ -333,17 +299,10 @@ report() {
 }
 
 治疗() {
-  if !(asr > 0) {
-    return false
-  }
   Send {alt down}{2}{alt up}
-  return true
 }
 
 疾风() {
-  if !(asr > 0) {
-    return false
-  }
   if !(isMoving()) {
     if (hasStatusTarget("天辉")) {
       return false
@@ -356,24 +315,15 @@ report() {
     }
   }
   Send {alt down}{3}{alt up}
-  asr--
   return true
 }
 
 医治() {
-  if !(asr > 0) {
-    return false
-  }
   Send {alt down}{4}{alt up}
-  return true
 }
 
 复活() {
-  asr := 2
-  即刻咏唱()
-  无中生有()
   Send {alt down}{5}{alt up}
-  return true
 }
 
 水流环() {
@@ -381,17 +331,10 @@ report() {
 }
 
 救疗() {
-  if !(asr > 0) {
-    return false
-  }
   Send {alt down}{7}{alt up}
-  return true
 }
 
 医济() {
-  if !(asr > 0) {
-    return false
-  }
   if (hasStatus("医济")) {
     return false
   }
@@ -400,15 +343,12 @@ report() {
 }
 
 神速咏唱() {
-  if !(asr > 0) {
-    return false
-  }
   if !(A_TickCount - 神速咏唱时间戳 > 神速咏唱冷却) {
     return false
   }
   Send {alt down}{9}{alt up}
-  SetTimer 监听神速咏唱, % 200
-  asr--
+  神速咏唱时间戳 := A_TickCount - 神速咏唱冷却 + 技能施放时间戳补正
+  SetTimer 监听神速咏唱, % 技能施放判断间隔
   return true
 }
 
@@ -416,19 +356,18 @@ report() {
   if !(hasStatus("神速咏唱")) {
     return
   }
-  神速咏唱时间戳 := A_TickCount - 2000
   SetTimer 监听神速咏唱, Off
+  神速咏唱时间戳 := A_TickCount - 技能施放时间戳补正
 }
 
 再生() {
-  if !(asr > 0) {
-    return false
-  }
   if (hasStatusTarget("再生")) {
     return false
   }
+  if !(能力技冷却判断()) {
+    return false
+  }
   Send {alt down}{0}{alt up}
-  asr--
   return true
 }
 
@@ -445,14 +384,13 @@ report() {
 }
 
 安慰之心() {
-  if !(asr > 0) {
-    return false
-  }
   if !(white >= 1) {
     return false
   }
+  if !(能力技冷却判断()) {
+    return false
+  }
   Send {ctrl down}{2}{ctrl up}
-  asr--
   return true
 }
 
@@ -461,15 +399,12 @@ report() {
 }
 
 法令() {
-  if !(asr > 0) {
-    return false
-  }
   if !(A_TickCount - 法令时间戳 > 法令冷却) {
     return false
   }
   Send {ctrl down}{4}{ctrl up}
-  SetTimer 监听法令, % 200
-  asr--
+  法令时间戳 := A_TickCount - 法令冷却 + 技能施放时间戳补正
+  SetTimer 监听法令, % 技能施放判断间隔
   return true
 }
 
@@ -477,20 +412,17 @@ report() {
   if !(isUsed("法令")) {
     return
   }
-  法令时间戳 := A_TickCount - 2000
   SetTimer 监听法令, Off
+  法令时间戳 := A_TickCount - 技能施放时间戳补正
 }
 
 无中生有() {
-  if !(asr > 0) {
-    return false
-  }
   if !(A_TickCount - 无中生有时间戳 > 无中生有冷却) {
     return false
   }
   Send {ctrl down}{5}{ctrl up}
-  SetTimer 监听无中生有, % 200
-  asr--
+  无中生有时间戳 := A_TickCount - 无中生有冷却 + 技能施放时间戳补正
+  SetTimer 监听无中生有, % 技能施放判断间隔
   return true
 }
 
@@ -498,20 +430,20 @@ report() {
   if !(hasStatus("无中生有")) {
     return
   }
-  无中生有时间戳 := A_TickCount - 2000
   SetTimer 监听无中生有, Off
+  无中生有时间戳 := A_TickCount - 技能施放时间戳补正
 }
 
 神名() {
-  if !(asr > 0) {
-    return false
-  }
   if !(A_TickCount - 神名时间戳 > 神名冷却) {
     return false
   }
+  if !(能力技冷却判断()) {
+    return false
+  }
   Send {ctrl down}{6}{ctrl up}
-  SetTimer 监听神名, % 200
-  asr--
+  神名时间戳 := A_TickCount - 神名冷却 + 技能施放时间戳补正
+  SetTimer 监听神名, % 技能施放判断间隔
   return true
 }
 
@@ -519,8 +451,8 @@ report() {
   if !(isUsed("神名")) {
     return
   }
-  神名时间戳 := A_TickCount - 2000
   SetTimer 监听神名, Off
+  神名时间戳 := A_TickCount - 技能施放时间戳补正
 }
 
 神祝祷() {
@@ -528,15 +460,15 @@ report() {
 }
 
 全大赦() {
-  if !(asr > 0) {
-    return false
-  }
   if !(A_TickCount - 全大赦时间戳 > 全大赦冷却) {
     return false
   }
+  if !(能力技冷却判断()) {
+    return false
+  }
   Send {ctrl down}{8}{ctrl up}
-  SetTimer 监听全大赦, % 200
-  asr--
+  全大赦时间戳 := A_TickCount - 全大赦冷却 + 技能施放时间戳补正
+  SetTimer 监听全大赦, % 技能施放判断间隔
   return true
 }
 
@@ -544,8 +476,8 @@ report() {
   if !(isUsed("全大赦")) {
     return
   }
-  全大赦时间戳 := A_TickCount - 2000
   SetTimer 监听全大赦, Off
+  全大赦时间戳 := A_TickCount - 技能施放时间戳补正
 }
 
 苦难之心() {
@@ -557,14 +489,13 @@ report() {
 }
 
 狂喜之心() {
-  if !(asr > 0) {
-    return false
-  }
   if !(white >= 1) {
     return false
   }
+  if !(能力技冷却判断()) {
+    return false
+  }
   Send {ctrl down}{0}{ctrl up}
-  asr--
   return true
 }
 
@@ -581,15 +512,12 @@ report() {
 }
 
 即刻咏唱() {
-  if !(asr > 0) {
-    return false
-  }
   if !(A_TickCount - 即刻咏唱时间戳 > 即刻咏唱冷却) {
     return false
   }
   Send {shift down}{2}{shift up}
-  SetTimer 监听即刻咏唱, % 200
-  asr--
+  即刻咏唱时间戳 := A_TickCount - 即刻咏唱冷却 + 技能施放时间戳补正
+  SetTimer 监听即刻咏唱, % 技能施放判断间隔
   return true
 }
 
@@ -597,8 +525,8 @@ report() {
   if !(hasStatus("即刻咏唱")) {
     return
   }
-  即刻咏唱时间戳 := A_TickCount - 2000
   SetTimer 监听即刻咏唱, Off
+  即刻咏唱时间戳 := A_TickCount - 技能施放时间戳补正
 }
 
 醒梦() {
@@ -610,7 +538,8 @@ report() {
     return false
   }
   Send {shift down}{3}{shift up}
-  SetTimer 监听醒梦, % 200
+  醒梦时间戳 := A_TickCount - 醒梦冷却 + 技能施放时间戳补正
+  SetTimer 监听醒梦, % 技能施放判断间隔
   return true
 }
 
@@ -618,8 +547,8 @@ report() {
   if !(hasStatus("醒梦")) {
     return
   }
-  醒梦时间戳 := A_TickCount - 2000
   SetTimer 监听醒梦, Off
+  醒梦时间戳 := A_TickCount - 技能施放时间戳补正
 }
 
 沉稳咏唱() {
@@ -630,24 +559,40 @@ report() {
   Send {shift down}{5}{shift up}
 }
 
-索敌() {
-  ehp := getEnemyHp()
-  if (ehp) {
-    return false
-  }
-  Send {f11}
-  return true
-}
-
 清空信息() {
   Send {shift down}{=}{shift up}
+}
+
+索敌() {
+  hasTarget := isTargeting()
+  if (hasTarget) {
+    return true
+  }
+  Send {f11}
+  hasTarget := isTargeting()
+  return hasTarget
+}
+
+中断咏唱() {
+  if !(isChanting()) {
+    return
+  }
+  Send {space}
+}
+
+能力技冷却判断() {
+  if !(A_TickCount - 能力技时间戳 > 能力技冷却) {
+    return false
+  }
+  SoundBeep
+  能力技时间戳 := A_TickCount
+  return true
 }
 
 单体攻击() {
   if (isChanting()) {
     return
   }
-  asr := 10
   醒梦()
   法令()
   苦难之心()
@@ -664,7 +609,6 @@ report() {
   if (isChanting()) {
     return
   }
-  asr := 10
   醒梦()
   法令()
   苦难之心()
@@ -682,7 +626,6 @@ report() {
   if (isChanting()) {
     return
   }
-  asr := 1
   醒梦()
   法令()
   神名()
@@ -696,7 +639,6 @@ report() {
   if (isChanting()) {
     return
   }
-  asr := 1
   醒梦()
   法令()
   全大赦()
@@ -720,30 +662,36 @@ return
 
 f4::
   isReporting := !isReporting
-  if (!isReporting) {
+  if (isReporting) {
+    report()
+  }
+  else {
     ToolTip
   }
 return
 
 f5::
+  清空信息()
+  reset()
   SoundBeep
   Reload
 return
 
 f6::
-  PixelSearch x, y, 900, 800, A_ScreenWidth, A_ScreenHeight, 0xDEB673, 0, Fast RGB
+  PixelSearch x, y, 0, 0, A_ScreenWidth, A_ScreenHeight, 0x58483E, 0, Fast RGB
   MouseMove x, y, 0
   ToolTip % "" . x . ", " . y . ""
 return
 
 f9::
   MouseGetPos x, y
-  PixelGetColor color, x, y+, RGB
+  PixelGetColor color, x, y, RGB
   ToolTip % "" . x . ", " . y . ", " . color . ""
 return
 
 f10::
   SoundBeep
+  reset()
   ExitApp
 return
 
@@ -779,6 +727,8 @@ return
     return
   }
   if (group == "left") {
+    即刻咏唱()
+    无中生有()
     复活()
     return
   }
@@ -794,7 +744,6 @@ return
     return
   }
   if (group == "both") {
-    asr := 1
     无中生有()
     愈疗()
     return

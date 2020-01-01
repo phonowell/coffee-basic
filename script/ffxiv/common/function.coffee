@@ -2,21 +2,21 @@ clearTip = -> $.tip()
 
 # ---
 
-ehp = 0
-getEnemyHp = ->
+# ehp = 0
+# getEnemyHp = ->
   
-  color = $.getColor 650, 65
-  unless color == 0xFF8888
-    return 0
+#   color = $.getColor 650, 65
+#   unless color == 0xFF8888
+#     return 0
 
-  [x, y] = $.findColor '#471515', 650, 65, 1084, 65
+#   [x, y] = $.findColor '#471515', 650, 65, 1084, 65
 
-  unless x
-    return 100
+#   unless x
+#     return 100
   
-  percent = (x - 650) * 100 / (1084 - 650)
-  percent = Math.floor percent
-  return percent
+#   percent = (x - 650) * 100 / (1084 - 650)
+#   percent = Math.floor percent
+#   return percent
 
 # ---
 
@@ -38,16 +38,16 @@ getGroup = ->
 
 # ---
 
-hp = 0
-getHp = ->
-  [x, y] = $.findColor '#58483e', 21, 36, 168, 36, 10
+# hp = 0
+# getHp = ->
+#   [x, y] = $.findColor '#58483e', 21, 36, 168, 36, 10
   
-  unless x
-    return 100
+#   unless x
+#     return 100
   
-  percent = (x - 21) * 100 / (168 - 21)
-  percent = Math.floor percent
-  return percent
+#   percent = (x - 21) * 100 / (168 - 21)
+#   percent = Math.floor percent
+#   return percent
 
 # ---
 
@@ -124,6 +124,9 @@ isTargeting = ->
   color = $.getColor 650, 65
 
   if color == 0xFF8888
+    return true
+
+  if color == 0xFFC888
     return true
 
   if color == 0xEBD788

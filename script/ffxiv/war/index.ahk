@@ -22,8 +22,6 @@ SetMouseDelay 0, 50
 
 ; global
 
-global ehp := 0
-global hp := 0
 global mp := 0
 global hasTarget := false
 global isViewFar := false
@@ -42,20 +40,6 @@ clearTip() {
   ToolTip
 }
 
-getEnemyHp() {
-  PixelGetColor color, 650, 65, RGB
-  if !(color == 0xFF8888) {
-    return 0
-  }
-  PixelSearch x, y, 650, 65, 1084, 65, 0x471515, 0, Fast RGB
-  if !(x) {
-    return 100
-  }
-  percent := (x - 650) * 100 / (1084 - 650)
-  percent := Floor(percent)
-  return percent
-}
-
 getGroup() {
   GetKeyState __value__, 2joy7
   isLT := __value__ == "D"
@@ -71,16 +55,6 @@ getGroup() {
     return "right"
   }
   return false
-}
-
-getHp() {
-  PixelSearch x, y, 21, 36, 168, 36, 0x58483E, 10, Fast RGB
-  if !(x) {
-    return 100
-  }
-  percent := (x - 21) * 100 / (168 - 21)
-  percent := Floor(percent)
-  return percent
 }
 
 getMp() {
@@ -143,6 +117,9 @@ isMoving() {
 isTargeting() {
   PixelGetColor color, 650, 65, RGB
   if (color == 0xFF8888) {
+    return true
+  }
+  if (color == 0xFFC888) {
     return true
   }
   if (color == 0xEBD788) {

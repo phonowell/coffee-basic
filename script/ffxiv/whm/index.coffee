@@ -2,6 +2,7 @@
 # include ../common/function
 # include binding
 # include function
+# include report
 # include skill
 
 # bind
@@ -12,8 +13,6 @@
 
   if isChanting()
     return
-
-  asr = 10
 
   醒梦()
   法令()
@@ -31,8 +30,6 @@
 
   if isChanting()
     return
-
-  asr = 10
 
   醒梦()
   法令()
@@ -54,8 +51,6 @@
   if isChanting()
     return
 
-  asr = 1
-
   醒梦()
   法令()
   神名()
@@ -68,8 +63,6 @@
 
   if isChanting()
     return
-
-  asr = 1
 
   醒梦()
   法令()

@@ -1,25 +1,14 @@
-asr = 0
+技能施放判断间隔 = 100
+技能施放时间戳补正 = 1500
 
 # ---
 
 飞石 = -> $.press 'alt + 1'
-
-# ---
-
-治疗 = ->
-
-  unless asr > 0
-    return false
-
-  $.press 'alt + 2'
-  return true
+治疗 = -> $.press 'alt + 2'
 
 # ---
 
 疾风 = ->
-
-  unless asr > 0
-    return false
 
   unless isMoving()
   
@@ -31,49 +20,18 @@ asr = 0
       return false
   
   $.press 'alt + 3'
-
-  asr--
   return true
 
 # ---
 
-医治 = ->
-
-  unless asr > 0
-    return false
-
-  $.press 'alt + 4'
-  return true
-
-# ---
-
-复活 = ->
-  asr = 2
-  即刻咏唱()
-  无中生有()
-  $.press 'alt + 5'
-  return true
-
-# ---
-
+医治 = -> $.press 'alt + 4'
+复活 = -> $.press 'alt + 5'
 水流环 = -> $.press 'alt + 6'
-
-# ---
-
-救疗 = ->
-  
-  unless asr > 0
-    return false
-
-  $.press 'alt + 7'
-  return true
+救疗 = -> $.press 'alt + 7'
 
 # ---
 
 医济 = ->
-
-  unless asr > 0
-    return false
   
   if hasStatus '医济'
     return false
@@ -88,39 +46,32 @@ asr = 0
 
 神速咏唱 = ->
 
-  unless asr > 0
-    return false
-
   unless A_TickCount - 神速咏唱时间戳 > 神速咏唱冷却
     return false
 
   $.press 'alt + 9'
 
-  $.setInterval 监听神速咏唱, 200
-  asr--
+  神速咏唱时间戳 = A_TickCount - 神速咏唱冷却 + 技能施放时间戳补正
+  $.setInterval 监听神速咏唱, 技能施放判断间隔
   return true
 
 监听神速咏唱 = ->
-
   unless hasStatus '神速咏唱'
     return
-
-  神速咏唱时间戳 = A_TickCount - 2e3
   $.clearInterval 监听神速咏唱
+  神速咏唱时间戳 = A_TickCount - 技能施放时间戳补正
 
 # ---
 
 再生 = ->
-
-  unless asr > 0
-    return false
   
   if hasStatusTarget '再生'
     return false
+
+  unless 能力技冷却判断()
+    return false
   
   $.press 'alt + 0'
-  
-  asr--
   return true
 
 # ---
@@ -133,15 +84,13 @@ asr = 0
 
 安慰之心 = ->
 
-  unless asr > 0
-    return false
-
   unless white >= 1
     return false
 
-  $.press 'ctrl + 2'
+  unless 能力技冷却判断()
+    return false
 
-  asr--
+  $.press 'ctrl + 2'
   return true
 
 # ---
@@ -155,25 +104,20 @@ asr = 0
 
 法令 = ->
 
-  unless asr > 0
-    return false
-
   unless A_TickCount - 法令时间戳 > 法令冷却
     return false
 
   $.press 'ctrl + 4'
 
-  $.setInterval 监听法令, 200
-  asr--
+  法令时间戳 = A_TickCount - 法令冷却 + 技能施放时间戳补正
+  $.setInterval 监听法令, 技能施放判断间隔
   return true
 
 监听法令 = ->
-
   unless isUsed '法令'
     return
-
-  法令时间戳 = A_TickCount - 2e3
   $.clearInterval 监听法令
+  法令时间戳 = A_TickCount - 技能施放时间戳补正
 
 # ---
 
@@ -182,25 +126,20 @@ asr = 0
 
 无中生有 = ->
 
-  unless asr > 0
-    return false
-
   unless A_TickCount - 无中生有时间戳 > 无中生有冷却
     return false
 
   $.press 'ctrl + 5'
 
-  $.setInterval 监听无中生有, 200
-  asr--
+  无中生有时间戳 = A_TickCount - 无中生有冷却 + 技能施放时间戳补正
+  $.setInterval 监听无中生有, 技能施放判断间隔
   return true
 
 监听无中生有 = ->
-
   unless hasStatus '无中生有'
     return
-
-  无中生有时间戳 = A_TickCount - 2e3
   $.clearInterval 监听无中生有
+  无中生有时间戳 = A_TickCount - 技能施放时间戳补正
 
 # ---
 
@@ -209,25 +148,23 @@ asr = 0
 
 神名 = ->
 
-  unless asr > 0
+  unless A_TickCount - 神名时间戳 > 神名冷却
     return false
 
-  unless A_TickCount - 神名时间戳 > 神名冷却
+  unless 能力技冷却判断()
     return false
 
   $.press 'ctrl + 6'
 
-  $.setInterval 监听神名, 200
-  asr--
+  神名时间戳 = A_TickCount - 神名冷却 + 技能施放时间戳补正
+  $.setInterval 监听神名, 技能施放判断间隔
   return true
 
 监听神名 = ->
-
   unless isUsed '神名'
     return
-
-  神名时间戳 = A_TickCount - 2e3
   $.clearInterval 监听神名
+  神名时间戳 = A_TickCount - 技能施放时间戳补正
 
 # ---
 
@@ -240,25 +177,23 @@ asr = 0
 
 全大赦 = ->
 
-  unless asr > 0
+  unless A_TickCount - 全大赦时间戳 > 全大赦冷却
     return false
 
-  unless A_TickCount - 全大赦时间戳 > 全大赦冷却
+  unless 能力技冷却判断()
     return false
 
   $.press 'ctrl + 8'
 
-  $.setInterval 监听全大赦, 200
-  asr--
+  全大赦时间戳 = A_TickCount - 全大赦冷却 + 技能施放时间戳补正
+  $.setInterval 监听全大赦, 技能施放判断间隔
   return true
 
 监听全大赦 = ->
-
   unless isUsed '全大赦'
     return
-
-  全大赦时间戳 = A_TickCount - 2e3
   $.clearInterval 监听全大赦
+  全大赦时间戳 = A_TickCount - 技能施放时间戳补正
 
 # ---
 
@@ -274,15 +209,13 @@ asr = 0
 
 狂喜之心 = ->
 
-  unless asr > 0
-    return false
-
   unless white >= 1
     return false
 
-  $.press 'ctrl + 0'
+  unless 能力技冷却判断()
+    return false
 
-  asr--
+  $.press 'ctrl + 0'
   return true
 
 # ---
@@ -298,25 +231,20 @@ asr = 0
 
 即刻咏唱 = ->
 
-  unless asr > 0
-    return false
-
   unless A_TickCount - 即刻咏唱时间戳 > 即刻咏唱冷却
     return false
 
   $.press 'shift + 2'
 
-  $.setInterval 监听即刻咏唱, 200
-  asr--
+  即刻咏唱时间戳 = A_TickCount - 即刻咏唱冷却 + 技能施放时间戳补正
+  $.setInterval 监听即刻咏唱, 技能施放判断间隔
   return true
 
 监听即刻咏唱 = ->
-
   unless hasStatus '即刻咏唱'
     return
-
-  即刻咏唱时间戳 = A_TickCount - 2e3
   $.clearInterval 监听即刻咏唱
+  即刻咏唱时间戳 = A_TickCount - 技能施放时间戳补正
 
 # ---
 
@@ -324,9 +252,6 @@ asr = 0
 醒梦冷却 = 60e3
 
 醒梦 = ->
-
-  # unless asr > 0
-  #   return false
 
   unless A_TickCount - 醒梦时间戳 > 醒梦冷却
     return false
@@ -336,34 +261,53 @@ asr = 0
     return false
 
   $.press 'shift + 3'
-
-  $.setInterval 监听醒梦, 200
-  # asr--
+  
+  醒梦时间戳 = A_TickCount - 醒梦冷却 + 技能施放时间戳补正
+  $.setInterval 监听醒梦, 技能施放判断间隔
   return true
 
 监听醒梦 = ->
-
   unless hasStatus '醒梦'
     return
-
-  醒梦时间戳 = A_TickCount - 2e3
   $.clearInterval 监听醒梦
+  醒梦时间戳 = A_TickCount - 技能施放时间戳补正
 
 # ---
 
 沉稳咏唱 = -> $.press 'shift + 4'
 营救 = -> $.press 'shift + 5'
+清空信息 = -> $.press 'shift + equal'
 
 # ---
 
 索敌 = ->
 
-  ehp = getEnemyHp()
-  if ehp
-    return false
+  hasTarget = isTargeting()
+  if hasTarget
+    return true
 
   $.press 'f11'
-  return true
+
+  hasTarget = isTargeting()
+  return hasTarget
+
 # ---
 
-清空信息 = -> $.press 'shift + equal'
+中断咏唱 = ->
+  unless isChanting()
+    return
+  $.press 'space'
+
+# ---
+
+能力技时间戳 = 0
+能力技冷却 = 300
+
+能力技冷却判断 = ->
+
+  unless A_TickCount - 能力技时间戳 > 能力技冷却
+    return false
+
+  $.beep()
+  能力技时间戳 = A_TickCount
+  return true
