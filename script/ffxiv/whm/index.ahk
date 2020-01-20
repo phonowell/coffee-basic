@@ -584,7 +584,6 @@ report() {
   if !(A_TickCount - 能力技时间戳 > 能力技冷却) {
     return false
   }
-  SoundBeep
   能力技时间戳 := A_TickCount
   return true
 }
@@ -629,8 +628,8 @@ report() {
   醒梦()
   法令()
   神名()
-  再生()
   安慰之心()
+  再生()
   救疗()
   治疗()
 }

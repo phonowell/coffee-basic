@@ -593,10 +593,10 @@ report() {
   if (A_TickCount - 回刺时间戳 < 魔三连冷却) {
     return false
   }
-  if !(black >= 40 and black <= 65) {
+  if !(black >= 40 and black <= 70) {
     return false
   }
-  if !(white >= 40 and white <= 65) {
+  if !(white >= 40 and white <= 70) {
     return false
   }
   Send {ctrl down}{8}{ctrl up}

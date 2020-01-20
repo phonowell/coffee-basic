@@ -279,10 +279,10 @@
   if A_TickCount - 回刺时间戳 < 魔三连冷却
     return false
 
-  unless black >= 40 and black <= 65
+  unless black >= 40 and black <= 70
     return false
 
-  unless white >= 40 and white <= 65
+  unless white >= 40 and white <= 70
     return false
 
   $.press 'ctrl + 8'
