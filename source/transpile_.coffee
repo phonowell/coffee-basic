@@ -42,7 +42,7 @@ class Content
 
   # ---
 
-  execute: ->
+  execute_: ->
 
     await @include_()
 
@@ -72,4 +72,4 @@ class Content
     
 # return
 module.exports = (source, option = {}) ->
-  (new Content source, option).execute()
+  await (new Content source, option).execute_()
