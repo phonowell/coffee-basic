@@ -2,6 +2,7 @@
 # include ../common/function
 # include binding
 # include function
+# include report
 # include skill
 
 # ---

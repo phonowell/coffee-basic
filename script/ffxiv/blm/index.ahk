@@ -95,8 +95,8 @@ isUsed(name) {
 }
 
 isChanting() {
-  PixelGetColor color, 1010, 612, RGB
-  return color == 0x58483E
+  PixelGetColor color, 1050, 860, RGB
+  return color == 0x48290E
 }
 
 isMoving() {
@@ -126,6 +126,9 @@ isTargeting() {
     return true
   }
   if (color == 0xEBD788) {
+    return true
+  }
+  if (color == 0xFFB1FF) {
     return true
   }
   return false

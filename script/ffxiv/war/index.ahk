@@ -31,8 +31,6 @@ global 重劈时间戳 := 0
 global 重劈冷却 := 5000
 global 凶残裂时间戳 := 0
 global 凶残裂冷却 := 5000
-global 索敌时间戳 := 0
-global 索敌冷却 := 3000
 
 ; function
 
@@ -92,8 +90,8 @@ isUsed(name) {
 }
 
 isChanting() {
-  PixelGetColor color, 1010, 612, RGB
-  return color == 0x58483E
+  PixelGetColor color, 1050, 860, RGB
+  return color == 0x48290E
 }
 
 isMoving() {
@@ -123,6 +121,9 @@ isTargeting() {
     return true
   }
   if (color == 0xEBD788) {
+    return true
+  }
+  if (color == 0xFFB1FF) {
     return true
   }
   return false
@@ -156,7 +157,9 @@ toggleView() {
     return
   }
   report()
-  索敌()
+  if !(索敌()) {
+    return
+  }
   if (group == "right") {
     单体攻击()
     return
@@ -181,19 +184,28 @@ toggleView() {
 
 calcCD(ts, cd) {
   result := cd - (A_TickCount - ts)
-  if (result < 0) {
-    result := 0
+  if !(result > 0) {
+    return 0
   }
   result := result / 1000
   result := Round(result)
   return result
 }
 
+makeMsg(msg, prefix, ts, cd) {
+  res := calcCD(ts, cd)
+  if !(res) {
+    return msg
+  }
+  return "" . msg . "`n" . prefix . "：" . res . "s"
+}
+
 report() {
   if !(isReporting) {
     return
   }
-  msg := "体力：" . hp . "% / 魔力：" . mp . "%"
+  msg := "目标距离：" . distance . ""
+  msg := "" . msg . "`n魔力：" . mp . "%"
   msg := "" . msg . "`n耗时：" . A_TickCount - tsReport . "ms`n"
   tsReport := A_TickCount
   ToolTip % msg, 410, 640
@@ -303,80 +315,66 @@ report() {
   Send {ctrl down}{6}{ctrl up}
 }
 
-地毁人亡() {
+猛攻() {
   Send {ctrl down}{7}{ctrl up}
 }
 
-猛攻() {
+动乱() {
   Send {ctrl down}{8}{ctrl up}
 }
 
-动乱() {
+摆脱() {
   Send {ctrl down}{9}{ctrl up}
 }
 
-摆脱() {
+原初的勇猛() {
   Send {ctrl down}{0}{ctrl up}
 }
 
-原初的解放() {
-  Send {ctrl down}{-}{ctrl up}
-}
-
-原初的勇猛() {
-  Send {ctrl down}{=}{ctrl up}
-}
-
-混沌旋风() {
+铁壁() {
   Send {shift down}{1}{shift up}
 }
 
-狂魂() {
+下踢() {
   Send {shift down}{2}{shift up}
 }
 
-铁壁() {
+挑衅() {
   Send {shift down}{3}{shift up}
 }
 
-下踢() {
+插言() {
   Send {shift down}{4}{shift up}
 }
 
-挑衅() {
+雪仇() {
   Send {shift down}{5}{shift up}
 }
 
-插言() {
+亲疏自行() {
   Send {shift down}{6}{shift up}
 }
 
-雪仇() {
+退避() {
   Send {shift down}{7}{shift up}
 }
 
-亲疏自行() {
-  Send {shift down}{8}{shift up}
-}
-
-退避() {
-  Send {shift down}{9}{shift up}
-}
-
-索敌() {
-  if !(A_TickCount - 索敌时间戳 > 索敌冷却) {
-    return false
-  }
-  if (isChanting()) {
-    return false
-  }
+冲刺() {
   Send {shift down}{-}{shift up}
-  索敌时间戳 := A_TickCount - 2000
-  return true
 }
 
 清空信息() {
   Send {shift down}{=}{shift up}
+}
+
+索敌() {
+  hasTarget := isTargeting()
+  if (hasTarget) {
+    return true
+  }
+  Send {f11}
+  hasTarget := isTargeting()
+  return hasTarget
 }
 
 单体攻击() {
@@ -405,30 +403,24 @@ return
 
 f4::
   isReporting := !isReporting
-  if (!isReporting) {
+  if (isReporting) {
+    report()
+  }
+  else {
     ToolTip
   }
 return
 
 f5::
+  清空信息()
+  reset()
   SoundBeep
   Reload
 return
 
-f9::
-  MouseGetPos x, y
-  PixelGetColor color, x, y, RGB
-  ToolTip % "" . x . ", " . y . ", " . color . ""
-return
-
-f6::
-  PixelSearch x, y, 0, 0, A_ScreenWidth, A_ScreenHeight, 0x58483E, 0, Fast RGB
-  MouseMove x, y, 0
-  ToolTip % "" . x . ", " . y . ""
-return
-
-f12::
+!f4::
   SoundBeep
+  reset()
   ExitApp
 return
 
@@ -439,6 +431,27 @@ return
   SetTimer 绑定攻击, Off
   SetTimer 绑定攻击, % 300
   攻击()
+return
+
+2joy5::
+  if !(getGroup() == "both") {
+    return
+  }
+  Send {shift down}{tab}{shift up}
+return
+
+2joy6::
+  if !(getGroup() == "both") {
+    return
+  }
+  Send {tab}
+return
+
+2joy12::
+  if !(getGroup()) {
+    return
+  }
+  冲刺()
 return
 
 ; eof

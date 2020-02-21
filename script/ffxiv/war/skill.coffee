@@ -66,40 +66,29 @@
 裂石飞环 = -> $.press 'ctrl + 4'
 原初的直觉 = -> $.press 'ctrl + 5'
 泰然自若 = -> $.press 'ctrl + 6'
-地毁人亡 = -> $.press 'ctrl + 7'
-猛攻 = -> $.press 'ctrl + 8'
-动乱 = -> $.press 'ctrl + 9'
-摆脱 = -> $.press 'ctrl + 0'
-原初的解放 = -> $.press 'ctrl + minus'
-原初的勇猛 = -> $.press 'ctrl + equal'
-混沌旋风 = -> $.press 'shift + 1'
-狂魂 = -> $.press 'shift + 2'
-铁壁 = -> $.press 'shift + 3'
-下踢 = -> $.press 'shift + 4'
-挑衅 = -> $.press 'shift + 5'
-插言 = -> $.press 'shift + 6'
-雪仇 = -> $.press 'shift + 7'
-亲疏自行 = -> $.press 'shift + 8'
-退避 = -> $.press 'shift + 9'
+猛攻 = -> $.press 'ctrl + 7'
+动乱 = -> $.press 'ctrl + 8'
+摆脱 = -> $.press 'ctrl + 9'
+原初的勇猛 = -> $.press 'ctrl + 0'
+铁壁 = -> $.press 'shift + 1'
+下踢 = -> $.press 'shift + 2'
+挑衅 = -> $.press 'shift + 3'
+插言 = -> $.press 'shift + 4'
+雪仇 = -> $.press 'shift + 5'
+亲疏自行 = -> $.press 'shift + 6'
+退避 = -> $.press 'shift + 7'
+冲刺 = -> $.press 'shift + minus'
+清空信息 = -> $.press 'shift + equal'
 
 # ---
-
-索敌时间戳 = 0
-索敌冷却 = 3e3
 
 索敌 = ->
 
-  unless A_TickCount - 索敌时间戳 > 索敌冷却
-    return false
+  hasTarget = isTargeting()
+  if hasTarget
+    return true
 
-  if isChanting()
-    return false
+  $.press 'f11'
 
-  $.press 'shift + minus'
-
-  索敌时间戳 = A_TickCount - 2e3
-  return true
-
-# ---
-
-清空信息 = -> $.press 'shift + equal'
+  hasTarget = isTargeting()
+  return hasTarget

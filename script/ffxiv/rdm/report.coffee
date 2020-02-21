@@ -45,12 +45,6 @@ report = ->
   msg = makeMsg msg, '即刻咏唱', 即刻咏唱时间戳, 即刻咏唱冷却
   msg = makeMsg msg, '醒梦', 醒梦时间戳, 醒梦冷却
   
-  # msg = makeMsg msg, '回刺', 回刺时间戳, 回刺冷却
-  # msg = makeMsg msg, '交击斩', 交击斩时间戳, 交击斩冷却
-  # msg = makeMsg msg, '连攻', 连攻时间戳, 连攻冷却
-  # msg = makeMsg msg, '赤神圣', 赤神圣时间戳, 赤神圣冷却
-  # msg = makeMsg msg, '焦热', 焦热时间戳, 焦热冷却
-  
   $.tip msg, 410, 640
   $.clearTimeout clearTip
   $.setTimeout clearTip, 5e3

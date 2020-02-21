@@ -95,8 +95,8 @@ isUsed = (name) ->
 # ---
 
 isChanting = ->
-  color = $.getColor 1010, 612
-  return color == 0x58483E
+  color = $.getColor 1050, 860
+  return color == 0x48290E
 
 # ---
 
@@ -130,6 +130,9 @@ isTargeting = ->
     return true
 
   if color == 0xEBD788
+    return true
+
+  if color == 0xFFB1FF
     return true
 
   return false

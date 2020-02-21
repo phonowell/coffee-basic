@@ -1,5 +1,7 @@
+# toggle view
 $.on 'f2', -> toggleView()
 
+# hide message
 $.on 'f4', ->
   isReporting = !isReporting
   if isReporting
@@ -7,26 +9,15 @@ $.on 'f4', ->
   else
     $.tip()
 
+# reload
 $.on 'f5', ->
   清空信息()
   reset()
   $.beep()
   $.reload()
 
-$.on 'f6', ->
-  [x, y] = $.findColor '#58483e'
-  $.move x, y
-  $.tip "#{x}, #{y}"
-
-$.on 'f9', ->
-  [x, y] = $.getPosition()
-  # x = 650
-  # y = 65
-  color = $.getColor x, y
-  # $.move x, y
-  $.tip "#{x}, #{y}, #{color}"
-
-$.on 'f10', ->
+# exit
+$.on 'alt + f4', ->
   $.beep()
   reset()
   $.exit()
@@ -161,15 +152,16 @@ $.on '2-joy-3', ->
 # ---
 
 $.on '2-joy-5', ->
-  
   unless getGroup() == 'both'
     return
-
   $.press 'shift + tab'
 
 $.on '2-joy-6', ->
-
   unless getGroup() == 'both'
     return
-
   $.press 'tab'
+
+$.on '2-joy-12', ->
+  unless getGroup()
+    return
+  冲刺()

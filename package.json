@@ -11,10 +11,7 @@
     "url": "https://github.com/phonowell/coffee-basic.git"
   },
   "keywords": [
-    "coffee-basic",
-    "nodejs",
-    "jquery",
-    "lite",
+    "ahk",
     "coffeescript"
   ],
   "author": "Mimiko Phonowell <phnonwell@gmail.com>",
@@ -27,6 +24,6 @@
   "devDependencies": {},
   "dependencies": {
     "fire-keeper": "0.0.168",
-    "iconv-lite": "^0.5.0"
+    "iconv-lite": "^0.5.1"
   }
 }

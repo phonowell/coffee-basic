@@ -221,8 +221,8 @@
 # ---
 
 节制 = -> $.press 'ctrl + minus'
-沉静 = -> $.press 'ctrl + equal'
-康复 = -> $.press 'shift + 1'
+沉静 = -> $.press 'shift + 1'
+康复 = -> $.press 'shift + 2'
 
 # ---
 
@@ -234,7 +234,7 @@
   unless A_TickCount - 即刻咏唱时间戳 > 即刻咏唱冷却
     return false
 
-  $.press 'shift + 2'
+  $.press 'shift + 3'
 
   即刻咏唱时间戳 = A_TickCount - 即刻咏唱冷却 + 技能施放时间戳补正
   $.setInterval 监听即刻咏唱, 技能施放判断间隔
@@ -260,7 +260,7 @@
   if mp > 50
     return false
 
-  $.press 'shift + 3'
+  $.press 'shift + 4'
   
   醒梦时间戳 = A_TickCount - 醒梦冷却 + 技能施放时间戳补正
   $.setInterval 监听醒梦, 技能施放判断间隔
@@ -274,8 +274,9 @@
 
 # ---
 
-沉稳咏唱 = -> $.press 'shift + 4'
-营救 = -> $.press 'shift + 5'
+沉稳咏唱 = -> $.press 'shift + 5'
+营救 = -> $.press 'shift + 6'
+冲刺 = -> $.press 'shift + minus'
 清空信息 = -> $.press 'shift + equal'
 
 # ---

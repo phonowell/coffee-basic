@@ -1,26 +1,25 @@
+# toggle view
 $.on 'f2', -> toggleView()
 
+# hide message
 $.on 'f4', ->
   isReporting = !isReporting
-  if !isReporting
+  if isReporting
+    report()
+  else
     $.tip()
 
+# reload
 $.on 'f5', ->
+  清空信息()
+  reset()
   $.beep()
   $.reload()
 
-$.on 'f9', ->
-  [x, y] = $.getPosition()
-  color = $.getColor x, y
-  $.tip "#{x}, #{y}, #{color}"
-
-$.on 'f6', ->
-  [x, y] = $.findColor '#58483e'
-  $.move x, y
-  $.tip "#{x}, #{y}"
-
-$.on 'f12', ->
+# exit
+$.on 'alt + f4', ->
   $.beep()
+  reset()
   $.exit()
 
 # ---
@@ -33,7 +32,9 @@ $.on 'f12', ->
     return
 
   report()
-  索敌()
+  
+  unless 索敌()
+    return
 
   # 单体攻击
   if group == 'right'
@@ -64,3 +65,20 @@ $.on '2-joy-4', ->
   $.clearInterval 绑定攻击
   $.setInterval 绑定攻击, 300
   攻击()
+
+# ---
+
+$.on '2-joy-5', ->
+  unless getGroup() == 'both'
+    return
+  $.press 'shift + tab'
+
+$.on '2-joy-6', ->
+  unless getGroup() == 'both'
+    return
+  $.press 'tab'
+
+$.on '2-joy-12', ->
+  unless getGroup()
+    return
+  冲刺()

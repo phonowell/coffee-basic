@@ -106,8 +106,8 @@ isUsed(name) {
 }
 
 isChanting() {
-  PixelGetColor color, 1010, 612, RGB
-  return color == 0x58483E
+  PixelGetColor color, 1050, 860, RGB
+  return color == 0x48290E
 }
 
 isMoving() {
@@ -137,6 +137,9 @@ isTargeting() {
     return true
   }
   if (color == 0xEBD788) {
+    return true
+  }
+  if (color == 0xFFB1FF) {
     return true
   }
   return false
@@ -504,18 +507,18 @@ report() {
 }
 
 沉静() {
-  Send {ctrl down}{=}{ctrl up}
+  Send {shift down}{1}{shift up}
 }
 
 康复() {
-  Send {shift down}{1}{shift up}
+  Send {shift down}{2}{shift up}
 }
 
 即刻咏唱() {
   if !(A_TickCount - 即刻咏唱时间戳 > 即刻咏唱冷却) {
     return false
   }
-  Send {shift down}{2}{shift up}
+  Send {shift down}{3}{shift up}
   即刻咏唱时间戳 := A_TickCount - 即刻咏唱冷却 + 技能施放时间戳补正
   SetTimer 监听即刻咏唱, % 技能施放判断间隔
   return true
@@ -537,7 +540,7 @@ report() {
   if (mp > 50) {
     return false
   }
-  Send {shift down}{3}{shift up}
+  Send {shift down}{4}{shift up}
   醒梦时间戳 := A_TickCount - 醒梦冷却 + 技能施放时间戳补正
   SetTimer 监听醒梦, % 技能施放判断间隔
   return true
@@ -552,11 +555,15 @@ report() {
 }
 
 沉稳咏唱() {
-  Send {shift down}{4}{shift up}
+  Send {shift down}{5}{shift up}
 }
 
 营救() {
-  Send {shift down}{5}{shift up}
+  Send {shift down}{6}{shift up}
+}
+
+冲刺() {
+  Send {shift down}{-}{shift up}
 }
 
 清空信息() {
@@ -676,19 +683,7 @@ f5::
   Reload
 return
 
-f6::
-  PixelSearch x, y, 0, 0, A_ScreenWidth, A_ScreenHeight, 0x58483E, 0, Fast RGB
-  MouseMove x, y, 0
-  ToolTip % "" . x . ", " . y . ""
-return
-
-f9::
-  MouseGetPos x, y
-  PixelGetColor color, x, y, RGB
-  ToolTip % "" . x . ", " . y . ", " . color . ""
-return
-
-f10::
+!f4::
   SoundBeep
   reset()
   ExitApp
@@ -747,6 +742,27 @@ return
     愈疗()
     return
   }
+return
+
+2joy5::
+  if !(getGroup() == "both") {
+    return
+  }
+  Send {shift down}{tab}{shift up}
+return
+
+2joy6::
+  if !(getGroup() == "both") {
+    return
+  }
+  Send {tab}
+return
+
+2joy12::
+  if !(getGroup()) {
+    return
+  }
+  冲刺()
 return
 
 ; eof

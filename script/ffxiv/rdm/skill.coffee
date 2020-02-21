@@ -167,7 +167,7 @@
 # ---
 
 促进时间戳 = 0
-促进冷却 = 35e3
+促进冷却 = 55e3
 
 促进 = ->
 
@@ -195,7 +195,7 @@
   return true
 
 监听促进 = ->
-  unless hasStatus '促进'
+  unless isUsed '促进'
     return
   $.clearInterval 监听促进
   促进时间戳 = A_TickCount - 技能施放时间戳补正
@@ -333,7 +333,7 @@
 # ---
 
 续斩 = -> $.press 'ctrl + minus'
-昏乱 = -> $.press 'ctrl + equal'
+昏乱 = -> $.press 'shift + 1'
 
 # ---
 
@@ -359,7 +359,7 @@
   if isBR and isWR
     return
 
-  $.press 'shift + 1'
+  $.press 'shift + 2'
   
   即刻咏唱时间戳 = A_TickCount - 即刻咏唱冷却 + 技能施放时间戳补正
   $.setInterval 监听即刻咏唱, 技能施放判断间隔
@@ -385,7 +385,7 @@
   if mp > 50
     return false
 
-  $.press 'shift + 2'
+  $.press 'shift + 3'
   
   醒梦时间戳 = A_TickCount - 醒梦冷却 + 技能施放时间戳补正
   $.setInterval 监听醒梦, 技能施放判断间隔
@@ -399,7 +399,8 @@
 
 # ---
 
-沉稳咏唱 = -> $.press 'shift + 3'
+沉稳咏唱 = -> $.press 'shift + 4'
+冲刺 = -> $.press 'shift + minus'
 清空信息 = -> $.press 'shift + equal'
   
 # ---

@@ -45,7 +45,7 @@ global 飞刺冷却 := 25000
 global 连攻时间戳 := 0
 global 连攻冷却 := 10000
 global 促进时间戳 := 0
-global 促进冷却 := 35000
+global 促进冷却 := 55000
 global 六分反击时间戳 := 0
 global 六分反击冷却 := 35000
 global 鼓励时间戳 := 0
@@ -124,8 +124,8 @@ isUsed(name) {
 }
 
 isChanting() {
-  PixelGetColor color, 1010, 612, RGB
-  return color == 0x58483E
+  PixelGetColor color, 1050, 860, RGB
+  return color == 0x48290E
 }
 
 isMoving() {
@@ -155,6 +155,9 @@ isTargeting() {
     return true
   }
   if (color == 0xEBD788) {
+    return true
+  }
+  if (color == 0xFFB1FF) {
     return true
   }
   return false
@@ -523,7 +526,7 @@ report() {
 }
 
 监听促进() {
-  if !(hasStatus("促进")) {
+  if !(isUsed("促进")) {
     return
   }
   SetTimer 监听促进, Off
@@ -647,7 +650,7 @@ report() {
 }
 
 昏乱() {
-  Send {ctrl down}{=}{ctrl up}
+  Send {shift down}{1}{shift up}
 }
 
 即刻咏唱() {
@@ -668,7 +671,7 @@ report() {
   if (isBR and isWR) {
     return
   }
-  Send {shift down}{1}{shift up}
+  Send {shift down}{2}{shift up}
   即刻咏唱时间戳 := A_TickCount - 即刻咏唱冷却 + 技能施放时间戳补正
   SetTimer 监听即刻咏唱, % 技能施放判断间隔
   return true
@@ -690,7 +693,7 @@ report() {
   if (mp > 50) {
     return false
   }
-  Send {shift down}{2}{shift up}
+  Send {shift down}{3}{shift up}
   醒梦时间戳 := A_TickCount - 醒梦冷却 + 技能施放时间戳补正
   SetTimer 监听醒梦, % 技能施放判断间隔
   return true
@@ -705,7 +708,11 @@ report() {
 }
 
 沉稳咏唱() {
-  Send {shift down}{3}{shift up}
+  Send {shift down}{4}{shift up}
+}
+
+冲刺() {
+  Send {shift down}{-}{shift up}
 }
 
 清空信息() {
@@ -1117,19 +1124,7 @@ f5::
   Reload
 return
 
-f6::
-  PixelSearch x, y, 0, 0, A_ScreenWidth, A_ScreenHeight, 0x58483E, 0, Fast RGB
-  MouseMove x, y, 0
-  ToolTip % "" . x . ", " . y . ""
-return
-
-f9::
-  MouseGetPos x, y
-  PixelGetColor color, x, y, RGB
-  ToolTip % "" . x . ", " . y . ", " . color . ""
-return
-
-f10::
+!f4::
   SoundBeep
   reset()
   ExitApp
@@ -1174,6 +1169,13 @@ return
     return
   }
   Send {tab}
+return
+
+2joy12::
+  if !(getGroup()) {
+    return
+  }
+  冲刺()
 return
 
 ; eof
