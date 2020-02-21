@@ -1,4 +1,3 @@
-$ = require 'fire-keeper'
 iconv = require 'iconv-lite'
 
 # function
