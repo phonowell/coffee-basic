@@ -1,7 +1,5 @@
 _ = require 'lodash'
 
-# function
-
 # return
 module.exports = ({argument, output}) ->
 
@@ -10,7 +8,7 @@ module.exports = ({argument, output}) ->
   .replace /\s/g, ''
   .split ','
 
-  # arg
+  # argument
   [target, x1, y1, x2, y2] = argument
   x1 or= 0
   y1 or= 0

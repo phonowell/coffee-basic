@@ -18,7 +18,7 @@ format = (string) ->
 
   "0x#{string.toUpperCase()}" # return
 
-# return
+# export
 module.exports = ({argument, output}) ->
 
   # output

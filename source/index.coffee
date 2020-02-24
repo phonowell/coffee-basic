@@ -15,12 +15,13 @@ class Parser
     source = await @read_ path
     Object.assign option, {path}
     cont = await @transpile_ source, option
-    await @write_ path, iconv.encode cont, 'utf8',
+    cont = iconv.encode cont, 'utf8',
       addBOM: true
+    await @write_ path, cont.toString()
 
     cont # return
 
-# return
+# export
 module.exports = (source, option = {}) ->
   parser = new Parser()
   await parser.execute_ source, option

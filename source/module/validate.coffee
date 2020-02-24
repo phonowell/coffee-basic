@@ -1,6 +1,6 @@
 # const
 
-listForbiden = [
+listForbidden = [
   'then'
   'until'
   'when'
@@ -13,7 +13,7 @@ log = (message, i) ->
   console.log "line #{i + 1}: #{message}"
   message # return
 
-# return
+# export
 module.exports = ->
 
   result = true
@@ -27,11 +27,11 @@ module.exports = ->
     if line.trim()[0] == '#'
       continue
 
-    # forbiden words
-    for word in listForbiden
+    # forbidden words
+    for word in listForbidden
       unless line.includes word
         continue
-      log "found forbiden word '#{word}'", i
+      log "found forbidden word '#{word}'", i
       result = false
 
   result # return

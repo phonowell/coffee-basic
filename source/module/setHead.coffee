@@ -1,4 +1,4 @@
-# return
+# export
 module.exports = ->
   
   @head = [

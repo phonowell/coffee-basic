@@ -1,6 +1,6 @@
 $ = require 'fire-keeper'
 
-# return
+# export
 module.exports = ->
 
   await $.remove_ './script/**/*.ahk'

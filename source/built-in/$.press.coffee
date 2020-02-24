@@ -1,8 +1,6 @@
 formatKey = require '../fn/formatKey'
 
-# function
-
-# return
+# export
 module.exports = ({argument}) ->
 
   listResult = []

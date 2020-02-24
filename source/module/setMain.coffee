@@ -1,4 +1,4 @@
-# return
+# export
 module.exports = ->
 
   unless (@main.join '\n').trim()

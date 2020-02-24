@@ -86,7 +86,7 @@ validate = (string) ->
 
   result # return
 
-# return
+# export
 module.exports = ->
 
   for line, i in @global

@@ -31,7 +31,7 @@ format = (line) ->
   # return
   "#{setDepth depth}#{line}"
 
-# return
+# export
 module.exports = ->
 
   result = []

@@ -1,5 +1,3 @@
-$ = require 'fire-keeper'
-
 # function
 
 class Content
