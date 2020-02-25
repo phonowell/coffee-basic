@@ -41,7 +41,7 @@ validate = (line) ->
 
   true
 
-# return
+# export
 module.exports = ->
 
   block = Block()

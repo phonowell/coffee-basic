@@ -3,12 +3,16 @@ import _ = require('lodash')
 import getDepth from '../fn/getDepth'
 import setDepth from '../fn/setDepth'
 
+// interface
+import { iData } from '../type'
+
 // function
 
 function format(line: string) {
 
   const depth = getDepth(line)
 
+  // remove blank line
   line = line.trim()
   if (!line) {
     return
@@ -20,7 +24,11 @@ function format(line: string) {
   }
 
   line = line
+
+    // join space(s)
     .replace(/\s+/g, ' ')
+
+    // ' -> "
     .replace(/'/g, '"')
 
     // 1e3 -> 1000
@@ -37,11 +45,11 @@ function format(line: string) {
 }
 
 // export
-export default () => {
+export default (data: iData) => {
 
-  let result = []
+  let result: string[] = []
 
-  for (const line of this.main) {
+  for (const line of data.main) {
 
     const _line = format(line)
     if (!_line) {
@@ -52,8 +60,7 @@ export default () => {
   }
 
   result.push('')
-
-  return this.main = result
+  data.main = result
     .join('\n')
     .split('\n')
 

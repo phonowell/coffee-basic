@@ -1,7 +1,7 @@
 $ = require 'fire-keeper'
 getDepth = require '../fn/getDepth'
 
-# return
+# export
 module.exports = ->
 
   list = @raw

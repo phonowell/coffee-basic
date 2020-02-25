@@ -1,13 +1,13 @@
 import $ = require('fire-keeper')
 
 // export
-export default async (path: string) => {
+export default async (source: string) => {
 
   const extname = '.coffee'
-  if (!path.includes(extname)) {
-    path += extname
+  if (!source.includes(extname)) {
+    throw new Error(`invalid extname '${extname}'`)
   }
 
-  return await $.read_(path) as string
+  return await $.read_(source) as string
 
 }

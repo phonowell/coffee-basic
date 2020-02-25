@@ -1,0 +1,57 @@
+import _ = require('lodash')
+
+import getDepth from '../fn/getDepth'
+import setDepth from '../fn/setDepth'
+
+// interface
+import { iData } from '../type'
+
+// function
+
+function execute(content: string[]) {
+
+  let result: string[] = []
+  let cache: number[] = []
+
+  for (const line of content) {
+
+    const n = getDepth(line)
+    if (n <= _.last(cache)) {
+
+      const m = _.indexOf(cache, n)
+      const list = cache.slice(m)
+      list.reverse()
+
+      for (const j of list) {
+        cache.pop()
+        result.push(`${setDepth(j)}}`)
+      }
+
+    }
+
+    if (line.includes('for')) {
+      cache.push(n)
+      result.push(`${line} {`)
+      continue
+    }
+
+    result.push(line)
+
+  }
+
+  return result
+
+}
+
+// export
+export default (data: iData) => {
+
+  if (!data.raw.includes('for')) {
+    return
+  }
+
+  for (const block of [...data.fn, ...data.event]) {
+    block.content = execute(block.content)
+  }
+
+}

@@ -1,14 +1,17 @@
-// export
-export default () => {
+// interface
+import { iData } from '../type'
 
-  if (!(this.main.join('\n').trim())) {
+// export
+export default (data: iData) => {
+
+  if (!(data.main.join('\n').trim())) {
     return
   }
 
-  this.function.push({
+  data.fn.push({
     name: 'default',
-    argument: [],
-    content: this.main
+    argument: '',
+    content: data.main
   })
 
 }

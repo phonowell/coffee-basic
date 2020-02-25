@@ -44,8 +44,10 @@ export default (
     target = format(target)
   }
 
-  return `PixelSearch ${oX}, ${oY},
-  ${x1}, ${y1}, ${x2}, ${y2},
-  ${target}, ${variation}, Fast RGB`
+  return [
+    `PixelSearch ${oX}, ${oY},`,
+    `${x1}, ${y1}, ${x2}, ${y2},`,
+    `${target}, ${variation}, Fast RGB`
+  ].join(' ')
 
 }

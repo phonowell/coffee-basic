@@ -20,8 +20,10 @@ export default (
   target = target
     .replace(/\//g, '\\')
 
-  return `ImageSearch ${oX}, ${oY},
-  ${x1}, ${y1}, ${x2}, ${y2},
-  % A_ScriptDir . \"\\\" . ${target}`
+  return [
+    `ImageSearch ${oX}, ${oY},`,
+    `${x1}, ${y1}, ${x2}, ${y2},`,
+    `% A_ScriptDir . \"\\\" . ${target}`
+  ].join(' ')
 
 }

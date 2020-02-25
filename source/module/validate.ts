@@ -1,3 +1,6 @@
+// interface
+import { iData } from '../type'
+
 // const
 
 const listForbidden = [
@@ -15,21 +18,23 @@ function log(message: string, i: number) {
 }
 
 // export
-export default () => {
+export default (data: iData) => {
 
   let result = true
 
-  const list = this.raw.split('\n')
-  for (const i in list) {
+  const listRaw = data.raw.split('\n')
+  for (const i in listRaw) {
 
-    const line = list[i]
+    const line = listRaw[i]
 
-    // comment
+    // block comment
     if (line.includes('###')) {
       log('found block comment', parseInt(i))
       result = false
     }
-    if (line.trim()[0] === '#') {
+
+    // skip comment
+    if (line.trim().startsWith('#')) {
       continue
     }
 

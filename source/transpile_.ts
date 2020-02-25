@@ -1,118 +1,60 @@
-import buildIn from './build-in'
-import call from './call'
-import format from './format'
-import getBind from './getBind'
-import getFunction from './getFunction'
-import getGlobal from './getGlobal'
-import getMode from './getMode'
-import include_ from './include_'
-import render from './render'
-import replaceFor from './replaceFor'
-import replaceIf from './replaceIf'
-import replaceLoop from './replaceLoop'
-import setFoot from './setFoot'
-import setHead from './setHead'
-import setMain from './setMain'
-import validate from './validate'
+import init from './module/init'
+import include_ from './module/include_'
+import validate from './module/validate'
+import pickMode from './module/pickMode'
+import format from './module/format'
+import pickGlobalVariable from './module/pickGlobalVariable'
+import pickFunction from './module/pickFunction'
+import pickEvent from './module/pickEvent'
+import setMain from './module/setMain'
+import setHead from './module/setHead'
+import setFoot from './module/setFoot'
+import replaceIf from './module/replaceIf'
+import replaceFor from './module/replaceFor'
+import replaceLoop from './module/replaceLoop'
+import call from './module/call'
+import buildIn from './module/build-in'
+import render from './module/render'
 
 // interface
 
-interface iOption {
-  bare?: boolean
-}
+import { iOption } from './type'
 
 // function
 
-class Content {
+async function execute_(content: string, option: iOption) {
 
-  raw: string
-  option: iOption
-  bind: string[]
-  foot: string[]
-  function: string[]
-  global: string[]
-  head: string[]
-  mode: string[]
+  const data = init(content)
 
-  constructor(raw: string, option: iOption) {
+  await include_(data, option)
 
-    this.raw = raw
-    this.option = option
-
-    this.bind = []
-    this.foot = []
-    this.function = []
-    this.global = []
-    this.head = []
-    this.mode = []
-
-    return this
-
+  if(!validate(data)){
+    return ''
   }
 
-  // ---
+  pickMode(data)
+  format(data)
 
-  i(input: string) {
-    console.log(input)
-    return input
-  }
+  pickGlobalVariable(data)
+  pickFunction(data)
+  pickEvent(data)
 
-  // ---
+  setMain(data)
+  setHead(data)
+  setFoot(data)
 
-  buildIn = buildIn
-  call = call
-  format = format
-  getBind = getBind
-  getFunction = getFunction
-  getGlobal = getGlobal
-  getMode = getMode
-  include_ = include_
-  render = render
-  replaceFor = replaceFor
-  replaceIf = replaceIf
-  replaceLoop = replaceLoop
-  setFoot = setFoot
-  setHead = setHead
-  setMain = setMain
-  validate = validate
+  replaceIf(data)
+  replaceFor(data)
+  replaceLoop(data)
 
-  // ---
+  call(data)
+  buildIn(data)
 
-  async execute_() {
-
-    await this.include_()
-
-    if (!this.validate()) {
-      return ''
-    }
-
-    this.getMode()
-    this.format()
-
-    this.getGlobal()
-    this.getFunction()
-    this.getBind()
-
-    this.setMain()
-    if (!this.option.bare) {
-      this.setHead()
-      this.setFoot()
-    }
-
-    this.replaceIf()
-    this.replaceFor()
-    this.replaceLoop()
-
-    this.call()
-    this.buildIn()
-
-    return this.render()
-
-  }
+  return render(data)
 
 }
 
 // export
-export default async (source: string, option: iOption = {}) => {
-  return new Content(source, option).execute_()
+export default async (content: string, option: iOption) => {
+  return await execute_(content, option)
 }

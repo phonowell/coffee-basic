@@ -1,6 +1,9 @@
+// interface
+import { iData } from '../type'
+
 // export
-export default () => {
-  this.foot = [
+export default (data: iData) => {
+  data.foot = [
     '; eof'
   ]
 }

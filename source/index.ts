@@ -1,3 +1,4 @@
+import $ = require('fire-keeper')
 import iconv = require('iconv-lite')
 
 import read_ from './read_'
@@ -6,38 +7,33 @@ import write_ from './write_'
 
 // interface
 
-interface iOption {
-  bare?: boolean
-  path?: string
-}
+import { iOption } from './type'
 
 // function
 
-class Parser {
+async function execute_(source: string, option: iOption) {
 
-  read_ = read_
-  transpile_ = transpile_
-  write_ = write_
+  const content = await read_(source)
+  Object.assign(option, { path: source })
 
-  // ---
+  let result: string = await transpile_(content, option)
+  result = iconv.encode(result, 'utf8', {
+    addBOM: true
+  }).toString()
 
-  async execute_(path: string, option: iOption) {
+  await write_(source, result)
 
-    const source: string = await this.read_(path)
-    Object.assign(option, { path })
-    let cont: string = await this.transpile_(source, option)
-    cont = iconv.encode(cont, 'utf8', {
-      addBOM: true
-    }).toString()
-    await this.write_(path, cont)
-
-    return cont
-
-  }
+  return result
 
 }
 
 // export
-module.exports = async (source: string, option: iOption = {}) => {
-  return await new Parser().execute_(source, option)
+module.exports = async (
+  source: string | string[], option: iOption = {}
+) => {
+
+  for (const src of await $.source_(source)) {
+    await execute_(src, option)
+  }
+
 }

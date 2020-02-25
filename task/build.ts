@@ -7,14 +7,11 @@ module.exports = async () => {
 
   const parse_ = $.require('./source/index')
 
-  const listSource = [
+  await parse_([
     './script/*.coffee',
     './script/ffxiv/**/index.coffee',
     './script/other/*.coffee',
     './script/test/*.coffee'
-  ]
-  for (const source in await $.source_(listSource)) {
-    await parse_(source)
-  }
+  ])
 
 }

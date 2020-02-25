@@ -40,7 +40,7 @@ execute = (content) ->
 
   result # return
 
-# return
+# export
 module.exports = ->
 
   isValid = [

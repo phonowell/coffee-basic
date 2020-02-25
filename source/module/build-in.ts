@@ -12,6 +12,9 @@ import getPosition from '../built-in/$.getPosition'
 import isPressing from '../built-in/$.isPressing'
 import press from '../built-in/$.press'
 
+// interface
+import { iData } from '../type'
+
 // const
 
 const Rule = {
@@ -36,12 +39,16 @@ const Rule = {
 
   // ---
 
-  '$.clearInterval': ({ argument }: { argument: string[] }): string => {
-    return `SetTimer ${wrap.call(this, argument[0])}, Off`
+  '$.clearInterval': (
+    { argument }: { argument: string[] }, data: iData
+  ): string => {
+    return `SetTimer ${wrap(argument[0], data)}, Off`
   },
 
-  '$.clearTimeout': ({ argument }: { argument: string[] }): string => {
-    return `SetTimer ${wrap.call(this, argument[0])}, Off`
+  '$.clearTimeout': (
+    { argument }: { argument: string[] }, data: iData
+  ): string => {
+    return `SetTimer ${wrap(argument[0], data)}, Off`
   },
 
   '$.click': ({ argument }: { argument: string[] }): string => {
@@ -64,12 +71,16 @@ const Rule = {
     return `Run ${trim(argument[0])}`
   },
 
-  '$.setInterval': ({ argument }: { argument: string[] }): string => {
-    return `SetTimer ${wrap.call(this, argument[0])}, % ${argument[1] || 0}`
+  '$.setInterval': (
+    { argument }: { argument: string[] }, data: iData
+  ): string => {
+    return `SetTimer ${wrap(argument[0], data)}, % ${argument[1] || 0}`
   },
 
-  '$.setTimeout': ({ argument }: { argument: string[] }): string => {
-    return `SetTimer ${wrap.call(this, argument[0])}, % 0 - ${argument[1] || 0}`
+  '$.setTimeout': (
+    { argument }: { argument: string[] }, data: iData
+  ): string => {
+    return `SetTimer ${wrap(argument[0], data)}, % 0 - ${argument[1] || 0}`
   },
 
   '$.tip': ({ argument }: { argument: string[] }): string => {
@@ -97,21 +108,21 @@ const Rule = {
 
 // function
 
-function format(line: string): string | string[] {
+function format(line: string, data: iData) {
 
   if (!line.includes('(')) {
     return line
   }
 
-  const data = getData(line)
-  if (!data) {
+  const option = pickOption(line)
+  if(!option){
     return line
   }
-  const { argument, depth, name, output } = data
+  const { argument, depth, name, output } = option
 
   // not found
-  const transformer = Rule[name]
-  if (!transformer) {
+  const trans = Rule[name]
+  if (!trans) {
     let result = `${name}(${argument.join(', ')})`
     if (output) {
       result = `${output} = ${result}`
@@ -120,30 +131,30 @@ function format(line: string): string | string[] {
   }
 
   // string
-  if (typeof (transformer) === 'string') {
-    return formatString(_.assign({ transformer }, data))
+  if (typeof (trans) === 'string') {
+    return formatString(_.assign({ transformer: trans }, option))
   }
 
   // function
-  const res = transformer.call(this, data)
-  if (typeof (res) === 'string') {
-    return `${setDepth(depth)}${res}`
+  const result = trans(option, data)
+  if (typeof (result) === 'string') {
+    return `${setDepth(depth)}${result}`
   }
 
   // return
-  const result = []
+  let _result: string[] = []
   for (const line of result) {
-    result.push(`${setDepth(depth)}${line}`)
+    _result.push(`${setDepth(depth)}${line}`)
   }
-  return result
+  return _result
 
 }
 
 function formatString(
-  data: { argument: string[], depth: number, output: string, transformer: string }
+  option: { argument: string[], depth: number, output: string, transformer: string }
 ) {
 
-  const { argument, depth, output, transformer } = data
+  const { argument, depth, output, transformer } = option
 
   if (argument.length === 1 && argument[0] === '') {
     return `${setDepth(depth)}${transformer}`
@@ -159,7 +170,7 @@ function formatString(
 
 }
 
-function getData(line: string) {
+function pickOption(line: string) {
 
   const depth = getDepth(line)
 
@@ -196,23 +207,23 @@ function getData(line: string) {
 
 }
 
-function wrap(name: string) {
-  if (~_.findIndex(this.function, { name })) {
+function wrap(name: string, data: iData) {
+  if (~_.findIndex(data.fn, { name })) {
     return name
   }
   return `%${name}%`
 }
 
 // export
-export default () => {
+export default (data: iData) => {
 
-  for (const block of [...this.function, ...this.bind]) {
+  for (const block of [...data.fn, ...data.event]) {
 
-    let result = []
+    let result: string[] = []
 
     for (const line of block.content) {
 
-      const res = format.call(this, line)
+      const res = format(line, data)
 
       if (typeof (res) === 'string') {
         result.push(res)

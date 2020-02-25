@@ -55,7 +55,7 @@ renderGlobal = (list) ->
 
   result # return
 
-# return
+# export
 module.exports = ->
 
   result = []

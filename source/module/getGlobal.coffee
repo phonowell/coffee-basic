@@ -22,7 +22,7 @@ validate = (line) ->
 
   true
 
-# return
+# export
 module.exports = ->
 
   result = []

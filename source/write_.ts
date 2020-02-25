@@ -1,11 +1,13 @@
 import $ = require('fire-keeper')
 
 // export
-export default async (path: string, cont: string) => {
+export default async (source: string, content: string) => {
 
-  const { basename, dirname } = $.getName(path)
+  const { basename, dirname }: {
+    basename: string, dirname: string
+  } = $.getName(source)
   const extname = '.ahk'
 
-  await $.write_(`${dirname}/${basename}${extname}`, cont)
+  await $.write_(`${dirname}/${basename}${extname}`, content)
 
 }

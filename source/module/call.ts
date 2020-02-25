@@ -1,6 +1,9 @@
 import getDepth from '../fn/getDepth'
 import setDepth from '../fn/setDepth'
 
+// interface
+import { iData } from '../type'
+
 // function
 
 function format(line: string) {
@@ -108,13 +111,13 @@ function validate(string: string) {
 }
 
 // export
-export default () => {
+export default (data: iData) => {
 
-  for (const i in this.global) {
-    this.global[i] = format(this.global[i])
+  for (const i in data.var) {
+    data.var[i] = format(data.var[i])
   }
 
-  for (const block of [...this.function, ...this.bind]) {
+  for (const block of [...data.fn, ...data.event]) {
     let list = []
     for (const line of block.content) {
       list.push(format(line))
