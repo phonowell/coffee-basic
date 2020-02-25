@@ -1,6 +1,6 @@
 {
   "name": "coffee-basic",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A tiny, tiny toolkit.",
   "main": "./index.js",
   "scripts": {
@@ -12,7 +12,8 @@
   },
   "keywords": [
     "ahk",
-    "coffeescript"
+    "coffeescript",
+    "typescript"
   ],
   "author": "Mimiko Phonowell <phnonwell@gmail.com>",
   "license": "GPL",
