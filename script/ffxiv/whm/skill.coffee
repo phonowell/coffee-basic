@@ -276,7 +276,8 @@
 
 沉稳咏唱 = -> $.press 'shift + 5'
 营救 = -> $.press 'shift + 6'
-冲刺 = -> $.press 'shift + minus'
+冲刺 = -> $.press 'shift + 0'
+显示技能面板 = -> $.press 'shift + minus'
 清空信息 = -> $.press 'shift + equal'
 
 # ---

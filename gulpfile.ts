@@ -9,7 +9,7 @@ for (const filename of fs.readdirSync('./task')) {
   }
 
   const name = filename.replace('.ts', '')
-  $.task(name, async (...arg: any) => {
+  $.task(name, async (...arg: any[]) => {
     const fn_ = require(`./task/${name}.ts`)
     await fn_(...arg)
   })

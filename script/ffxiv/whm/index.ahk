@@ -106,8 +106,8 @@ isUsed(name) {
 }
 
 isChanting() {
-  PixelGetColor color, 1050, 860, RGB
-  return color == 0x48290E
+  PixelGetColor color, 1130, 865, RGB
+  return color == 0x2B1B13
 }
 
 isMoving() {
@@ -563,6 +563,10 @@ report() {
 }
 
 冲刺() {
+  Send {shift down}{0}{shift up}
+}
+
+显示技能面板() {
   Send {shift down}{-}{shift up}
 }
 
@@ -678,6 +682,7 @@ return
 
 f5::
   清空信息()
+  显示技能面板()
   reset()
   SoundBeep
   Reload

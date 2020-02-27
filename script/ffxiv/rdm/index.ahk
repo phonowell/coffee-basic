@@ -28,7 +28,7 @@ global isViewFar := false
 global black := 0
 global distance := "far"
 global white := 0
-global isReporting := true
+global isReporting := false
 global tsReport := 0
 global 技能施放判断间隔 := 100
 global 技能施放时间戳补正 := 1500
@@ -124,8 +124,8 @@ isUsed(name) {
 }
 
 isChanting() {
-  PixelGetColor color, 1050, 860, RGB
-  return color == 0x48290E
+  PixelGetColor color, 1130, 865, RGB
+  return color == 0x2B1B13
 }
 
 isMoving() {
@@ -289,11 +289,11 @@ getDistance() {
   if !(hasTarget) {
     return "far"
   }
-  PixelGetColor color, 1079, 961, RGB
-  if (color == 0xD53B3B) {
+  PixelGetColor color, 1477, 806, RGB
+  if (color == 0x841617) {
     return "far"
   }
-  if (color == 0x9A1E1F) {
+  if (color == 0x871C1C) {
     return "far"
   }
   return "near"
@@ -712,6 +712,10 @@ report() {
 }
 
 冲刺() {
+  Send {shift down}{0}{shift up}
+}
+
+显示技能面板() {
   Send {shift down}{-}{shift up}
 }
 
@@ -1119,6 +1123,7 @@ return
 
 f5::
   清空信息()
+  显示技能面板()
   reset()
   SoundBeep
   Reload

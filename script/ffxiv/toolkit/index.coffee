@@ -8,16 +8,15 @@ $.on 'f5', ->
   $.reload()
 
 $.on 'f6', ->
-  [x, y] = $.findColor '#58483e'
-  $.move x, y
+  [x, y] = $.getPosition()
   $.tip "#{x}, #{y}"
 
 $.on 'f9', ->
   # [x, y] = $.getPosition()
-  x = 1150
-  y = 860
+  x = 1130
+  y = 865
   color = $.getColor x, y
-  $.move x, y
+  # $.move x, y
   $.tip "#{x}, #{y}, #{color}"
 
 $.on 'alt + f4', ->

@@ -90,8 +90,8 @@ isUsed(name) {
 }
 
 isChanting() {
-  PixelGetColor color, 1050, 860, RGB
-  return color == 0x48290E
+  PixelGetColor color, 1130, 865, RGB
+  return color == 0x2B1B13
 }
 
 isMoving() {

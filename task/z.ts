@@ -3,8 +3,10 @@ import $ = require('fire-keeper')
 // export
 module.exports = async () => {
 
-  await $.remove_('./script/test/*.ahk')
   const parse_ = $.require('./source/index')
-  await parse_('./script/test/build-in.coffee')
+  await parse_([
+    './script/ffxiv/rdm/index.coffee',
+    './script/ffxiv/toolkit/index.coffee'
+  ])
 
 }

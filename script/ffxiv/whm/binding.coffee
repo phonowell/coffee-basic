@@ -12,6 +12,7 @@ $.on 'f4', ->
 # reload
 $.on 'f5', ->
   清空信息()
+  显示技能面板()
   reset()
   $.beep()
   $.reload()

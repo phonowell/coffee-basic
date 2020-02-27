@@ -84,8 +84,8 @@ isUsed(name) {
 }
 
 isChanting() {
-  PixelGetColor color, 1050, 860, RGB
-  return color == 0x48290E
+  PixelGetColor color, 1130, 865, RGB
+  return color == 0x2B1B13
 }
 
 isMoving() {
@@ -154,16 +154,14 @@ f5::
 return
 
 f6::
-  PixelSearch x, y, 0, 0, A_ScreenWidth, A_ScreenHeight, 0x58483E, 0, Fast RGB
-  MouseMove x, y, 0
+  MouseGetPos x, y
   ToolTip % "" . x . ", " . y . ""
 return
 
 f9::
-  x := 1150
-  y := 860
+  x := 1130
+  y := 865
   PixelGetColor color, x, y, RGB
-  MouseMove x, y, 0
   ToolTip % "" . x . ", " . y . ", " . color . ""
 return
 

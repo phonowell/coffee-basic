@@ -95,8 +95,8 @@ isUsed = (name) ->
 # ---
 
 isChanting = ->
-  color = $.getColor 1050, 860
-  return color == 0x48290E
+  color = $.getColor 1130, 865
+  return color == 0x2B1B13
 
 # ---
 
