@@ -10,4 +10,11 @@ module.exports = async () => {
     await parse_(`${dirname}/index.coffee`)
   })
 
+  $.watch('./script/ffxiv/**/index.ahk', async (e: { path: string }) => {
+    const dirname = $.getDirname(e.path)
+    const basename = $.getBasename(dirname)
+    await $.write_(`${dirname}/${basename}.ahk`, await $.read_(e.path))
+    await $.remove_(e.path)
+  })
+
 }

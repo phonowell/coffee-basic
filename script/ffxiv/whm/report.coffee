@@ -18,7 +18,7 @@ makeMsg = (msg, prefix, ts, cd) ->
 
 # ---
 
-isReporting = true
+isReporting = false
 tsReport = 0
 
 report = ->
