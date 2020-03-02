@@ -20,7 +20,7 @@ function validate(line: string) {
   }
 
   const key = line.split('=')[0].trim()
-  if (key.includes(' ')) {
+  if (~key.search(/[\s\{\}\(\)\[\]\.,'"]/)) {
     return
   }
 

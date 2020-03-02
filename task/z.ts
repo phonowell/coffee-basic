@@ -4,9 +4,8 @@ import $ = require('fire-keeper')
 module.exports = async () => {
 
   const parse_ = $.require('./source/index')
-  await parse_([
-    './script/ffxiv/rdm/index.coffee',
-    './script/ffxiv/toolkit/index.coffee'
-  ])
+  await parse_('./script/test/array.coffee', {
+    bare: true
+  })
 
 }

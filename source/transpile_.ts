@@ -50,7 +50,7 @@ async function execute_(content: string, option: iOption) {
   call(data)
   buildIn(data)
 
-  return render(data)
+  return render(data, option)
 
 }
 

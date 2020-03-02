@@ -10,8 +10,11 @@ module.exports = async () => {
   await parse_([
     './script/*.coffee',
     './script/ffxiv/**/index.coffee',
-    './script/other/*.coffee',
-    './script/test/*.coffee'
+    './script/other/*.coffee'
   ])
+
+  await parse_('./script/test/*.coffee', {
+    bare: true
+  })
 
 }

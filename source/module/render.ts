@@ -1,7 +1,7 @@
 import unquote from '../fn/unquote'
 
 // interface
-import { iBlock, iData } from '../type'
+import { iBlock, iData, iOption } from '../type'
 
 // function
 
@@ -74,12 +74,17 @@ function renderGlobalVariable(list: string[]) {
 }
 
 // export
-export default (data: iData) => {
+export default (data: iData, option: iOption = {}) => {
 
   let result: string[] = []
 
   // head
-  result = [...data.head]
+  if (!option.bare) {
+    result = [
+      ...result,
+      ...data.head
+    ]
+  }
 
   // global variable
   if (data.var.length) {
@@ -125,11 +130,13 @@ export default (data: iData) => {
   }
 
   // foot
-  result = [
-    ...result,
-    '',
-    ...data.foot
-  ]
+  if (!option.bare) {
+    result = [
+      ...result,
+      '',
+      ...data.foot
+    ]
+  }
 
   for (const i in result) {
     result[i] = result[i].trimEnd()
@@ -137,6 +144,7 @@ export default (data: iData) => {
 
   return result
     .join('\n')
+    .trim()
     .replace(/\n{2,}/g, '\n\n')
     .replace(/'/g, '"')
     .replace(/\s=\s/g, ' := ')
