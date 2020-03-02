@@ -2,7 +2,7 @@
 
 ## 内置函数
 
-### alert(message)
+### alert(message: string)
 
 没啥好说的。
 
@@ -15,13 +15,13 @@ alert 'hello'
 没啥好说的。
 
 ```coffeescript
-a = Math.abs -1
-b = Math.ceil 1.1
-c = Math.floor 1.2
-d = Math.round 1.3
+a = Math.abs -1 # Math.abs(n: number): number
+b = Math.ceil 1.1 # Math.ceil(n: number): number
+c = Math.floor 1.2 # Math.floor(n: number): number
+d = Math.round 1.3 # Math.round(n: number): number
 ```
 
-### $.beep()
+### $.beep(): void
 
 令系统发出“哔”的一声。
 
@@ -29,7 +29,7 @@ d = Math.round 1.3
 $.beep()
 ```
 
-### $.clearInterval(funcName)
+### $.clearInterval(funcName: any): void
 
 类似于`js`中的`clearInterval()`，但只能使用函数名作为参数。
 
@@ -37,7 +37,7 @@ $.beep()
 $.clearInterval fn
 ```
 
-### $.clearTimeout(funcName)
+### $.clearTimeout(funcName: any): void
 
 类似于`js`中的`clearTimeout()`，但只能使用函数名作为参数。
 
@@ -45,7 +45,7 @@ $.clearInterval fn
 $.clearTimeout fn
 ```
 
-### $.click([string])
+### $.click(position?: string): void
 
 在鼠标的当前位置点击一次。
 
@@ -55,7 +55,7 @@ $.click 'right' # 点击右键
 $.click 'right:down' # 按下右键
 ```
 
-### $.exit()
+### $.exit(): void
 
 退出脚本。
 
@@ -63,7 +63,7 @@ $.click 'right:down' # 按下右键
 $.exit()
 ```
 
-### $.findColor(color[, x, y, x1, y1, variation])
+### $.findColor(color: string, x?: number, y?: number, x1?: number, y1?: number, variation?: number): [x: number, y: number]
 
 找色。
 
@@ -72,7 +72,7 @@ $.exit()
 [x1, y1] = $.findColor '#000', 0, 0, 100, 100 # 指定区域内找色
 ```
 
-### $.findImage(path[, x, y, x1, y1, variation])
+### $.findImage(path: string, x?: number, y?: number, x1?: number, y1?: number, variation?: number): [x: number, y: number]
 
 找图。
 
@@ -80,7 +80,7 @@ $.exit()
 [x, y] = $.findImage 'apple.png' # 查找和脚本同目录下的apple.png
 ```
 
-### $.getColor([x, y])
+### $.getColor(x?: number, y?: number): string
 
 获取指定位置的颜色。
 
@@ -89,7 +89,7 @@ color = $.getColor() # 获取鼠标当前位置的颜色，返回的颜色总为
 color = $.getColor 100, 100 # 获取指定位置的颜色
 ```
 
-### $.getPosition()
+### $.getPosition(): [x: number, y: number]
 
 获取鼠标位置。
 
@@ -97,7 +97,7 @@ color = $.getColor 100, 100 # 获取指定位置的颜色
 [x, y] = $.getPosition()
 ```
 
-### $.getState(key)
+### $.getState(key: string): string
 
 获取按键状态。
 
@@ -105,7 +105,7 @@ color = $.getColor 100, 100 # 获取指定位置的颜色
 state = $.getState 'joy-1'
 ```
 
-### $.info([message])
+### $.info(message?: string): void
 
 调用系统通知显示信息。
 
@@ -113,7 +113,7 @@ state = $.getState 'joy-1'
 $.info 'hello'
 ```
 
-### $.isPressing(key)
+### $.isPressing(key: string): boolean
 
 判断按键是否被按下。
 
@@ -121,7 +121,7 @@ $.info 'hello'
 isPressing = $.isPressing 'a'
 ```
 
-### $.move(x, y)
+### $.move(x: number, y: number): void
 
 移动鼠标到指定位置。
 
@@ -129,7 +129,7 @@ isPressing = $.isPressing 'a'
 $.move 100, 100
 ```
 
-### $.open(cmd)
+### $.open(cmd: string): void
 
 打开文档。
 
@@ -137,7 +137,7 @@ $.move 100, 100
 $.open 'Notepad'
 ```
 
-### $.press()
+### $.press(): void
 
 按下按键。
 
@@ -147,7 +147,7 @@ $.press 'a:down'
 $.press 'ctrl + shift + a'
 ```
 
-### $.reload()
+### $.reload(): void
 
 重载脚本。
 
@@ -155,7 +155,7 @@ $.press 'ctrl + shift + a'
 $.reload()
 ```
 
-### $.setInterval(funcName)
+### $.setInterval(funcName: any): void
 
 类似于`js`中的`setInterval()`，但只能使用函数名作为参数。
 
@@ -163,7 +163,7 @@ $.reload()
 $.setInterval fn
 ```
 
-### $.setTimeout(funcName)
+### $.setTimeout(funcName: any): void
 
 类似于`js`中的`setTimeout()`，但只能使用函数名作为参数。
 
@@ -171,7 +171,7 @@ $.setInterval fn
 $.setTimeout fn
 ```
 
-### $.sleep(time)
+### $.sleep(time: number): void
 
 挂起当前线程。
 
@@ -179,7 +179,7 @@ $.setTimeout fn
 $.sleep 1e3
 ```
 
-### $.tip([message, x, y])
+### $.tip(message?: string, x?: number, y?: number): void
 
 使用工具条显示信息。
 
@@ -189,7 +189,7 @@ $.tip() # 隐藏信息
 $.tip 'aloha', 100, 100 # 在指定位置显示信息
 ```
 
-### $.trim(string)
+### $.trim(string: string): string
 
 没啥好说的。
 
@@ -197,7 +197,7 @@ $.tip 'aloha', 100, 100 # 在指定位置显示信息
 $.trim ' hello '
 ```
 
-### $.trimEnd(string)
+### $.trimEnd(string: string): string
 
 没啥好说的。
 
@@ -205,7 +205,7 @@ $.trim ' hello '
 $.trimEnd ' hello '
 ```
 
-### $.trimStart(string)
+### $.trimStart(string: string): string
 
 没啥好说的。
 

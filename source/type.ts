@@ -16,5 +16,6 @@ export interface iData {
 }
 
 export interface iOption {
+  bare?: boolean
   path?: string
 }

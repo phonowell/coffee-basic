@@ -32,7 +32,13 @@ module.exports = async (
   source: string | string[], option: iOption = {}
 ) => {
 
-  for (const src of await $.source_(source)) {
+  const listSource = await $.source_(source)
+  if(!listSource.length){
+    $.info(`found no script(s) from '${source}'`)
+    return
+  }
+
+  for (const src of listSource) {
     await execute_(src, option)
   }
 

@@ -10,8 +10,7 @@ module.exports = async () => {
   await parse_([
     './script/*.coffee',
     './script/ffxiv/**/index.coffee',
-    './script/other/*.coffee',
-    './script/test/*.coffee'
+    './script/other/*.coffee'
   ])
 
   for (const source of await $.source_('./script/ffxiv/**/index.ahk')) {
@@ -20,5 +19,9 @@ module.exports = async () => {
     await $.write_(`${dirname}/${basename}.ahk`, await $.read_(source))
     await $.remove_(source)
   }
+
+  await parse_('./script/test/*.coffee', {
+    bare: true
+  })
 
 }
