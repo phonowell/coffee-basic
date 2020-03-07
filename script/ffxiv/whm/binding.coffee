@@ -1,14 +1,3 @@
-# toggle view
-$.on 'f2', -> toggleView()
-
-# hide message
-$.on 'f4', ->
-  isReporting = !isReporting
-  if isReporting
-    report()
-  else
-    $.tip()
-
 # reload
 $.on 'f5', ->
   清空信息()
@@ -19,8 +8,8 @@ $.on 'f5', ->
 
 # exit
 $.on 'alt + f4', ->
-  $.beep()
   reset()
+  $.beep()
   $.exit()
 
 # ---

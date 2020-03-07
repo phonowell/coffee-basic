@@ -5,7 +5,7 @@ import { iData } from '../type'
 
 // function
 
-function validate(line: string) {
+function pickData(line: string) {
 
   if (getDepth(line)) {
     return
@@ -19,12 +19,14 @@ function validate(line: string) {
     return
   }
 
-  const key = line.split('=')[0].trim()
+  let [key, value] = line.split('=')
+  key = key.trim()
+  value = value.trim()
   if (~key.search(/[\s\{\}\(\)\[\]\.,'"]/)) {
     return
   }
 
-  return true
+  return [key, value]
 
 }
 
@@ -35,12 +37,25 @@ export default (data: iData) => {
 
   for (const line of data.main) {
 
-    if (!validate(line)) {
+    let [key, value] = pickData(line) || []
+
+    if (!(key && value)) {
       content.push(line)
       continue
     }
 
-    data.var.push(line)
+    if (value.includes('[')) {
+      const list = value
+        .replace(/[\[\]]/g, '')
+        .split(',')
+      for (const i in list) {
+        content.push(`${key}[${i}] = ${list[i].trim()}`)
+      }
+      data.var.push(`${key} = []`)
+      continue
+    }
+
+    data.var.push(`${key} = ${value}`)
 
   }
 

@@ -143,26 +143,3 @@ reset = ->
   $.press 'alt:up'
   $.press 'ctrl:up'
   $.press 'shift:up'
-
-# ---
-
-isViewFar = false
-toggleView = ->
-
-  if isViewFar == false
-
-    $.press 'ctrl:down', 'up:down', 'page-down:down'
-    await $.sleep 3e3
-    $.press 'ctrl:up', 'up:up', 'page-down:up'
-
-    isViewFar = true
-
-  else
-
-    $.press 'ctrl:down', 'down:down', 'page-up:down'
-    await $.sleep 3e3
-    $.press 'ctrl:up', 'down:up', 'page-up:up'
-
-    isViewFar = false
-
-  $.beep()

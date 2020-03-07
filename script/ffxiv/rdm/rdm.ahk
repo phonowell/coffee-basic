@@ -24,7 +24,6 @@ SetMouseDelay 0, 50
 
 global mp := 0
 global hasTarget := false
-global isViewFar := false
 global black := 0
 global distance := "far"
 global white := 0
@@ -167,22 +166,6 @@ reset() {
   Send {alt up}
   Send {ctrl up}
   Send {shift up}
-}
-
-toggleView() {
-  if (isViewFar == false) {
-    Send {ctrl down}{up down}{pgdn down}
-    Sleep % "" . 3000 . ""
-    Send {ctrl up}{up up}{pgdn up}
-    isViewFar := true
-  }
-  else {
-    Send {ctrl down}{down down}{pgup down}
-    Sleep % "" . 3000 . ""
-    Send {ctrl up}{down up}{pgup up}
-    isViewFar := false
-  }
-  SoundBeep
 }
 
 攻击() {
@@ -1107,20 +1090,6 @@ report() {
 
 ; event
 
-f2::
-  toggleView()
-return
-
-f4::
-  isReporting := !isReporting
-  if (isReporting) {
-    report()
-  }
-  else {
-    ToolTip
-  }
-return
-
 f5::
   清空信息()
   显示技能面板()
@@ -1130,8 +1099,8 @@ f5::
 return
 
 !f4::
-  SoundBeep
   reset()
+  SoundBeep
   ExitApp
 return
 

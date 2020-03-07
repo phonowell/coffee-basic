@@ -24,7 +24,6 @@ SetMouseDelay 0, 50
 
 global mp := 0
 global hasTarget := false
-global isViewFar := false
 global isDotEnabled := true
 global element := false
 global isMpLacking := false
@@ -138,22 +137,6 @@ reset() {
   Send {alt up}
   Send {ctrl up}
   Send {shift up}
-}
-
-toggleView() {
-  if (isViewFar == false) {
-    Send {ctrl down}{up down}{pgdn down}
-    Sleep % "" . 3000 . ""
-    Send {ctrl up}{up up}{pgdn up}
-    isViewFar := true
-  }
-  else {
-    Send {ctrl down}{down down}{pgup down}
-    Sleep % "" . 3000 . ""
-    Send {ctrl up}{down up}{pgup up}
-    isViewFar := false
-  }
-  SoundBeep
 }
 
 攻击() {

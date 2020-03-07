@@ -14,8 +14,8 @@ module.exports = async () => {
   ])
 
   for (const source of await $.source_('./script/ffxiv/**/index.ahk')) {
-    const dirname = $.getDirname(source)
-    const basename = $.getBasename(dirname)
+    const dirname = $.getDirname(source) as string
+    const basename = $.getBasename(dirname) as string
     await $.write_(`${dirname}/${basename}.ahk`, await $.read_(source))
     await $.remove_(source)
   }
