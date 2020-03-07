@@ -5,12 +5,13 @@ import getDepth from '../fn/getDepth'
 import setDepth from '../fn/setDepth'
 import trim from '../fn/trim'
 
-import findColor from '../built-in/$.findColor'
-import findImage from '../built-in/$.findImage'
-import getColor from '../built-in/$.getColor'
-import getPosition from '../built-in/$.getPosition'
-import isPressing from '../built-in/$.isPressing'
-import press from '../built-in/$.press'
+import findColor from '../built-in/findColor'
+import findImage from '../built-in/findImage'
+import getColor from '../built-in/getColor'
+import getPosition from '../built-in/getPosition'
+import isPressing from '../built-in/isPressing'
+import press from '../built-in/press'
+import setFixed from '../built-in/setFixed'
 
 // interface
 import { iData } from '../type'
@@ -36,6 +37,7 @@ const Rule = {
   '$.getPosition': getPosition,
   '$.isPressing': isPressing,
   '$.press': press,
+  '$.setFixed': setFixed,
 
   // ---
 

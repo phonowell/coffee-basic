@@ -19,3 +19,8 @@ export interface iOption {
   bare?: boolean
   path?: string
 }
+
+export interface iArgumentBuiltIn {
+  argument: string[]
+  output: string
+}

@@ -1,9 +1,10 @@
 import _ = require('lodash')
 
+// interface
+import { iArgumentBuiltIn } from '../type'
+
 // export
-export default (
-  { output }: { output: string }
-) => {
+export default ({ output }: iArgumentBuiltIn) => {
 
   const [x, y] = _.trim(output, ' []')
     .replace(/\s/g, '')

@@ -1,5 +1,8 @@
 import _ = require('lodash')
 
+// interface
+import { iArgumentBuiltIn } from '../type'
+
 // function
 
 function format(string: string) {
@@ -23,9 +26,7 @@ function format(string: string) {
 }
 
 // export
-export default (
-  { argument, output }: { argument: string[], output: string }
-) => {
+export default ({ argument, output }: iArgumentBuiltIn) => {
 
   // output
   const [oX, oY] = _.trim(output, ' []')

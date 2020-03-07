@@ -1,7 +1,8 @@
+// interface
+import { iArgumentBuiltIn } from '../type'
+
 // export
-export default (
-  { argument, output }: { argument: string[], output: string }
-) => {
+export default ({ argument, output }: iArgumentBuiltIn) => {
 
   let result: string[] = []
 

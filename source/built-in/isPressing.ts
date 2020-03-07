@@ -1,9 +1,10 @@
 import formatKey from '../fn/formatKey'
 
+// interface
+import { iArgumentBuiltIn } from '../type'
+
 // export
-export default (
-  { argument, output }: { argument: string[], output: string }
-) => {
+export default ({ argument, output }: iArgumentBuiltIn) => {
 
   const key = argument[0]
     .replace(/['"]/g, '')

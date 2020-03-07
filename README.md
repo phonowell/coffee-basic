@@ -2,7 +2,7 @@
 
 ## 内置函数
 
-### alert(message: string)
+### alert(message: string): void
 
 没啥好说的。
 
@@ -153,6 +153,16 @@ $.press 'ctrl + shift + a'
 
 ```coffeescript
 $.reload()
+```
+
+### $.setFixed(isFixed?: boolean): void
+
+置顶/取消置顶当前窗口。
+
+```coffeescript
+$.setFixed true # 置顶
+$.setFixed false # 取消置顶
+$.setFixed() # 切换
 ```
 
 ### $.setInterval(funcName: any): void

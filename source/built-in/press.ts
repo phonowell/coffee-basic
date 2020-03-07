@@ -1,9 +1,10 @@
 import formatKey from '../fn/formatKey'
 
+// interface
+import { iArgumentBuiltIn } from '../type'
+
 // export
-export default (
-  { argument }: { argument: string[] }
-) => {
+export default ({ argument }: iArgumentBuiltIn) => {
 
   let listResult = []
   for (const arg of argument) {
