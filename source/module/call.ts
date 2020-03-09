@@ -5,41 +5,51 @@ import { iData } from '../type'
 
 // function
 
+function filterType(line: string) {
+
+  let type: string
+
+  if (line.startsWith('return ')) {
+    type = 'return'
+    line = line
+      .replace('return ', '')
+  } else if (line.startsWith('if (')) {
+    type = 'if'
+    line = line
+      .replace('if (', '')
+  } else if (line.startsWith('if !(')) {
+    type = 'unless'
+    line = line
+      .replace('if !(', '')
+  } else if (line.startsWith('else if (')) {
+    type = 'else-if'
+    line = line
+      .replace('else if (', '')
+  }
+
+  line = line
+    .replace(') {', '')
+
+  return [type, line]
+
+}
+
 function format(line: string) {
+
+  const depth = getDepth(line)
 
   // remove await
   line = line
+    .trim()
     .replace(/await\s+/g, '')
 
   // validate
   if (!validate(line)) {
-    return line
+    return `${setDepth(depth)}${line}`
   }
 
-  const depth = getDepth(line)
-  line = line.trim()
-
-  let isIf: boolean
-  let isUnless: boolean
-  let isElseIf: boolean
-
-  // if / unless / else if
-  if (line.startsWith('if (')) {
-    isIf = true
-    line = line
-      .replace('if (', '')
-      .replace(') {', '')
-  } else if (line.startsWith('if !(')) {
-    isUnless = true
-    line = line
-      .replace('if !(', '')
-      .replace(') {', '')
-  } else if (line.startsWith('else if (')) {
-    isElseIf = true
-    line = line
-      .replace('else if (', '')
-      .replace(') {', '')
-  }
+  let type: string
+  [type, line] = filterType(line)
 
   let isInvalid: boolean
 
@@ -76,11 +86,13 @@ function format(line: string) {
 
     })
 
-  if (isIf) {
+  if (type === 'return') {
+    result = `return ${result}`
+  } else if (type === 'if') {
     result = `if (${result}) {`
-  } else if (isUnless) {
+  } else if (type === 'unless') {
     result = `if !(${result}) {`
-  } else if (isElseIf) {
+  } else if (type === 'else-if') {
     result = `else if (${result}) {`
   }
 
@@ -92,8 +104,7 @@ function validate(string: string) {
 
   const list = [
     'else {',
-    'loop ',
-    'return'
+    'loop '
   ]
 
   let result = true
@@ -112,12 +123,13 @@ function validate(string: string) {
 // export
 export default (data: iData) => {
 
-  for (const i in data.var) {
+  for (const _i in data.var) {
+    const i = parseInt(_i)
     data.var[i] = format(data.var[i])
   }
 
   for (const block of [...data.fn, ...data.event]) {
-    let list = []
+    let list: string[] = []
     for (const line of block.content) {
       list.push(format(line))
     }

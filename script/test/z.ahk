@@ -1,6 +1,8 @@
 ﻿; function
 
-fn() {
-  MsgBox % 3
-  a := $.alert(3)
+default() {
+  return a(b)
 }
+
+; default
+default()
