@@ -222,3 +222,11 @@ $.trimEnd ' hello '
 ```coffeescript
 $.trimStart ' hello '
 ```
+
+### $.write(filename: string, content: string): void
+
+写入文件。
+
+```coffeescript
+$.write 'test.txt', 'hello world!'
+```

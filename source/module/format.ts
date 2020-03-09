@@ -1,3 +1,4 @@
+import $ = require('fire-keeper')
 import _ = require('lodash')
 
 import { getDepth, setDepth } from './fn'
@@ -7,7 +8,26 @@ import { iData } from '../type'
 
 // function
 
-function format(line: string) {
+function formatBlock(list: string[]) {
+
+  return list
+
+    .join('__break__')
+
+    // []
+    .replace(/\[[^\[]*?\]/g, (text) => {
+      return text
+        .replace(/\s*__break__\s*/g, '__comma__')
+        .replace(/\[__comma__/g, '[')
+        .replace(/__comma__\]/g, ']')
+        .replace(/__comma__/g, ', ')
+    })
+
+    .split('__break__')
+
+}
+
+function formatLine(line: string) {
 
   const depth = getDepth(line)
 
@@ -48,9 +68,9 @@ export default (data: iData) => {
 
   let result: string[] = []
 
-  for (const line of data.main) {
+  for (const line of formatBlock(data.main)) {
 
-    const _line = format(line)
+    const _line = formatLine(line)
     if (!_line) {
       continue
     }
