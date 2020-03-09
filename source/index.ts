@@ -7,11 +7,11 @@ import write_ from './write_'
 
 // interface
 
-import { iOption } from './type'
+import { IOption } from './type'
 
 // function
 
-async function execute_(source: string, option: iOption) {
+async function execute_(source: string, option: IOption) {
 
   const content = await read_(source)
   Object.assign(option, { path: source })
@@ -29,7 +29,7 @@ async function execute_(source: string, option: iOption) {
 
 // export
 module.exports = async (
-  source: string | string[], option: iOption = {}
+  source: string | string[], option: IOption = {}
 ) => {
 
   const listSource = await $.source_(source)

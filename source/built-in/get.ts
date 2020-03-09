@@ -3,12 +3,12 @@ import _ = require('lodash')
 import { formatKey } from '../module/fn'
 
 // interface
-import { iArgumentBuiltIn } from '../type'
+import { IArgumentBuiltIn } from '../type'
 
 // export
-export function $getColor({ argument, output }: iArgumentBuiltIn) {
+export function $getColor({ argument, output }: IArgumentBuiltIn) {
 
-  let result: string[] = []
+  const result: string[] = []
 
   let [x, y] = argument
   if (!(x && y)) {
@@ -23,7 +23,7 @@ export function $getColor({ argument, output }: iArgumentBuiltIn) {
 
 }
 
-export function $getPosition({ output }: iArgumentBuiltIn) {
+export function $getPosition({ output }: IArgumentBuiltIn) {
 
   const [x, y] = _.trim(output, ' []')
     .replace(/\s/g, '')
@@ -33,6 +33,6 @@ export function $getPosition({ output }: iArgumentBuiltIn) {
 
 }
 
-export function $getState({ argument, output }: iArgumentBuiltIn) {
+export function $getState({ argument, output }: IArgumentBuiltIn) {
   return `GetKeyState ${output}, ${formatKey(argument[0])}`
 }

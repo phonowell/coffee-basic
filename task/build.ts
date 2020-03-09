@@ -5,9 +5,9 @@ module.exports = async () => {
 
   await $.remove_('./script/**/*.ahk')
 
-  const parse_ = $.require('./source/index')
+  const parseAsync = $.require('./source/index')
 
-  await parse_([
+  await parseAsync([
     './script/*.coffee',
     './script/ffxiv/**/index.coffee',
     './script/other/*.coffee'
@@ -20,7 +20,7 @@ module.exports = async () => {
     await $.remove_(source)
   }
 
-  await parse_('./script/test/*.coffee', {
+  await parseAsync('./script/test/*.coffee', {
     bare: true
   })
 

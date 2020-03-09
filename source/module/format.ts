@@ -4,7 +4,7 @@ import _ = require('lodash')
 import { getDepth, setDepth } from './fn'
 
 // interface
-import { iData } from '../type'
+import { IData } from '../type'
 
 // function
 
@@ -53,7 +53,7 @@ function formatLine(line: string) {
     // 1e3 -> 1000
     .replace(/\b\d+e\d+\b/g, (text) => {
       const [pre, sub] = text.split('e')
-      return `${pre}${_.repeat('0', parseInt(sub))}`
+      return `${pre}${_.repeat('0', parseInt(sub, 10))}`
     })
 
     // break inline
@@ -64,9 +64,9 @@ function formatLine(line: string) {
 }
 
 // export
-export default (data: iData) => {
+export default (data: IData) => {
 
-  let result: string[] = []
+  const result: string[] = []
 
   for (const line of formatBlock(data.main)) {
 

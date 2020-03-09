@@ -1,7 +1,7 @@
 import { getDepth } from './fn'
 
 // interface
-import { iData } from '../type'
+import { IData } from '../type'
 
 // function
 
@@ -22,7 +22,7 @@ function pickData(line: string) {
   let [key, value] = line.split('=')
   key = key.trim()
   value = value.trim()
-  if (~key.search(/[\s\{\}\(\)\[\]\.,'"]/)) {
+  if (key.search(/[\s\{\}\(\)\[\]\.,'"]/) !== -1) {
     return
   }
 
@@ -31,13 +31,15 @@ function pickData(line: string) {
 }
 
 // export
-export default (data: iData) => {
+export default (data: IData) => {
 
-  let content: string[] = []
+  const content: string[] = []
 
   for (const line of data.main) {
 
-    let [key, value] = pickData(line) || []
+    let key: string
+    let value: string
+    [key, value] = pickData(line) || []
 
     if (!(key && value)) {
       content.push(line)
@@ -49,6 +51,9 @@ export default (data: iData) => {
         .replace(/[\[\]]/g, '')
         .split(',')
       for (const i in list) {
+        if (!list.hasOwnProperty(i)) {
+          continue
+        }
         content.push(`${key}[${i}] = ${list[i].trim()}`)
       }
       data.var.push(`${key} = []`)

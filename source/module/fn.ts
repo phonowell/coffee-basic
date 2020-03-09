@@ -1,7 +1,7 @@
 import _ = require('lodash')
 
 // interface
-import { iBlock, iData } from '../type'
+import { IBlock, IData } from '../type'
 
 // export
 
@@ -33,7 +33,7 @@ export function newBlock() {
     name: '',
     argument: '',
     content: []
-  } as iBlock
+  } as IBlock
 }
 
 export function setDepth(n: number) {
@@ -64,9 +64,9 @@ export function unquote(line: string) {
 
 }
 
-export function wrapName(name: string, data: iData) {
+export function wrapName(name: string, data: IData) {
 
-  if (~_.findIndex(data.fn, { name })) {
+  if (_.findIndex(data.fn, { name }) !== -1) {
     return name
   }
   return `%${name}%`

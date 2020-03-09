@@ -1,7 +1,7 @@
 import { getDepth, setDepth } from './fn'
 
 // interface
-import { iData } from '../type'
+import { IData } from '../type'
 
 // function
 
@@ -56,7 +56,7 @@ function format(line: string) {
   let result = line
     .replace(/[^\s=\()\{},\+\-\*\/]+\s+[^=]+/g, (text) => {
 
-      if (~text.search(/[=<>]/)) {
+      if (text.search(/[=<>]/) !== -1) {
         return text
       }
 
@@ -100,7 +100,7 @@ function format(line: string) {
 
 }
 
-function validate(string: string) {
+function validate(text: string) {
 
   const list = [
     'else {',
@@ -109,7 +109,7 @@ function validate(string: string) {
 
   let result = true
   for (const key of list) {
-    if (!string.includes(key)) {
+    if (!text.includes(key)) {
       continue
     }
     result = false
@@ -121,15 +121,18 @@ function validate(string: string) {
 }
 
 // export
-export default (data: iData) => {
+export default (data: IData) => {
 
   for (const _i in data.var) {
-    const i = parseInt(_i)
+    if (!data.var.hasOwnProperty(_i)) {
+      continue
+    }
+    const i = parseInt(_i, 10)
     data.var[i] = format(data.var[i])
   }
 
   for (const block of [...data.fn, ...data.event]) {
-    let list: string[] = []
+    const list: string[] = []
     for (const line of block.content) {
       list.push(format(line))
     }

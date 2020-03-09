@@ -3,14 +3,14 @@ import _ = require('lodash')
 import { getDepth, setDepth } from './fn'
 
 // interface
-import { iData } from '../type'
+import { IData } from '../type'
 
 // function
 
 function execute(content: string[]) {
 
-  let result: string[] = []
-  let cache: number[] = []
+  const result: string[] = []
+  const cache: number[] = []
 
   for (let line of content) {
 
@@ -21,7 +21,7 @@ function execute(content: string[]) {
     if (n <= _.last(cache)) {
 
       const m = _.indexOf(cache, n)
-      let list = cache.slice(m)
+      const list = cache.slice(m)
       list.reverse()
 
       for (const j of list) {
@@ -31,7 +31,7 @@ function execute(content: string[]) {
 
     }
 
-    if (~line.search(/(if |else)/)) {
+    if (line.search(/(if |else)/) !== -1) {
       cache.push(n)
 
       const _line = `${line} {`
@@ -51,7 +51,7 @@ function execute(content: string[]) {
 }
 
 // export
-export default (data: iData) => {
+export default (data: IData) => {
 
   const isValid = [
     data.raw.includes('if'),

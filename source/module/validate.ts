@@ -1,5 +1,7 @@
+import $ = require('fire-keeper')
+
 // interface
-import { iData } from '../type'
+import { IData } from '../type'
 
 // const
 
@@ -13,23 +15,27 @@ const listForbidden = [
 // function
 
 function log(message: string, i: number) {
-  console.log(`line ${i + 1}: ${message}`)
+  $.i(`line ${i + 1}: ${message}`)
   return message
 }
 
 // export
-export default (data: iData) => {
+export default (data: IData) => {
 
   let result = true
 
   const listRaw = data.raw.split('\n')
-  for (const i in listRaw) {
+  for (const _i in listRaw) {
+    if (!listRaw.hasOwnProperty(_i)) {
+      continue
+    }
 
+    const i = parseInt(_i, 10)
     const line = listRaw[i]
 
     // block comment
     if (line.includes('###')) {
-      log('found block comment', parseInt(i))
+      log('found block comment', i)
       result = false
     }
 
@@ -43,7 +49,7 @@ export default (data: iData) => {
       if (!line.includes(word)) {
         continue
       }
-      log(`found forbidden word '${word}'`, parseInt(i))
+      log(`found forbidden word '${word}'`, i)
       result = false
     }
 

@@ -1,33 +1,33 @@
 import _ = require('lodash')
 
 // interface
-import { iArgumentBuiltIn } from '../type'
+import { IArgumentBuiltIn } from '../type'
 
 // function
 
-function format(string: string) {
+function format(text: string) {
 
-  if (string.includes('0x')) {
-    return string
+  if (text.includes('0x')) {
+    return text
   }
 
-  string = _.trim(string, " '\"#")
+  text = _.trim(text, " '\"#")
 
-  if (string.length === 3) {
-    string = [
-      _.repeat(string[0], 2),
-      _.repeat(string[1], 2),
-      _.repeat(string[2], 2)
+  if (text.length === 3) {
+    text = [
+      _.repeat(text[0], 2),
+      _.repeat(text[1], 2),
+      _.repeat(text[2], 2)
     ].join('')
   }
 
-  return `0x${string.toUpperCase()}`
+  return `0x${text.toUpperCase()}`
 
 }
 
 // export
 
-export function $findColor({ argument, output }: iArgumentBuiltIn) {
+export function $findColor({ argument, output }: IArgumentBuiltIn) {
 
   // output
   const [oX, oY] = _.trim(output, ' []')
@@ -54,7 +54,7 @@ export function $findColor({ argument, output }: iArgumentBuiltIn) {
 
 }
 
-export function $findImage({ argument, output }: iArgumentBuiltIn) {
+export function $findImage({ argument, output }: IArgumentBuiltIn) {
 
   // output
   const [oX, oY] = _.trim(output, ' []')

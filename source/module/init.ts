@@ -1,5 +1,5 @@
 // interface
-import { iData } from '../type'
+import { IData } from '../type'
 
 // export
 export default (content: string) => {
@@ -13,6 +13,6 @@ export default (content: string) => {
     head: [],
     mode: [],
     var: [] // global variable
-  } as iData
+  } as IData
 
 }

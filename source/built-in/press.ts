@@ -1,11 +1,11 @@
 import { formatKey } from '../module/fn'
 
 // interface
-import { iArgumentBuiltIn } from '../type'
+import { IArgumentBuiltIn } from '../type'
 
 // export
 
-export function $isPressing({ argument, output }: iArgumentBuiltIn) {
+export function $isPressing({ argument, output }: IArgumentBuiltIn) {
 
   const key = argument[0]
     .replace(/['"]/g, '')
@@ -17,9 +17,9 @@ export function $isPressing({ argument, output }: iArgumentBuiltIn) {
 
 }
 
-export function $press({ argument }: iArgumentBuiltIn) {
+export function $press({ argument }: IArgumentBuiltIn) {
 
-  let listResult = []
+  const listResult: string[] = []
   for (const arg of argument) {
 
     const list = arg
@@ -27,11 +27,14 @@ export function $press({ argument }: iArgumentBuiltIn) {
       .split('+')
 
     const max = list.length - 1
-    let listPre = []
+    const listPre: string[] = []
 
     for (const _i in list) {
+      if (!list.hasOwnProperty(_i)) {
+        continue
+      }
 
-      const i = parseInt(_i)
+      const i = parseInt(_i, 10)
       const key = list[i]
 
       if (i < max) {

@@ -1,12 +1,12 @@
-export interface iBlock {
+export interface IBlock {
   argument: string
   content: string[]
   name: string
 }
 
-export interface iData {
-  event: iBlock[]
-  fn: iBlock[]
+export interface IData {
+  event: IBlock[]
+  fn: IBlock[]
   foot: string[]
   head: string[]
   main: string[]
@@ -15,12 +15,12 @@ export interface iData {
   var: string[]
 }
 
-export interface iOption {
+export interface IOption {
   bare?: boolean
   path?: string
 }
 
-export interface iArgumentBuiltIn {
+export interface IArgumentBuiltIn {
   argument: string[]
   output: string
 }

@@ -18,11 +18,11 @@ import render from './module/render'
 
 // interface
 
-import { iOption } from './type'
+import { IOption } from './type'
 
 // function
 
-async function execute_(content: string, option: iOption) {
+async function execute_(content: string, option: IOption) {
 
   const data = init(content)
 
@@ -55,6 +55,6 @@ async function execute_(content: string, option: iOption) {
 }
 
 // export
-export default async (content: string, option: iOption) => {
+export default async (content: string, option: IOption) => {
   return await execute_(content, option)
 }

@@ -1,17 +1,17 @@
 import { unquote } from './fn'
 
 // interface
-import { iBlock, iData, iOption } from '../type'
+import { IBlock, IData, IOption } from '../type'
 
 // function
 
-function renderEvent(list: iBlock[]) {
+function renderEvent(list: IBlock[]) {
 
   let result: string[] = []
 
   for (const block of list) {
 
-    let content = []
+    const content = []
     for (const line of block.content) {
       if (!line.trim()) {
         continue
@@ -33,13 +33,13 @@ function renderEvent(list: iBlock[]) {
 
 }
 
-function renderFunction(list: iBlock[]) {
+function renderFunction(list: IBlock[]) {
 
   let result: string[] = []
 
   for (const block of list) {
 
-    let content = []
+    const content = []
     for (const line of block.content) {
       if (!line.trim()) {
         continue
@@ -63,7 +63,7 @@ function renderFunction(list: iBlock[]) {
 
 function renderGlobalVariable(list: string[]) {
 
-  let result: string[] = []
+  const result: string[] = []
 
   for (const line of list) {
     result.push(unquote(`global ${line}`))
@@ -74,7 +74,7 @@ function renderGlobalVariable(list: string[]) {
 }
 
 // export
-export default (data: iData, option: iOption = {}) => {
+export default (data: IData, option: IOption = {}) => {
 
   let result: string[] = []
 
@@ -139,6 +139,9 @@ export default (data: iData, option: iOption = {}) => {
   }
 
   for (const i in result) {
+    if (!result.hasOwnProperty(i)) {
+      continue
+    }
     result[i] = result[i].trimEnd()
   }
 

@@ -15,9 +15,9 @@ import { $trim, $trimEnd, $trimStart } from '../built-in/trim'
 
 // interface
 
-import { iData } from '../type'
+import { IData } from '../type'
 
-interface iOption {
+interface IOption {
   argument: string[]
   depth: number
   name: string
@@ -58,11 +58,11 @@ const Rule = {
   'Math.round': $round,
   'alert': $alert
 
-} as { [key: string]: (option: iOption, data?: iData) => any }
+} as { [key: string]: (option: IOption, data?: IData) => any }
 
 // function
 
-function format(line: string, data: iData) {
+function format(line: string, data: IData) {
 
   if (!line.includes('(')) {
     return line
@@ -77,11 +77,11 @@ function format(line: string, data: iData) {
   // not found
   const fn = Rule[name]
   if (!fn) {
-    let result = `${name}(${argument.join(', ')})`
+    let _result = `${name}(${argument.join(', ')})`
     if (output) {
-      result = `${output} = ${result}`
+      _result = `${output} = ${_result}`
     }
-    return `${setDepth(depth)}${result}`
+    return `${setDepth(depth)}${_result}`
   }
 
   // return
@@ -92,9 +92,9 @@ function format(line: string, data: iData) {
   }
 
   if ($.type(result) === 'array') {
-    let _result: string[] = []
-    for (const line of result as string[]) {
-      _result.push(`${setDepth(depth)}${line}`)
+    const _result: string[] = []
+    for (const _line of result as string[]) {
+      _result.push(`${setDepth(depth)}${_line}`)
     }
     return _result
   }
@@ -111,7 +111,7 @@ function pickOption(line: string) {
   let output: string
 
   if (name.includes('=')) {
-    let list = name.split('=')
+    const list = name.split('=')
     output = list[0].trim()
     name = list[1].trim()
   }
@@ -126,6 +126,9 @@ function pickOption(line: string) {
     .split(',')
 
   for (const i in arg) {
+    if (!arg.hasOwnProperty(i)) {
+      continue
+    }
     const it = arg[i]
     arg[i] = it
       .trim()
@@ -134,12 +137,12 @@ function pickOption(line: string) {
 
   // return
   const argument = arg
-  return { argument, depth, name, output } as iOption
+  return { argument, depth, name, output } as IOption
 
 }
 
 // export
-export default (data: iData) => {
+export default (data: IData) => {
 
   for (const block of [...data.fn, ...data.event]) {
 

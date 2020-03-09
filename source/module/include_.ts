@@ -4,17 +4,17 @@ import { getDepth } from './fn'
 
 // interface
 
-import { iData, iOption } from '../type'
+import { IData, IOption } from '../type'
 
 // export
-export default async (data: iData, option: iOption) => {
+export default async (data: IData, option: IOption) => {
 
   const listContent = data.raw
     .replace(/\r/g, '')
     .replace(/\n{2,}/g, '\n')
     .split('\n')
 
-  let result: string[] = []
+  const result: string[] = []
 
   for (const line of listContent) {
 

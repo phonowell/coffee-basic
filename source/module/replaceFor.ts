@@ -3,14 +3,14 @@ import _ = require('lodash')
 import { getDepth, setDepth } from './fn'
 
 // interface
-import { iData } from '../type'
+import { IData } from '../type'
 
 // function
 
 function execute(content: string[]) {
 
-  let result: string[] = []
-  let cache: number[] = []
+  const result: string[] = []
+  const cache: number[] = []
 
   for (const line of content) {
 
@@ -43,7 +43,7 @@ function execute(content: string[]) {
 }
 
 // export
-export default (data: iData) => {
+export default (data: IData) => {
 
   if (!data.raw.includes('for')) {
     return

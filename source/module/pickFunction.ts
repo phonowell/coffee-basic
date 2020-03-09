@@ -3,7 +3,7 @@ import _ = require('lodash')
 import { getDepth, newBlock } from './fn'
 
 // interface
-import { iData } from '../type'
+import { IData } from '../type'
 
 // function
 
@@ -43,10 +43,10 @@ function validate(line: string) {
 }
 
 // export
-export default (data: iData) => {
+export default (data: IData) => {
 
   let block = newBlock()
-  let result: string[] = []
+  const result: string[] = []
   let isPending: boolean
 
   for (const line of data.main) {
