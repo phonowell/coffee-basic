@@ -1,3 +1,3 @@
-内静 = ->
-  $.press 'alt + 1'
-  await $.sleep 1500
+fn = ->
+  alert 3
+  a = $.alert 3

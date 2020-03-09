@@ -63,7 +63,7 @@ $.click 'right:down' # 按下右键
 $.exit()
 ```
 
-### $.findColor(color: string, x?: number, y?: number, x1?: number, y1?: number, variation?: number): [x: number, y: number]
+### $.findColor(color: string, x?: number, y?: number, x1?: number, y1?: number, variation?: number): [number, number]
 
 找色。
 
@@ -72,7 +72,7 @@ $.exit()
 [x1, y1] = $.findColor '#000', 0, 0, 100, 100 # 指定区域内找色
 ```
 
-### $.findImage(path: string, x?: number, y?: number, x1?: number, y1?: number, variation?: number): [x: number, y: number]
+### $.findImage(path: string, x?: number, y?: number, x1?: number, y1?: number, variation?: number): [number, number]
 
 找图。
 
@@ -89,7 +89,7 @@ color = $.getColor() # 获取鼠标当前位置的颜色，返回的颜色总为
 color = $.getColor 100, 100 # 获取指定位置的颜色
 ```
 
-### $.getPosition(): [x: number, y: number]
+### $.getPosition(): [number, number]
 
 获取鼠标位置。
 

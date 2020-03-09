@@ -3,18 +3,26 @@ import _ = require('lodash')
 
 import { getDepth, setDepth } from './fn'
 
-import { $setFixed } from '../built-in/set'
-import { $info, $tip } from '../built-in/info'
 import { $abs, $ceil, $floor, $round } from '../built-in/math'
-import { $alert, $beep, $click, $exit, $move, $open, $reload, $sleep } from '../built-in/simple'
+import { $alert, $info, $tip } from '../built-in/info'
+import { $beep, $click, $exit, $move, $open, $reload, $sleep } from '../built-in/simple'
 import { $clearInterval, $clearTimeout, $setInterval, $setTimeout } from '../built-in/timer'
 import { $findColor, $findImage } from '../built-in/find'
 import { $getColor, $getPosition, $getState } from '../built-in/get'
-import { $trim, $trimEnd, $trimStart } from '../built-in/trim'
 import { $isPressing, $press } from '../built-in/press'
+import { $setFixed } from '../built-in/set'
+import { $trim, $trimEnd, $trimStart } from '../built-in/trim'
 
 // interface
+
 import { iData } from '../type'
+
+interface iOption {
+  argument: string[]
+  depth: number
+  name: string
+  output: string
+}
 
 // const
 
@@ -50,7 +58,7 @@ const Rule = {
   'Math.round': $round,
   'alert': $alert
 
-}
+} as { [key: string]: (option: iOption, data?: iData) => any }
 
 // function
 
@@ -126,7 +134,7 @@ function pickOption(line: string) {
 
   // return
   const argument = arg
-  return { argument, depth, name, output }
+  return { argument, depth, name, output } as iOption
 
 }
 
