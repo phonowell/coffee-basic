@@ -1,1 +1,3 @@
-$.on 'f2', -> $.setFixed()
+内静 = ->
+  $.press 'alt + 1'
+  await $.sleep 1500

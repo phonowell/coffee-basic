@@ -1,5 +1,6 @@
-﻿; event
+﻿; function
 
-f2::
-  Winset AlwaysOnTop, Toggle, A
-return
+内静() {
+  Send {alt down}{1}{alt up}
+  Sleep % 1500
+}

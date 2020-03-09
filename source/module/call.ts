@@ -1,5 +1,4 @@
-import getDepth from '../fn/getDepth'
-import setDepth from '../fn/setDepth'
+import { getDepth, setDepth } from './fn'
 
 // interface
 import { iData } from '../type'

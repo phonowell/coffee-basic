@@ -1,4 +1,4 @@
-import unquote from '../fn/unquote'
+import { unquote } from './fn'
 
 // interface
 import { iBlock, iData, iOption } from '../type'

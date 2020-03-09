@@ -2,7 +2,7 @@
 import { iArgumentBuiltIn } from '../type'
 
 // export
-export default ({ argument }: iArgumentBuiltIn) => {
+export function $setFixed({ argument }: iArgumentBuiltIn) {
 
   let isFixed = 'Toggle'
   if (argument[0] == 'true') {

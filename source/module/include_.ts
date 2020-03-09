@@ -1,10 +1,10 @@
 import $ = require('fire-keeper')
 
-import getDepth from '../fn/getDepth'
+import { getDepth } from './fn'
 
 // interface
 
-import { iData,iOption } from '../type'
+import { iData, iOption } from '../type'
 
 // export
 export default async (data: iData, option: iOption) => {

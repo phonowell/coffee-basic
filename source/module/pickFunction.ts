@@ -1,7 +1,6 @@
 import _ = require('lodash')
 
-import getDepth from '../fn/getDepth'
-import newBlock from '../fn/newBlock'
+import { getDepth, newBlock } from './fn'
 
 // interface
 import { iData } from '../type'

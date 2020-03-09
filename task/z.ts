@@ -4,7 +4,7 @@ import $ = require('fire-keeper')
 module.exports = async () => {
 
   const parse_ = $.require('./source/index')
-  await parse_('./script/test/array.coffee', {
+  await parse_('./script/test/z.coffee', {
     bare: true
   })
 

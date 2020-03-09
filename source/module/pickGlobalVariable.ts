@@ -1,4 +1,4 @@
-import getDepth from '../fn/getDepth'
+import { getDepth } from './fn'
 
 // interface
 import { iData } from '../type'
