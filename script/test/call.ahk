@@ -5,7 +5,7 @@ global a := fn(a, b)
 
 ; function
 
-default() {
+__$default__() {
   fn()
   fn(a, b)
   fn(a + 1)
@@ -13,4 +13,4 @@ default() {
 }
 
 ; default
-default()
+__$default__()

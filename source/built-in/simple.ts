@@ -1,7 +1,7 @@
-import { trim } from '../module/fn'
+import { callFn, regFn, trim } from '../module/fn'
 
 // interface
-import { IArgumentBuiltIn } from '../type'
+import { IArgumentBuiltIn, IData } from '../type'
 
 // export
 
@@ -19,12 +19,24 @@ export function $click({ argument }: IArgumentBuiltIn) {
 
 }
 
-export function $exit() {
-  return 'ExitApp'
+export function $exit({ output }: IArgumentBuiltIn, data: IData) {
+  const fn = regFn(data, '$exit', '', [
+    'ExitApp',
+    'return'
+  ])
+  return callFn(fn, output)
 }
 
-export function $move({ argument }: IArgumentBuiltIn) {
-  return `MouseMove ${argument[0] || 0}, ${argument[1] || 0}, ${argument[2] || 0}`
+export function $move({ argument, output }: IArgumentBuiltIn, data: IData) {
+  const fn = regFn(data, '$move', ['x', 'y', 'speed'], [
+    'MouseMove x, y, speed',
+    'return [x, y]'
+  ])
+  return callFn(fn, output, [
+    argument[0] || '0',
+    argument[1] || '0',
+    argument[2] || '0'
+  ])
 }
 
 export function $open({ argument }: IArgumentBuiltIn) {

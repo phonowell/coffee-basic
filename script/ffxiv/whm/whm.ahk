@@ -50,7 +50,7 @@ global 能力技冷却 := 300
 ; function
 
 clearTip() {
-  ToolTip
+  __$tip__()
 }
 
 getGroup() {
@@ -275,7 +275,7 @@ report() {
   msg := makeMsg(msg, "全大赦", 全大赦时间戳, 全大赦冷却)
   msg := makeMsg(msg, "即刻咏唱", 即刻咏唱时间戳, 即刻咏唱冷却)
   msg := makeMsg(msg, "醒梦", 醒梦时间戳, 醒梦冷却)
-  ToolTip % msg, 410, 640
+  __$tip__(msg, 410, 640)
   SetTimer clearTip, Off
   SetTimer clearTip, % 0 - 5000
 }
@@ -640,6 +640,16 @@ report() {
   医治()
 }
 
+__$tip__(msg) {
+  ToolTip % msg
+  return msg
+}
+
+__$exit__() {
+  ExitApp
+  return
+}
+
 ; event
 
 f5::
@@ -653,7 +663,7 @@ return
 !f4::
   reset()
   SoundBeep
-  ExitApp
+  __$exit__()
 return
 
 2joy4::

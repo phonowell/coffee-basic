@@ -2,7 +2,7 @@
 
 ## 内置函数
 
-### alert(message: string): void
+### alert(message: string): string
 
 没啥好说的。
 
@@ -105,7 +105,7 @@ color = $.getColor 100, 100 # 获取指定位置的颜色
 state = $.getState 'joy-1'
 ```
 
-### $.info(message?: string): void
+### $.info(message?: string): string
 
 调用系统通知显示信息。
 

@@ -114,7 +114,7 @@ export default (data: IData, option: IOption = {}) => {
       ...result,
       '',
       '; default',
-      'default()'
+      '__$default__()'
     ]
   }
 

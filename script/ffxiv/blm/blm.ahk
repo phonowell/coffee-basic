@@ -39,7 +39,7 @@ global 即刻咏唱冷却 := 60000
 ; function
 
 clearTip() {
-  ToolTip
+  __$tip__()
 }
 
 getGroup() {
@@ -214,7 +214,7 @@ report() {
   if (res) {
     msg := "" . msg . "`n即刻咏唱：" . res . "s"
   }
-  ToolTip % msg, 410, 640
+  __$tip__(msg, 410, 640)
   SetTimer clearTip, Off
   SetTimer clearTip, % 0 - 5000
 }
@@ -384,12 +384,27 @@ report() {
   return
 }
 
-default() {
+__$default__() {
   SetTimer 清空信息, % 0 - 3000
 }
 
+__$tip__(msg) {
+  ToolTip % msg
+  return msg
+}
+
+__$move__(x, y, speed) {
+  MouseMove x, y, speed
+  return [x, y]
+}
+
+__$exit__() {
+  ExitApp
+  return
+}
+
 ; default
-default()
+__$default__()
 
 ; event
 
@@ -400,7 +415,7 @@ return
 f4::
   isReporting := !isReporting
   if (!isReporting) {
-    ToolTip
+    __$tip__()
   }
 return
 
@@ -412,18 +427,18 @@ return
 f6::
   MouseGetPos x, y
   PixelGetColor color, x, y, RGB
-  ToolTip % "" . x . ", " . y . ", " . color . ""
+  __$tip__("" . x . ", " . y . ", " . color . "")
 return
 
 f9::
   PixelSearch x, y, 0, 0, A_ScreenWidth, A_ScreenHeight, 0x58483E, 0, Fast RGB
-  MouseMove x, y, 0
-  ToolTip % "" . x . ", " . y . ""
+  __$move__(x, y, 0)
+  __$tip__("" . x . ", " . y . "")
 return
 
 f10::
   SoundBeep
-  ExitApp
+  __$exit__()
 return
 
 2joy13::

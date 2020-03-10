@@ -1,3 +1,5 @@
+import { regFn } from '../module/fn'
+
 // interface
 import { IData } from '../type'
 
@@ -8,10 +10,6 @@ export default (data: IData) => {
     return
   }
 
-  data.fn.push({
-    name: 'default',
-    argument: '',
-    content: data.main
-  })
+  regFn(data, '$default', '', data.main)
 
 }

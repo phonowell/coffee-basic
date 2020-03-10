@@ -1,6 +1,6 @@
 ﻿; function
 
-default() {
+__$default__() {
   loop {
     1
   }
@@ -13,4 +13,4 @@ default() {
 }
 
 ; default
-default()
+__$default__()

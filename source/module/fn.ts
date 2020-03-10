@@ -1,9 +1,20 @@
 import _ = require('lodash')
+import $ = require('fire-keeper')
 
 // interface
 import { IBlock, IData } from '../type'
 
 // export
+
+export function callFn(name: string, output: string, argument: string[] = []) {
+  return [
+    output ? `${output} = ` : '',
+    name,
+    '(',
+    argument.join(', '),
+    ')'
+  ].join('')
+}
 
 export function formatKey(input: string) {
 
@@ -34,6 +45,24 @@ export function newBlock() {
     argument: '',
     content: []
   } as IBlock
+}
+
+export function regFn(data: IData, name: string, argument: string | string[], content: string[]) {
+
+  name = `__${name}__`
+  if ($.type(argument) === 'array') {
+    argument = (argument as string[]).join(', ')
+  }
+  content.push('')
+
+  if (_.findIndex(data.fn, { name }) !== -1) {
+    return name
+  }
+
+  data.fn.push({ name, argument: argument as string, content })
+
+  return name
+
 }
 
 export function setDepth(n: number) {

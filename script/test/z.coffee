@@ -1,8 +1,3 @@
-fn  = ->
-  list = [
-    a(b)
-    c(d)
-  ]
-  return list[0] + list[1]
-
-fn()
+$.on 'f2', ->
+  a = $.tip 2
+  $.info a

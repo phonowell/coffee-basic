@@ -68,7 +68,7 @@ global 能力技余额 := 0
 ; function
 
 clearTip() {
-  ToolTip
+  __$tip__()
 }
 
 getGroup() {
@@ -329,7 +329,7 @@ report() {
   msg := makeMsg(msg, "交剑", 交剑时间戳, 交剑冷却)
   msg := makeMsg(msg, "即刻咏唱", 即刻咏唱时间戳, 即刻咏唱冷却)
   msg := makeMsg(msg, "醒梦", 醒梦时间戳, 醒梦冷却)
-  ToolTip % msg, 410, 640
+  __$tip__(msg, 410, 640)
   SetTimer clearTip, Off
   SetTimer clearTip, % 0 - 5000
 }
@@ -1088,6 +1088,16 @@ report() {
   能力技()
 }
 
+__$tip__(msg) {
+  ToolTip % msg
+  return msg
+}
+
+__$exit__() {
+  ExitApp
+  return
+}
+
 ; event
 
 f5::
@@ -1101,7 +1111,7 @@ return
 !f4::
   reset()
   SoundBeep
-  ExitApp
+  __$exit__()
 return
 
 2joy4::

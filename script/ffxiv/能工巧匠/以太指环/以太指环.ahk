@@ -231,17 +231,27 @@ hasStatus(name) {
   return false
 }
 
+__$exit__() {
+  ExitApp
+  return
+}
+
+__$tip__(msg) {
+  ToolTip % msg
+  return msg
+}
+
 ; event
 
 f12::
   SoundBeep
-  ExitApp
+  __$exit__()
 return
 
 f9::
   MouseGetPos x, y
   PixelGetColor color, x, y, RGB
-  ToolTip % "" . x . ", " . y . ", " . color . ""
+  __$tip__("" . x . ", " . y . ", " . color . "")
 return
 
 f2::

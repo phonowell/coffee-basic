@@ -1,6 +1,6 @@
 ﻿; function
 
-default() {
+__$default__() {
   if !(a) {
     c
   }
@@ -24,4 +24,4 @@ default() {
 }
 
 ; default
-default()
+__$default__()

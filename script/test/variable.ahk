@@ -18,11 +18,11 @@ inside() {
   f := fn(a, b)
 }
 
-default() {
+__$default__() {
   if (a != true) {
     a := 1
   }
 }
 
 ; default
-default()
+__$default__()

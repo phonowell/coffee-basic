@@ -34,7 +34,7 @@ global 凶残裂冷却 := 5000
 ; function
 
 clearTip() {
-  ToolTip
+  __$tip__()
 }
 
 getGroup() {
@@ -191,7 +191,7 @@ report() {
   msg := "" . msg . "`n魔力：" . mp . "%"
   msg := "" . msg . "`n耗时：" . A_TickCount - tsReport . "ms`n"
   tsReport := A_TickCount
-  ToolTip % msg, 410, 640
+  __$tip__(msg, 410, 640)
   SetTimer clearTip, Off
   SetTimer clearTip, % 0 - 5000
 }
@@ -371,12 +371,22 @@ report() {
   return
 }
 
-default() {
+__$default__() {
   SetTimer 清空信息, % 0 - 3000
 }
 
+__$tip__(msg) {
+  ToolTip % msg
+  return msg
+}
+
+__$exit__() {
+  ExitApp
+  return
+}
+
 ; default
-default()
+__$default__()
 
 ; event
 
@@ -390,7 +400,7 @@ f4::
     report()
   }
   else {
-    ToolTip
+    __$tip__()
   }
 return
 
@@ -404,7 +414,7 @@ return
 !f4::
   SoundBeep
   reset()
-  ExitApp
+  __$exit__()
 return
 
 2joy4::

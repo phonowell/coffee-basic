@@ -1,13 +1,18 @@
 ﻿; function
 
-fn() {
-  list := [a(b), c(d)])
-  return list[0] + list[1]
+__$tip__(msg) {
+  ToolTip % msg
+  return msg
 }
 
-default() {
-  fn()
+__$info__(msg) {
+  TrayTip % msg
+  return msg
 }
 
-; default
-default()
+; event
+
+f2::
+  a := __$tip__(2)
+  __$info__(a)
+return
