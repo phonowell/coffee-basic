@@ -1,6 +1,11 @@
 # use admin
 # include ../common/function
 
+# fix
+$.on 'f2', ->
+  $.beep()
+  $.setFixed()
+
 # reload
 $.on 'f5', ->
   reset()

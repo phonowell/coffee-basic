@@ -24,8 +24,13 @@ export function $info({ argument, output }: IArgumentBuiltIn, data: IData) {
 }
 
 export function $tip({ argument, output }: IArgumentBuiltIn, data: IData) {
-  const fn = regFn(data, '$tip', 'msg', [
-    'ToolTip % msg',
+  const fn = regFn(data, '$tip', ["msg = ''", 'x = -1', 'y = -1'], [
+    'if (x >= 0 and y >= 0) {',
+    '  ToolTip % msg, x, y',
+    '}',
+    'else {',
+    '  ToolTip % msg',
+    '}',
     'return msg'
   ])
   return callFn(fn, output, argument)

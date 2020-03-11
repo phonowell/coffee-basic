@@ -128,8 +128,13 @@ reset() {
   Send {shift up}
 }
 
-__$tip__(msg) {
-  ToolTip % msg
+__$tip__(msg := "", x := -1, y := -1) {
+  if (x >= 0 and y >= 0) {
+    ToolTip % msg, x, y
+  }
+  else {
+    ToolTip % msg
+  }
   return msg
 }
 
@@ -139,6 +144,11 @@ __$exit__() {
 }
 
 ; event
+
+f2::
+  SoundBeep
+  Winset AlwaysOnTop, Toggle, A
+return
 
 f5::
   reset()
