@@ -4,7 +4,7 @@ import fs = require('fs')
 // task
 for (const filename of fs.readdirSync('./task')) {
 
-  if (!filename.includes('.ts')) {
+  if (!filename.endsWith('.ts')) {
     continue
   }
 

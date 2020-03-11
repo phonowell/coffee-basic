@@ -1,5 +1,5 @@
 import _ = require('lodash')
-import $ = require('fire-keeper')
+import $ from '../../source/fire-keeper'
 
 // interface
 import { IBlock, IData } from '../type'

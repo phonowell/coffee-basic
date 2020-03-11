@@ -1,4 +1,4 @@
-import $ = require('fire-keeper')
+import $ from '../../source/fire-keeper'
 import _ = require('lodash')
 
 import { getDepth, setDepth } from './fn'
@@ -92,7 +92,7 @@ function format(line: string, data: IData) {
   }
 
   if ($.type(result) === 'array') {
-    const _result: string[] = []
+    const _result = [] as string[]
     for (const _line of result as string[]) {
       _result.push(`${setDepth(depth)}${_line}`)
     }

@@ -1,4 +1,3 @@
-import $ = require('fire-keeper')
 import _ = require('lodash')
 
 import { getDepth, setDepth } from './fn'

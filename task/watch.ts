@@ -1,4 +1,4 @@
-import $ = require('fire-keeper')
+import $ from '../source/fire-keeper'
 
 // export
 module.exports = async () => {
@@ -6,8 +6,8 @@ module.exports = async () => {
   const parseAsync = $.require('./source/index')
 
   $.watch('./script/ffxiv/**/*.coffee', async (e: { path: string }) => {
-    const dirname = $.getDirname(e.path) as string
-    const basename = $.getBasename(dirname) as string
+    const dirname = $.getDirname(e.path)
+    const basename = $.getBasename(dirname)
     const source = `${dirname}/index.coffee`
     const target = `${dirname}/index.ahk`
     await parseAsync(source)
