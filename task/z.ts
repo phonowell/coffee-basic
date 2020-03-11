@@ -4,8 +4,6 @@ import $ from '../source/fire-keeper'
 module.exports = async () => {
 
   const parseAsync = $.require('./source/index')
-  await parseAsync('./script/test/z.coffee', {
-    bare: true
-  })
+  await parseAsync('./script/ffxiv/craft/index.coffee')
 
 }
