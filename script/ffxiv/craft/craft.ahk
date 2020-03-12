@@ -52,7 +52,7 @@ global 工匠的神速技巧 := []
 ; function
 
 clearTip() {
-  __$tip__()
+  ToolTip
 }
 
 getGroup() {
@@ -208,21 +208,6 @@ __$default__() {
   工匠的神速技巧[1] := 2500
 }
 
-__$tip__(msg := "", x := -1, y := -1) {
-  if (x >= 0 and y >= 0) {
-    ToolTip % msg, x, y
-  }
-  else {
-    ToolTip % msg
-  }
-  return msg
-}
-
-__$exit__() {
-  ExitApp
-  return
-}
-
 ; default
 __$default__()
 
@@ -242,7 +227,7 @@ return
 !f4::
   reset()
   SoundBeep
-  __$exit__()
+  ExitApp
 return
 
 ; eof

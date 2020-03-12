@@ -231,32 +231,17 @@ hasStatus(name) {
   return false
 }
 
-__$exit__() {
-  ExitApp
-  return
-}
-
-__$tip__(msg := "", x := -1, y := -1) {
-  if (x >= 0 and y >= 0) {
-    ToolTip % msg, x, y
-  }
-  else {
-    ToolTip % msg
-  }
-  return msg
-}
-
 ; event
 
 f12::
   SoundBeep
-  __$exit__()
+  ExitApp
 return
 
 f9::
   MouseGetPos x, y
   PixelGetColor color, x, y, RGB
-  __$tip__("" . x . ", " . y . ", " . color . "")
+  ToolTip % "" . x . ", " . y . ", " . color . ""
 return
 
 f2::

@@ -28,7 +28,7 @@ global hasTarget := false
 ; function
 
 clearTip() {
-  __$tip__()
+  ToolTip
 }
 
 getGroup() {
@@ -128,21 +128,6 @@ reset() {
   Send {shift up}
 }
 
-__$tip__(msg := "", x := -1, y := -1) {
-  if (x >= 0 and y >= 0) {
-    ToolTip % msg, x, y
-  }
-  else {
-    ToolTip % msg
-  }
-  return msg
-}
-
-__$exit__() {
-  ExitApp
-  return
-}
-
 ; event
 
 f2::
@@ -158,20 +143,20 @@ return
 
 f6::
   MouseGetPos x, y
-  __$tip__("" . x . ", " . y . "")
+  ToolTip % "" . x . ", " . y . ""
 return
 
 f9::
   x := 1130
   y := 865
   PixelGetColor color, x, y, RGB
-  __$tip__("" . x . ", " . y . ", " . color . "")
+  ToolTip % "" . x . ", " . y . ", " . color . ""
 return
 
 !f4::
   SoundBeep
   reset()
-  __$exit__()
+  ExitApp
 return
 
 ; eof

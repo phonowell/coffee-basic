@@ -6,16 +6,6 @@ import { IBlock, IData } from '../type'
 
 // export
 
-export function callFn(name: string, output: string, argument: string[] = []) {
-  return [
-    output ? `${output} = ` : '',
-    name,
-    '(',
-    argument.join(', '),
-    ')'
-  ].join('')
-}
-
 export function formatKey(input: string) {
 
   return input
