@@ -121,7 +121,7 @@ $.info 'hello'
 isPressing = $.isPressing 'a'
 ```
 
-### $.move(x: number, y: number): void
+### $.move(x: number, y: number, speed: number): [number, number, number]
 
 移动鼠标到指定位置。
 
@@ -129,7 +129,7 @@ isPressing = $.isPressing 'a'
 $.move 100, 100
 ```
 
-### $.open(cmd: string): void
+### $.open(target: string): string
 
 打开文档。
 

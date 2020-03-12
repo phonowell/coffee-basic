@@ -5,11 +5,12 @@ import { getDepth, setDepth } from './fn'
 
 import { $abs, $ceil, $floor, $round } from '../built-in/math'
 import { $alert, $info, $tip } from '../built-in/info'
-import { $beep, $click, $exit, $move, $open, $reload, $sleep } from '../built-in/simple'
+import { $beep, $click, $exit, $move, $reload, $sleep } from '../built-in/simple'
 import { $clearInterval, $clearTimeout, $setInterval, $setTimeout } from '../built-in/timer'
 import { $findColor, $findImage } from '../built-in/find'
 import { $getColor, $getPosition, $getState } from '../built-in/get'
 import { $isPressing, $press } from '../built-in/press'
+import { $open, $write } from '../built-in/file'
 import { $setFixed } from '../built-in/set'
 import { $trim, $trimEnd, $trimStart } from '../built-in/trim'
 
@@ -52,6 +53,7 @@ const Rule = {
   '$.trim': $trim,
   '$.trimEnd': $trimEnd,
   '$.trimStart': $trimStart,
+  '$.write': $write,
   'Math.abs': $abs,
   'Math.ceil': $ceil,
   'Math.floor': $floor,

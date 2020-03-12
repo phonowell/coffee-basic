@@ -1,5 +1,3 @@
-import { trim } from '../module/fn'
-
 // interface
 import { IArgumentBuiltIn, IData } from '../type'
 
@@ -36,10 +34,6 @@ export function $move({ argument, output }: IArgumentBuiltIn, data: IData) {
     result.push(`${output} = [${arg}]`)
   }
   return result
-}
-
-export function $open({ argument }: IArgumentBuiltIn) {
-  return `Run ${trim(argument[0])}`
 }
 
 export function $reload() {
