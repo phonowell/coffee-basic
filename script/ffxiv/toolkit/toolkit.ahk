@@ -147,8 +147,8 @@ f6::
 return
 
 f9::
-  x := 1130
-  y := 865
+  x := 1875
+  y := 723
   PixelGetColor color, x, y, RGB
   ToolTip % "" . x . ", " . y . ", " . color . ""
 return

@@ -17,12 +17,12 @@ getDistance = ->
   unless hasTarget
     return 'far'
 
-  color = $.getColor 1477, 806
+  color = $.getColor 1875, 723
 
-  if color == 0x841617
+  if color == 0x872424
     return 'far'
 
-  if color == 0x871C1C
+  if color == 0x8C1E1E
     return 'far'
   
   return 'near'

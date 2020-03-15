@@ -18,8 +18,8 @@ $.on 'f6', ->
 
 $.on 'f9', ->
   # [x, y] = $.getPosition()
-  x = 1130
-  y = 865
+  x = 1875
+  y = 723
   color = $.getColor x, y
   # $.move x, y
   $.tip "#{x}, #{y}, #{color}"
