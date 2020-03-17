@@ -1,17 +1,17 @@
-赤神圣时间戳 = 0
-赤神圣冷却 = 10e3
+ts.赤神圣 = 0
+cd.赤神圣 = 10e3
 
 赤神圣 = ->
 
-  unless A_TickCount - 赤神圣时间戳 > 赤神圣冷却
+  unless A_TickCount - ts.赤神圣 > cd.赤神圣
     return false
 
-  unless A_TickCount - 连攻时间戳 < 15e3
+  unless A_TickCount - ts.连攻 < 15e3
     return false
 
   赤神圣施放()
 
-  $.setInterval 监听赤神圣, 技能施放判断间隔
+  $.setInterval 监听赤神圣, cd.技能施放判断间隔
   return true
 
 监听赤神圣 = ->
@@ -20,7 +20,7 @@
   unless isA or isB
     return
   $.clearInterval 监听赤神圣
-  赤神圣时间戳 = A_TickCount - 技能施放时间戳补正
+  ts.赤神圣 = A_TickCount - cd.技能施放补正
 
 赤神圣施放 = ->
 

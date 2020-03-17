@@ -139,7 +139,16 @@ isTargeting = ->
 
 # ---
 
-reset = ->
+resetKey = ->
   $.press 'alt:up'
   $.press 'ctrl:up'
   $.press 'shift:up'
+
+resetTs = ->
+  for key, value in ts
+    ts[key] = 0
+
+setLevel = ->
+  level = prompt 'input level', level
+  unless level > 0
+    level = 80

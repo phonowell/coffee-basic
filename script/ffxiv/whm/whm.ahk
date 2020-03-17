@@ -28,24 +28,9 @@ global red := 0
 global white := 0
 global isReporting := false
 global tsReport := 0
-global 技能施放判断间隔 := 100
-global 技能施放时间戳补正 := 1500
-global 神速咏唱时间戳 := 0
-global 神速咏唱冷却 := 150000
-global 法令时间戳 := 0
-global 法令冷却 := 45000
-global 无中生有时间戳 := 0
-global 无中生有冷却 := 120000
-global 神名时间戳 := 0
-global 神名冷却 := 60000
-global 全大赦时间戳 := 0
-global 全大赦冷却 := 60000
-global 即刻咏唱时间戳 := 0
-global 即刻咏唱冷却 := 60000
-global 醒梦时间戳 := 0
-global 醒梦冷却 := 60000
-global 能力技时间戳 := 0
-global 能力技冷却 := 300
+global level := 80
+global ts := {}
+global cd := {}
 
 ; function
 
@@ -144,10 +129,23 @@ isTargeting() {
   return false
 }
 
-reset() {
+resetKey() {
   Send {alt up}
   Send {ctrl up}
   Send {shift up}
+}
+
+resetTs() {
+  for key, value in ts {
+    ts[key] := 0
+  }
+}
+
+setLevel() {
+  InputBox level, , % "input level", , , , , , , , % level
+  if !(level > 0) {
+    level := 80
+  }
 }
 
 攻击() {
@@ -265,16 +263,17 @@ report() {
   if !(isReporting) {
     return
   }
-  msg := "魔力：" . mp . "% / 白：" . white . " / 红：" . red . ""
+  msg := "等级：" . level . " / 魔力：" . mp . "%"
+  msg := "" . msg . "`n白：" . white . " / 红：" . red . ""
   msg := "" . msg . "`n耗时：" . A_TickCount - tsReport . "ms`n"
   tsReport := A_TickCount
-  msg := makeMsg(msg, "神速咏唱", 神速咏唱时间戳, 神速咏唱冷却)
-  msg := makeMsg(msg, "法令", 法令时间戳, 法令冷却)
-  msg := makeMsg(msg, "无中生有", 无中生有时间戳, 无中生有冷却)
-  msg := makeMsg(msg, "神名", 神名时间戳, 神名冷却)
-  msg := makeMsg(msg, "全大赦", 全大赦时间戳, 全大赦冷却)
-  msg := makeMsg(msg, "即刻咏唱", 即刻咏唱时间戳, 即刻咏唱冷却)
-  msg := makeMsg(msg, "醒梦", 醒梦时间戳, 醒梦冷却)
+  msg := makeMsg(msg, "神速咏唱", ts.神速咏唱, cd.神速咏唱)
+  msg := makeMsg(msg, "法令", ts.法令, cd.法令)
+  msg := makeMsg(msg, "无中生有", ts.无中生有, cd.无中生有)
+  msg := makeMsg(msg, "神名", ts.神名, cd.神名)
+  msg := makeMsg(msg, "全大赦", ts.全大赦, cd.全大赦)
+  msg := makeMsg(msg, "即刻咏唱", ts.即刻咏唱, cd.即刻咏唱)
+  msg := makeMsg(msg, "醒梦", ts.醒梦, cd.醒梦)
   ToolTip % msg, 410, 640
   SetTimer clearTip, Off
   SetTimer clearTip, % 0 - 5000
@@ -329,12 +328,12 @@ report() {
 }
 
 神速咏唱() {
-  if !(A_TickCount - 神速咏唱时间戳 > 神速咏唱冷却) {
+  if !(A_TickCount - ts.神速咏唱 > cd.神速咏唱) {
     return false
   }
   Send {alt down}{9}{alt up}
-  神速咏唱时间戳 := A_TickCount - 神速咏唱冷却 + 技能施放时间戳补正
-  SetTimer 监听神速咏唱, % 技能施放判断间隔
+  ts.神速咏唱 := A_TickCount - cd.神速咏唱 + cd.技能施放补正
+  SetTimer 监听神速咏唱, % cd.技能施放判断间隔
   return true
 }
 
@@ -343,14 +342,14 @@ report() {
     return
   }
   SetTimer 监听神速咏唱, Off
-  神速咏唱时间戳 := A_TickCount - 技能施放时间戳补正
+  ts.神速咏唱 := A_TickCount - cd.技能施放补正
 }
 
 再生() {
   if (hasStatusTarget("再生")) {
     return false
   }
-  if !(能力技冷却判断()) {
+  if !(cd.能力技判断()) {
     return false
   }
   Send {alt down}{0}{alt up}
@@ -373,7 +372,7 @@ report() {
   if !(white >= 1) {
     return false
   }
-  if !(能力技冷却判断()) {
+  if !(cd.能力技判断()) {
     return false
   }
   Send {ctrl down}{2}{ctrl up}
@@ -385,12 +384,12 @@ report() {
 }
 
 法令() {
-  if !(A_TickCount - 法令时间戳 > 法令冷却) {
+  if !(A_TickCount - ts.法令 > cd.法令) {
     return false
   }
   Send {ctrl down}{4}{ctrl up}
-  法令时间戳 := A_TickCount - 法令冷却 + 技能施放时间戳补正
-  SetTimer 监听法令, % 技能施放判断间隔
+  ts.法令 := A_TickCount - cd.法令 + cd.技能施放补正
+  SetTimer 监听法令, % cd.技能施放判断间隔
   return true
 }
 
@@ -399,16 +398,16 @@ report() {
     return
   }
   SetTimer 监听法令, Off
-  法令时间戳 := A_TickCount - 技能施放时间戳补正
+  ts.法令 := A_TickCount - cd.技能施放补正
 }
 
 无中生有() {
-  if !(A_TickCount - 无中生有时间戳 > 无中生有冷却) {
+  if !(A_TickCount - ts.无中生有 > cd.无中生有) {
     return false
   }
   Send {ctrl down}{5}{ctrl up}
-  无中生有时间戳 := A_TickCount - 无中生有冷却 + 技能施放时间戳补正
-  SetTimer 监听无中生有, % 技能施放判断间隔
+  ts.无中生有 := A_TickCount - cd.无中生有 + cd.技能施放补正
+  SetTimer 监听无中生有, % cd.技能施放判断间隔
   return true
 }
 
@@ -417,19 +416,19 @@ report() {
     return
   }
   SetTimer 监听无中生有, Off
-  无中生有时间戳 := A_TickCount - 技能施放时间戳补正
+  ts.无中生有 := A_TickCount - cd.技能施放补正
 }
 
 神名() {
-  if !(A_TickCount - 神名时间戳 > 神名冷却) {
+  if !(A_TickCount - ts.神名 > cd.神名) {
     return false
   }
-  if !(能力技冷却判断()) {
+  if !(cd.能力技判断()) {
     return false
   }
   Send {ctrl down}{6}{ctrl up}
-  神名时间戳 := A_TickCount - 神名冷却 + 技能施放时间戳补正
-  SetTimer 监听神名, % 技能施放判断间隔
+  ts.神名 := A_TickCount - cd.神名 + cd.技能施放补正
+  SetTimer 监听神名, % cd.技能施放判断间隔
   return true
 }
 
@@ -438,7 +437,7 @@ report() {
     return
   }
   SetTimer 监听神名, Off
-  神名时间戳 := A_TickCount - 技能施放时间戳补正
+  ts.神名 := A_TickCount - cd.技能施放补正
 }
 
 神祝祷() {
@@ -446,15 +445,15 @@ report() {
 }
 
 全大赦() {
-  if !(A_TickCount - 全大赦时间戳 > 全大赦冷却) {
+  if !(A_TickCount - ts.全大赦 > cd.全大赦) {
     return false
   }
-  if !(能力技冷却判断()) {
+  if !(cd.能力技判断()) {
     return false
   }
   Send {ctrl down}{8}{ctrl up}
-  全大赦时间戳 := A_TickCount - 全大赦冷却 + 技能施放时间戳补正
-  SetTimer 监听全大赦, % 技能施放判断间隔
+  ts.全大赦 := A_TickCount - cd.全大赦 + cd.技能施放补正
+  SetTimer 监听全大赦, % cd.技能施放判断间隔
   return true
 }
 
@@ -463,7 +462,7 @@ report() {
     return
   }
   SetTimer 监听全大赦, Off
-  全大赦时间戳 := A_TickCount - 技能施放时间戳补正
+  ts.全大赦 := A_TickCount - cd.技能施放补正
 }
 
 苦难之心() {
@@ -478,7 +477,7 @@ report() {
   if !(white >= 1) {
     return false
   }
-  if !(能力技冷却判断()) {
+  if !(cd.能力技判断()) {
     return false
   }
   Send {ctrl down}{0}{ctrl up}
@@ -498,12 +497,12 @@ report() {
 }
 
 即刻咏唱() {
-  if !(A_TickCount - 即刻咏唱时间戳 > 即刻咏唱冷却) {
+  if !(A_TickCount - ts.即刻咏唱 > cd.即刻咏唱) {
     return false
   }
   Send {shift down}{3}{shift up}
-  即刻咏唱时间戳 := A_TickCount - 即刻咏唱冷却 + 技能施放时间戳补正
-  SetTimer 监听即刻咏唱, % 技能施放判断间隔
+  ts.即刻咏唱 := A_TickCount - cd.即刻咏唱 + cd.技能施放补正
+  SetTimer 监听即刻咏唱, % cd.技能施放判断间隔
   return true
 }
 
@@ -512,11 +511,11 @@ report() {
     return
   }
   SetTimer 监听即刻咏唱, Off
-  即刻咏唱时间戳 := A_TickCount - 技能施放时间戳补正
+  ts.即刻咏唱 := A_TickCount - cd.技能施放补正
 }
 
 醒梦() {
-  if !(A_TickCount - 醒梦时间戳 > 醒梦冷却) {
+  if !(A_TickCount - ts.醒梦 > cd.醒梦) {
     return false
   }
   mp := getMp()
@@ -524,8 +523,8 @@ report() {
     return false
   }
   Send {shift down}{4}{shift up}
-  醒梦时间戳 := A_TickCount - 醒梦冷却 + 技能施放时间戳补正
-  SetTimer 监听醒梦, % 技能施放判断间隔
+  ts.醒梦 := A_TickCount - cd.醒梦 + cd.技能施放补正
+  SetTimer 监听醒梦, % cd.技能施放判断间隔
   return true
 }
 
@@ -534,7 +533,7 @@ report() {
     return
   }
   SetTimer 监听醒梦, Off
-  醒梦时间戳 := A_TickCount - 技能施放时间戳补正
+  ts.醒梦 := A_TickCount - cd.技能施放补正
 }
 
 沉稳咏唱() {
@@ -570,11 +569,11 @@ report() {
   Send {space}
 }
 
-能力技冷却判断() {
-  if !(A_TickCount - 能力技时间戳 > 能力技冷却) {
+cd.能力技判断() {
+  if !(A_TickCount - ts.能力技 > cd.能力技) {
     return false
   }
-  能力技时间戳 := A_TickCount
+  ts.能力技 := A_TickCount
   return true
 }
 
@@ -636,17 +635,49 @@ report() {
   医治()
 }
 
+__$default__() {
+  cd.技能施放判断间隔 := 100
+  cd.技能施放补正 := 1500
+  ts.神速咏唱 := 0
+  cd.神速咏唱 := 150000
+  ts.法令 := 0
+  cd.法令 := 45000
+  ts.无中生有 := 0
+  cd.无中生有 := 120000
+  ts.神名 := 0
+  cd.神名 := 60000
+  ts.全大赦 := 0
+  cd.全大赦 := 60000
+  ts.即刻咏唱 := 0
+  cd.即刻咏唱 := 60000
+  ts.醒梦 := 0
+  cd.醒梦 := 60000
+  ts.能力技 := 0
+  cd.能力技 := 300
+}
+
+; default
+__$default__()
+
 ; event
 
 f5::
   清空信息()
-  reset()
+  resetKey()
+  resetTs()
+  SoundBeep
+  setLevel()
+return
+
+^f5::
+  清空信息()
+  resetKey()
   SoundBeep
   Reload
 return
 
 !f4::
-  reset()
+  resetKey()
   SoundBeep
   ExitApp
 return

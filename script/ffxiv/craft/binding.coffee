@@ -5,12 +5,12 @@ $.on 'f2', ->
 
 # reload
 $.on 'f5', ->
-  reset()
+  resetKey()
   $.beep()
   $.reload()
 
 # exit
 $.on 'alt + f4', ->
-  reset()
+  resetKey()
   $.beep()
   $.exit()

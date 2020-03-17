@@ -12,14 +12,14 @@ $.on 'f4', ->
 # reload
 $.on 'f5', ->
   清空信息()
-  reset()
+  resetKey()
   $.beep()
   $.reload()
 
 # exit
 $.on 'alt + f4', ->
   $.beep()
-  reset()
+  resetKey()
   $.exit()
 
 # ---

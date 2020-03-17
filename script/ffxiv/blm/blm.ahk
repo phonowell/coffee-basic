@@ -29,12 +29,6 @@ global element := false
 global isMpLacking := false
 global isReporting := true
 global tsReport := 0
-global 闪雷时间戳 := 0
-global 闪雷冷却 := 10000
-global 震雷时间戳 := 0
-global 震雷冷却 := 10000
-global 即刻咏唱时间戳 := 0
-global 即刻咏唱冷却 := 60000
 
 ; function
 
@@ -133,10 +127,23 @@ isTargeting() {
   return false
 }
 
-reset() {
+resetKey() {
   Send {alt up}
   Send {ctrl up}
   Send {shift up}
+}
+
+resetTs() {
+  for key, value in ts {
+    ts[key] := 0
+  }
+}
+
+setLevel() {
+  InputBox level, , % "input level", , , , , , , , % level
+  if !(level > 0) {
+    level := 80
+  }
 }
 
 攻击() {
@@ -210,7 +217,7 @@ report() {
   msg := "" . msg . "`n使用Dot：" . isDotEnabled . ""
   msg := "" . msg . "`n耗时：" . A_TickCount - tsReport . "ms`n"
   tsReport := A_TickCount
-  res := calcCD(即刻咏唱时间戳, 即刻咏唱冷却)
+  res := calcCD(ts.即刻咏唱, cd.即刻咏唱)
   if (res) {
     msg := "" . msg . "`n即刻咏唱：" . res . "s"
   }
@@ -235,14 +242,14 @@ report() {
   if (!isDotEnabled) {
     return false
   }
-  if !(A_TickCount - 闪雷时间戳 > 闪雷冷却) {
+  if !(A_TickCount - ts.闪雷 > cd.闪雷) {
     return false
   }
   if (hasStatusTarget("闪雷")) {
     return false
   }
   Send {alt down}{4}{alt up}
-  闪雷时间戳 := A_TickCount - 2000
+  ts.闪雷 := A_TickCount - 2000
   return true
 }
 
@@ -263,14 +270,14 @@ report() {
 }
 
 震雷() {
-  if !(A_TickCount - 震雷时间戳 > 震雷冷却) {
+  if !(A_TickCount - ts.震雷 > cd.震雷) {
     return false
   }
   if (hasStatusTarget("震雷")) {
     return false
   }
   Send {alt down}{9}{alt up}
-  震雷时间戳 := A_TickCount - 2000
+  ts.震雷 := A_TickCount - 2000
   return true
 }
 
@@ -291,7 +298,7 @@ report() {
 }
 
 即刻咏唱() {
-  if !(A_TickCount - 即刻咏唱时间戳 > 即刻咏唱冷却) {
+  if !(A_TickCount - ts.即刻咏唱 > cd.即刻咏唱) {
     return false
   }
   Send {shift down}{5}{shift up}
@@ -304,7 +311,7 @@ report() {
     return
   }
   SetTimer 监听即刻咏唱, Off
-  即刻咏唱时间戳 := A_TickCount - 2000
+  ts.即刻咏唱 := A_TickCount - 2000
 }
 
 醒梦() {
@@ -385,6 +392,12 @@ report() {
 }
 
 __$default__() {
+  ts.闪雷 := 0
+  cd.闪雷 := 10000
+  ts.震雷 := 0
+  cd.震雷 := 10000
+  ts.即刻咏唱 := 0
+  cd.即刻咏唱 := 60000
   SetTimer 清空信息, % 0 - 3000
 }
 

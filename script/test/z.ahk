@@ -1,6 +1,15 @@
-﻿; event
+﻿; global variable
+
+global cd := {}
+
+; event
 
 f2::
-  MouseMove 0, 0, 0
-  a := [0, 0, 0]
+  cd.a := 1
+  cd.b := 2
+  cd.c := 3
+  for key, value in cd {
+    cd[key] := 0
+  }
+  MsgBox % "" . cd.a . ", " . cd.b . ", " . cd.c . ""
 return

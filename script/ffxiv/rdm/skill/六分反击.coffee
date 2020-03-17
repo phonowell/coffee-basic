@@ -1,19 +1,19 @@
-六分反击时间戳 = 0
-六分反击冷却 = 35e3
+ts.六分反击 = 0
+cd.六分反击 = 35e3
 
 六分反击 = ->
 
-  unless A_TickCount - 六分反击时间戳 > 六分反击冷却
+  unless A_TickCount - ts.六分反击 > cd.六分反击
     return false
 
   $.press 'ctrl + 6'
   
-  六分反击时间戳 = A_TickCount - 六分反击冷却 + 技能施放时间戳补正
-  $.setInterval 监听六分反击, 技能施放判断间隔
+  ts.六分反击 = A_TickCount - cd.六分反击 + cd.技能施放补正
+  $.setInterval 监听六分反击, cd.技能施放判断间隔
   return true
 
 监听六分反击 = ->
   unless isUsed '六分反击'
     return
   $.clearInterval 监听六分反击
-  六分反击时间戳 = A_TickCount - 技能施放时间戳补正
+  ts.六分反击 = A_TickCount - cd.技能施放补正

@@ -50,7 +50,7 @@ report = ->
   
   tsReport = A_TickCount
 
-  res = calcCD 即刻咏唱时间戳, 即刻咏唱冷却
+  res = calcCD ts.即刻咏唱, cd.即刻咏唱
   if res
     msg = "#{msg}`n即刻咏唱：#{res}s"
   

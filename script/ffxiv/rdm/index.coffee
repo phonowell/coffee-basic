@@ -7,6 +7,12 @@
 
 # ---
 
+level = 80
+ts = {}
+cd = {}
+
+# ---
+
 单体攻击 = ->
 
   if isChanting()
@@ -149,7 +155,7 @@
 
 调整魔元 = ->
   
-  unless A_TickCount - 倍增时间戳 > 倍增冷却 - 2e3
+  unless A_TickCount - ts.倍增 > cd.倍增 - 2e3
     return false
   
   unless black >= 60 and white >= 60

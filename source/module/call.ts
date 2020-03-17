@@ -104,6 +104,7 @@ function validate(text: string) {
 
   const list = [
     'else {',
+    'for ',
     'loop '
   ]
 

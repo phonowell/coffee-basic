@@ -74,7 +74,7 @@ press = (dh, dv) ->
   cacheH = dh
   cacheV = dv
   
-  reset()
+  resetKey()
 
   if dh == 'left'
     $.press 'a:down'
@@ -105,7 +105,7 @@ toggle = ->
 
 unbind = ->
   $.clearInterval execute
-  reset()
+  resetKey()
 
 viewFar = ->
   
@@ -123,7 +123,7 @@ viewFar = ->
 $.on 'f12', ->
   $.click 'up'
   $.click 'right:up'
-  reset()
+  resetKey()
   $.beep()
   $.exit()
 

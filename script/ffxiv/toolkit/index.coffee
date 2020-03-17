@@ -8,7 +8,7 @@ $.on 'f2', ->
 
 # reload
 $.on 'f5', ->
-  reset()
+  resetKey()
   $.beep()
   $.reload()
 
@@ -26,5 +26,5 @@ $.on 'f9', ->
 
 $.on 'alt + f4', ->
   $.beep()
-  reset()
+  resetKey()
   $.exit()

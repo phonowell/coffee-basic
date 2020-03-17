@@ -10,6 +10,14 @@
 alert 'hello'
 ```
 
+### prompt(message: string, defaultValue?: string): string
+
+没啥好说的。
+
+```coffeescript
+msg = prompt 'input your message', 'hello?'
+```
+
 ### Math
 
 没啥好说的。

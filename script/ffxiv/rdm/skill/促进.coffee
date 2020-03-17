@@ -1,15 +1,15 @@
-促进时间戳 = 0
-促进冷却 = 55e3
+ts.促进 = 0
+cd.促进 = 55e3
 
 促进 = ->
 
-  unless A_TickCount - 促进时间戳 > 促进冷却
+  unless A_TickCount - ts.促进 > cd.促进
     return false
 
-  unless A_TickCount - 赤疾风时间戳 < 2e3
+  unless A_TickCount - ts.赤疾风 < 2e3
     return false
 
-  unless A_TickCount - 回刺时间戳 > 魔三连冷却
+  unless A_TickCount - ts.回刺 > cd.魔三连
     return false
 
   if black > 70 or white > 70
@@ -22,12 +22,12 @@
 
   $.press 'ctrl + 3'
   
-  促进时间戳 = A_TickCount - 促进冷却 + 技能施放时间戳补正
-  $.setInterval 监听促进, 技能施放判断间隔
+  ts.促进 = A_TickCount - cd.促进 + cd.技能施放补正
+  $.setInterval 监听促进, cd.技能施放判断间隔
   return true
 
 监听促进 = ->
   unless isUsed '促进'
     return
   $.clearInterval 监听促进
-  促进时间戳 = A_TickCount - 技能施放时间戳补正
+  ts.促进 = A_TickCount - cd.技能施放补正

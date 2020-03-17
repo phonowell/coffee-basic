@@ -1,13 +1,13 @@
-能力技时间戳 = 0
-能力技冷却 = 1e3
+ts.能力技 = 0
+cd.能力技 = 1e3
 能力技余额 = 0
 
 能力技 = (n = 2) ->
   
-  unless A_TickCount - 能力技时间戳 > 能力技冷却
+  unless A_TickCount - ts.能力技 > cd.能力技
     return
   
-  能力技时间戳 = A_TickCount
+  ts.能力技 = A_TickCount
   能力技余额 = -n
 
   $.setInterval 施放能力技, 500

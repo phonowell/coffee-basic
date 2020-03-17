@@ -25,6 +25,11 @@ export function $info({ argument, output }: IArgumentBuiltIn, data: IData) {
   return result
 }
 
+export function $prompt({ argument, output }: IArgumentBuiltIn, data: IData) {
+  const [message, value] = argument
+  return `InputBox ${output}, , % ${message || ''}, , , , , , , , % ${value || ''}`
+}
+
 export function $tip({ argument, output }: IArgumentBuiltIn, data: IData) {
   const result = [] as string[]
   if (!argument[0]) {

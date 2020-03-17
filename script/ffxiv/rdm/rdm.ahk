@@ -29,41 +29,10 @@ global distance := "far"
 global white := 0
 global isReporting := false
 global tsReport := 0
-global 技能施放判断间隔 := 100
-global 技能施放时间戳补正 := 1500
-global 魔三连冷却 := 15000
-global 回刺时间戳 := 0
-global 回刺冷却 := 10000
-global 短兵相接时间戳 := 0
-global 短兵相接冷却 := 40000
-global 赤疾风时间戳 := 0
-global 交击斩时间戳 := 0
-global 交击斩冷却 := 10000
-global 飞刺时间戳 := 0
-global 飞刺冷却 := 25000
-global 连攻时间戳 := 0
-global 连攻冷却 := 10000
-global 促进时间戳 := 0
-global 促进冷却 := 55000
-global 六分反击时间戳 := 0
-global 六分反击冷却 := 35000
-global 鼓励时间戳 := 0
-global 鼓励冷却 := 120000
-global 倍增时间戳 := 0
-global 倍增冷却 := 110000
-global 交剑时间戳 := 0
-global 交剑冷却 := 35000
-global 即刻咏唱时间戳 := 0
-global 即刻咏唱冷却 := 60000
-global 醒梦时间戳 := 0
-global 醒梦冷却 := 60000
-global 赤神圣时间戳 := 0
-global 赤神圣冷却 := 10000
-global 焦热时间戳 := 0
-global 焦热冷却 := 10000
-global 能力技时间戳 := 0
-global 能力技冷却 := 1000
 global 能力技余额 := 0
+global level := 80
+global ts := {}
+global cd := {}
 
 ; function
 
@@ -162,10 +131,23 @@ isTargeting() {
   return false
 }
 
-reset() {
+resetKey() {
   Send {alt up}
   Send {ctrl up}
   Send {shift up}
+}
+
+resetTs() {
+  for key, value in ts {
+    ts[key] := 0
+  }
+}
+
+setLevel() {
+  InputBox level, , % "input level", , , , , , , , % level
+  if !(level > 0) {
+    level := 80
+  }
 }
 
 攻击() {
@@ -316,26 +298,27 @@ report() {
   if !(isReporting) {
     return
   }
-  msg := "目标距离：" . distance . ""
-  msg := "" . msg . "`n魔力：" . mp . "% / 黑：" . black . " / 白：" . white . ""
+  msg := "等级：" . level . " / 魔力：" . mp . "%"
+  msg := "" . msg . "`n黑：" . black . " / 白：" . white . ""
+  msg := "" . msg . "`n目标距离：" . distance . ""
   msg := "" . msg . "`n耗时：" . A_TickCount - tsReport . "ms`n"
   tsReport := A_TickCount
-  msg := makeMsg(msg, "短兵相接", 短兵相接时间戳, 短兵相接冷却)
-  msg := makeMsg(msg, "飞刺", 飞刺时间戳, 飞刺冷却)
-  msg := makeMsg(msg, "促进", 促进时间戳, 促进冷却)
-  msg := makeMsg(msg, "六分反击", 六分反击时间戳, 六分反击冷却)
-  msg := makeMsg(msg, "鼓励", 鼓励时间戳, 鼓励冷却)
-  msg := makeMsg(msg, "倍增", 倍增时间戳, 倍增冷却)
-  msg := makeMsg(msg, "交剑", 交剑时间戳, 交剑冷却)
-  msg := makeMsg(msg, "即刻咏唱", 即刻咏唱时间戳, 即刻咏唱冷却)
-  msg := makeMsg(msg, "醒梦", 醒梦时间戳, 醒梦冷却)
+  msg := makeMsg(msg, "短兵相接", ts.短兵相接, cd.短兵相接)
+  msg := makeMsg(msg, "飞刺", ts.飞刺, cd.飞刺)
+  msg := makeMsg(msg, "促进", ts.促进, cd.促进)
+  msg := makeMsg(msg, "六分反击", ts.六分反击, cd.六分反击)
+  msg := makeMsg(msg, "鼓励", ts.鼓励, cd.鼓励)
+  msg := makeMsg(msg, "倍增", ts.倍增, cd.倍增)
+  msg := makeMsg(msg, "交剑", ts.交剑, cd.交剑)
+  msg := makeMsg(msg, "即刻咏唱", ts.即刻咏唱, cd.即刻咏唱)
+  msg := makeMsg(msg, "醒梦", ts.醒梦, cd.醒梦)
   ToolTip % msg, 410, 640
   SetTimer clearTip, Off
   SetTimer clearTip, % 0 - 5000
 }
 
 回刺() {
-  if !(A_TickCount - 回刺时间戳 > 回刺冷却) {
+  if !(A_TickCount - ts.回刺 > cd.回刺) {
     return false
   }
   if !(black >= 80 and white >= 80) {
@@ -348,7 +331,7 @@ report() {
     return false
   }
   Send {alt down}{1}{alt up}
-  SetTimer 监听回刺, % 技能施放判断间隔
+  SetTimer 监听回刺, % cd.技能施放判断间隔
   return true
 }
 
@@ -357,7 +340,7 @@ report() {
     return
   }
   SetTimer 监听回刺, Off
-  回刺时间戳 := A_TickCount - 技能施放时间戳补正
+  ts.回刺 := A_TickCount - cd.技能施放补正
 }
 
 摇荡() {
@@ -366,11 +349,11 @@ report() {
 
 赤闪雷() {
   Send {alt down}{3}{alt up}
-  赤疾风时间戳 := A_TickCount
+  ts.赤疾风 := A_TickCount
 }
 
 短兵相接(isForced := false) {
-  if !(A_TickCount - 短兵相接时间戳 > 短兵相接冷却) {
+  if !(A_TickCount - ts.短兵相接 > cd.短兵相接) {
     return false
   }
   distance := getDistance()
@@ -378,8 +361,8 @@ report() {
     return false
   }
   Send {alt down}{4}{alt up}
-  短兵相接时间戳 := A_TickCount - 短兵相接冷却 + 技能施放时间戳补正
-  SetTimer 监听短兵相接, % 技能施放判断间隔
+  ts.短兵相接 := A_TickCount - cd.短兵相接 + cd.技能施放补正
+  SetTimer 监听短兵相接, % cd.技能施放判断间隔
   return true
 }
 
@@ -388,12 +371,12 @@ report() {
     return
   }
   SetTimer 监听短兵相接, Off
-  短兵相接时间戳 := A_TickCount - 技能施放时间戳补正
+  ts.短兵相接 := A_TickCount - cd.技能施放补正
 }
 
 赤疾风() {
   Send {alt down}{5}{alt up}
-  赤疾风时间戳 := A_TickCount
+  ts.赤疾风 := A_TickCount
 }
 
 散碎() {
@@ -417,17 +400,17 @@ report() {
 }
 
 交击斩() {
-  if !(A_TickCount - 交击斩时间戳 > 交击斩冷却) {
+  if !(A_TickCount - ts.交击斩 > cd.交击斩) {
     return false
   }
-  if !(A_TickCount - 回刺时间戳 < 魔三连冷却) {
+  if !(A_TickCount - ts.回刺 < cd.魔三连) {
     return false
   }
   if !(black >= 50 and white >= 50) {
     return false
   }
   Send {alt down}{-}{alt up}
-  SetTimer 监听交击斩, % 技能施放判断间隔
+  SetTimer 监听交击斩, % cd.技能施放判断间隔
   return true
 }
 
@@ -436,7 +419,7 @@ report() {
     return
   }
   SetTimer 监听交击斩, Off
-  交击斩时间戳 := A_TickCount - 技能施放时间戳补正
+  ts.交击斩 := A_TickCount - cd.技能施放补正
 }
 
 移转() {
@@ -444,12 +427,12 @@ report() {
 }
 
 飞刺() {
-  if !(A_TickCount - 飞刺时间戳 > 飞刺冷却) {
+  if !(A_TickCount - ts.飞刺 > cd.飞刺) {
     return false
   }
   Send {ctrl down}{1}{ctrl up}
-  飞刺时间戳 := A_TickCount - 飞刺冷却 + 技能施放时间戳补正
-  SetTimer 监听飞刺, % 技能施放判断间隔
+  ts.飞刺 := A_TickCount - cd.飞刺 + cd.技能施放补正
+  SetTimer 监听飞刺, % cd.技能施放判断间隔
   return true
 }
 
@@ -458,21 +441,21 @@ report() {
     return
   }
   SetTimer 监听飞刺, Off
-  飞刺时间戳 := A_TickCount - 技能施放时间戳补正
+  ts.飞刺 := A_TickCount - cd.技能施放补正
 }
 
 连攻() {
-  if !(A_TickCount - 连攻时间戳 > 连攻冷却) {
+  if !(A_TickCount - ts.连攻 > cd.连攻) {
     return false
   }
-  if !(A_TickCount - 交击斩时间戳 < 魔三连冷却) {
+  if !(A_TickCount - ts.交击斩 < cd.魔三连) {
     return false
   }
   if !(black >= 25 and white >= 25) {
     return false
   }
   Send {ctrl down}{2}{ctrl up}
-  SetTimer 监听连攻, % 技能施放判断间隔
+  SetTimer 监听连攻, % cd.技能施放判断间隔
   return true
 }
 
@@ -481,17 +464,17 @@ report() {
     return
   }
   SetTimer 监听连攻, Off
-  连攻时间戳 := A_TickCount - 技能施放时间戳补正
+  ts.连攻 := A_TickCount - cd.技能施放补正
 }
 
 促进() {
-  if !(A_TickCount - 促进时间戳 > 促进冷却) {
+  if !(A_TickCount - ts.促进 > cd.促进) {
     return false
   }
-  if !(A_TickCount - 赤疾风时间戳 < 2000) {
+  if !(A_TickCount - ts.赤疾风 < 2000) {
     return false
   }
-  if !(A_TickCount - 回刺时间戳 > 魔三连冷却) {
+  if !(A_TickCount - ts.回刺 > cd.魔三连) {
     return false
   }
   if (black > 70 or white > 70) {
@@ -503,8 +486,8 @@ report() {
     return false
   }
   Send {ctrl down}{3}{ctrl up}
-  促进时间戳 := A_TickCount - 促进冷却 + 技能施放时间戳补正
-  SetTimer 监听促进, % 技能施放判断间隔
+  ts.促进 := A_TickCount - cd.促进 + cd.技能施放补正
+  SetTimer 监听促进, % cd.技能施放判断间隔
   return true
 }
 
@@ -513,7 +496,7 @@ report() {
     return
   }
   SetTimer 监听促进, Off
-  促进时间戳 := A_TickCount - 技能施放时间戳补正
+  ts.促进 := A_TickCount - cd.技能施放补正
 }
 
 划圆斩() {
@@ -534,12 +517,12 @@ report() {
 }
 
 六分反击() {
-  if !(A_TickCount - 六分反击时间戳 > 六分反击冷却) {
+  if !(A_TickCount - ts.六分反击 > cd.六分反击) {
     return false
   }
   Send {ctrl down}{6}{ctrl up}
-  六分反击时间戳 := A_TickCount - 六分反击冷却 + 技能施放时间戳补正
-  SetTimer 监听六分反击, % 技能施放判断间隔
+  ts.六分反击 := A_TickCount - cd.六分反击 + cd.技能施放补正
+  SetTimer 监听六分反击, % cd.技能施放判断间隔
   return true
 }
 
@@ -548,19 +531,19 @@ report() {
     return
   }
   SetTimer 监听六分反击, Off
-  六分反击时间戳 := A_TickCount - 技能施放时间戳补正
+  ts.六分反击 := A_TickCount - cd.技能施放补正
 }
 
 鼓励() {
-  if !(A_TickCount - 鼓励时间戳 > 鼓励冷却) {
+  if !(A_TickCount - ts.鼓励 > cd.鼓励) {
     return false
   }
-  if !(A_TickCount - 回刺时间戳 < 回刺冷却) {
+  if !(A_TickCount - ts.回刺 < cd.回刺) {
     return false
   }
   Send {ctrl down}{7}{ctrl up}
-  鼓励时间戳 := A_TickCount - 鼓励冷却 + 技能施放时间戳补正
-  SetTimer 监听鼓励, % 技能施放判断间隔
+  ts.鼓励 := A_TickCount - cd.鼓励 + cd.技能施放补正
+  SetTimer 监听鼓励, % cd.技能施放判断间隔
   return true
 }
 
@@ -569,14 +552,14 @@ report() {
     return
   }
   SetTimer 监听鼓励, Off
-  鼓励时间戳 := A_TickCount - 技能施放时间戳补正
+  ts.鼓励 := A_TickCount - cd.技能施放补正
 }
 
 倍增() {
-  if !(A_TickCount - 倍增时间戳 > 倍增冷却) {
+  if !(A_TickCount - ts.倍增 > cd.倍增) {
     return false
   }
-  if (A_TickCount - 回刺时间戳 < 魔三连冷却) {
+  if (A_TickCount - ts.回刺 < cd.魔三连) {
     return false
   }
   if !(black >= 40 and black <= 70) {
@@ -586,8 +569,8 @@ report() {
     return false
   }
   Send {ctrl down}{8}{ctrl up}
-  倍增时间戳 := A_TickCount - 倍增冷却 + 技能施放时间戳补正
-  SetTimer 监听倍增, % 技能施放判断间隔
+  ts.倍增 := A_TickCount - cd.倍增 + cd.技能施放补正
+  SetTimer 监听倍增, % cd.技能施放判断间隔
   return true
 }
 
@@ -596,10 +579,10 @@ report() {
     return
   }
   SetTimer 监听倍增, Off
-  倍增时间戳 := A_TickCount - 技能施放时间戳补正
-  短兵相接时间戳 := 0
-  移转时间戳 := 0
-  交剑时间戳 := 0
+  ts.倍增 := A_TickCount - cd.技能施放补正
+  ts.短兵相接 := 0
+  ts.移转 := 0
+  ts.交剑 := 0
 }
 
 赤复活() {
@@ -607,7 +590,7 @@ report() {
 }
 
 交剑() {
-  if !(A_TickCount - 交剑时间戳 > 交剑冷却) {
+  if !(A_TickCount - ts.交剑 > cd.交剑) {
     return false
   }
   distance := getDistance()
@@ -615,8 +598,8 @@ report() {
     return false
   }
   Send {ctrl down}{0}{ctrl up}
-  交剑时间戳 := A_TickCount - 交剑冷却 + 技能施放时间戳补正
-  SetTimer 监听交剑, % 技能施放判断间隔
+  ts.交剑 := A_TickCount - cd.交剑 + cd.技能施放补正
+  SetTimer 监听交剑, % cd.技能施放判断间隔
   return true
 }
 
@@ -625,7 +608,7 @@ report() {
     return
   }
   SetTimer 监听交剑, Off
-  交剑时间戳 := A_TickCount - 技能施放时间戳补正
+  ts.交剑 := A_TickCount - cd.技能施放补正
 }
 
 续斩() {
@@ -637,10 +620,10 @@ report() {
 }
 
 即刻咏唱() {
-  if !(A_TickCount - 即刻咏唱时间戳 > 即刻咏唱冷却) {
+  if !(A_TickCount - ts.即刻咏唱 > cd.即刻咏唱) {
     return false
   }
-  if !(A_TickCount - 回刺时间戳 > 回刺冷却) {
+  if !(A_TickCount - ts.回刺 > cd.回刺) {
     return false
   }
   if (black > 70 or white > 70) {
@@ -655,8 +638,8 @@ report() {
     return
   }
   Send {shift down}{2}{shift up}
-  即刻咏唱时间戳 := A_TickCount - 即刻咏唱冷却 + 技能施放时间戳补正
-  SetTimer 监听即刻咏唱, % 技能施放判断间隔
+  ts.即刻咏唱 := A_TickCount - cd.即刻咏唱 + cd.技能施放补正
+  SetTimer 监听即刻咏唱, % cd.技能施放判断间隔
   return true
 }
 
@@ -665,11 +648,11 @@ report() {
     return
   }
   SetTimer 监听即刻咏唱, Off
-  即刻咏唱时间戳 := A_TickCount - 技能施放时间戳补正
+  ts.即刻咏唱 := A_TickCount - cd.技能施放补正
 }
 
 醒梦() {
-  if !(A_TickCount - 醒梦时间戳 > 醒梦冷却) {
+  if !(A_TickCount - ts.醒梦 > cd.醒梦) {
     return false
   }
   mp := getMp()
@@ -677,8 +660,8 @@ report() {
     return false
   }
   Send {shift down}{3}{shift up}
-  醒梦时间戳 := A_TickCount - 醒梦冷却 + 技能施放时间戳补正
-  SetTimer 监听醒梦, % 技能施放判断间隔
+  ts.醒梦 := A_TickCount - cd.醒梦 + cd.技能施放补正
+  SetTimer 监听醒梦, % cd.技能施放判断间隔
   return true
 }
 
@@ -687,7 +670,7 @@ report() {
     return
   }
   SetTimer 监听醒梦, Off
-  醒梦时间戳 := A_TickCount - 技能施放时间戳补正
+  ts.醒梦 := A_TickCount - cd.技能施放补正
 }
 
 沉稳咏唱() {
@@ -703,14 +686,14 @@ report() {
 }
 
 赤神圣() {
-  if !(A_TickCount - 赤神圣时间戳 > 赤神圣冷却) {
+  if !(A_TickCount - ts.赤神圣 > cd.赤神圣) {
     return false
   }
-  if !(A_TickCount - 连攻时间戳 < 15000) {
+  if !(A_TickCount - ts.连攻 < 15000) {
     return false
   }
   赤神圣施放()
-  SetTimer 监听赤神圣, % 技能施放判断间隔
+  SetTimer 监听赤神圣, % cd.技能施放判断间隔
   return true
 }
 
@@ -721,7 +704,7 @@ report() {
     return
   }
   SetTimer 监听赤神圣, Off
-  赤神圣时间戳 := A_TickCount - 技能施放时间戳补正
+  ts.赤神圣 := A_TickCount - cd.技能施放补正
 }
 
 赤神圣施放() {
@@ -761,15 +744,15 @@ report() {
 }
 
 焦热() {
-  if !(A_TickCount - 焦热时间戳 > 焦热冷却) {
+  if !(A_TickCount - ts.焦热 > cd.焦热) {
     SoundBeep
     return false
   }
-  if !(A_TickCount - 赤神圣时间戳 < 15000) {
+  if !(A_TickCount - ts.赤神圣 < 15000) {
     return false
   }
   摇荡()
-  SetTimer 监听焦热, % 技能施放判断间隔
+  SetTimer 监听焦热, % cd.技能施放判断间隔
   return true
 }
 
@@ -778,7 +761,7 @@ report() {
     return
   }
   SetTimer 监听焦热, Off
-  焦热时间戳 := A_TickCount - 技能施放时间戳补正
+  ts.焦热 := A_TickCount - cd.技能施放补正
 }
 
 索敌() {
@@ -799,10 +782,10 @@ report() {
 }
 
 能力技(n := 2) {
-  if !(A_TickCount - 能力技时间戳 > 能力技冷却) {
+  if !(A_TickCount - ts.能力技 > cd.能力技) {
     return
   }
-  能力技时间戳 := A_TickCount
+  ts.能力技 := A_TickCount
   能力技余额 := -n
   SetTimer 施放能力技, % 500
 }
@@ -989,7 +972,7 @@ report() {
 }
 
 调整魔元() {
-  if !(A_TickCount - 倍增时间戳 > 倍增冷却 - 2000) {
+  if !(A_TickCount - ts.倍增 > cd.倍增 - 2000) {
     return false
   }
   if !(black >= 60 and white >= 60) {
@@ -1084,17 +1067,65 @@ report() {
   能力技()
 }
 
+__$default__() {
+  cd.技能施放判断间隔 := 100
+  cd.技能施放补正 := 1500
+  cd.魔三连 := 15000
+  ts.回刺 := 0
+  cd.回刺 := 10000
+  ts.短兵相接 := 0
+  cd.短兵相接 := 40000
+  ts.赤疾风 := 0
+  ts.交击斩 := 0
+  cd.交击斩 := 10000
+  ts.飞刺 := 0
+  cd.飞刺 := 25000
+  ts.连攻 := 0
+  cd.连攻 := 10000
+  ts.促进 := 0
+  cd.促进 := 55000
+  ts.六分反击 := 0
+  cd.六分反击 := 35000
+  ts.鼓励 := 0
+  cd.鼓励 := 120000
+  ts.倍增 := 0
+  cd.倍增 := 110000
+  ts.交剑 := 0
+  cd.交剑 := 35000
+  ts.即刻咏唱 := 0
+  cd.即刻咏唱 := 60000
+  ts.醒梦 := 0
+  cd.醒梦 := 60000
+  ts.赤神圣 := 0
+  cd.赤神圣 := 10000
+  ts.焦热 := 0
+  cd.焦热 := 10000
+  ts.能力技 := 0
+  cd.能力技 := 1000
+}
+
+; default
+__$default__()
+
 ; event
 
 f5::
   清空信息()
-  reset()
+  resetKey()
+  resetTs()
+  SoundBeep
+  setLevel()
+return
+
+^f5::
+  清空信息()
+  resetKey()
   SoundBeep
   Reload
 return
 
 !f4::
-  reset()
+  resetKey()
   SoundBeep
   ExitApp
 return

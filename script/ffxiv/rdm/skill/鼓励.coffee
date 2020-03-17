@@ -1,22 +1,22 @@
-鼓励时间戳 = 0
-鼓励冷却 = 120e3
+ts.鼓励 = 0
+cd.鼓励 = 120e3
 
 鼓励 = ->
 
-  unless A_TickCount - 鼓励时间戳 > 鼓励冷却
+  unless A_TickCount - ts.鼓励 > cd.鼓励
     return false
 
-  unless A_TickCount - 回刺时间戳 < 回刺冷却
+  unless A_TickCount - ts.回刺 < cd.回刺
     return false
 
   $.press 'ctrl + 7'
   
-  鼓励时间戳 = A_TickCount - 鼓励冷却 + 技能施放时间戳补正
-  $.setInterval 监听鼓励, 技能施放判断间隔
+  ts.鼓励 = A_TickCount - cd.鼓励 + cd.技能施放补正
+  $.setInterval 监听鼓励, cd.技能施放判断间隔
   return true
 
 监听鼓励 = ->
   unless isUsed '鼓励'
     return
   $.clearInterval 监听鼓励
-  鼓励时间戳 = A_TickCount - 技能施放时间戳补正
+  ts.鼓励 = A_TickCount - cd.技能施放补正

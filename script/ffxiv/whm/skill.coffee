@@ -1,5 +1,5 @@
-技能施放判断间隔 = 100
-技能施放时间戳补正 = 1500
+cd.技能施放判断间隔 = 100
+cd.技能施放补正 = 1500
 
 # ---
 
@@ -50,7 +50,7 @@
   if hasStatusTarget '再生'
     return false
 
-  unless 能力技冷却判断()
+  unless cd.能力技判断()
     return false
   
   $.press 'alt + 0'
@@ -69,7 +69,7 @@
   unless white >= 1
     return false
 
-  unless 能力技冷却判断()
+  unless cd.能力技判断()
     return false
 
   $.press 'ctrl + 2'
@@ -110,7 +110,7 @@
   unless white >= 1
     return false
 
-  unless 能力技冷却判断()
+  unless cd.能力技判断()
     return false
 
   $.press 'ctrl + 0'

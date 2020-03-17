@@ -1,9 +1,9 @@
-重劈时间戳 = 0
-重劈冷却 = 5e3
+ts.重劈 = 0
+cd.重劈 = 5e3
 
 重劈 = ->
 
-  unless A_TickCount - 重劈时间戳 > 重劈冷却
+  unless A_TickCount - ts.重劈 > cd.重劈
     return false
 
   $.press 'alt + 1'
@@ -16,21 +16,21 @@
   unless isUsed '重劈'
     return
 
-  重劈时间戳 = A_TickCount - 2e3
+  ts.重劈 = A_TickCount - 2e3
 
   $.clearInterval 监听重劈
 
 # ---
 
-凶残裂时间戳 = 0
-凶残裂冷却 = 5e3
+ts.凶残裂 = 0
+cd.凶残裂 = 5e3
 
 凶残裂 = ->
 
-  unless A_TickCount - 凶残裂时间戳 > 凶残裂冷却
+  unless A_TickCount - ts.凶残裂 > cd.凶残裂
     return false
 
-  unless A_TickCount - 重劈时间戳 < 15e3
+  unless A_TickCount - ts.重劈 < 15e3
     return false
 
   $.press 'alt + 2'
@@ -43,8 +43,8 @@
   unless isUsed '凶残裂'
     return
 
-  凶残裂时间戳 = A_TickCount - 2e3
-  重劈时间戳 = 0
+  ts.凶残裂 = A_TickCount - 2e3
+  ts.重劈 = 0
   
   $.clearInterval 监听凶残裂
 

@@ -1,13 +1,21 @@
 # reload
 $.on 'f5', ->
   清空信息()
-  reset()
+  resetKey()
+  resetTs()
+  $.beep()
+  setLevel()
+
+# reload without cache
+$.on 'ctrl + f5', ->
+  清空信息()
+  resetKey()
   $.beep()
   $.reload()
 
 # exit
 $.on 'alt + f4', ->
-  reset()
+  resetKey()
   $.beep()
   $.exit()
 

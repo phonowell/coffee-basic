@@ -29,18 +29,19 @@ report = ->
   unless isReporting
     return
 
-  msg = "魔力：#{mp}% / 白：#{white} / 红：#{red}"
+  msg = "等级：#{level} / 魔力：#{mp}%"
+  msg = "#{msg}`n白：#{white} / 红：#{red}"
   msg = "#{msg}`n耗时：#{A_TickCount - tsReport}ms`n"
   
   tsReport = A_TickCount
 
-  msg = makeMsg msg, '神速咏唱', 神速咏唱时间戳, 神速咏唱冷却
-  msg = makeMsg msg, '法令', 法令时间戳, 法令冷却
-  msg = makeMsg msg, '无中生有', 无中生有时间戳, 无中生有冷却
-  msg = makeMsg msg, '神名', 神名时间戳, 神名冷却
-  msg = makeMsg msg, '全大赦', 全大赦时间戳, 全大赦冷却
-  msg = makeMsg msg, '即刻咏唱', 即刻咏唱时间戳, 即刻咏唱冷却
-  msg = makeMsg msg, '醒梦', 醒梦时间戳, 醒梦冷却
+  msg = makeMsg msg, '神速咏唱', ts.神速咏唱, cd.神速咏唱
+  msg = makeMsg msg, '法令', ts.法令, cd.法令
+  msg = makeMsg msg, '无中生有', ts.无中生有, cd.无中生有
+  msg = makeMsg msg, '神名', ts.神名, cd.神名
+  msg = makeMsg msg, '全大赦', ts.全大赦, cd.全大赦
+  msg = makeMsg msg, '即刻咏唱', ts.即刻咏唱, cd.即刻咏唱
+  msg = makeMsg msg, '醒梦', ts.醒梦, cd.醒梦
   
   $.tip msg, 410, 640
   $.clearTimeout clearTip

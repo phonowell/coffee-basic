@@ -122,10 +122,23 @@ isTargeting() {
   return false
 }
 
-reset() {
+resetKey() {
   Send {alt up}
   Send {ctrl up}
   Send {shift up}
+}
+
+resetTs() {
+  for key, value in ts {
+    ts[key] := 0
+  }
+}
+
+setLevel() {
+  InputBox level, , % "input level", , , , , , , , % level
+  if !(level > 0) {
+    level := 80
+  }
 }
 
 ; event
@@ -136,7 +149,7 @@ f2::
 return
 
 f5::
-  reset()
+  resetKey()
   SoundBeep
   Reload
 return
@@ -155,7 +168,7 @@ return
 
 !f4::
   SoundBeep
-  reset()
+  resetKey()
   ExitApp
 return
 

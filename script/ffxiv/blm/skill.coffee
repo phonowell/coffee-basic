@@ -4,15 +4,15 @@
 
 # ---
 
-闪雷时间戳 = 0
-闪雷冷却 = 10e3
+ts.闪雷 = 0
+cd.闪雷 = 10e3
 
 闪雷 = ->
 
   if !isDotEnabled
     return false
 
-  unless A_TickCount - 闪雷时间戳 > 闪雷冷却
+  unless A_TickCount - ts.闪雷 > cd.闪雷
     return false
 
   if hasStatusTarget '闪雷'
@@ -20,7 +20,7 @@
 
   $.press 'alt + 4'
 
-  闪雷时间戳 = A_TickCount - 2e3
+  ts.闪雷 = A_TickCount - 2e3
   return true
 
 # ---
@@ -32,12 +32,12 @@
 
 # ---
 
-震雷时间戳 = 0
-震雷冷却 = 10e3
+ts.震雷 = 0
+cd.震雷 = 10e3
 
 震雷 = ->
 
-  unless A_TickCount - 震雷时间戳 > 震雷冷却
+  unless A_TickCount - ts.震雷 > cd.震雷
     return false
 
   if hasStatusTarget '震雷'
@@ -45,7 +45,7 @@
 
   $.press 'alt + 9'
 
-  震雷时间戳 = A_TickCount - 2e3
+  ts.震雷 = A_TickCount - 2e3
   return true
 
 # ---
@@ -57,12 +57,12 @@
 
 # ---
 
-即刻咏唱时间戳 = 0
-即刻咏唱冷却 = 60e3
+ts.即刻咏唱 = 0
+cd.即刻咏唱 = 60e3
 
 即刻咏唱 = ->
 
-  unless A_TickCount - 即刻咏唱时间戳 > 即刻咏唱冷却
+  unless A_TickCount - ts.即刻咏唱 > cd.即刻咏唱
     return false
 
   $.press 'shift + 5'
@@ -76,7 +76,7 @@
     return
 
   $.clearInterval 监听即刻咏唱
-  即刻咏唱时间戳 = A_TickCount - 2e3
+  ts.即刻咏唱 = A_TickCount - 2e3
 
 # ---
 

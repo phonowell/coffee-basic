@@ -5,7 +5,11 @@
 # include report
 # include skill
 
-# bind
+# ---
+
+level = 80
+ts = {}
+cd = {}
 
 # ---
 

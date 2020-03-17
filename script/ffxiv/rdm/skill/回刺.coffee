@@ -1,9 +1,9 @@
-回刺时间戳 = 0
-回刺冷却 = 10e3
+ts.回刺 = 0
+cd.回刺 = 10e3
 
 回刺 = ->
 
-  unless A_TickCount - 回刺时间戳 > 回刺冷却
+  unless A_TickCount - ts.回刺 > cd.回刺
     return false
 
   unless black >= 80 and white >= 80
@@ -18,11 +18,11 @@
 
   $.press 'alt + 1'
 
-  $.setInterval 监听回刺, 技能施放判断间隔
+  $.setInterval 监听回刺, cd.技能施放判断间隔
   return true
 
 监听回刺 = ->
   unless isUsed '魔回刺'
     return
   $.clearInterval 监听回刺
-  回刺时间戳 = A_TickCount - 技能施放时间戳补正
+  ts.回刺 = A_TickCount - cd.技能施放补正

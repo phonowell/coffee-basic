@@ -26,10 +26,6 @@ global mp := 0
 global hasTarget := false
 global isReporting := true
 global tsReport := 0
-global 重劈时间戳 := 0
-global 重劈冷却 := 5000
-global 凶残裂时间戳 := 0
-global 凶残裂冷却 := 5000
 
 ; function
 
@@ -128,10 +124,23 @@ isTargeting() {
   return false
 }
 
-reset() {
+resetKey() {
   Send {alt up}
   Send {ctrl up}
   Send {shift up}
+}
+
+resetTs() {
+  for key, value in ts {
+    ts[key] := 0
+  }
+}
+
+setLevel() {
+  InputBox level, , % "input level", , , , , , , , % level
+  if !(level > 0) {
+    level := 80
+  }
 }
 
 攻击() {
@@ -197,7 +206,7 @@ report() {
 }
 
 重劈() {
-  if !(A_TickCount - 重劈时间戳 > 重劈冷却) {
+  if !(A_TickCount - ts.重劈 > cd.重劈) {
     return false
   }
   Send {alt down}{1}{alt up}
@@ -209,15 +218,15 @@ report() {
   if !(isUsed("重劈")) {
     return
   }
-  重劈时间戳 := A_TickCount - 2000
+  ts.重劈 := A_TickCount - 2000
   SetTimer 监听重劈, Off
 }
 
 凶残裂() {
-  if !(A_TickCount - 凶残裂时间戳 > 凶残裂冷却) {
+  if !(A_TickCount - ts.凶残裂 > cd.凶残裂) {
     return false
   }
-  if !(A_TickCount - 重劈时间戳 < 15000) {
+  if !(A_TickCount - ts.重劈 < 15000) {
     return false
   }
   Send {alt down}{2}{alt up}
@@ -229,8 +238,8 @@ report() {
   if !(isUsed("凶残裂")) {
     return
   }
-  凶残裂时间戳 := A_TickCount - 2000
-  重劈时间戳 := 0
+  ts.凶残裂 := A_TickCount - 2000
+  ts.重劈 := 0
   SetTimer 监听凶残裂, Off
 }
 
@@ -372,6 +381,10 @@ report() {
 }
 
 __$default__() {
+  ts.重劈 := 0
+  cd.重劈 := 5000
+  ts.凶残裂 := 0
+  cd.凶残裂 := 5000
   SetTimer 清空信息, % 0 - 3000
 }
 
@@ -396,14 +409,14 @@ return
 
 f5::
   清空信息()
-  reset()
+  resetKey()
   SoundBeep
   Reload
 return
 
 !f4::
   SoundBeep
-  reset()
+  resetKey()
   ExitApp
 return
 

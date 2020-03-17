@@ -1,10 +1,10 @@
-能力技时间戳 = 0
-能力技冷却 = 300
+ts.能力技 = 0
+cd.能力技 = 300
 
-能力技冷却判断 = ->
+cd.能力技判断 = ->
 
-  unless A_TickCount - 能力技时间戳 > 能力技冷却
+  unless A_TickCount - ts.能力技 > cd.能力技
     return false
 
-  能力技时间戳 = A_TickCount
+  ts.能力技 = A_TickCount
   return true

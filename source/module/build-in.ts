@@ -4,7 +4,7 @@ import _ = require('lodash')
 import { getDepth, setDepth } from './fn'
 
 import { $abs, $ceil, $floor, $round } from '../built-in/math'
-import { $alert, $info, $tip } from '../built-in/info'
+import { $alert, $info, $prompt, $tip } from '../built-in/info'
 import { $beep, $click, $exit, $move, $reload, $sleep } from '../built-in/simple'
 import { $clearInterval, $clearTimeout, $setInterval, $setTimeout } from '../built-in/timer'
 import { $findColor, $findImage } from '../built-in/find'
@@ -58,7 +58,8 @@ const Rule = {
   'Math.ceil': $ceil,
   'Math.floor': $floor,
   'Math.round': $round,
-  'alert': $alert
+  'alert': $alert,
+  'prompt': $prompt
 
 } as { [key: string]: (option: IOption, data?: IData) => any }
 
