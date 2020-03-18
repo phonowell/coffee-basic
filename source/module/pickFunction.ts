@@ -72,7 +72,16 @@ export default (data: IData) => {
 
     isPending = true
     const [name, argument] = getName(line)
-    Object.assign(block, { name, argument })
+
+    let _name: string
+    if (name.includes('.')) {
+      _name = `__${name.replace(/\./g, '_dot_')}__`
+      result.push(`${name} = Func('${_name}')`)
+    } else {
+      _name = name
+    }
+
+    Object.assign(block, { name: _name, argument })
 
   }
 

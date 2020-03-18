@@ -8,7 +8,7 @@ module.exports = async () => {
 
   const parseAsync = $.require('./source/index')
   await parseAsync(source, {
-    bare: false
+    bare: true
   })
 
 }

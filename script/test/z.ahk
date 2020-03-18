@@ -1,15 +1,27 @@
 ﻿; global variable
 
-global cd := {}
+global d := {}
+
+; function
+
+__d_dot_ask__() {
+  InputBox d.value, , % "input value", , , , , , , , % d.ask
+}
+
+__d_dot_show__() {
+  MsgBox % d.value
+}
+
+__$default__() {
+  d.ask := Func("__d_dot_ask__")
+  d.show := Func("__d_dot_show__")
+}
+
+; default
+__$default__()
 
 ; event
 
-f2::
-  cd.a := 1
-  cd.b := 2
-  cd.c := 3
-  for key, value in cd {
-    cd[key] := 0
-  }
-  MsgBox % "" . cd.a . ", " . cd.b . ", " . cd.c . ""
+!f2::
+  d.show()
 return

@@ -1,11 +1,10 @@
-cd = {}
+d = {}
 
-$.on 'f2', ->
-  cd.a = 1
-  cd.b = 2
-  cd.c = 3
+d.ask = ->
+  d.value = prompt 'input value', d.ask
 
-  for key, value in cd
-    cd[key] = 0
+d.show = ->
+  alert d.value
 
-  alert "#{cd.a}, #{cd.b}, #{cd.c}"
+$.on 'alt + f2', ->
+  d.show()
