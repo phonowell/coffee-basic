@@ -6,7 +6,7 @@ cd.神名 = 60e3
   unless A_TickCount - ts.神名 > cd.神名
     return false
 
-  unless cd.能力技判断()
+  unless 能力技冷却判断()
     return false
 
   $.press 'ctrl + 6'

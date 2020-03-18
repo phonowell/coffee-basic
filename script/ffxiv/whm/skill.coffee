@@ -50,7 +50,7 @@ cd.技能施放补正 = 1500
   if hasStatusTarget '再生'
     return false
 
-  unless cd.能力技判断()
+  unless 能力技冷却判断()
     return false
   
   $.press 'alt + 0'
@@ -69,7 +69,7 @@ cd.技能施放补正 = 1500
   unless white >= 1
     return false
 
-  unless cd.能力技判断()
+  unless 能力技冷却判断()
     return false
 
   $.press 'ctrl + 2'
@@ -110,7 +110,7 @@ cd.技能施放补正 = 1500
   unless white >= 1
     return false
 
-  unless cd.能力技判断()
+  unless 能力技冷却判断()
     return false
 
   $.press 'ctrl + 0'

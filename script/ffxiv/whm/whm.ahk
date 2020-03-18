@@ -349,7 +349,7 @@ report() {
   if (hasStatusTarget("再生")) {
     return false
   }
-  if !(cd.能力技判断()) {
+  if !(能力技冷却判断()) {
     return false
   }
   Send {alt down}{0}{alt up}
@@ -372,7 +372,7 @@ report() {
   if !(white >= 1) {
     return false
   }
-  if !(cd.能力技判断()) {
+  if !(能力技冷却判断()) {
     return false
   }
   Send {ctrl down}{2}{ctrl up}
@@ -423,7 +423,7 @@ report() {
   if !(A_TickCount - ts.神名 > cd.神名) {
     return false
   }
-  if !(cd.能力技判断()) {
+  if !(能力技冷却判断()) {
     return false
   }
   Send {ctrl down}{6}{ctrl up}
@@ -448,7 +448,7 @@ report() {
   if !(A_TickCount - ts.全大赦 > cd.全大赦) {
     return false
   }
-  if !(cd.能力技判断()) {
+  if !(能力技冷却判断()) {
     return false
   }
   Send {ctrl down}{8}{ctrl up}
@@ -477,7 +477,7 @@ report() {
   if !(white >= 1) {
     return false
   }
-  if !(cd.能力技判断()) {
+  if !(能力技冷却判断()) {
     return false
   }
   Send {ctrl down}{0}{ctrl up}
@@ -569,7 +569,7 @@ report() {
   Send {space}
 }
 
-cd.能力技判断() {
+能力技冷却判断() {
   if !(A_TickCount - ts.能力技 > cd.能力技) {
     return false
   }

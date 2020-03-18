@@ -6,7 +6,7 @@ cd.全大赦 = 60e3
   unless A_TickCount - ts.全大赦 > cd.全大赦
     return false
 
-  unless cd.能力技判断()
+  unless 能力技冷却判断()
     return false
 
   $.press 'ctrl + 8'

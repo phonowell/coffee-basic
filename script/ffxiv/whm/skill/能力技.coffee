@@ -1,7 +1,7 @@
 ts.能力技 = 0
 cd.能力技 = 300
 
-cd.能力技判断 = ->
+能力技冷却判断 = ->
 
   unless A_TickCount - ts.能力技 > cd.能力技
     return false
