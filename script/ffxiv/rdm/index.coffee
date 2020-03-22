@@ -154,6 +154,9 @@ cd = {}
 # ---
 
 调整魔元 = ->
+
+  unless level >= 60
+    return false
   
   unless A_TickCount - ts.倍增 > cd.倍增 - 2e3
     return false

@@ -3,6 +3,9 @@ cd.连攻 = 10e3
 
 连攻 = ->
 
+  unless level >= 50
+    return false
+
   unless A_TickCount - ts.连攻 > cd.连攻
     return false
 

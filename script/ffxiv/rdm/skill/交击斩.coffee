@@ -3,6 +3,9 @@ cd.交击斩 = 10e3
 
 交击斩 = ->
 
+  unless level >= 35
+    return false
+
   unless A_TickCount - ts.交击斩 > cd.交击斩
     return false
 

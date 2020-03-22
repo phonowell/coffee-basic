@@ -3,6 +3,9 @@ cd.六分反击 = 35e3
 
 六分反击 = ->
 
+  unless level >= 56
+    return false
+
   unless A_TickCount - ts.六分反击 > cd.六分反击
     return false
 

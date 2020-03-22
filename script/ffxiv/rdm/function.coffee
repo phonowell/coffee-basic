@@ -19,13 +19,16 @@ getDistance = ->
 
   color = $.getColor 1875, 723
 
-  if color == 0x872424
-    return 'far'
+  if color == 0x1A1D1E
+    return 'near'
 
-  if color == 0x8C1E1E
-    return 'far'
+  if color == 0x101312
+    return 'near'
+
+  if color == 0x101211
+    return 'near'
   
-  return 'near'
+  return 'far'
 
 # ---
 

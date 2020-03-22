@@ -3,6 +3,9 @@ cd.交剑 = 35e3
 
 交剑 = ->
 
+  unless level >= 72
+    return false
+
   unless A_TickCount - ts.交剑 > cd.交剑
     return false
 

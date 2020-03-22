@@ -3,6 +3,9 @@ cd.焦热 = 10e3
 
 焦热 = ->
 
+  unless level >= 80
+    return false
+
   unless A_TickCount - ts.焦热 > cd.焦热
     $.beep()
     return false

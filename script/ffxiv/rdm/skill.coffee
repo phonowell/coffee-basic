@@ -41,7 +41,13 @@ ts.赤疾风 = 0
 
 # ---
 
-移转 = -> $.press 'alt + equal'
+移转 = ->
+
+  unless level >= 40
+    return false
+
+  $.press 'alt + equal'
+  return true
 
 # ---
 
@@ -52,6 +58,9 @@ ts.赤疾风 = 0
 # ---
 
 划圆斩 = ->
+
+  unless level >= 52
+    return false
 
   unless black >= 20 and white >= 20
     return false
@@ -66,7 +75,13 @@ ts.赤疾风 = 0
 
 # ---
 
-赤治疗 = -> $.press 'ctrl + 5'
+赤治疗 = ->
+
+  unless level >= 54
+    return false
+
+  $.press 'ctrl + 5'
+  return true
 
 # ---
 
@@ -76,7 +91,13 @@ ts.赤疾风 = 0
 
 # ---
 
-赤复活 = -> $.press 'ctrl + 9'
+赤复活 = ->
+
+  unless level >= 64
+    return false
+
+  $.press 'ctrl + 9'
+  return true
 
 # ---
 
@@ -84,7 +105,16 @@ ts.赤疾风 = 0
 
 # ---
 
-续斩 = -> $.press 'ctrl + minus'
+续斩 = ->
+
+  unless level >= 76
+    return false
+  
+  $.press 'ctrl + minus'
+  return true
+
+# ---
+
 昏乱 = -> $.press 'shift + 1'
 
 # ---
@@ -94,7 +124,16 @@ ts.赤疾风 = 0
 
 # ---
 
-沉稳咏唱 = -> $.press 'shift + 4'
+沉稳咏唱 = ->
+
+  unless level >= 44
+    return false
+
+  $.press 'shift + 4'
+  return true
+
+# ---
+
 冲刺 = -> $.press 'shift + minus'
 清空信息 = -> $.press 'shift + equal'
   

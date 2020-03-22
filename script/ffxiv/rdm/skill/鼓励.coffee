@@ -3,6 +3,9 @@ cd.鼓励 = 120e3
 
 鼓励 = ->
 
+  unless level >= 58
+    return false
+
   unless A_TickCount - ts.鼓励 > cd.鼓励
     return false
 

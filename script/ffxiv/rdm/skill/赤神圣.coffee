@@ -3,6 +3,9 @@ cd.赤神圣 = 10e3
 
 赤神圣 = ->
 
+  unless level >= 70
+    return false
+
   unless A_TickCount - ts.赤神圣 > cd.赤神圣
     return false
 

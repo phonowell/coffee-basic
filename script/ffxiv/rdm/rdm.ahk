@@ -255,13 +255,16 @@ getDistance() {
     return "far"
   }
   PixelGetColor color, 1875, 723, RGB
-  if (color == 0x872424) {
-    return "far"
+  if (color == 0x1A1D1E) {
+    return "near"
   }
-  if (color == 0x8C1E1E) {
-    return "far"
+  if (color == 0x101312) {
+    return "near"
   }
-  return "near"
+  if (color == 0x101211) {
+    return "near"
+  }
+  return "far"
 }
 
 getWhite() {
@@ -400,6 +403,9 @@ report() {
 }
 
 交击斩() {
+  if !(level >= 35) {
+    return false
+  }
   if !(A_TickCount - ts.交击斩 > cd.交击斩) {
     return false
   }
@@ -423,10 +429,17 @@ report() {
 }
 
 移转() {
+  if !(level >= 40) {
+    return false
+  }
   Send {alt down}{=}{alt up}
+  return true
 }
 
 飞刺() {
+  if !(level >= 45) {
+    return false
+  }
   if !(A_TickCount - ts.飞刺 > cd.飞刺) {
     return false
   }
@@ -445,6 +458,9 @@ report() {
 }
 
 连攻() {
+  if !(level >= 50) {
+    return false
+  }
   if !(A_TickCount - ts.连攻 > cd.连攻) {
     return false
   }
@@ -468,6 +484,9 @@ report() {
 }
 
 促进() {
+  if !(level >= 50) {
+    return false
+  }
   if !(A_TickCount - ts.促进 > cd.促进) {
     return false
   }
@@ -500,6 +519,9 @@ report() {
 }
 
 划圆斩() {
+  if !(level >= 52) {
+    return false
+  }
   if !(black >= 20 and white >= 20) {
     return false
   }
@@ -513,10 +535,17 @@ report() {
 }
 
 赤治疗() {
+  if !(level >= 54) {
+    return false
+  }
   Send {ctrl down}{5}{ctrl up}
+  return true
 }
 
 六分反击() {
+  if !(level >= 56) {
+    return false
+  }
   if !(A_TickCount - ts.六分反击 > cd.六分反击) {
     return false
   }
@@ -535,6 +564,9 @@ report() {
 }
 
 鼓励() {
+  if !(level >= 58) {
+    return false
+  }
   if !(A_TickCount - ts.鼓励 > cd.鼓励) {
     return false
   }
@@ -556,6 +588,9 @@ report() {
 }
 
 倍增() {
+  if !(level >= 60) {
+    return false
+  }
   if !(A_TickCount - ts.倍增 > cd.倍增) {
     return false
   }
@@ -586,10 +621,17 @@ report() {
 }
 
 赤复活() {
+  if !(level >= 64) {
+    return false
+  }
   Send {ctrl down}{9}{ctrl up}
+  return true
 }
 
 交剑() {
+  if !(level >= 72) {
+    return false
+  }
   if !(A_TickCount - ts.交剑 > cd.交剑) {
     return false
   }
@@ -612,7 +654,11 @@ report() {
 }
 
 续斩() {
+  if !(level >= 76) {
+    return false
+  }
   Send {ctrl down}{-}{ctrl up}
+  return true
 }
 
 昏乱() {
@@ -620,6 +666,9 @@ report() {
 }
 
 即刻咏唱() {
+  if !(level >= 18) {
+    return false
+  }
   if !(A_TickCount - ts.即刻咏唱 > cd.即刻咏唱) {
     return false
   }
@@ -652,6 +701,9 @@ report() {
 }
 
 醒梦() {
+  if !(level >= 24) {
+    return false
+  }
   if !(A_TickCount - ts.醒梦 > cd.醒梦) {
     return false
   }
@@ -674,7 +726,11 @@ report() {
 }
 
 沉稳咏唱() {
+  if !(level >= 44) {
+    return false
+  }
   Send {shift down}{4}{shift up}
+  return true
 }
 
 冲刺() {
@@ -686,6 +742,9 @@ report() {
 }
 
 赤神圣() {
+  if !(level >= 70) {
+    return false
+  }
   if !(A_TickCount - ts.赤神圣 > cd.赤神圣) {
     return false
   }
@@ -744,6 +803,9 @@ report() {
 }
 
 焦热() {
+  if !(level >= 80) {
+    return false
+  }
   if !(A_TickCount - ts.焦热 > cd.焦热) {
     SoundBeep
     return false
@@ -972,6 +1034,9 @@ report() {
 }
 
 调整魔元() {
+  if !(level >= 60) {
+    return false
+  }
   if !(A_TickCount - ts.倍增 > cd.倍增 - 2000) {
     return false
   }

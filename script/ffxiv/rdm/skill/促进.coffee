@@ -3,6 +3,9 @@ cd.促进 = 55e3
 
 促进 = ->
 
+  unless level >= 50
+    return false
+
   unless A_TickCount - ts.促进 > cd.促进
     return false
 

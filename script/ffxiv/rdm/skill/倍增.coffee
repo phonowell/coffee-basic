@@ -3,6 +3,9 @@ cd.倍增 = 110e3
 
 倍增 = ->
 
+  unless level >= 60
+    return false
+
   unless A_TickCount - ts.倍增 > cd.倍增
     return false
 

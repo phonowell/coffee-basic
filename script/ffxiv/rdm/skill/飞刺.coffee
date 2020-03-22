@@ -3,6 +3,9 @@ cd.飞刺 = 25e3
 
 飞刺 = ->
 
+  unless level >= 45
+    return false
+
   unless A_TickCount - ts.飞刺 > cd.飞刺
     return false
   
