@@ -3,6 +3,9 @@ cd.法令 = 45e3
 
 法令 = ->
 
+  unless level >= 56
+    return false
+
   unless A_TickCount - ts.法令 > cd.法令
     return false
 

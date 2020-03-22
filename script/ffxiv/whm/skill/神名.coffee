@@ -3,6 +3,9 @@ cd.神名 = 60e3
 
 神名 = ->
 
+  unless level >= 60
+    return false
+
   unless A_TickCount - ts.神名 > cd.神名
     return false
 

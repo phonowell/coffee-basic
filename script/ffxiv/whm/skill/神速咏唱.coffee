@@ -3,6 +3,9 @@ cd.神速咏唱 = 150e3
 
 神速咏唱 = ->
 
+  unless level >= 30
+    return false
+
   unless A_TickCount - ts.神速咏唱 > cd.神速咏唱
     return false
 

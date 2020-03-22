@@ -3,6 +3,9 @@ cd.全大赦 = 60e3
 
 全大赦 = ->
 
+  unless level >= 70
+    return false
+
   unless A_TickCount - ts.全大赦 > cd.全大赦
     return false
 

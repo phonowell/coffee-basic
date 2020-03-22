@@ -289,14 +289,20 @@ report() {
 
 疾风() {
   if !(isMoving()) {
-    if (hasStatusTarget("天辉")) {
-      return false
+    if (level >= 72) {
+      if (hasStatusTarget("天辉")) {
+        return false
+      }
     }
-    if (hasStatusTarget("烈风")) {
-      return false
+    else if (level >= 46) {
+      if (hasStatusTarget("烈风")) {
+        return false
+      }
     }
-    if (hasStatusTarget("疾风")) {
-      return false
+    else {
+      if (hasStatusTarget("疾风")) {
+        return false
+      }
     }
   }
   Send {alt down}{3}{alt up}
@@ -320,6 +326,9 @@ report() {
 }
 
 医济() {
+  if !(level >= 50) {
+    return false
+  }
   if (hasStatus("医济")) {
     return false
   }
@@ -328,6 +337,9 @@ report() {
 }
 
 神速咏唱() {
+  if !(level >= 30) {
+    return false
+  }
   if !(A_TickCount - ts.神速咏唱 > cd.神速咏唱) {
     return false
   }
@@ -346,6 +358,9 @@ report() {
 }
 
 再生() {
+  if !(level >= 35) {
+    return false
+  }
   if (hasStatusTarget("再生")) {
     return false
   }
@@ -357,18 +372,33 @@ report() {
 }
 
 愈疗() {
+  if !(level >= 40) {
+    return false
+  }
   Send {alt down}{-}{alt up}
+  return true
 }
 
 神圣() {
+  if !(level >= 45) {
+    return false
+  }
   Send {alt down}{=}{alt up}
+  return true
 }
 
 天赐祝福() {
+  if !(level >= 50) {
+    return false
+  }
   Send {ctrl down}{1}{ctrl up}
+  return true
 }
 
 安慰之心() {
+  if !(level >= 52) {
+    return false
+  }
   if !(white >= 1) {
     return false
   }
@@ -380,10 +410,17 @@ report() {
 }
 
 庇护所() {
+  if !(level >= 52) {
+    return false
+  }
   Send {ctrl down}{3}{ctrl up}
+  return true
 }
 
 法令() {
+  if !(level >= 56) {
+    return false
+  }
   if !(A_TickCount - ts.法令 > cd.法令) {
     return false
   }
@@ -402,6 +439,9 @@ report() {
 }
 
 无中生有() {
+  if !(level >= 58) {
+    return false
+  }
   if !(A_TickCount - ts.无中生有 > cd.无中生有) {
     return false
   }
@@ -420,6 +460,9 @@ report() {
 }
 
 神名() {
+  if !(level >= 60) {
+    return false
+  }
   if !(A_TickCount - ts.神名 > cd.神名) {
     return false
   }
@@ -441,10 +484,17 @@ report() {
 }
 
 神祝祷() {
+  if !(level >= 66) {
+    return false
+  }
   Send {ctrl down}{7}{ctrl up}
+  return true
 }
 
 全大赦() {
+  if !(level >= 70) {
+    return false
+  }
   if !(A_TickCount - ts.全大赦 > cd.全大赦) {
     return false
   }
@@ -466,6 +516,9 @@ report() {
 }
 
 苦难之心() {
+  if !(level >= 74) {
+    return false
+  }
   if !(red >= 3) {
     return false
   }
@@ -474,6 +527,9 @@ report() {
 }
 
 狂喜之心() {
+  if !(level >= 76) {
+    return false
+  }
   if !(white >= 1) {
     return false
   }
@@ -485,7 +541,11 @@ report() {
 }
 
 节制() {
+  if !(level >= 80) {
+    return false
+  }
   Send {ctrl down}{-}{ctrl up}
+  return true
 }
 
 沉静() {
@@ -497,6 +557,9 @@ report() {
 }
 
 即刻咏唱() {
+  if !(level >= 18) {
+    return false
+  }
   if !(A_TickCount - ts.即刻咏唱 > cd.即刻咏唱) {
     return false
   }
@@ -515,6 +578,9 @@ report() {
 }
 
 醒梦() {
+  if !(level >= 24) {
+    return false
+  }
   if !(A_TickCount - ts.醒梦 > cd.醒梦) {
     return false
   }
@@ -537,11 +603,19 @@ report() {
 }
 
 沉稳咏唱() {
+  if !(level >= 44) {
+    return false
+  }
   Send {shift down}{5}{shift up}
+  return true
 }
 
 营救() {
+  if !(level >= 48) {
+    return false
+  }
   Send {shift down}{6}{shift up}
+  return true
 }
 
 冲刺() {

@@ -3,6 +3,9 @@ cd.即刻咏唱 = 60e3
 
 即刻咏唱 = ->
 
+  unless level >= 18
+    return false
+
   unless A_TickCount - ts.即刻咏唱 > cd.即刻咏唱
     return false
 

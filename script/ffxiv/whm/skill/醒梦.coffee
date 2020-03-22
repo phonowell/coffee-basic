@@ -3,6 +3,9 @@ cd.醒梦 = 60e3
 
 醒梦 = ->
 
+  unless level >= 24
+    return false
+
   unless A_TickCount - ts.醒梦 > cd.醒梦
     return false
 

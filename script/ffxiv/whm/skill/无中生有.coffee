@@ -3,6 +3,9 @@ cd.无中生有 = 120e3
 
 无中生有 = ->
 
+  unless level >= 58
+    return false
+
   unless A_TickCount - ts.无中生有 > cd.无中生有
     return false
 

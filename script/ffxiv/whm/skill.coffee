@@ -11,13 +11,16 @@ cd.技能施放补正 = 1500
 疾风 = ->
 
   unless isMoving()
-  
-    if hasStatusTarget '天辉'
-      return false
-    if hasStatusTarget '烈风'
-      return false
-    if hasStatusTarget '疾风'
-      return false
+
+    if level >= 72
+      if hasStatusTarget '天辉'
+        return false
+    else if level >= 46
+      if hasStatusTarget '烈风'
+        return false
+    else
+      if hasStatusTarget '疾风'
+        return false
   
   $.press 'alt + 3'
   return true
@@ -32,6 +35,9 @@ cd.技能施放补正 = 1500
 # ---
 
 医济 = ->
+
+  unless level >= 50
+    return false
   
   if hasStatus '医济'
     return false
@@ -46,6 +52,9 @@ cd.技能施放补正 = 1500
 # ---
 
 再生 = ->
+
+  unless level >= 35
+    return false
   
   if hasStatusTarget '再生'
     return false
@@ -58,13 +67,40 @@ cd.技能施放补正 = 1500
 
 # ---
 
-愈疗 = -> $.press 'alt + minus'
-神圣 = -> $.press 'alt + equal'
-天赐祝福 = -> $.press 'ctrl + 1'
+愈疗 = ->
+
+  unless level >= 40
+    return false
+
+  $.press 'alt + minus'
+  return true
+
+# ---
+
+神圣 = ->
+
+  unless level >= 45
+    return false
+  
+  $.press 'alt + equal'
+  return true
+
+# ---
+
+天赐祝福 = ->
+
+  unless level >= 50
+    return false
+
+  $.press 'ctrl + 1'
+  return true
 
 # ---
 
 安慰之心 = ->
+
+  unless level >= 52
+    return false
 
   unless white >= 1
     return false
@@ -77,7 +113,13 @@ cd.技能施放补正 = 1500
 
 # ---
 
-庇护所 = -> $.press 'ctrl + 3'
+庇护所 = ->
+
+  unless level >= 52
+    return false
+
+  $.press 'ctrl + 3'
+  return true
 
 # ---
 
@@ -87,7 +129,13 @@ cd.技能施放补正 = 1500
 
 # ---
 
-神祝祷 = -> $.press 'ctrl + 7'
+神祝祷 = ->
+
+  unless level >= 66
+    return false
+
+  $.press 'ctrl + 7'
+  return true
 
 # ---
 
@@ -96,6 +144,9 @@ cd.技能施放补正 = 1500
 # ---
 
 苦难之心 = ->
+
+  unless level >= 74
+    return false
 
   unless red >= 3
     return false
@@ -106,6 +157,9 @@ cd.技能施放补正 = 1500
 # ---
 
 狂喜之心 = ->
+
+  unless level >= 76
+    return false
 
   unless white >= 1
     return false
@@ -118,7 +172,16 @@ cd.技能施放补正 = 1500
 
 # ---
 
-节制 = -> $.press 'ctrl + minus'
+节制 = ->
+
+  unless level >= 80
+    return false
+
+  $.press 'ctrl + minus'
+  return true
+
+# ---
+
 沉静 = -> $.press 'shift + 1'
 康复 = -> $.press 'shift + 2'
 
@@ -129,8 +192,26 @@ cd.技能施放补正 = 1500
 
 # ---
 
-沉稳咏唱 = -> $.press 'shift + 5'
-营救 = -> $.press 'shift + 6'
+沉稳咏唱 = ->
+
+  unless level >= 44
+    return false
+  
+  $.press 'shift + 5'
+  return true
+
+# ---
+
+营救 = ->
+
+  unless level >= 48
+    return false
+
+  $.press 'shift + 6'
+  return true
+
+# ---
+
 冲刺 = -> $.press 'shift + minus'
 清空信息 = -> $.press 'shift + equal'
 
