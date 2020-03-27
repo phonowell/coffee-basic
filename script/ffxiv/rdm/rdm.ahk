@@ -24,17 +24,21 @@ SetMouseDelay 0, 50
 
 global $cd := {}
 global $ts := {}
-global mp := 0
+global $mp := 0
+global $isChanting := false
+global $isMoving := false
 global hasTarget := false
 global $level := 80
 global $skill := {}
 global $watcher := {}
 global $black := 0
-global distance := "far"
+global $distance := "far"
 global $white := 0
-global isReporting := false
-global tsReport := 0
-global 能力技余额 := 0
+global $isReporting := true
+global $ap := 0
+global $isIM := false
+global $isBR := false
+global $isWR := false
 
 ; function
 
@@ -62,7 +66,12 @@ clearWatcher(name, type := "used") {
       return
     }
   }
-  SetTimer %$watcher[name]%, Off
+  if !($watcher[name]) {
+    MsgBox % "invalid watcher: " . name . ""
+    return
+  }
+  __timer__ := $watcher[name]
+  SetTimer %__timer__%, Off
   $ts[name] := A_TickCount - $cd.技能施放补正
 }
 
@@ -80,7 +89,7 @@ getGroup() {
   if (isRT) {
     return "right"
   }
-  return false
+  return
 }
 
 getMp() {
@@ -118,6 +127,9 @@ isUsed(name) {
 }
 
 isChanting() {
+  if ($isMoving) {
+    return false
+  }
   PixelGetColor color, 1130, 865, RGB
   return color == 0x2B1B13
 }
@@ -159,7 +171,7 @@ isTargeting() {
 
 makeReportMsg(msg, name) {
   result := calcCD(name)
-  if !(result) {
+  if !(result > 1) {
     return msg
   }
   return "" . msg . "`n" . name . "：" . result . "s"
@@ -187,11 +199,19 @@ setLevel() {
   }
 }
 
-use(name, option) {
-  return $skill[name](option)
+use(name, option := false) {
+  if !($skill[name]) {
+    MsgBox % "invalid skill: " . name . ""
+    return
+  }
+  return $skill[name].Call(option)
 }
 
 watch(name) {
+  if !($watcher[name]) {
+    MsgBox % "invalid watcher: " . name . ""
+    return
+  }
   return $watcher[name]()
 }
 
@@ -201,7 +221,7 @@ attack() {
     return
   }
   use("获取状态")
-  report()
+  use("报告")
   if !(use("索敌")) {
     return
   }
@@ -216,12 +236,12 @@ attack() {
 }
 
 bindAttack() {
-  if !($.isPressing("2-joy-4")) {
+  GetKeyState __value__, 2joy4
+  isPressing := __value__ == "D"
+  if !(isPressing) {
     SetTimer bindAttack, Off
-    SetTimer %清空信息%, % 0 - 10000
     return
   }
-  SetTimer %清空信息%, Off
   attack()
 }
 
@@ -231,7 +251,7 @@ attackX() {
     return
   }
   use("获取状态")
-  report()
+  use("报告")
   if !(use("索敌")) {
     return
   }
@@ -254,12 +274,12 @@ attackX() {
 }
 
 bindAttackX() {
-  if !($.isPressing("2-joy-2")) {
-    SetTimer %bindAttackSpecial%, Off
-    SetTimer %清空信息%, % 0 - 10000
+  GetKeyState __value__, 2joy2
+  isPressing := __value__ == "D"
+  if !(isPressing) {
+    SetTimer bindAttackX, Off
     return
   }
-  SetTimer %清空信息%, Off
   attackX()
 }
 
@@ -269,7 +289,7 @@ heal() {
     return
   }
   use("获取状态")
-  report()
+  use("报告")
   if (group == "right") {
     healS()
     return
@@ -281,12 +301,12 @@ heal() {
 }
 
 bindHeal() {
-  if !($.isPressing("2-joy-3")) {
+  GetKeyState __value__, 2joy3
+  isPressing := __value__ == "D"
+  if !(isPressing) {
     SetTimer bindHeal, Off
-    SetTimer %清空信息%, % 0 - 10000
     return
   }
-  SetTimer %清空信息%, Off
   heal()
 }
 
@@ -327,49 +347,30 @@ getWhite() {
   return percent
 }
 
-report() {
-  if !(isReporting) {
-    return
-  }
-  msg := "等级：" . $level . " / 魔力：" . mp . "%"
-  msg := "" . msg . "`n黑：" . $black . " / 白：" . $white . ""
-  msg := "" . msg . "`n目标距离：" . distance . ""
-  msg := "" . msg . "`n耗时：" . A_TickCount - tsReport . "ms`n"
-  tsReport := A_TickCount
-  msg := makeReportMsg(msg, "短兵相接")
-  msg := makeReportMsg(msg, "飞刺")
-  msg := makeReportMsg(msg, "促进")
-  msg := makeReportMsg(msg, "六分反击")
-  msg := makeReportMsg(msg, "鼓励")
-  msg := makeReportMsg(msg, "倍增")
-  msg := makeReportMsg(msg, "交剑")
-  msg := makeReportMsg(msg, "即刻咏唱")
-  msg := makeReportMsg(msg, "醒梦")
-  ToolTip % msg, 410, 640
-  SetTimer clearTip, Off
-  SetTimer clearTip, % 0 - 5000
-}
-
 __$skill_dot_回刺__() {
   if !(A_TickCount - $ts.回刺 > $cd.回刺) {
-    return false
+    return
   }
-  if !(black >= 80 and white >= 80) {
-    return false
+  if !($black >= 80 and $white >= 80) {
+    return
   }
-  中断咏唱()
-  distance := getDistance()
-  if !(distance == "near") {
-    短兵相接(true)
-    return false
+  use("中断咏唱")
+  $distance := getDistance()
+  if !($distance == "near") {
+    use("短兵相接", true)
+    return
   }
   Send {alt down}{1}{alt up}
-  SetTimer %$watcher.回刺%, % $cd.技能施放判断间隔
+  SetTimer __$watcher_dot_回刺__, % $cd.技能施放判断间隔
   return true
 }
 
 __$watcher_dot_回刺__() {
-  clearWatcher("魔回刺")
+  if !(isUsed("魔回刺")) {
+    return
+  }
+  SetTimer __$watcher_dot_回刺__, Off
+  $ts.回刺 := A_TickCount - $cd.技能施放补正
 }
 
 __$skill_dot_摇荡__() {
@@ -383,15 +384,15 @@ __$skill_dot_赤闪雷__() {
 
 __$skill_dot_短兵相接__(isForced := false) {
   if !(A_TickCount - $ts.短兵相接 > $cd.短兵相接) {
-    return false
+    return
   }
-  distance := getDistance()
-  if !(distance == "near" or isForced) {
-    return false
+  $distance := getDistance()
+  if !($distance == "near" or isForced) {
+    return
   }
   Send {alt down}{4}{alt up}
   $ts.短兵相接 := A_TickCount - $cd.短兵相接 + $cd.技能施放补正
-  SetTimer %$watcher.短兵相接%, % $cd.技能施放判断间隔
+  SetTimer __$watcher_dot_短兵相接__, % $cd.技能施放判断间隔
   return true
 }
 
@@ -426,19 +427,19 @@ __$skill_dot_赤飞石__() {
 
 __$skill_dot_交击斩__() {
   if !($level >= 35) {
-    return false
+    return
   }
   if !(A_TickCount - $ts.交击斩 > $cd.交击斩) {
-    return false
+    return
   }
   if !(A_TickCount - $ts.回刺 < $cd.comboZ) {
-    return false
+    return
   }
   if !($black >= 50 and $white >= 50) {
-    return false
+    return
   }
   Send {alt down}{-}{alt up}
-  SetTimer %$watcher.交击斩%, % $cd.技能施放判断间隔
+  SetTimer __$watcher_dot_交击斩__, % $cd.技能施放判断间隔
   return true
 }
 
@@ -446,13 +447,13 @@ __$watcher_dot_交击斩__() {
   if !(isUsed("魔交击斩")) {
     return
   }
-  SetTimer %$watcher.交击斩%, Off
+  SetTimer __$watcher_dot_交击斩__, Off
   $ts.交击斩 := A_TickCount - $cd.技能施放补正
 }
 
 __$skill_dot_移转__() {
   if !($level >= 40) {
-    return false
+    return
   }
   Send {alt down}{=}{alt up}
   return true
@@ -460,14 +461,14 @@ __$skill_dot_移转__() {
 
 __$skill_dot_飞刺__() {
   if !($level >= 45) {
-    return false
+    return
   }
   if !(A_TickCount - $ts.飞刺 > $cd.飞刺) {
-    return false
+    return
   }
   Send {ctrl down}{1}{ctrl up}
   $ts.飞刺 := A_TickCount - $cd.飞刺 + $cd.技能施放补正
-  SetTimer %$watcher.飞刺%, % $cd.技能施放判断间隔
+  SetTimer __$watcher_dot_飞刺__, % $cd.技能施放判断间隔
   return true
 }
 
@@ -477,19 +478,19 @@ __$watcher_dot_飞刺__() {
 
 __$skill_dot_连攻__() {
   if !($level >= 50) {
-    return false
+    return
   }
   if !(A_TickCount - $ts.连攻 > $cd.连攻) {
-    return false
+    return
   }
   if !(A_TickCount - $ts.交击斩 < $cd.comboZ) {
-    return false
+    return
   }
   if !($black >= 25 and $white >= 25) {
-    return false
+    return
   }
   Send {ctrl down}{2}{ctrl up}
-  SetTimer %$watcher.连攻%, % $cd.技能施放判断间隔
+  SetTimer __$watcher_dot_连攻__, % $cd.技能施放判断间隔
   return true
 }
 
@@ -497,32 +498,32 @@ __$watcher_dot_连攻__() {
   if !(isUsed("魔连攻")) {
     return
   }
-  SetTimer %$watcher.连攻%, Off
+  SetTimer __$watcher_dot_连攻__, Off
   $ts.连攻 := A_TickCount - $cd.技能施放补正
 }
 
 __$skill_dot_促进__() {
   if !($level >= 50) {
-    return false
+    return
   }
   if !(A_TickCount - $ts.促进 > $cd.促进) {
-    return false
+    return
   }
   if !(A_TickCount - $ts.赤疾风 < 2000) {
-    return false
+    return
   }
   if !(A_TickCount - $ts.回刺 > $cd.comboZ) {
-    return false
+    return
   }
   if ($black > 70 or $white > 70) {
-    return false
+    return
   }
   if ($isBR or $isWR) {
-    return false
+    return
   }
   Send {ctrl down}{3}{ctrl up}
   $ts.促进 := A_TickCount - $cd.促进 + $cd.技能施放补正
-  SetTimer %$watcher.促进%, % $cd.技能施放判断间隔
+  SetTimer __$watcher_dot_促进__, % $cd.技能施放判断间隔
   return true
 }
 
@@ -532,15 +533,15 @@ __$watcher_dot_促进__() {
 
 __$skill_dot_划圆斩__() {
   if !($level >= 52) {
-    return false
+    return
   }
   if !($black >= 20 and $white >= 20) {
-    return false
+    return
   }
-  distance := getDistance()
-  if !(distance == "near") {
+  $distance := getDistance()
+  if !($distance == "near") {
     use("短兵相接", true)
-    return false
+    return
   }
   Send {ctrl down}{4}{ctrl up}
   return true
@@ -548,7 +549,7 @@ __$skill_dot_划圆斩__() {
 
 __$skill_dot_赤治疗__() {
   if !($level >= 54) {
-    return false
+    return
   }
   Send {ctrl down}{5}{ctrl up}
   return true
@@ -556,14 +557,14 @@ __$skill_dot_赤治疗__() {
 
 __$skill_dot_六分反击__() {
   if !($level >= 56) {
-    return false
+    return
   }
   if !(A_TickCount - $ts.六分反击 > $cd.六分反击) {
-    return false
+    return
   }
   Send {ctrl down}{6}{ctrl up}
   $ts.六分反击 := A_TickCount - $cd.六分反击 + $cd.技能施放补正
-  SetTimer %$watcher.六分反击%, % $cd.技能施放判断间隔
+  SetTimer __$watcher_dot_六分反击__, % $cd.技能施放判断间隔
   return true
 }
 
@@ -573,17 +574,17 @@ __$watcher_dot_六分反击__() {
 
 __$skill_dot_鼓励__() {
   if !($level >= 58) {
-    return false
+    return
   }
   if !(A_TickCount - $ts.鼓励 > $cd.鼓励) {
-    return false
+    return
   }
   if !(A_TickCount - $ts.回刺 < $cd.回刺) {
-    return false
+    return
   }
   Send {ctrl down}{7}{ctrl up}
   $ts.鼓励 := A_TickCount - $cd.鼓励 + $cd.技能施放补正
-  SetTimer %$watcher.鼓励%, % $cd.技能施放判断间隔
+  SetTimer __$watcher_dot_鼓励__, % $cd.技能施放判断间隔
   return true
 }
 
@@ -593,23 +594,23 @@ __$watcher_dot_鼓励__() {
 
 __$skill_dot_倍增__() {
   if !($level >= 60) {
-    return false
+    return
   }
   if !(A_TickCount - $ts.倍增 > $cd.倍增) {
-    return false
+    return
   }
   if (A_TickCount - $ts.回刺 < $cd.comboZ) {
-    return false
+    return
   }
   if !($black >= 40 and $black <= 70) {
-    return false
+    return
   }
   if !($white >= 40 and $white <= 70) {
-    return false
+    return
   }
   Send {ctrl down}{8}{ctrl up}
   $ts.倍增 := A_TickCount - $cd.倍增 + $cd.技能施放补正
-  SetTimer %$watcher.倍增%, % $cd.技能施放判断间隔
+  SetTimer __$watcher_dot_倍增__, % $cd.技能施放判断间隔
   return true
 }
 
@@ -622,7 +623,7 @@ __$watcher_dot_倍增__() {
 
 __$skill_dot_赤复活__() {
   if !($level >= 64) {
-    return false
+    return
   }
   Send {ctrl down}{9}{ctrl up}
   return true
@@ -630,18 +631,18 @@ __$skill_dot_赤复活__() {
 
 __$skill_dot_交剑__() {
   if !($level >= 72) {
-    return false
+    return
   }
   if !(A_TickCount - $ts.交剑 > $cd.交剑) {
-    return false
+    return
   }
-  distance := getDistance()
-  if !(distance == "near") {
-    return false
+  $distance := getDistance()
+  if !($distance == "near") {
+    return
   }
   Send {ctrl down}{0}{ctrl up}
   $ts.交剑 := A_TickCount - $cd.交剑 + $cd.技能施放补正
-  SetTimer %$watcher.交剑%, % $cd.技能施放判断间隔
+  SetTimer __$watcher_dot_交剑__, % $cd.技能施放判断间隔
   return true
 }
 
@@ -651,7 +652,7 @@ __$watcher_dot_交剑__() {
 
 __$skill_dot_续斩__() {
   if !($level >= 76) {
-    return false
+    return
   }
   Send {ctrl down}{-}{ctrl up}
   return true
@@ -663,26 +664,26 @@ __$skill_dot_昏乱__() {
 
 __$skill_dot_即刻咏唱__() {
   if !($level >= 18) {
-    return false
+    return
   }
   if !(A_TickCount - $ts.即刻咏唱 > $cd.即刻咏唱) {
-    return false
+    return
   }
   if !(A_TickCount - $ts.回刺 > $cd.回刺) {
-    return false
+    return
   }
   if ($black > 70 or $white > 70) {
-    return false
+    return
   }
   if (hasStatus("连续咏唱")) {
-    return false
+    return
   }
   if ($isBR and $isWR) {
     return
   }
   Send {shift down}{2}{shift up}
   $ts.即刻咏唱 := A_TickCount - $cd.即刻咏唱 + $cd.技能施放补正
-  SetTimer %$watcher.即刻咏唱%, % $cd.技能施放判断间隔
+  SetTimer __$watcher_dot_即刻咏唱__, % $cd.技能施放判断间隔
   return true
 }
 
@@ -692,18 +693,18 @@ __$watcher_dot_即刻咏唱__() {
 
 __$skill_dot_醒梦__() {
   if !($level >= 24) {
-    return false
+    return
   }
   if !(A_TickCount - $ts.醒梦 > $cd.醒梦) {
-    return false
+    return
   }
-  mp := getMp()
-  if (mp > 50) {
-    return false
+  $mp := getMp()
+  if ($mp > 50) {
+    return
   }
   Send {shift down}{3}{shift up}
   $ts.醒梦 := A_TickCount - $cd.醒梦 + $cd.技能施放补正
-  SetTimer %$watcher.醒梦%, % $cd.技能施放判断间隔
+  SetTimer __$watcher_dot_醒梦__, % $cd.技能施放判断间隔
   return true
 }
 
@@ -713,7 +714,7 @@ __$watcher_dot_醒梦__() {
 
 __$skill_dot_沉稳咏唱__() {
   if !($level >= 44) {
-    return false
+    return
   }
   Send {shift down}{4}{shift up}
   return true
@@ -729,16 +730,16 @@ __$skill_dot_清空信息__() {
 
 __$skill_dot_赤神圣__() {
   if !($level >= 70) {
-    return false
+    return
   }
   if !(A_TickCount - $ts.赤神圣 > $cd.赤神圣) {
-    return false
+    return
   }
   if !(A_TickCount - $ts.连攻 < 15000) {
-    return false
+    return
   }
   赤神圣施放()
-  SetTimer %$watcher.赤神圣%, % $cd.技能施放判断间隔
+  SetTimer __$watcher_dot_赤神圣__, % $cd.技能施放判断间隔
   return true
 }
 
@@ -748,7 +749,7 @@ __$watcher_dot_赤神圣__() {
   if !(isA or isB) {
     return
   }
-  SetTimer %$watcher.赤神圣%, Off
+  SetTimer __$watcher_dot_赤神圣__, Off
   $ts.赤神圣 := A_TickCount - $cd.技能施放补正
 }
 
@@ -788,17 +789,17 @@ __$watcher_dot_赤神圣__() {
 
 __$skill_dot_焦热__() {
   if !($level >= 80) {
-    return false
+    return
   }
   if !(A_TickCount - $ts.焦热 > $cd.焦热) {
     SoundBeep
-    return false
+    return
   }
   if !(A_TickCount - $ts.赤神圣 < 15000) {
-    return false
+    return
   }
-  摇荡()
-  SetTimer %$watcher.焦热%, % $cd.技能施放判断间隔
+  use("摇荡")
+  SetTimer __$watcher_dot_焦热__, % $cd.技能施放判断间隔
   return true
 }
 
@@ -806,7 +807,14 @@ __$watcher_dot_焦热__() {
   clearWatcher("焦热")
 }
 
-索敌() {
+__$skill_dot_中断咏唱__() {
+  if !($isChanting) {
+    return
+  }
+  Send {space}
+}
+
+__$skill_dot_索敌__() {
   hasTarget := isTargeting()
   if (hasTarget) {
     return true
@@ -816,32 +824,52 @@ __$watcher_dot_焦热__() {
   return hasTarget
 }
 
-中断咏唱() {
-  if !(isChanting()) {
+__$skill_dot_报告__() {
+  if !($isReporting) {
     return
   }
-  Send {space}
+  msg := "等级：" . $level . " / 魔力：" . $mp . "%"
+  msg := "" . msg . "`n黑：" . $black . " / 白：" . $white . ""
+  msg := "" . msg . "`n赤火炎：" . $isBR . " / 赤飞石：" . $isWR . " / 连续咏唱：" . $isIM . ""
+  msg := "" . msg . "`n咏唱：" . $isChanting . " / 移动：" . $isMoving . " / 目标距离：" . $distance . ""
+  msg := "" . msg . "`n耗时：" . A_TickCount - $ts.报告 . "ms`n"
+  $ts.报告 := A_TickCount
+  msg := makeReportMsg(msg, "短兵相接")
+  msg := makeReportMsg(msg, "飞刺")
+  msg := makeReportMsg(msg, "促进")
+  msg := makeReportMsg(msg, "六分反击")
+  msg := makeReportMsg(msg, "鼓励")
+  msg := makeReportMsg(msg, "倍增")
+  msg := makeReportMsg(msg, "交剑")
+  msg := makeReportMsg(msg, "即刻咏唱")
+  msg := makeReportMsg(msg, "醒梦")
+  ToolTip % msg, 410, 640
+  SetTimer clearTip, Off
+  SetTimer clearTip, % 0 - 10000
 }
 
-__$skill_dot_能力技__(n := 2) {
+__$skill_dot_能力技__() {
+  if !($ap == 0) {
+    return
+  }
   if !(A_TickCount - $ts.能力技 > $cd.能力技) {
     return
   }
   $ts.能力技 := A_TickCount
-  能力技余额 := -n
+  $ap := -2
   SetTimer 施放能力技, % 500
 }
 
 施放能力技() {
-  if (能力技余额 < 0) {
-    能力技余额 := -能力技余额
+  if ($ap < 0) {
+    $ap := -$ap
     return
   }
-  if !(能力技余额 > 0) {
+  if ($ap == 0) {
     SetTimer 施放能力技, Off
     return
   }
-  能力技余额--
+  $ap--
   能力技施放()
 }
 
@@ -875,6 +903,22 @@ __$skill_dot_能力技__(n := 2) {
   }
 }
 
+__$skill_dot_获取状态__() {
+  if (A_TickCount - $ts.获取状态 > 10000) {
+    use("清空信息")
+  }
+  $ts.获取状态 := A_TickCount
+  $isMoving := isMoving()
+  $isChanting := isChanting()
+  $black := getBlack()
+  $white := getWhite()
+  isA := hasStatus("连续咏唱")
+  isB := hasStatus("即刻咏唱")
+  $isIM := isA or isB
+  $isBR := hasStatus("赤火炎预备")
+  $isWR := hasStatus("赤飞石预备")
+}
+
 __$skill_dot_调整魔元__() {
   if !($level >= 60) {
     return
@@ -885,8 +929,8 @@ __$skill_dot_调整魔元__() {
   if !($black >= 60 and $white >= 60) {
     return
   }
-  distance := getDistance()
-  if !(distance == "near") {
+  $distance := getDistance()
+  if !($distance == "near") {
     return
   }
   use("划圆斩")
@@ -894,14 +938,7 @@ __$skill_dot_调整魔元__() {
 }
 
 __$skill_dot_魔三连__() {
-  isValid := true
-  if (hasStatus("连续咏唱")) {
-    isValid := false
-  }
-  if (hasStatus("即刻咏唱")) {
-    isValid := false
-  }
-  if !(isValid) {
+  if ($isIM) {
     return
   }
   if (use("回刺")) {
@@ -933,14 +970,14 @@ __$skill_dot_魔划圆斩__() {
 }
 
 attackS() {
-  if (isChanting()) {
+  if ($isChanting) {
     return
   }
   if (attackSL()) {
     use("能力技")
     return
   }
-  if (isMoving()) {
+  if ($isMoving) {
     use("续斩")
     use("能力技")
     return
@@ -949,7 +986,7 @@ attackS() {
 }
 
 attackM() {
-  if (isChanting()) {
+  if ($isChanting) {
     return
   }
   if ($isIM) {
@@ -957,7 +994,7 @@ attackM() {
     use("能力技")
     return
   }
-  if (isMoving()) {
+  if ($isMoving) {
     use("续斩")
     use("能力技")
     return
@@ -1022,7 +1059,7 @@ attackSS2() {
 
 attackSL() {
   if !($isIM) {
-    return false
+    return
   }
   if ($black - $white > 19) {
     use("赤疾风")
@@ -1050,7 +1087,7 @@ attackSL() {
 }
 
 healS() {
-  if (isChanting()) {
+  if ($isChanting) {
     return
   }
   if ($isIM) {
@@ -1063,7 +1100,7 @@ healS() {
     use("能力技")
     return
   }
-  if (isMoving()) {
+  if ($isMoving) {
     use("续斩")
     use("能力技")
     return
@@ -1072,7 +1109,7 @@ healS() {
 }
 
 revive() {
-  if (isChanting()) {
+  if ($isChanting) {
     return
   }
   if !($isIM) {
@@ -1084,7 +1121,7 @@ revive() {
   if (attackSS()) {
     return
   }
-  if (isMoving()) {
+  if ($isMoving) {
     use("续斩")
     use("能力技")
     return
@@ -1171,9 +1208,15 @@ __$default__() {
   $cd.焦热 := 10000
   $skill.焦热 := Func("__$skill_dot_焦热__")
   $watcher.焦热 := Func("__$watcher_dot_焦热__")
+  $skill.中断咏唱 := Func("__$skill_dot_中断咏唱__")
+  $skill.索敌 := Func("__$skill_dot_索敌__")
+  $ts.报告 := 0
+  $skill.报告 := Func("__$skill_dot_报告__")
   $ts.能力技 := 0
   $cd.能力技 := 1000
   $skill.能力技 := Func("__$skill_dot_能力技__")
+  $ts.获取状态 := 0
+  $skill.获取状态 := Func("__$skill_dot_获取状态__")
   $skill.调整魔元 := Func("__$skill_dot_调整魔元__")
   $skill.魔三连 := Func("__$skill_dot_魔三连__")
   $skill.魔划圆斩 := Func("__$skill_dot_魔划圆斩__")
@@ -1185,7 +1228,6 @@ __$default__()
 ; event
 
 f5::
-  清空信息()
   resetKey()
   resetTs()
   SoundBeep
@@ -1193,7 +1235,6 @@ f5::
 return
 
 ^f5::
-  清空信息()
   resetKey()
   SoundBeep
   Reload

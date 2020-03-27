@@ -44,7 +44,7 @@ $skill.赤飞石 = -> $.press 'alt + 0'
 $skill.移转 = ->
 
   unless $level >= 40
-    return false
+    return
 
   $.press 'alt + equal'
   return true
@@ -60,15 +60,15 @@ $skill.移转 = ->
 $skill.划圆斩 = ->
 
   unless $level >= 52
-    return false
+    return
 
   unless $black >= 20 and $white >= 20
-    return false
+    return
 
-  distance = getDistance()
-  unless distance == 'near'
+  $distance = getDistance()
+  unless $distance == 'near'
     use '短兵相接', true
-    return false
+    return
 
   $.press 'ctrl + 4'
   return true
@@ -78,7 +78,7 @@ $skill.划圆斩 = ->
 $skill.赤治疗 = ->
 
   unless $level >= 54
-    return false
+    return
 
   $.press 'ctrl + 5'
   return true
@@ -94,7 +94,7 @@ $skill.赤治疗 = ->
 $skill.赤复活 = ->
 
   unless $level >= 64
-    return false
+    return
 
   $.press 'ctrl + 9'
   return true
@@ -108,7 +108,7 @@ $skill.赤复活 = ->
 $skill.续斩 = ->
 
   unless $level >= 76
-    return false
+    return
   
   $.press 'ctrl + minus'
   return true
@@ -127,7 +127,7 @@ $skill.昏乱 = -> $.press 'shift + 1'
 $skill.沉稳咏唱 = ->
 
   unless $level >= 44
-    return false
+    return
 
   $.press 'shift + 4'
   return true
@@ -141,9 +141,11 @@ $skill.清空信息 = -> $.press 'shift + equal'
 
 # include skill/赤神圣
 # include skill/焦热
-# include ../common/skill/索敌
 # include ../common/skill/中断咏唱
+# include ../common/skill/索敌
+# include skill/报告
 # include skill/能力技
+# include skill/获取状态
 # include skill/调整魔元
 # include skill/魔三连
 # include skill/魔划圆斩

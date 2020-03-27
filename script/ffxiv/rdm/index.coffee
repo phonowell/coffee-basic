@@ -2,7 +2,6 @@
 # include ../common/function
 # include binding
 # include function
-# include report
 # include skill
 
 # ---
@@ -10,14 +9,14 @@
 # 单体攻击
 attackS = ->
 
-  if isChanting()
+  if $isChanting
     return
 
   if attackSL()
     use '能力技'
     return
 
-  if isMoving()
+  if $isMoving
     use '续斩'
     use '能力技'
     return
@@ -27,7 +26,7 @@ attackS = ->
 # 群体攻击
 attackM = ->
 
-  if isChanting()
+  if $isChanting
     return
 
   if $isIM
@@ -35,7 +34,7 @@ attackM = ->
     use '能力技'
     return
 
-  if isMoving()
+  if $isMoving
     use '续斩'
     use '能力技'
     return
@@ -98,7 +97,7 @@ attackSS2 = ->
 attackSL = ->
 
   unless $isIM
-    return false
+    return
 
   if $black - $white > 19
     use '赤疾风'
@@ -128,7 +127,7 @@ attackSL = ->
 # 单体治疗
 healS = ->
 
-  if isChanting()
+  if $isChanting
     return
 
   if $isIM
@@ -140,7 +139,7 @@ healS = ->
     use '能力技'
     return
 
-  if isMoving()
+  if $isMoving
     use '续斩'
     use '能力技'
     return
@@ -151,7 +150,7 @@ healS = ->
 
 revive = ->
 
-  if isChanting()
+  if $isChanting
     return
 
   unless $isIM
@@ -162,7 +161,7 @@ revive = ->
   if attackSS()
     return
 
-  if isMoving()
+  if $isMoving
     use '续斩'
     use '能力技'
     return

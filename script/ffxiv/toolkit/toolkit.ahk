@@ -24,7 +24,9 @@ SetMouseDelay 0, 50
 
 global $cd := {}
 global $ts := {}
-global mp := 0
+global $mp := 0
+global $isChanting := false
+global $isMoving := false
 global hasTarget := false
 global $level := 80
 global $skill := {}
@@ -56,7 +58,12 @@ clearWatcher(name, type := "used") {
       return
     }
   }
-  SetTimer %$watcher[name]%, Off
+  if !($watcher[name]) {
+    MsgBox % "invalid watcher: " . name . ""
+    return
+  }
+  __timer__ := $watcher[name]
+  SetTimer %__timer__%, Off
   $ts[name] := A_TickCount - $cd.技能施放补正
 }
 
@@ -74,7 +81,7 @@ getGroup() {
   if (isRT) {
     return "right"
   }
-  return false
+  return
 }
 
 getMp() {
@@ -112,6 +119,9 @@ isUsed(name) {
 }
 
 isChanting() {
+  if ($isMoving) {
+    return false
+  }
   PixelGetColor color, 1130, 865, RGB
   return color == 0x2B1B13
 }
@@ -153,7 +163,7 @@ isTargeting() {
 
 makeReportMsg(msg, name) {
   result := calcCD(name)
-  if !(result) {
+  if !(result > 1) {
     return msg
   }
   return "" . msg . "`n" . name . "：" . result . "s"
@@ -181,11 +191,19 @@ setLevel() {
   }
 }
 
-use(name, option) {
-  return $skill[name](option)
+use(name, option := false) {
+  if !($skill[name]) {
+    MsgBox % "invalid skill: " . name . ""
+    return
+  }
+  return $skill[name].Call(option)
 }
 
 watch(name) {
+  if !($watcher[name]) {
+    MsgBox % "invalid watcher: " . name . ""
+    return
+  }
   return $watcher[name]()
 }
 

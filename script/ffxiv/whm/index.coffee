@@ -15,7 +15,7 @@ cd = {}
 
 attackS = ->
 
-  if isChanting()
+  if $isChanting
     return
 
   醒梦()
@@ -23,7 +23,7 @@ attackS = ->
   苦难之心()
   神速咏唱()
 
-  if isMoving()
+  if $isMoving
     疾风()
     return
 
@@ -32,7 +32,7 @@ attackS = ->
 
 attackM = ->
 
-  if isChanting()
+  if $isChanting
     return
 
   醒梦()
@@ -42,7 +42,7 @@ attackM = ->
   无中生有()
   即刻咏唱()
 
-  if isMoving()
+  if $isMoving
     疾风()
     return
 
@@ -52,7 +52,7 @@ attackM = ->
 
 单体治疗 = ->
 
-  if isChanting()
+  if $isChanting
     return
 
   醒梦()
@@ -65,7 +65,7 @@ attackM = ->
 
 群体治疗 = ->
 
-  if isChanting()
+  if $isChanting
     return
 
   醒梦()

@@ -1,6 +1,5 @@
 # reload
 $.on 'f5', ->
-  清空信息()
   resetKey()
   resetTs()
   $.beep()
@@ -8,7 +7,6 @@ $.on 'f5', ->
 
 # reload without cache
 $.on 'ctrl + f5', ->
-  清空信息()
   resetKey()
   $.beep()
   $.reload()
@@ -28,7 +26,7 @@ attack = ->
     return
 
   use '获取状态'
-  report()
+  use '报告'
 
   unless use '索敌'
     return
@@ -45,12 +43,11 @@ attack = ->
 
 bindAttack = ->
 
-  unless $.isPressing '2-joy-4'
-    $.clearInterval bindAttack
-    $.setTimeout 清空信息, 10e3
+  isPressing = $.isPressing '2-joy-4'
+  unless isPressing
+    clearInterval bindAttack
     return
 
-  $.clearTimeout 清空信息
   attack()
 
 $.on '2-joy-4', ->
@@ -58,8 +55,8 @@ $.on '2-joy-4', ->
   unless getGroup()
     return
 
-  $.clearInterval bindAttack
-  $.setInterval bindAttack, 300
+  clearInterval bindAttack
+  setInterval bindAttack, 300
   attack()
 
 # ---
@@ -71,7 +68,7 @@ attackX = ->
     return
 
   use '获取状态'
-  report()
+  use '报告'
 
   unless use '索敌'
     return
@@ -93,12 +90,11 @@ attackX = ->
 
 bindAttackX = ->
 
-  unless $.isPressing '2-joy-2'
-    $.clearInterval bindAttackSpecial
-    $.setTimeout 清空信息, 10e3
+  isPressing = $.isPressing '2-joy-2'
+  unless isPressing
+    clearInterval bindAttackX
     return
 
-  $.clearTimeout 清空信息
   attackX()
 
 $.on '2-joy-2', ->
@@ -106,8 +102,8 @@ $.on '2-joy-2', ->
   unless getGroup()
     return
 
-  $.clearInterval bindAttackX
-  $.setInterval bindAttackX, 300
+  clearInterval bindAttackX
+  setInterval bindAttackX, 300
   attackX()
 
 # ---
@@ -119,7 +115,7 @@ heal = ->
     return
 
   use '获取状态'
-  report()
+  use '报告'
 
   # 单体治疗
   if group == 'right'
@@ -133,12 +129,11 @@ heal = ->
 
 bindHeal = ->
 
-  unless $.isPressing '2-joy-3'
-    $.clearInterval bindHeal
-    $.setTimeout 清空信息, 10e3
+  isPressing = $.isPressing '2-joy-3'
+  unless isPressing
+    clearInterval bindHeal
     return
 
-  $.clearTimeout 清空信息
   heal()
 
 $.on '2-joy-3', ->
@@ -146,8 +141,8 @@ $.on '2-joy-3', ->
   unless getGroup()
     return
 
-  $.clearInterval bindHeal
-  $.setInterval bindHeal, 300
+  clearInterval bindHeal
+  setInterval bindHeal, 300
   heal()
 
 # ---

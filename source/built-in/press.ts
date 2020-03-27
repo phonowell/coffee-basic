@@ -7,6 +7,10 @@ import { IArgumentBuiltIn } from '../type'
 
 export function $isPressing({ argument, output }: IArgumentBuiltIn) {
 
+  if (!output) {
+    throw new Error('found no output')
+  }
+
   const key = argument[0]
     .replace(/['"]/g, '')
 

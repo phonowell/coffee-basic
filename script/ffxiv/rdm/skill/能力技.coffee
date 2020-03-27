@@ -1,28 +1,34 @@
 $ts.能力技 = 0
 $cd.能力技 = 1e3
-能力技余额 = 0
 
-$skill.能力技 = (n = 2) ->
+$ap = 0
+
+$skill.能力技 = ->
+
+  unless $ap == 0
+    return
   
   unless A_TickCount - $ts.能力技 > $cd.能力技
     return
   
   $ts.能力技 = A_TickCount
-  能力技余额 = -n
+  $ap = -2
 
-  $.setInterval 施放能力技, 500
+  setInterval 施放能力技, 500
 
 施放能力技 = ->
 
-  if 能力技余额 < 0
-    能力技余额 = -能力技余额
+  # 使首次调用无效化
+  if $ap < 0
+    $ap = -$ap
     return
 
-  unless 能力技余额 > 0
-    $.clearInterval 施放能力技
+  if $ap == 0
+    clearInterval 施放能力技
     return
-  能力技余额--
-
+  
+  $ap--
+  
   能力技施放()
 
 能力技施放 = ->

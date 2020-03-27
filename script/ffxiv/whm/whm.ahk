@@ -24,7 +24,9 @@ SetMouseDelay 0, 50
 
 global $cd := {}
 global $ts := {}
-global mp := 0
+global $mp := 0
+global $isChanting := false
+global $isMoving := false
 global hasTarget := false
 global $level := 80
 global $skill := {}
@@ -63,7 +65,12 @@ clearWatcher(name, type := "used") {
       return
     }
   }
-  SetTimer %$watcher[name]%, Off
+  if !($watcher[name]) {
+    MsgBox % "invalid watcher: " . name . ""
+    return
+  }
+  __timer__ := $watcher[name]
+  SetTimer %__timer__%, Off
   $ts[name] := A_TickCount - $cd.技能施放补正
 }
 
@@ -81,7 +88,7 @@ getGroup() {
   if (isRT) {
     return "right"
   }
-  return false
+  return
 }
 
 getMp() {
@@ -119,6 +126,9 @@ isUsed(name) {
 }
 
 isChanting() {
+  if ($isMoving) {
+    return false
+  }
   PixelGetColor color, 1130, 865, RGB
   return color == 0x2B1B13
 }
@@ -160,7 +170,7 @@ isTargeting() {
 
 makeReportMsg(msg, name) {
   result := calcCD(name)
-  if !(result) {
+  if !(result > 1) {
     return msg
   }
   return "" . msg . "`n" . name . "：" . result . "s"
@@ -188,11 +198,19 @@ setLevel() {
   }
 }
 
-use(name, option) {
-  return $skill[name](option)
+use(name, option := false) {
+  if !($skill[name]) {
+    MsgBox % "invalid skill: " . name . ""
+    return
+  }
+  return $skill[name].Call(option)
 }
 
 watch(name) {
+  if !($watcher[name]) {
+    MsgBox % "invalid watcher: " . name . ""
+    return
+  }
   return $watcher[name]()
 }
 
@@ -201,7 +219,7 @@ watch(name) {
   if !(group) {
     return
   }
-  report()
+  use("报告")
   if !(use("索敌")) {
     return
   }
@@ -220,10 +238,10 @@ bindAttack() {
   isPressing := __value__ == "D"
   if !(isPressing) {
     SetTimer bindAttack, Off
-    SetTimer 清空信息, % 0 - 10000
+    SetTimer __$skill_dot_清空信息__, % 0 - 10000
     return
   }
-  SetTimer 清空信息, Off
+  SetTimer __$skill_dot_清空信息__, Off
   攻击()
 }
 
@@ -232,7 +250,7 @@ _治疗() {
   if !(group) {
     return
   }
-  report()
+  use("报告")
   if (group == "right") {
     单体治疗()
     return
@@ -248,10 +266,10 @@ _治疗() {
   isPressing := __value__ == "D"
   if !(isPressing) {
     SetTimer 绑定治疗, Off
-    SetTimer 清空信息, % 0 - 10000
+    SetTimer __$skill_dot_清空信息__, % 0 - 10000
     return
   }
-  SetTimer 清空信息, Off
+  SetTimer __$skill_dot_清空信息__, Off
   _治疗()
 }
 
@@ -318,20 +336,20 @@ report() {
 }
 
 疾风() {
-  if !(isMoving()) {
+  if !($isMoving) {
     if ($level >= 72) {
       if (hasStatusTarget("天辉")) {
-        return false
+        return
       }
     }
     else if ($level >= 46) {
       if (hasStatusTarget("烈风")) {
-        return false
+        return
       }
     }
     else {
       if (hasStatusTarget("疾风")) {
-        return false
+        return
       }
     }
   }
@@ -357,10 +375,10 @@ report() {
 
 医济() {
   if !($level >= 50) {
-    return false
+    return
   }
   if (hasStatus("医济")) {
-    return false
+    return
   }
   Send {alt down}{8}{alt up}
   return true
@@ -368,14 +386,14 @@ report() {
 
 神速咏唱() {
   if !($level >= 30) {
-    return false
+    return
   }
   if !(A_TickCount - $ts.神速咏唱 > $cd.神速咏唱) {
-    return false
+    return
   }
   Send {alt down}{9}{alt up}
   $ts.神速咏唱 := A_TickCount - $cd.神速咏唱 + $cd.技能施放补正
-  SetTimer %$watcher.神速咏唱%, % $cd.技能施放判断间隔
+  SetTimer __$watcher_dot_神速咏唱__, % $cd.技能施放判断间隔
   return true
 }
 
@@ -383,19 +401,19 @@ __$watcher_dot_神速咏唱__() {
   if !(hasStatus("神速咏唱")) {
     return
   }
-  SetTimer %$watcher.神速咏唱%, Off
+  SetTimer __$watcher_dot_神速咏唱__, Off
   $ts.神速咏唱 := A_TickCount - $cd.技能施放补正
 }
 
 再生() {
   if !($level >= 35) {
-    return false
+    return
   }
   if (hasStatusTarget("再生")) {
-    return false
+    return
   }
   if !(能力技冷却判断()) {
-    return false
+    return
   }
   Send {alt down}{0}{alt up}
   return true
@@ -403,7 +421,7 @@ __$watcher_dot_神速咏唱__() {
 
 愈疗() {
   if !($level >= 40) {
-    return false
+    return
   }
   Send {alt down}{-}{alt up}
   return true
@@ -411,7 +429,7 @@ __$watcher_dot_神速咏唱__() {
 
 神圣() {
   if !($level >= 45) {
-    return false
+    return
   }
   Send {alt down}{=}{alt up}
   return true
@@ -419,7 +437,7 @@ __$watcher_dot_神速咏唱__() {
 
 天赐祝福() {
   if !($level >= 50) {
-    return false
+    return
   }
   Send {ctrl down}{1}{ctrl up}
   return true
@@ -427,13 +445,13 @@ __$watcher_dot_神速咏唱__() {
 
 安慰之心() {
   if !($level >= 52) {
-    return false
+    return
   }
   if !(white >= 1) {
-    return false
+    return
   }
   if !(能力技冷却判断()) {
-    return false
+    return
   }
   Send {ctrl down}{2}{ctrl up}
   return true
@@ -441,7 +459,7 @@ __$watcher_dot_神速咏唱__() {
 
 庇护所() {
   if !($level >= 52) {
-    return false
+    return
   }
   Send {ctrl down}{3}{ctrl up}
   return true
@@ -449,14 +467,14 @@ __$watcher_dot_神速咏唱__() {
 
 法令() {
   if !($level >= 56) {
-    return false
+    return
   }
   if !(A_TickCount - $ts.法令 > $cd.法令) {
-    return false
+    return
   }
   Send {ctrl down}{4}{ctrl up}
   $ts.法令 := A_TickCount - $cd.法令 + $cd.技能施放补正
-  SetTimer %$watcher.法令%, % $cd.技能施放判断间隔
+  SetTimer __$watcher_dot_法令__, % $cd.技能施放判断间隔
   return true
 }
 
@@ -464,20 +482,20 @@ __$watcher_dot_法令__() {
   if !(isUsed("法令")) {
     return
   }
-  SetTimer %$watcher.法令%, Off
+  SetTimer __$watcher_dot_法令__, Off
   $ts.法令 := A_TickCount - $cd.技能施放补正
 }
 
 无中生有() {
   if !($level >= 58) {
-    return false
+    return
   }
   if !(A_TickCount - $ts.无中生有 > $cd.无中生有) {
-    return false
+    return
   }
   Send {ctrl down}{5}{ctrl up}
   $ts.无中生有 := A_TickCount - $cd.无中生有 + $cd.技能施放补正
-  SetTimer %$watcher.无中生有%, % $cd.技能施放判断间隔
+  SetTimer __$watcher_dot_无中生有__, % $cd.技能施放判断间隔
   return true
 }
 
@@ -485,23 +503,23 @@ __$watcher_dot_无中生有__() {
   if !(hasStatus("无中生有")) {
     return
   }
-  SetTimer %$watcher.无中生有%, Off
+  SetTimer __$watcher_dot_无中生有__, Off
   $ts.无中生有 := A_TickCount - $cd.技能施放补正
 }
 
 神名() {
   if !($level >= 60) {
-    return false
+    return
   }
   if !(A_TickCount - $ts.神名 > $cd.神名) {
-    return false
+    return
   }
   if !(能力技冷却判断()) {
-    return false
+    return
   }
   Send {ctrl down}{6}{ctrl up}
   $ts.神名 := A_TickCount - $cd.神名 + $cd.技能施放补正
-  SetTimer %$watcher.神名%, % $cd.技能施放判断间隔
+  SetTimer __$watcher_dot_神名__, % $cd.技能施放判断间隔
   return true
 }
 
@@ -509,13 +527,13 @@ __$watcher_dot_神名__() {
   if !(isUsed("神名")) {
     return
   }
-  SetTimer %$watcher.神名%, Off
+  SetTimer __$watcher_dot_神名__, Off
   $ts.神名 := A_TickCount - $cd.技能施放补正
 }
 
 神祝祷() {
   if !($level >= 66) {
-    return false
+    return
   }
   Send {ctrl down}{7}{ctrl up}
   return true
@@ -523,17 +541,17 @@ __$watcher_dot_神名__() {
 
 全大赦() {
   if !($level >= 70) {
-    return false
+    return
   }
   if !(A_TickCount - $ts.全大赦 > $cd.全大赦) {
-    return false
+    return
   }
   if !(能力技冷却判断()) {
-    return false
+    return
   }
   Send {ctrl down}{8}{ctrl up}
   $ts.全大赦 := A_TickCount - $cd.全大赦 + $cd.技能施放补正
-  SetTimer %$watcher.全大赦%, % $cd.技能施放判断间隔
+  SetTimer __$watcher_dot_全大赦__, % $cd.技能施放判断间隔
   return true
 }
 
@@ -541,16 +559,16 @@ __$watcher_dot_全大赦__() {
   if !(isUsed("全大赦")) {
     return
   }
-  SetTimer %$watcher.全大赦%, Off
+  SetTimer __$watcher_dot_全大赦__, Off
   $ts.全大赦 := A_TickCount - $cd.技能施放补正
 }
 
 苦难之心() {
   if !($level >= 74) {
-    return false
+    return
   }
   if !(red >= 3) {
-    return false
+    return
   }
   Send {ctrl down}{9}{ctrl up}
   return true
@@ -558,13 +576,13 @@ __$watcher_dot_全大赦__() {
 
 狂喜之心() {
   if !($level >= 76) {
-    return false
+    return
   }
   if !(white >= 1) {
-    return false
+    return
   }
   if !(能力技冷却判断()) {
-    return false
+    return
   }
   Send {ctrl down}{0}{ctrl up}
   return true
@@ -572,7 +590,7 @@ __$watcher_dot_全大赦__() {
 
 节制() {
   if !($level >= 80) {
-    return false
+    return
   }
   Send {ctrl down}{-}{ctrl up}
   return true
@@ -588,14 +606,14 @@ __$watcher_dot_全大赦__() {
 
 即刻咏唱() {
   if !($level >= 18) {
-    return false
+    return
   }
   if !(A_TickCount - $ts.即刻咏唱 > $cd.即刻咏唱) {
-    return false
+    return
   }
   Send {shift down}{3}{shift up}
   $ts.即刻咏唱 := A_TickCount - $cd.即刻咏唱 + $cd.技能施放补正
-  SetTimer %$watcher.即刻咏唱%, % $cd.技能施放判断间隔
+  SetTimer __$watcher_dot_即刻咏唱__, % $cd.技能施放判断间隔
   return true
 }
 
@@ -603,24 +621,24 @@ __$watcher_dot_即刻咏唱__() {
   if !(hasStatus("即刻咏唱")) {
     return
   }
-  SetTimer %$watcher.即刻咏唱%, Off
+  SetTimer __$watcher_dot_即刻咏唱__, Off
   $ts.即刻咏唱 := A_TickCount - $cd.技能施放补正
 }
 
 醒梦() {
   if !($level >= 24) {
-    return false
+    return
   }
   if !(A_TickCount - $ts.醒梦 > $cd.醒梦) {
-    return false
+    return
   }
-  mp := getMp()
-  if (mp > 50) {
-    return false
+  $mp := getMp()
+  if ($mp > 50) {
+    return
   }
   Send {shift down}{4}{shift up}
   $ts.醒梦 := A_TickCount - $cd.醒梦 + $cd.技能施放补正
-  SetTimer %$watcher.醒梦%, % $cd.技能施放判断间隔
+  SetTimer __$watcher_dot_醒梦__, % $cd.技能施放判断间隔
   return true
 }
 
@@ -628,13 +646,13 @@ __$watcher_dot_醒梦__() {
   if !(hasStatus("醒梦")) {
     return
   }
-  SetTimer %$watcher.醒梦%, Off
+  SetTimer __$watcher_dot_醒梦__, Off
   $ts.醒梦 := A_TickCount - $cd.技能施放补正
 }
 
 沉稳咏唱() {
   if !($level >= 44) {
-    return false
+    return
   }
   Send {shift down}{5}{shift up}
   return true
@@ -642,7 +660,7 @@ __$watcher_dot_醒梦__() {
 
 营救() {
   if !($level >= 48) {
-    return false
+    return
   }
   Send {shift down}{6}{shift up}
   return true
@@ -656,7 +674,7 @@ __$watcher_dot_醒梦__() {
   Send {shift down}{=}{shift up}
 }
 
-索敌() {
+__$skill_dot_索敌__() {
   hasTarget := isTargeting()
   if (hasTarget) {
     return true
@@ -666,8 +684,8 @@ __$watcher_dot_醒梦__() {
   return hasTarget
 }
 
-中断咏唱() {
-  if !(isChanting()) {
+__$skill_dot_中断咏唱__() {
+  if !($isChanting) {
     return
   }
   Send {space}
@@ -675,21 +693,21 @@ __$watcher_dot_醒梦__() {
 
 能力技冷却判断() {
   if !(A_TickCount - $ts.能力技 > $cd.能力技) {
-    return false
+    return
   }
   $ts.能力技 := A_TickCount
   return true
 }
 
 attackS() {
-  if (isChanting()) {
+  if ($isChanting) {
     return
   }
   醒梦()
   法令()
   苦难之心()
   神速咏唱()
-  if (isMoving()) {
+  if ($isMoving) {
     疾风()
     return
   }
@@ -698,7 +716,7 @@ attackS() {
 }
 
 attackM() {
-  if (isChanting()) {
+  if ($isChanting) {
     return
   }
   醒梦()
@@ -707,7 +725,7 @@ attackM() {
   神速咏唱()
   无中生有()
   即刻咏唱()
-  if (isMoving()) {
+  if ($isMoving) {
     疾风()
     return
   }
@@ -715,7 +733,7 @@ attackM() {
 }
 
 单体治疗() {
-  if (isChanting()) {
+  if ($isChanting) {
     return
   }
   醒梦()
@@ -728,7 +746,7 @@ attackM() {
 }
 
 群体治疗() {
-  if (isChanting()) {
+  if ($isChanting) {
     return
   }
   醒梦()
@@ -763,6 +781,8 @@ __$default__() {
   $ts.醒梦 := 0
   $cd.醒梦 := 60000
   $watcher.醒梦 := Func("__$watcher_dot_醒梦__")
+  $skill.索敌 := Func("__$skill_dot_索敌__")
+  $skill.中断咏唱 := Func("__$skill_dot_中断咏唱__")
   $ts.能力技 := 0
   $cd.能力技 := 300
 }
@@ -773,7 +793,6 @@ __$default__()
 ; event
 
 f5::
-  清空信息()
   resetKey()
   resetTs()
   SoundBeep
@@ -781,7 +800,6 @@ f5::
 return
 
 ^f5::
-  清空信息()
   resetKey()
   SoundBeep
   Reload

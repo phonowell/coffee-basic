@@ -8,6 +8,10 @@ import { IArgumentBuiltIn } from '../type'
 // export
 export function $getColor({ argument, output }: IArgumentBuiltIn) {
 
+  if (!output) {
+    throw new Error('found no output')
+  }
+
   const result: string[] = []
 
   let [x, y] = argument
@@ -24,6 +28,10 @@ export function $getColor({ argument, output }: IArgumentBuiltIn) {
 }
 
 export function $getPosition({ output }: IArgumentBuiltIn) {
+
+  if (!output) {
+    throw new Error('found no output')
+  }
 
   const [x, y] = _.trim(output, ' []')
     .replace(/\s/g, '')

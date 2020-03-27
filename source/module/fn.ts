@@ -6,6 +6,15 @@ import { IBlock, IData } from '../type'
 
 // export
 
+export function encodeFnName(name: string) {
+  name = name
+    .replace(/\]/g, '')
+    .replace(/\[/g, '.')
+    .replace(/\./g, '_dot_')
+
+  return `__${name}__`
+}
+
 export function formatKey(input: string) {
 
   return input
@@ -80,14 +89,5 @@ export function unquote(line: string) {
     .replace(/}/g, ' . "')
     .replace(/\.\s*""\s*\./g, '.')
     .replace(/"\s*\.\s*\.\s*"/g, '')
-
-}
-
-export function wrapName(name: string, data: IData) {
-
-  if (_.findIndex(data.fn, { name }) !== -1) {
-    return name
-  }
-  return `%${name}%`
 
 }

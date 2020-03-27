@@ -23,8 +23,12 @@ clearWatcher = (name, type = 'used') ->
   else if type == 'status'
     unless hasStatus name
       return
+
+  unless $watcher[name]
+    alert "invalid watcher: #{name}"
+    return
   
-  $.clearInterval $watcher[name]
+  clearInterval $watcher[name]
   $ts[name] = A_TickCount - $cd.技能施放补正
 
 # ---
@@ -61,7 +65,7 @@ getGroup = ->
   if isRT
     return 'right'
 
-  return false
+  return
 
 # ---
 
@@ -78,7 +82,7 @@ getGroup = ->
 
 # ---
 
-mp = 0
+$mp = 0
 getMp = ->
   [x, y] = $.findColor '#58483e', 181, 36, 328, 36, 10
   
@@ -121,12 +125,18 @@ isUsed = (name) ->
 
 # ---
 
+$isChanting = false
 isChanting = ->
+  
+  if $isMoving
+    return false
+  
   color = $.getColor 1130, 865
   return color == 0x2B1B13
 
 # ---
 
+$isMoving = false
 isMoving = ->
 
   dis = $.getState '2-joy-x'
@@ -168,7 +178,7 @@ isTargeting = ->
 
 makeReportMsg = (msg, name) ->
   result = calcCD name
-  unless result
+  unless result > 1
     return msg
   return "#{msg}`n#{name}：#{result}s"
 
@@ -198,7 +208,19 @@ setLevel = ->
 # ---
 
 $skill = {}
-use = (name, option) -> return $skill[name] option
+use = (name, option = false) ->
+  
+  unless $skill[name]
+    alert "invalid skill: #{name}"
+    return
+  
+  return $skill[name] option
 
 $watcher = {}
-watch = (name) -> return $watcher[name]()
+watch = (name) ->
+
+  unless $watcher[name]
+    alert "invalid watcher: #{name}"
+    return
+
+  return $watcher[name]()

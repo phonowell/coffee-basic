@@ -16,16 +16,22 @@ export function $alert({ argument, output }: IArgumentBuiltIn, data: IData) {
 }
 
 export function $info({ argument, output }: IArgumentBuiltIn, data: IData) {
+  const [title, text] = argument.length === 2 ? argument : ['"coffee-basic/0.0.2"', argument[0]]
   const result = [
-    `TrayTip % ${argument[0]}`
+    `TrayTip % ${title}, % ${text}`
   ]
   if (output) {
-    result.push(` = ${argument[0]}`)
+    result.push(` = ${text}`)
   }
   return result
 }
 
 export function $prompt({ argument, output }: IArgumentBuiltIn, data: IData) {
+
+  if (!output) {
+    throw new Error('found no output')
+  }
+
   const [message, value] = argument
   return `InputBox ${output}, , % ${message || ''}, , , , , , , , % ${value || ''}`
 }

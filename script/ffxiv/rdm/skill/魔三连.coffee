@@ -1,12 +1,6 @@
 $skill.魔三连 = ->
 
-  isValid = true
-  if hasStatus '连续咏唱'
-    isValid = false
-  if hasStatus '即刻咏唱'
-    isValid = false
-
-  unless isValid
+  if $isIM
     return
 
   if use '回刺'

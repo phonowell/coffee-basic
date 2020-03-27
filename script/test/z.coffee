@@ -1,10 +1,24 @@
+$.on 'f5', ->
+  $.beep()
+  $.reload()
+
+$.on 'alt + f4', ->
+  $.beep()
+  $.exit()
+
+# ---
+
+$.on 'f2', -> d.setTimer 'display'
+$.on 'f4', -> d.clearTimer 'display'
+
+# ---
+
 d = {}
 
-d.ask = ->
-  d.value = prompt 'input value', d.ask
+d.setTimer = (name) ->
+  clearInterval d[name]
+  setInterval d[name], 1e3
 
-d.show = ->
-  alert d.value
+d.clearTimer = (name) -> clearInterval d[name]
 
-$.on 'alt + f2', ->
-  d.show()
+d.display = -> $.tip A_TickCount

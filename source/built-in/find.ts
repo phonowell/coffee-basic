@@ -30,6 +30,11 @@ function format(text: string) {
 export function $findColor({ argument, output }: IArgumentBuiltIn) {
 
   // output
+
+  if (!output) {
+    throw new Error('found no output')
+  }
+
   const [oX, oY] = _.trim(output, ' []')
     .replace(/\s/g, '')
     .split(',')
@@ -57,6 +62,11 @@ export function $findColor({ argument, output }: IArgumentBuiltIn) {
 export function $findImage({ argument, output }: IArgumentBuiltIn) {
 
   // output
+
+  if (!output) {
+    throw new Error('found no output')
+  }
+
   const [oX, oY] = _.trim(output, ' []')
     .replace(/\s/g, '')
     .split(',')

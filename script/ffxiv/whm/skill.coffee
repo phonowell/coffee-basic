@@ -10,17 +10,17 @@ $cd.技能施放补正 = 1500
 
 疾风 = ->
 
-  unless isMoving()
+  unless $isMoving
 
     if $level >= 72
       if hasStatusTarget '天辉'
-        return false
+        return
     else if $level >= 46
       if hasStatusTarget '烈风'
-        return false
+        return
     else
       if hasStatusTarget '疾风'
-        return false
+        return
   
   $.press 'alt + 3'
   return true
@@ -37,10 +37,10 @@ $cd.技能施放补正 = 1500
 医济 = ->
 
   unless $level >= 50
-    return false
+    return
   
   if hasStatus '医济'
-    return false
+    return
   
   $.press 'alt + 8'
   return true
@@ -54,13 +54,13 @@ $cd.技能施放补正 = 1500
 再生 = ->
 
   unless $level >= 35
-    return false
+    return
   
   if hasStatusTarget '再生'
-    return false
+    return
 
   unless 能力技冷却判断()
-    return false
+    return
   
   $.press 'alt + 0'
   return true
@@ -70,7 +70,7 @@ $cd.技能施放补正 = 1500
 愈疗 = ->
 
   unless $level >= 40
-    return false
+    return
 
   $.press 'alt + minus'
   return true
@@ -80,7 +80,7 @@ $cd.技能施放补正 = 1500
 神圣 = ->
 
   unless $level >= 45
-    return false
+    return
   
   $.press 'alt + equal'
   return true
@@ -90,7 +90,7 @@ $cd.技能施放补正 = 1500
 天赐祝福 = ->
 
   unless $level >= 50
-    return false
+    return
 
   $.press 'ctrl + 1'
   return true
@@ -100,13 +100,13 @@ $cd.技能施放补正 = 1500
 安慰之心 = ->
 
   unless $level >= 52
-    return false
+    return
 
   unless white >= 1
-    return false
+    return
 
   unless 能力技冷却判断()
-    return false
+    return
 
   $.press 'ctrl + 2'
   return true
@@ -116,7 +116,7 @@ $cd.技能施放补正 = 1500
 庇护所 = ->
 
   unless $level >= 52
-    return false
+    return
 
   $.press 'ctrl + 3'
   return true
@@ -132,7 +132,7 @@ $cd.技能施放补正 = 1500
 神祝祷 = ->
 
   unless $level >= 66
-    return false
+    return
 
   $.press 'ctrl + 7'
   return true
@@ -146,10 +146,10 @@ $cd.技能施放补正 = 1500
 苦难之心 = ->
 
   unless $level >= 74
-    return false
+    return
 
   unless red >= 3
-    return false
+    return
 
   $.press 'ctrl + 9'
   return true
@@ -159,13 +159,13 @@ $cd.技能施放补正 = 1500
 狂喜之心 = ->
 
   unless $level >= 76
-    return false
+    return
 
   unless white >= 1
-    return false
+    return
 
   unless 能力技冷却判断()
-    return false
+    return
 
   $.press 'ctrl + 0'
   return true
@@ -175,7 +175,7 @@ $cd.技能施放补正 = 1500
 节制 = ->
 
   unless $level >= 80
-    return false
+    return
 
   $.press 'ctrl + minus'
   return true
@@ -195,7 +195,7 @@ $cd.技能施放补正 = 1500
 沉稳咏唱 = ->
 
   unless $level >= 44
-    return false
+    return
   
   $.press 'shift + 5'
   return true
@@ -205,7 +205,7 @@ $cd.技能施放补正 = 1500
 营救 = ->
 
   unless $level >= 48
-    return false
+    return
 
   $.press 'shift + 6'
   return true

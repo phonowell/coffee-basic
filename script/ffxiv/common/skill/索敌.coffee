@@ -1,4 +1,4 @@
-索敌 = ->
+$skill.索敌 = ->
 
   hasTarget = isTargeting()
   if hasTarget

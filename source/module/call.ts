@@ -82,6 +82,10 @@ function format(line: string) {
         return text
       }
 
+      if (isOriginal(key)) {
+        return `${key}.Call(${value})`
+      }
+
       return `${key}(${value})`
 
     })
@@ -98,6 +102,22 @@ function format(line: string) {
 
   return `${setDepth(depth)}${result}`
 
+}
+
+function isOriginal(name: string) {
+  if (!(name.includes('.') || name.includes('['))) {
+    return false
+  }
+
+  if (name.startsWith('$.')) {
+    return false
+  }
+
+  if (name.startsWith('Math.')) {
+    return false
+  }
+
+  return true
 }
 
 function validate(text: string) {

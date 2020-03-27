@@ -6,8 +6,8 @@ fn = ->
 $.tip()
 $.tip "#{a}, #{b}, #{c}"
 
-$.setTimeout fn
-$.setTimeout n
+setTimeout fn
+setTimeout n
 
 await $.sleep 1e3
 

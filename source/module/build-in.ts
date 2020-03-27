@@ -30,8 +30,6 @@ interface IOption {
 const Rule = {
 
   '$.beep': $beep,
-  '$.clearInterval': $clearInterval,
-  '$.clearTimeout': $clearTimeout,
   '$.click': $click,
   '$.exit': $exit,
   '$.findColor': $findColor,
@@ -46,8 +44,6 @@ const Rule = {
   '$.press': $press,
   '$.reload': $reload,
   '$.setFixed': $setFixed,
-  '$.setInterval': $setInterval,
-  '$.setTimeout': $setTimeout,
   '$.sleep': $sleep,
   '$.tip': $tip,
   '$.trim': $trim,
@@ -59,7 +55,11 @@ const Rule = {
   'Math.floor': $floor,
   'Math.round': $round,
   'alert': $alert,
-  'prompt': $prompt
+  'clearInterval': $clearInterval,
+  'clearTimeout': $clearTimeout,
+  'prompt': $prompt,
+  'setInterval': $setInterval,
+  'setTimeout': $setTimeout
 
 } as { [key: string]: (option: IOption, data?: IData) => any }
 

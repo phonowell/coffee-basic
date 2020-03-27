@@ -24,5 +24,5 @@ report = ->
   msg = makeReportMsg msg, '醒梦'
   
   $.tip msg, 410, 640
-  $.clearTimeout clearTip
-  $.setTimeout clearTip, 5e3
+  clearTimeout clearTip
+  setTimeout clearTip, 5e3

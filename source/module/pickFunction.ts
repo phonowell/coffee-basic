@@ -1,6 +1,6 @@
 import _ = require('lodash')
 
-import { getDepth, newBlock } from './fn'
+import { encodeFnName, getDepth, newBlock } from './fn'
 
 // interface
 import { IData } from '../type'
@@ -75,7 +75,7 @@ export default (data: IData) => {
 
     let _name: string
     if (name.includes('.')) {
-      _name = `__${name.replace(/\./g, '_dot_')}__`
+      _name = encodeFnName(name)
       result.push(`${name} = Func('${_name}')`)
     } else {
       _name = name

@@ -1,6 +1,5 @@
 # reload
 $.on 'f5', ->
-  清空信息()
   resetKey()
   resetTs()
   $.beep()
@@ -8,7 +7,6 @@ $.on 'f5', ->
 
 # reload without cache
 $.on 'ctrl + f5', ->
-  清空信息()
   resetKey()
   $.beep()
   $.reload()
@@ -28,7 +26,7 @@ $.on 'alt + f4', ->
   unless group
     return
 
-  report()
+  use '报告'
   
   unless use '索敌'
     return
@@ -47,11 +45,11 @@ bindAttack = ->
 
   isPressing = $.isPressing '2-joy-4'
   unless isPressing
-    $.clearInterval bindAttack
-    $.setTimeout 清空信息, 10e3
+    clearInterval bindAttack
+    setTimeout $skill.清空信息, 10e3
     return
 
-  $.clearTimeout 清空信息
+  clearTimeout $skill.清空信息
   攻击()
 
 $.on '2-joy-4', ->
@@ -59,8 +57,8 @@ $.on '2-joy-4', ->
   unless getGroup()
     return
 
-  $.clearInterval bindAttack
-  $.setInterval bindAttack, 300
+  clearInterval bindAttack
+  setInterval bindAttack, 300
   攻击()
 
 # ---
@@ -72,7 +70,7 @@ _治疗 = ->
   unless group
     return
 
-  report()
+  use '报告'
 
   # 单体治疗
   if group == 'right'
@@ -88,11 +86,11 @@ _治疗 = ->
 
   isPressing = $.isPressing '2-joy-2'
   unless isPressing
-    $.clearInterval 绑定治疗
-    $.setTimeout 清空信息, 10e3
+    clearInterval 绑定治疗
+    setTimeout $skill.清空信息, 10e3
     return
 
-  $.clearTimeout 清空信息
+  clearTimeout $skill.清空信息
   _治疗()
 
 $.on '2-joy-2', ->
@@ -100,8 +98,8 @@ $.on '2-joy-2', ->
   unless getGroup()
     return
 
-  $.clearInterval 绑定治疗
-  $.setInterval 绑定治疗, 300
+  clearInterval 绑定治疗
+  setInterval 绑定治疗, 300
   _治疗()
 
 # ---

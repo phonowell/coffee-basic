@@ -11,7 +11,7 @@ getBlack = ->
 
 # ---
 
-distance = 'far'
+$distance = 'far'
 getDistance = ->
 
   unless hasTarget

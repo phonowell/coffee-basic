@@ -4,17 +4,17 @@ $cd.赤神圣 = 10e3
 $skill.赤神圣 = ->
 
   unless $level >= 70
-    return false
+    return
 
   unless A_TickCount - $ts.赤神圣 > $cd.赤神圣
-    return false
+    return
 
   unless A_TickCount - $ts.连攻 < 15e3
-    return false
+    return
 
   赤神圣施放()
 
-  $.setInterval $watcher.赤神圣, $cd.技能施放判断间隔
+  setInterval $watcher.赤神圣, $cd.技能施放判断间隔
   return true
 
 $watcher.赤神圣 = ->
@@ -22,7 +22,7 @@ $watcher.赤神圣 = ->
   isB = isUsed '赤神圣'
   unless isA or isB
     return
-  $.clearInterval $watcher.赤神圣
+  clearInterval $watcher.赤神圣
   $ts.赤神圣 = A_TickCount - $cd.技能施放补正
 
 赤神圣施放 = ->
