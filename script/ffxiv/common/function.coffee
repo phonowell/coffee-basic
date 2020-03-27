@@ -1,6 +1,9 @@
+$cd = {}
+$ts = {}
+
 calcCD = (name) ->
   
-  result = cd[name] - (A_TickCount - ts[name])
+  result = $cd[name] - (A_TickCount - $ts[name])
   
   unless result > 0
     return 0
@@ -11,6 +14,18 @@ calcCD = (name) ->
 # ---
 
 clearTip = -> $.tip()
+
+clearWatcher = (name, type = 'used') ->
+  
+  if type == 'used'
+    unless isUsed name
+      return
+  else if type == 'status'
+    unless hasStatus name
+      return
+  
+  $.clearInterval $watcher[name]
+  $ts[name] = A_TickCount - $cd.技能施放补正
 
 # ---
 
@@ -166,13 +181,24 @@ resetKey = ->
 
 resetTs = ->
   for key, value in ts
-    ts[key] = 0
+    $ts[key] = 0
+# ---
 
+$level = 80
 setLevel = ->
-  level = prompt 'input level', level
   
-  unless level > 0
-    level = 80
+  $level = prompt 'input level', $level
+  
+  unless $level > 0
+    $level = 80
 
-  if level < 10
-    level = level * 10
+  if $level < 10
+    $level = $level * 10
+
+# ---
+
+$skill = {}
+use = (name, option) -> return $skill[name] option
+
+$watcher = {}
+watch = (name) -> return $watcher[name]()

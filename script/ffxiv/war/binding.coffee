@@ -33,24 +33,24 @@ $.on 'alt + f4', ->
 
   report()
   
-  unless 索敌()
+  unless use '索敌'
     return
 
-  # 单体攻击
+  # attackS
   if group == 'right'
-    单体攻击()
+    attackS()
     return
 
-  # 群体攻击
+  # attackM
   if group == 'both'
-    群体攻击()
+    attackM()
     return
 
-绑定攻击 = ->
+bindAttack = ->
 
   isPressing = $.isPressing '2-joy-4'
   unless isPressing
-    $.clearInterval 绑定攻击
+    $.clearInterval bindAttack
     $.setTimeout 清空信息, 5e3
     return
 
@@ -62,8 +62,8 @@ $.on '2-joy-4', ->
   unless getGroup()
     return
 
-  $.clearInterval 绑定攻击
-  $.setInterval 绑定攻击, 300
+  $.clearInterval bindAttack
+  $.setInterval bindAttack, 300
   攻击()
 
 # ---

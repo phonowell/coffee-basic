@@ -190,9 +190,9 @@ $.on '2-joy-4', ->
   if group == 'none'
     return
 
-  # 单体攻击
+  # attackS
   if group == 'right'
-    索敌()
+    use '索敌'
     直线射击()
     毒咬箭()
     风蚀箭()
@@ -201,9 +201,9 @@ $.on '2-joy-4', ->
     delay '能力技', 300, 2
     return
 
-  # 群体攻击
+  # attackM
   if group == 'both'
-    索敌()
+    use '索敌'
     连珠箭()
 
     delay '能力技', 300, 2

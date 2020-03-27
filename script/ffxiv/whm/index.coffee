@@ -7,13 +7,13 @@
 
 # ---
 
-level = 80
+$level = 80
 ts = {}
 cd = {}
 
 # ---
 
-单体攻击 = ->
+attackS = ->
 
   if isChanting()
     return
@@ -30,7 +30,7 @@ cd = {}
   疾风()
   飞石()
 
-群体攻击 = ->
+attackM = ->
 
   if isChanting()
     return

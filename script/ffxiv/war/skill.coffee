@@ -1,52 +1,52 @@
-ts.重劈 = 0
-cd.重劈 = 5e3
+$ts.重劈 = 0
+$cd.重劈 = 5e3
 
 重劈 = ->
 
-  unless A_TickCount - ts.重劈 > cd.重劈
+  unless A_TickCount - $ts.重劈 > $cd.重劈
     return false
 
   $.press 'alt + 1'
   
-  $.setInterval 监听重劈, 200
+  $.setInterval $watcher.重劈, 200
   return true
 
-监听重劈 = ->
+$watcher.重劈 = ->
 
   unless isUsed '重劈'
     return
 
-  ts.重劈 = A_TickCount - 2e3
+  $ts.重劈 = A_TickCount - 2e3
 
-  $.clearInterval 监听重劈
+  $.clearInterval $watcher.重劈
 
 # ---
 
-ts.凶残裂 = 0
-cd.凶残裂 = 5e3
+$ts.凶残裂 = 0
+$cd.凶残裂 = 5e3
 
 凶残裂 = ->
 
-  unless A_TickCount - ts.凶残裂 > cd.凶残裂
+  unless A_TickCount - $ts.凶残裂 > $cd.凶残裂
     return false
 
-  unless A_TickCount - ts.重劈 < 15e3
+  unless A_TickCount - $ts.重劈 < 15e3
     return false
 
   $.press 'alt + 2'
 
-  $.setInterval 监听凶残裂, 200
+  $.setInterval $watcher.凶残裂, 200
   return true
 
-监听凶残裂 = ->
+$watcher.凶残裂 = ->
 
   unless isUsed '凶残裂'
     return
 
-  ts.凶残裂 = A_TickCount - 2e3
-  ts.重劈 = 0
+  $ts.凶残裂 = A_TickCount - 2e3
+  $ts.重劈 = 0
   
-  $.clearInterval 监听凶残裂
+  $.clearInterval $watcher.凶残裂
 
 # ---
 

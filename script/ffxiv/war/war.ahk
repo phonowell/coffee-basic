@@ -22,15 +22,20 @@ SetMouseDelay 0, 50
 
 ; global variable
 
+global $cd := {}
+global $ts := {}
 global mp := 0
 global hasTarget := false
+global $level := 80
+global $skill := {}
+global $watcher := {}
 global isReporting := true
 global tsReport := 0
 
 ; function
 
 calcCD(name) {
-  result := cd[name] - (A_TickCount - ts[name])
+  result := $cd[name] - (A_TickCount - $ts[name])
   if !(result > 0) {
     return 0
   }
@@ -40,6 +45,21 @@ calcCD(name) {
 
 clearTip() {
   ToolTip
+}
+
+clearWatcher(name, type := "used") {
+  if (type == "used") {
+    if !(isUsed(name)) {
+      return
+    }
+  }
+  else if (type == "status") {
+    if !(hasStatus(name)) {
+      return
+    }
+  }
+  SetTimer %$watcher[name]%, Off
+  $ts[name] := A_TickCount - $cd.技能施放补正
 }
 
 getGroup() {
@@ -149,18 +169,26 @@ resetKey() {
 
 resetTs() {
   for key, value in ts {
-    ts[key] := 0
+    $ts[key] := 0
   }
 }
 
 setLevel() {
-  InputBox level, , % "input level", , , , , , , , % level
-  if !(level > 0) {
-    level := 80
+  InputBox $level, , % "input level", , , , , , , , % $level
+  if !($level > 0) {
+    $level := 80
   }
-  if (level < 10) {
-    level := level * 10
+  if ($level < 10) {
+    $level := $level * 10
   }
+}
+
+use(name, option) {
+  return $skill[name](option)
+}
+
+watch(name) {
+  return $watcher[name]()
 }
 
 攻击() {
@@ -169,24 +197,24 @@ setLevel() {
     return
   }
   report()
-  if !(索敌()) {
+  if !(use("索敌")) {
     return
   }
   if (group == "right") {
-    单体攻击()
+    attackS()
     return
   }
   if (group == "both") {
-    群体攻击()
+    attackM()
     return
   }
 }
 
-绑定攻击() {
+bindAttack() {
   GetKeyState __value__, 2joy4
   isPressing := __value__ == "D"
   if !(isPressing) {
-    SetTimer 绑定攻击, Off
+    SetTimer bindAttack, Off
     SetTimer 清空信息, % 0 - 5000
     return
   }
@@ -226,41 +254,41 @@ report() {
 }
 
 重劈() {
-  if !(A_TickCount - ts.重劈 > cd.重劈) {
+  if !(A_TickCount - $ts.重劈 > $cd.重劈) {
     return false
   }
   Send {alt down}{1}{alt up}
-  SetTimer 监听重劈, % 200
+  SetTimer %$watcher.重劈%, % 200
   return true
 }
 
-监听重劈() {
+__$watcher_dot_重劈__() {
   if !(isUsed("重劈")) {
     return
   }
-  ts.重劈 := A_TickCount - 2000
-  SetTimer 监听重劈, Off
+  $ts.重劈 := A_TickCount - 2000
+  SetTimer %$watcher.重劈%, Off
 }
 
 凶残裂() {
-  if !(A_TickCount - ts.凶残裂 > cd.凶残裂) {
+  if !(A_TickCount - $ts.凶残裂 > $cd.凶残裂) {
     return false
   }
-  if !(A_TickCount - ts.重劈 < 15000) {
+  if !(A_TickCount - $ts.重劈 < 15000) {
     return false
   }
   Send {alt down}{2}{alt up}
-  SetTimer 监听凶残裂, % 200
+  SetTimer %$watcher.凶残裂%, % 200
   return true
 }
 
-监听凶残裂() {
+__$watcher_dot_凶残裂__() {
   if !(isUsed("凶残裂")) {
     return
   }
-  ts.凶残裂 := A_TickCount - 2000
-  ts.重劈 := 0
-  SetTimer 监听凶残裂, Off
+  $ts.凶残裂 := A_TickCount - 2000
+  $ts.重劈 := 0
+  SetTimer %$watcher.凶残裂%, Off
 }
 
 狂暴() {
@@ -389,22 +417,24 @@ report() {
   return hasTarget
 }
 
-单体攻击() {
+attackS() {
   if (凶残裂()) {
     return
   }
   重劈()
 }
 
-群体攻击() {
+attackM() {
   return
 }
 
 __$default__() {
-  ts.重劈 := 0
-  cd.重劈 := 5000
-  ts.凶残裂 := 0
-  cd.凶残裂 := 5000
+  $ts.重劈 := 0
+  $cd.重劈 := 5000
+  $watcher.重劈 := Func("__$watcher_dot_重劈__")
+  $ts.凶残裂 := 0
+  $cd.凶残裂 := 5000
+  $watcher.凶残裂 := Func("__$watcher_dot_凶残裂__")
   SetTimer 清空信息, % 0 - 3000
 }
 
@@ -444,8 +474,8 @@ return
   if !(getGroup()) {
     return
   }
-  SetTimer 绑定攻击, Off
-  SetTimer 绑定攻击, % 300
+  SetTimer bindAttack, Off
+  SetTimer bindAttack, % 300
   攻击()
 return
 

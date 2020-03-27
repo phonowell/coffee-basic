@@ -1,4 +1,4 @@
-black = 0
+$black = 0
 getBlack = ->
   [x, y] = $.findColor '#58483e', 1023, 811, 1170, 811, 10
   
@@ -32,7 +32,7 @@ getDistance = ->
 
 # ---
 
-white = 0
+$white = 0
 getWhite = ->
   [x, y] = $.findColor '#58483e', 1023, 798, 1170, 798, 10
   

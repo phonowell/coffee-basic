@@ -9,7 +9,7 @@ report = ->
   unless isReporting
     return
 
-  msg = "等级：#{level} / 魔力：#{mp}%"
+  msg = "等级：#{$level} / 魔力：#{mp}%"
   msg = "#{msg}`n白：#{white} / 红：#{red}"
   msg = "#{msg}`n耗时：#{A_TickCount - tsReport}ms`n"
   

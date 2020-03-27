@@ -21,130 +21,134 @@ $.on 'alt + f4', ->
 
 # ---
 
-攻击 = ->
+attack = ->
 
   group = getGroup()
-
   unless group
     return
 
+  use '获取状态'
   report()
 
-  unless 索敌()
+  unless use '索敌'
     return
 
   # 单体攻击
   if group == 'right'
-    单体攻击()
+    attackS()
     return
 
   # 群体攻击
   if group == 'both'
-    群体攻击()
+    attackM()
     return
 
-绑定攻击 = ->
+bindAttack = ->
 
-  isPressing = $.isPressing '2-joy-4'
-  unless isPressing
-    $.clearInterval 绑定攻击
+  unless $.isPressing '2-joy-4'
+    $.clearInterval bindAttack
     $.setTimeout 清空信息, 10e3
     return
 
   $.clearTimeout 清空信息
-  攻击()
+  attack()
 
 $.on '2-joy-4', ->
 
   unless getGroup()
     return
 
-  $.clearInterval 绑定攻击
-  $.setInterval 绑定攻击, 300
-  攻击()
+  $.clearInterval bindAttack
+  $.setInterval bindAttack, 300
+  attack()
 
 # ---
 
-特殊攻击 = ->
+attackX = ->
 
   group = getGroup()
-
   unless group
     return
 
+  use '获取状态'
   report()
 
-  unless 索敌()
+  unless use '索敌'
     return
 
+  # 魔三连
   if group == 'right'
-    魔三连()
+    unless use '魔三连'
+      attackS()
+      return
+    use '能力技'
     return
 
   if group == 'both'
-    魔划圆斩()
+    unless use '魔划圆斩'
+      attackM()
+      return
+    use '能力技'
     return
 
-绑定特殊攻击 = ->
+bindAttackX = ->
 
-  isPressing = $.isPressing '2-joy-2'
-  unless isPressing
-    $.clearInterval 绑定特殊攻击
-    $.setTimeout 清空信息, 5e3
+  unless $.isPressing '2-joy-2'
+    $.clearInterval bindAttackSpecial
+    $.setTimeout 清空信息, 10e3
     return
 
   $.clearTimeout 清空信息
-  特殊攻击()
+  attackX()
 
 $.on '2-joy-2', ->
 
   unless getGroup()
     return
 
-  $.clearInterval 绑定特殊攻击
-  $.setInterval 绑定特殊攻击, 300
-  特殊攻击()
+  $.clearInterval bindAttackX
+  $.setInterval bindAttackX, 300
+  attackX()
 
 # ---
 
-治疗 = ->
+heal = ->
 
   group = getGroup()
-
   unless group
     return
 
+  use '获取状态'
   report()
 
-  # 治疗
+  # 单体治疗
   if group == 'right'
-    单体治疗()
+    healS()
     return
 
   # 复活
   if group == 'both'
-    复活()
+    revive()
     return
 
-绑定治疗 = ->
+bindHeal = ->
 
-  isPressing = $.isPressing '2-joy-3'
-  unless isPressing
-    $.clearInterval 绑定治疗
+  unless $.isPressing '2-joy-3'
+    $.clearInterval bindHeal
     $.setTimeout 清空信息, 10e3
     return
 
   $.clearTimeout 清空信息
-  治疗()
+  heal()
 
 $.on '2-joy-3', ->
 
   unless getGroup()
     return
 
-  $.clearInterval 绑定治疗
-  $.setInterval 绑定治疗, 300
-  治疗()
+  $.clearInterval bindHeal
+  $.setInterval bindHeal, 300
+  heal()
 
 # ---
 
@@ -161,4 +165,4 @@ $.on '2-joy-6', ->
 $.on '2-joy-12', ->
   unless getGroup()
     return
-  冲刺()
+  use '冲刺'

@@ -3,14 +3,11 @@ tsReport = 0
 
 report = ->
 
-  black = getBlack()
-  white = getWhite()
-
   unless isReporting
     return
 
-  msg = "等级：#{level} / 魔力：#{mp}%"
-  msg = "#{msg}`n黑：#{black} / 白：#{white}"
+  msg = "等级：#{$level} / 魔力：#{mp}%"
+  msg = "#{msg}`n黑：#{$black} / 白：#{$white}"
   msg = "#{msg}`n目标距离：#{distance}"
   msg = "#{msg}`n耗时：#{A_TickCount - tsReport}ms`n"
   

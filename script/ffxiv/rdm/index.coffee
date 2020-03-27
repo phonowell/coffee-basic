@@ -7,252 +7,165 @@
 
 # ---
 
-level = 80
-ts = {}
-cd = {}
-
-# ---
-
-单体攻击 = ->
+# 单体攻击
+attackS = ->
 
   if isChanting()
     return
 
-  isA = hasStatus '连续咏唱'
-  isB = hasStatus '即刻咏唱'
-  isBR = hasStatus '赤火炎预备'
-  isWR = hasStatus '赤飞石预备'
-
-  if 长单体 isA, isB, isBR, isWR
-    能力技()
+  if attackSL()
+    use '能力技'
     return
 
   if isMoving()
-    续斩()
-    能力技()
+    use '续斩'
+    use '能力技'
     return
 
-  短单体 isA, isB, isBR, isWR
+  attackSS()
 
-# ---
-
-群体攻击 = ->
+# 群体攻击
+attackM = ->
 
   if isChanting()
     return
 
-  isA = hasStatus '连续咏唱'
-  isB = hasStatus '即刻咏唱'
-  if isA or isB
-    散碎()
-    能力技()
+  if $isIM
+    use '散碎'
+    use '能力技'
     return
 
   if isMoving()
-    续斩()
-    能力技()
+    use '续斩'
+    use '能力技'
     return
 
-  if white >= black
-    赤震雷()
+  if $white >= $black
+    use '赤震雷'
   else
-    赤烈风()
+    use '赤烈风'
 
 # ---
 
-魔三连 = ->
+# 单体短攻击
+attackSS = ->
 
-  isValid = true
-
-  if hasStatus '连续咏唱'
-    isValid = false
-  if hasStatus '即刻咏唱'
-    isValid = false
-
-  unless isValid
-    单体攻击()
+  if $isIM
     return
 
-  if 回刺()
-    能力技()
+  if use '调整魔元'
+    use '能力技'
     return
 
-  if 交击斩()
-    能力技()
-    return
-
-  if 连攻()
-    能力技()
-    return
-
-  if 赤神圣()
-    能力技()
-    return
-
-  if 焦热()
-    能力技()
-    return
-
-# ---
-
-魔划圆斩 = ->
-
-  isA = hasStatus '连续咏唱'
-  isB = hasStatus '即刻咏唱'
-  if isA or isB
-    群体攻击()
-    return
-
-  if 划圆斩()
-    能力技()
-    return
-
-  群体攻击()
-
-# ---
-
-短单体 = (isA, isB, isBR, isWR) ->
-
-  if isA or isB
-    return
-
-  if 调整魔元()
-    能力技()
-    return
-
-  if black - white > 21
-    if isWR
-      赤飞石()
+  if $black - $white > 21
+    if $isWR
+      use '赤飞石'
     else
-      摇荡()
+      use '摇荡'
     return
 
-  if white - black > 21
-    if isBR
-      赤火炎()
+  if $white - $black > 21
+    if $isBR
+      use '赤火炎'
     else
-      摇荡()
+      use '摇荡'
     return
 
-  if isWR and isBR
-    if black > white
-      赤飞石()
+  attackSS2()
+
+attackSS2 = ->
+
+  if $isWR and $isBR
+    if $black > $white
+      use '赤飞石'
     else
-      赤火炎()
+      use '赤火炎'
     return
 
-  if isWR
-    赤飞石()
+  if $isWR
+    use '赤飞石'
     return
 
-  if isBR
-    赤火炎()
+  if $isBR
+    use '赤火炎'
     return
 
-  摇荡()
+  use '摇荡'
 
 # ---
 
-调整魔元 = ->
+# 单体长攻击
+attackSL = ->
 
-  unless level >= 60
-    return false
-  
-  unless A_TickCount - ts.倍增 > cd.倍增 - 2e3
-    return false
-  
-  unless black >= 60 and white >= 60
-    return false
-  
-  distance = getDistance()
-  unless distance == 'near'
-    return false
-  
-  划圆斩()
-  return true
-
-# ---
-
-长单体 = (isA, isB, isBR, isWR) ->
-
-  unless isA or isB
+  unless $isIM
     return false
 
-  if black - white > 19
-    赤疾风()
+  if $black - $white > 19
+    use '赤疾风'
     return true
 
-  if white - black > 19
-    赤闪雷()
+  if $white - $black > 19
+    use '赤闪雷'
     return true
   
-  if isWR
-    赤闪雷()
+  if $isWR
+    use '赤闪雷'
     return true
   
-  if isBR
-    赤疾风()
+  if $isBR
+    use '赤疾风'
     return true
 
-  if white >= black
-    赤闪雷()
+  if $white >= $black
+    use '赤闪雷'
   else
-    赤疾风()
+    use '赤疾风'
 
   return true
 
 # ---
 
-单体治疗 = ->
+# 单体治疗
+healS = ->
 
   if isChanting()
     return
 
-  isA = hasStatus '连续咏唱'
-  isB = hasStatus '即刻咏唱'
-  isBR = hasStatus '赤火炎预备'
-  isWR = hasStatus '赤飞石预备'
-
-  if isA or isB
-    unless 索敌()
-      赤治疗()
+  if $isIM
+    unless use '索敌'
+      use '赤治疗'
       return
 
-  if 长单体 isA, isB, isBR, isWR
-    能力技()
+  if attackSL()
+    use '能力技'
     return
 
   if isMoving()
-    续斩()
-    能力技()
+    use '续斩'
+    use '能力技'
     return
 
-  赤治疗()
+  use '赤治疗'
 
 # ---
 
-复活 = ->
+revive = ->
 
   if isChanting()
     return
 
-  isA = hasStatus '连续咏唱'
-  isB = hasStatus '即刻咏唱'
-  isBR = hasStatus '赤火炎预备'
-  isWR = hasStatus '赤飞石预备'
-
-  unless isA or isB
-    unless 索敌()
-      赤治疗()
+  unless $isIM
+    unless use '索敌'
+      use '赤治疗'
       return
 
-  if 短单体 isA, isB, isBR, isWR
+  if attackSS()
     return
 
   if isMoving()
-    续斩()
-    能力技()
+    use '续斩'
+    use '能力技'
     return
 
-  赤复活()
-  能力技()
+  use '赤复活'
+  use '能力技'

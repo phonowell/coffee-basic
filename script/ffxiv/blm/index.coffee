@@ -6,7 +6,7 @@
 
 # ---
 
-单体攻击 = ->
+attackS = ->
 
   if isChanting()
     return
@@ -38,7 +38,7 @@
 
 # ---
 
-群体攻击 = ->
+attackM = ->
   
   if isChanting()
     return

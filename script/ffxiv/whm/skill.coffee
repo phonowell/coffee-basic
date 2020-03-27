@@ -1,5 +1,5 @@
-cd.技能施放判断间隔 = 100
-cd.技能施放补正 = 1500
+$cd.技能施放判断间隔 = 100
+$cd.技能施放补正 = 1500
 
 # ---
 
@@ -12,10 +12,10 @@ cd.技能施放补正 = 1500
 
   unless isMoving()
 
-    if level >= 72
+    if $level >= 72
       if hasStatusTarget '天辉'
         return false
-    else if level >= 46
+    else if $level >= 46
       if hasStatusTarget '烈风'
         return false
     else
@@ -36,7 +36,7 @@ cd.技能施放补正 = 1500
 
 医济 = ->
 
-  unless level >= 50
+  unless $level >= 50
     return false
   
   if hasStatus '医济'
@@ -53,7 +53,7 @@ cd.技能施放补正 = 1500
 
 再生 = ->
 
-  unless level >= 35
+  unless $level >= 35
     return false
   
   if hasStatusTarget '再生'
@@ -69,7 +69,7 @@ cd.技能施放补正 = 1500
 
 愈疗 = ->
 
-  unless level >= 40
+  unless $level >= 40
     return false
 
   $.press 'alt + minus'
@@ -79,7 +79,7 @@ cd.技能施放补正 = 1500
 
 神圣 = ->
 
-  unless level >= 45
+  unless $level >= 45
     return false
   
   $.press 'alt + equal'
@@ -89,7 +89,7 @@ cd.技能施放补正 = 1500
 
 天赐祝福 = ->
 
-  unless level >= 50
+  unless $level >= 50
     return false
 
   $.press 'ctrl + 1'
@@ -99,7 +99,7 @@ cd.技能施放补正 = 1500
 
 安慰之心 = ->
 
-  unless level >= 52
+  unless $level >= 52
     return false
 
   unless white >= 1
@@ -115,7 +115,7 @@ cd.技能施放补正 = 1500
 
 庇护所 = ->
 
-  unless level >= 52
+  unless $level >= 52
     return false
 
   $.press 'ctrl + 3'
@@ -131,7 +131,7 @@ cd.技能施放补正 = 1500
 
 神祝祷 = ->
 
-  unless level >= 66
+  unless $level >= 66
     return false
 
   $.press 'ctrl + 7'
@@ -145,7 +145,7 @@ cd.技能施放补正 = 1500
 
 苦难之心 = ->
 
-  unless level >= 74
+  unless $level >= 74
     return false
 
   unless red >= 3
@@ -158,7 +158,7 @@ cd.技能施放补正 = 1500
 
 狂喜之心 = ->
 
-  unless level >= 76
+  unless $level >= 76
     return false
 
   unless white >= 1
@@ -174,7 +174,7 @@ cd.技能施放补正 = 1500
 
 节制 = ->
 
-  unless level >= 80
+  unless $level >= 80
     return false
 
   $.press 'ctrl + minus'
@@ -194,7 +194,7 @@ cd.技能施放补正 = 1500
 
 沉稳咏唱 = ->
 
-  unless level >= 44
+  unless $level >= 44
     return false
   
   $.press 'shift + 5'
@@ -204,7 +204,7 @@ cd.技能施放补正 = 1500
 
 营救 = ->
 
-  unless level >= 48
+  unless $level >= 48
     return false
 
   $.press 'shift + 6'

@@ -1,12 +1,12 @@
-ts.交剑 = 0
-cd.交剑 = 35e3
+$ts.交剑 = 0
+$cd.交剑 = 35e3
 
-交剑 = ->
+$skill.交剑 = ->
 
-  unless level >= 72
+  unless $level >= 72
     return false
 
-  unless A_TickCount - ts.交剑 > cd.交剑
+  unless A_TickCount - $ts.交剑 > $cd.交剑
     return false
 
   distance = getDistance()
@@ -15,12 +15,8 @@ cd.交剑 = 35e3
 
   $.press 'ctrl + 0'
   
-  ts.交剑 = A_TickCount - cd.交剑 + cd.技能施放补正
-  $.setInterval 监听交剑, cd.技能施放判断间隔
+  $ts.交剑 = A_TickCount - $cd.交剑 + $cd.技能施放补正
+  $.setInterval $watcher.交剑, $cd.技能施放判断间隔
   return true
 
-监听交剑 = ->
-  unless isUsed '交剑'
-    return
-  $.clearInterval 监听交剑
-  ts.交剑 = A_TickCount - cd.技能施放补正
+$watcher.交剑 = -> clearWatcher '交剑'

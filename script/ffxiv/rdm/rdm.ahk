@@ -22,22 +22,24 @@ SetMouseDelay 0, 50
 
 ; global variable
 
+global $cd := {}
+global $ts := {}
 global mp := 0
 global hasTarget := false
-global black := 0
+global $level := 80
+global $skill := {}
+global $watcher := {}
+global $black := 0
 global distance := "far"
-global white := 0
+global $white := 0
 global isReporting := false
 global tsReport := 0
 global 能力技余额 := 0
-global level := 80
-global ts := {}
-global cd := {}
 
 ; function
 
 calcCD(name) {
-  result := cd[name] - (A_TickCount - ts[name])
+  result := $cd[name] - (A_TickCount - $ts[name])
   if !(result > 0) {
     return 0
   }
@@ -47,6 +49,21 @@ calcCD(name) {
 
 clearTip() {
   ToolTip
+}
+
+clearWatcher(name, type := "used") {
+  if (type == "used") {
+    if !(isUsed(name)) {
+      return
+    }
+  }
+  else if (type == "status") {
+    if !(hasStatus(name)) {
+      return
+    }
+  }
+  SetTimer %$watcher[name]%, Off
+  $ts[name] := A_TickCount - $cd.技能施放补正
 }
 
 getGroup() {
@@ -156,108 +173,121 @@ resetKey() {
 
 resetTs() {
   for key, value in ts {
-    ts[key] := 0
+    $ts[key] := 0
   }
 }
 
 setLevel() {
-  InputBox level, , % "input level", , , , , , , , % level
-  if !(level > 0) {
-    level := 80
+  InputBox $level, , % "input level", , , , , , , , % $level
+  if !($level > 0) {
+    $level := 80
   }
-  if (level < 10) {
-    level := level * 10
+  if ($level < 10) {
+    $level := $level * 10
   }
 }
 
-攻击() {
+use(name, option) {
+  return $skill[name](option)
+}
+
+watch(name) {
+  return $watcher[name]()
+}
+
+attack() {
   group := getGroup()
   if !(group) {
     return
   }
+  use("获取状态")
   report()
-  if !(索敌()) {
+  if !(use("索敌")) {
     return
   }
   if (group == "right") {
-    单体攻击()
+    attackS()
     return
   }
   if (group == "both") {
-    群体攻击()
+    attackM()
     return
   }
 }
 
-绑定攻击() {
-  GetKeyState __value__, 2joy4
-  isPressing := __value__ == "D"
-  if !(isPressing) {
-    SetTimer 绑定攻击, Off
-    SetTimer 清空信息, % 0 - 10000
+bindAttack() {
+  if !($.isPressing("2-joy-4")) {
+    SetTimer bindAttack, Off
+    SetTimer %清空信息%, % 0 - 10000
     return
   }
-  SetTimer 清空信息, Off
-  攻击()
+  SetTimer %清空信息%, Off
+  attack()
 }
 
-特殊攻击() {
+attackX() {
   group := getGroup()
   if !(group) {
     return
   }
+  use("获取状态")
   report()
-  if !(索敌()) {
+  if !(use("索敌")) {
     return
   }
   if (group == "right") {
-    魔三连()
+    if !(use("魔三连")) {
+      attackS()
+      return
+    }
+    use("能力技")
     return
   }
   if (group == "both") {
-    魔划圆斩()
+    if !(use("魔划圆斩")) {
+      attackM()
+      return
+    }
+    use("能力技")
     return
   }
 }
 
-绑定特殊攻击() {
-  GetKeyState __value__, 2joy2
-  isPressing := __value__ == "D"
-  if !(isPressing) {
-    SetTimer 绑定特殊攻击, Off
-    SetTimer 清空信息, % 0 - 5000
+bindAttackX() {
+  if !($.isPressing("2-joy-2")) {
+    SetTimer %bindAttackSpecial%, Off
+    SetTimer %清空信息%, % 0 - 10000
     return
   }
-  SetTimer 清空信息, Off
-  特殊攻击()
+  SetTimer %清空信息%, Off
+  attackX()
 }
 
-治疗() {
+heal() {
   group := getGroup()
   if !(group) {
     return
   }
+  use("获取状态")
   report()
   if (group == "right") {
-    单体治疗()
+    healS()
     return
   }
   if (group == "both") {
-    复活()
+    revive()
     return
   }
 }
 
-绑定治疗() {
-  GetKeyState __value__, 2joy3
-  isPressing := __value__ == "D"
-  if !(isPressing) {
-    SetTimer 绑定治疗, Off
-    SetTimer 清空信息, % 0 - 10000
+bindHeal() {
+  if !($.isPressing("2-joy-3")) {
+    SetTimer bindHeal, Off
+    SetTimer %清空信息%, % 0 - 10000
     return
   }
-  SetTimer 清空信息, Off
-  治疗()
+  SetTimer %清空信息%, Off
+  heal()
 }
 
 getBlack() {
@@ -298,13 +328,11 @@ getWhite() {
 }
 
 report() {
-  black := getBlack()
-  white := getWhite()
   if !(isReporting) {
     return
   }
-  msg := "等级：" . level . " / 魔力：" . mp . "%"
-  msg := "" . msg . "`n黑：" . black . " / 白：" . white . ""
+  msg := "等级：" . $level . " / 魔力：" . mp . "%"
+  msg := "" . msg . "`n黑：" . $black . " / 白：" . $white . ""
   msg := "" . msg . "`n目标距离：" . distance . ""
   msg := "" . msg . "`n耗时：" . A_TickCount - tsReport . "ms`n"
   tsReport := A_TickCount
@@ -322,8 +350,8 @@ report() {
   SetTimer clearTip, % 0 - 5000
 }
 
-回刺() {
-  if !(A_TickCount - ts.回刺 > cd.回刺) {
+__$skill_dot_回刺__() {
+  if !(A_TickCount - $ts.回刺 > $cd.回刺) {
     return false
   }
   if !(black >= 80 and white >= 80) {
@@ -336,29 +364,25 @@ report() {
     return false
   }
   Send {alt down}{1}{alt up}
-  SetTimer 监听回刺, % cd.技能施放判断间隔
+  SetTimer %$watcher.回刺%, % $cd.技能施放判断间隔
   return true
 }
 
-监听回刺() {
-  if !(isUsed("魔回刺")) {
-    return
-  }
-  SetTimer 监听回刺, Off
-  ts.回刺 := A_TickCount - cd.技能施放补正
+__$watcher_dot_回刺__() {
+  clearWatcher("魔回刺")
 }
 
-摇荡() {
+__$skill_dot_摇荡__() {
   Send {alt down}{2}{alt up}
 }
 
-赤闪雷() {
+__$skill_dot_赤闪雷__() {
   Send {alt down}{3}{alt up}
-  ts.赤疾风 := A_TickCount
+  $ts.赤疾风 := A_TickCount
 }
 
-短兵相接(isForced := false) {
-  if !(A_TickCount - ts.短兵相接 > cd.短兵相接) {
+__$skill_dot_短兵相接__(isForced := false) {
+  if !(A_TickCount - $ts.短兵相接 > $cd.短兵相接) {
     return false
   }
   distance := getDistance()
@@ -366,275 +390,249 @@ report() {
     return false
   }
   Send {alt down}{4}{alt up}
-  ts.短兵相接 := A_TickCount - cd.短兵相接 + cd.技能施放补正
-  SetTimer 监听短兵相接, % cd.技能施放判断间隔
+  $ts.短兵相接 := A_TickCount - $cd.短兵相接 + $cd.技能施放补正
+  SetTimer %$watcher.短兵相接%, % $cd.技能施放判断间隔
   return true
 }
 
-监听短兵相接() {
-  if !(isUsed("短兵相接")) {
-    return
-  }
-  SetTimer 监听短兵相接, Off
-  ts.短兵相接 := A_TickCount - cd.技能施放补正
+__$watcher_dot_短兵相接__() {
+  clearWatcher("短兵相接")
 }
 
-赤疾风() {
+__$skill_dot_赤疾风__() {
   Send {alt down}{5}{alt up}
-  ts.赤疾风 := A_TickCount
+  $ts.赤疾风 := A_TickCount
 }
 
-散碎() {
+__$skill_dot_散碎__() {
   Send {alt down}{6}{alt up}
 }
 
-赤震雷() {
+__$skill_dot_赤震雷__() {
   Send {alt down}{7}{alt up}
 }
 
-赤烈风() {
+__$skill_dot_赤烈风__() {
   Send {alt down}{8}{alt up}
 }
 
-赤火炎() {
+__$skill_dot_赤火炎__() {
   Send {alt down}{9}{alt up}
 }
 
-赤飞石() {
+__$skill_dot_赤飞石__() {
   Send {alt down}{0}{alt up}
 }
 
-交击斩() {
-  if !(level >= 35) {
+__$skill_dot_交击斩__() {
+  if !($level >= 35) {
     return false
   }
-  if !(A_TickCount - ts.交击斩 > cd.交击斩) {
+  if !(A_TickCount - $ts.交击斩 > $cd.交击斩) {
     return false
   }
-  if !(A_TickCount - ts.回刺 < cd.魔三连) {
+  if !(A_TickCount - $ts.回刺 < $cd.comboZ) {
     return false
   }
-  if !(black >= 50 and white >= 50) {
+  if !($black >= 50 and $white >= 50) {
     return false
   }
   Send {alt down}{-}{alt up}
-  SetTimer 监听交击斩, % cd.技能施放判断间隔
+  SetTimer %$watcher.交击斩%, % $cd.技能施放判断间隔
   return true
 }
 
-监听交击斩() {
+__$watcher_dot_交击斩__() {
   if !(isUsed("魔交击斩")) {
     return
   }
-  SetTimer 监听交击斩, Off
-  ts.交击斩 := A_TickCount - cd.技能施放补正
+  SetTimer %$watcher.交击斩%, Off
+  $ts.交击斩 := A_TickCount - $cd.技能施放补正
 }
 
-移转() {
-  if !(level >= 40) {
+__$skill_dot_移转__() {
+  if !($level >= 40) {
     return false
   }
   Send {alt down}{=}{alt up}
   return true
 }
 
-飞刺() {
-  if !(level >= 45) {
+__$skill_dot_飞刺__() {
+  if !($level >= 45) {
     return false
   }
-  if !(A_TickCount - ts.飞刺 > cd.飞刺) {
+  if !(A_TickCount - $ts.飞刺 > $cd.飞刺) {
     return false
   }
   Send {ctrl down}{1}{ctrl up}
-  ts.飞刺 := A_TickCount - cd.飞刺 + cd.技能施放补正
-  SetTimer 监听飞刺, % cd.技能施放判断间隔
+  $ts.飞刺 := A_TickCount - $cd.飞刺 + $cd.技能施放补正
+  SetTimer %$watcher.飞刺%, % $cd.技能施放判断间隔
   return true
 }
 
-监听飞刺() {
-  if !(isUsed("飞刺")) {
-    return
-  }
-  SetTimer 监听飞刺, Off
-  ts.飞刺 := A_TickCount - cd.技能施放补正
+__$watcher_dot_飞刺__() {
+  clearWatcher("飞刺")
 }
 
-连攻() {
-  if !(level >= 50) {
+__$skill_dot_连攻__() {
+  if !($level >= 50) {
     return false
   }
-  if !(A_TickCount - ts.连攻 > cd.连攻) {
+  if !(A_TickCount - $ts.连攻 > $cd.连攻) {
     return false
   }
-  if !(A_TickCount - ts.交击斩 < cd.魔三连) {
+  if !(A_TickCount - $ts.交击斩 < $cd.comboZ) {
     return false
   }
-  if !(black >= 25 and white >= 25) {
+  if !($black >= 25 and $white >= 25) {
     return false
   }
   Send {ctrl down}{2}{ctrl up}
-  SetTimer 监听连攻, % cd.技能施放判断间隔
+  SetTimer %$watcher.连攻%, % $cd.技能施放判断间隔
   return true
 }
 
-监听连攻() {
+__$watcher_dot_连攻__() {
   if !(isUsed("魔连攻")) {
     return
   }
-  SetTimer 监听连攻, Off
-  ts.连攻 := A_TickCount - cd.技能施放补正
+  SetTimer %$watcher.连攻%, Off
+  $ts.连攻 := A_TickCount - $cd.技能施放补正
 }
 
-促进() {
-  if !(level >= 50) {
+__$skill_dot_促进__() {
+  if !($level >= 50) {
     return false
   }
-  if !(A_TickCount - ts.促进 > cd.促进) {
+  if !(A_TickCount - $ts.促进 > $cd.促进) {
     return false
   }
-  if !(A_TickCount - ts.赤疾风 < 2000) {
+  if !(A_TickCount - $ts.赤疾风 < 2000) {
     return false
   }
-  if !(A_TickCount - ts.回刺 > cd.魔三连) {
+  if !(A_TickCount - $ts.回刺 > $cd.comboZ) {
     return false
   }
-  if (black > 70 or white > 70) {
+  if ($black > 70 or $white > 70) {
     return false
   }
-  isBR := hasStatus("赤火炎预备")
-  isWR := hasStatus("赤飞石预备")
-  if (isBR or isWR) {
+  if ($isBR or $isWR) {
     return false
   }
   Send {ctrl down}{3}{ctrl up}
-  ts.促进 := A_TickCount - cd.促进 + cd.技能施放补正
-  SetTimer 监听促进, % cd.技能施放判断间隔
+  $ts.促进 := A_TickCount - $cd.促进 + $cd.技能施放补正
+  SetTimer %$watcher.促进%, % $cd.技能施放判断间隔
   return true
 }
 
-监听促进() {
-  if !(isUsed("促进")) {
-    return
-  }
-  SetTimer 监听促进, Off
-  ts.促进 := A_TickCount - cd.技能施放补正
+__$watcher_dot_促进__() {
+  clearWatcher("促进")
 }
 
-划圆斩() {
-  if !(level >= 52) {
+__$skill_dot_划圆斩__() {
+  if !($level >= 52) {
     return false
   }
-  if !(black >= 20 and white >= 20) {
+  if !($black >= 20 and $white >= 20) {
     return false
   }
   distance := getDistance()
   if !(distance == "near") {
-    短兵相接(true)
+    use("短兵相接", true)
     return false
   }
   Send {ctrl down}{4}{ctrl up}
   return true
 }
 
-赤治疗() {
-  if !(level >= 54) {
+__$skill_dot_赤治疗__() {
+  if !($level >= 54) {
     return false
   }
   Send {ctrl down}{5}{ctrl up}
   return true
 }
 
-六分反击() {
-  if !(level >= 56) {
+__$skill_dot_六分反击__() {
+  if !($level >= 56) {
     return false
   }
-  if !(A_TickCount - ts.六分反击 > cd.六分反击) {
+  if !(A_TickCount - $ts.六分反击 > $cd.六分反击) {
     return false
   }
   Send {ctrl down}{6}{ctrl up}
-  ts.六分反击 := A_TickCount - cd.六分反击 + cd.技能施放补正
-  SetTimer 监听六分反击, % cd.技能施放判断间隔
+  $ts.六分反击 := A_TickCount - $cd.六分反击 + $cd.技能施放补正
+  SetTimer %$watcher.六分反击%, % $cd.技能施放判断间隔
   return true
 }
 
-监听六分反击() {
-  if !(isUsed("六分反击")) {
-    return
-  }
-  SetTimer 监听六分反击, Off
-  ts.六分反击 := A_TickCount - cd.技能施放补正
+__$watcher_dot_六分反击__() {
+  clearWatcher("六分反击")
 }
 
-鼓励() {
-  if !(level >= 58) {
+__$skill_dot_鼓励__() {
+  if !($level >= 58) {
     return false
   }
-  if !(A_TickCount - ts.鼓励 > cd.鼓励) {
+  if !(A_TickCount - $ts.鼓励 > $cd.鼓励) {
     return false
   }
-  if !(A_TickCount - ts.回刺 < cd.回刺) {
+  if !(A_TickCount - $ts.回刺 < $cd.回刺) {
     return false
   }
   Send {ctrl down}{7}{ctrl up}
-  ts.鼓励 := A_TickCount - cd.鼓励 + cd.技能施放补正
-  SetTimer 监听鼓励, % cd.技能施放判断间隔
+  $ts.鼓励 := A_TickCount - $cd.鼓励 + $cd.技能施放补正
+  SetTimer %$watcher.鼓励%, % $cd.技能施放判断间隔
   return true
 }
 
-监听鼓励() {
-  if !(isUsed("鼓励")) {
-    return
-  }
-  SetTimer 监听鼓励, Off
-  ts.鼓励 := A_TickCount - cd.技能施放补正
+__$watcher_dot_鼓励__() {
+  clearWatcher("鼓励")
 }
 
-倍增() {
-  if !(level >= 60) {
+__$skill_dot_倍增__() {
+  if !($level >= 60) {
     return false
   }
-  if !(A_TickCount - ts.倍增 > cd.倍增) {
+  if !(A_TickCount - $ts.倍增 > $cd.倍增) {
     return false
   }
-  if (A_TickCount - ts.回刺 < cd.魔三连) {
+  if (A_TickCount - $ts.回刺 < $cd.comboZ) {
     return false
   }
-  if !(black >= 40 and black <= 70) {
+  if !($black >= 40 and $black <= 70) {
     return false
   }
-  if !(white >= 40 and white <= 70) {
+  if !($white >= 40 and $white <= 70) {
     return false
   }
   Send {ctrl down}{8}{ctrl up}
-  ts.倍增 := A_TickCount - cd.倍增 + cd.技能施放补正
-  SetTimer 监听倍增, % cd.技能施放判断间隔
+  $ts.倍增 := A_TickCount - $cd.倍增 + $cd.技能施放补正
+  SetTimer %$watcher.倍增%, % $cd.技能施放判断间隔
   return true
 }
 
-监听倍增() {
-  if !(isUsed("倍增")) {
-    return
-  }
-  SetTimer 监听倍增, Off
-  ts.倍增 := A_TickCount - cd.技能施放补正
-  ts.短兵相接 := 0
-  ts.移转 := 0
-  ts.交剑 := 0
+__$watcher_dot_倍增__() {
+  clearWatcher("倍增")
+  $ts.短兵相接 := 0
+  $ts.移转 := 0
+  $ts.交剑 := 0
 }
 
-赤复活() {
-  if !(level >= 64) {
+__$skill_dot_赤复活__() {
+  if !($level >= 64) {
     return false
   }
   Send {ctrl down}{9}{ctrl up}
   return true
 }
 
-交剑() {
-  if !(level >= 72) {
+__$skill_dot_交剑__() {
+  if !($level >= 72) {
     return false
   }
-  if !(A_TickCount - ts.交剑 > cd.交剑) {
+  if !(A_TickCount - $ts.交剑 > $cd.交剑) {
     return false
   }
   distance := getDistance()
@@ -642,71 +640,61 @@ report() {
     return false
   }
   Send {ctrl down}{0}{ctrl up}
-  ts.交剑 := A_TickCount - cd.交剑 + cd.技能施放补正
-  SetTimer 监听交剑, % cd.技能施放判断间隔
+  $ts.交剑 := A_TickCount - $cd.交剑 + $cd.技能施放补正
+  SetTimer %$watcher.交剑%, % $cd.技能施放判断间隔
   return true
 }
 
-监听交剑() {
-  if !(isUsed("交剑")) {
-    return
-  }
-  SetTimer 监听交剑, Off
-  ts.交剑 := A_TickCount - cd.技能施放补正
+__$watcher_dot_交剑__() {
+  clearWatcher("交剑")
 }
 
-续斩() {
-  if !(level >= 76) {
+__$skill_dot_续斩__() {
+  if !($level >= 76) {
     return false
   }
   Send {ctrl down}{-}{ctrl up}
   return true
 }
 
-昏乱() {
+__$skill_dot_昏乱__() {
   Send {shift down}{1}{shift up}
 }
 
-即刻咏唱() {
-  if !(level >= 18) {
+__$skill_dot_即刻咏唱__() {
+  if !($level >= 18) {
     return false
   }
-  if !(A_TickCount - ts.即刻咏唱 > cd.即刻咏唱) {
+  if !(A_TickCount - $ts.即刻咏唱 > $cd.即刻咏唱) {
     return false
   }
-  if !(A_TickCount - ts.回刺 > cd.回刺) {
+  if !(A_TickCount - $ts.回刺 > $cd.回刺) {
     return false
   }
-  if (black > 70 or white > 70) {
+  if ($black > 70 or $white > 70) {
     return false
   }
   if (hasStatus("连续咏唱")) {
     return false
   }
-  isBR := hasStatus("赤火炎预备")
-  isWR := hasStatus("赤飞石预备")
-  if (isBR and isWR) {
+  if ($isBR and $isWR) {
     return
   }
   Send {shift down}{2}{shift up}
-  ts.即刻咏唱 := A_TickCount - cd.即刻咏唱 + cd.技能施放补正
-  SetTimer 监听即刻咏唱, % cd.技能施放判断间隔
+  $ts.即刻咏唱 := A_TickCount - $cd.即刻咏唱 + $cd.技能施放补正
+  SetTimer %$watcher.即刻咏唱%, % $cd.技能施放判断间隔
   return true
 }
 
-监听即刻咏唱() {
-  if !(hasStatus("即刻咏唱")) {
-    return
-  }
-  SetTimer 监听即刻咏唱, Off
-  ts.即刻咏唱 := A_TickCount - cd.技能施放补正
+__$watcher_dot_即刻咏唱__() {
+  clearWatcher("即刻咏唱", "status")
 }
 
-醒梦() {
-  if !(level >= 24) {
+__$skill_dot_醒梦__() {
+  if !($level >= 24) {
     return false
   }
-  if !(A_TickCount - ts.醒梦 > cd.醒梦) {
+  if !(A_TickCount - $ts.醒梦 > $cd.醒梦) {
     return false
   }
   mp := getMp()
@@ -714,118 +702,108 @@ report() {
     return false
   }
   Send {shift down}{3}{shift up}
-  ts.醒梦 := A_TickCount - cd.醒梦 + cd.技能施放补正
-  SetTimer 监听醒梦, % cd.技能施放判断间隔
+  $ts.醒梦 := A_TickCount - $cd.醒梦 + $cd.技能施放补正
+  SetTimer %$watcher.醒梦%, % $cd.技能施放判断间隔
   return true
 }
 
-监听醒梦() {
-  if !(hasStatus("醒梦")) {
-    return
-  }
-  SetTimer 监听醒梦, Off
-  ts.醒梦 := A_TickCount - cd.技能施放补正
+__$watcher_dot_醒梦__() {
+  clearWatcher("醒梦", "status")
 }
 
-沉稳咏唱() {
-  if !(level >= 44) {
+__$skill_dot_沉稳咏唱__() {
+  if !($level >= 44) {
     return false
   }
   Send {shift down}{4}{shift up}
   return true
 }
 
-冲刺() {
+__$skill_dot_冲刺__() {
   Send {shift down}{-}{shift up}
 }
 
-清空信息() {
+__$skill_dot_清空信息__() {
   Send {shift down}{=}{shift up}
 }
 
-赤神圣() {
-  if !(level >= 70) {
+__$skill_dot_赤神圣__() {
+  if !($level >= 70) {
     return false
   }
-  if !(A_TickCount - ts.赤神圣 > cd.赤神圣) {
+  if !(A_TickCount - $ts.赤神圣 > $cd.赤神圣) {
     return false
   }
-  if !(A_TickCount - ts.连攻 < 15000) {
+  if !(A_TickCount - $ts.连攻 < 15000) {
     return false
   }
   赤神圣施放()
-  SetTimer 监听赤神圣, % cd.技能施放判断间隔
+  SetTimer %$watcher.赤神圣%, % $cd.技能施放判断间隔
   return true
 }
 
-监听赤神圣() {
+__$watcher_dot_赤神圣__() {
   isA := isUsed("赤核爆")
   isB := isUsed("赤神圣")
   if !(isA or isB) {
     return
   }
-  SetTimer 监听赤神圣, Off
-  ts.赤神圣 := A_TickCount - cd.技能施放补正
+  SetTimer %$watcher.赤神圣%, Off
+  $ts.赤神圣 := A_TickCount - $cd.技能施放补正
 }
 
 赤神圣施放() {
-  if (black - white > 9) {
-    赤疾风()
+  if ($black - $white > 9) {
+    use("赤疾风")
     return
   }
-  if (white - black > 9) {
-    赤闪雷()
+  if ($white - $black > 9) {
+    use("赤闪雷")
     return
   }
-  isBR := hasStatus("赤火炎预备")
-  isWR := hasStatus("赤飞石预备")
-  if (isBR and isWR) {
-    if (black > white) {
-      赤疾风()
+  if ($isBR and $isWR) {
+    if ($black > $white) {
+      use("赤疾风")
     }
     else {
-      赤闪雷()
+      use("赤闪雷")
     }
     return
   }
-  if (isBR) {
-    赤疾风()
+  if ($isBR) {
+    use("赤疾风")
     return
   }
-  if (isWR) {
-    赤闪雷()
+  if ($isWR) {
+    use("赤闪雷")
     return
   }
-  if (black > white) {
-    赤疾风()
+  if ($black > $white) {
+    use("赤疾风")
   }
   else {
-    赤闪雷()
+    use("赤闪雷")
   }
 }
 
-焦热() {
-  if !(level >= 80) {
+__$skill_dot_焦热__() {
+  if !($level >= 80) {
     return false
   }
-  if !(A_TickCount - ts.焦热 > cd.焦热) {
+  if !(A_TickCount - $ts.焦热 > $cd.焦热) {
     SoundBeep
     return false
   }
-  if !(A_TickCount - ts.赤神圣 < 15000) {
+  if !(A_TickCount - $ts.赤神圣 < 15000) {
     return false
   }
   摇荡()
-  SetTimer 监听焦热, % cd.技能施放判断间隔
+  SetTimer %$watcher.焦热%, % $cd.技能施放判断间隔
   return true
 }
 
-监听焦热() {
-  if !(isUsed("焦热")) {
-    return
-  }
-  SetTimer 监听焦热, Off
-  ts.焦热 := A_TickCount - cd.技能施放补正
+__$watcher_dot_焦热__() {
+  clearWatcher("焦热")
 }
 
 索敌() {
@@ -845,11 +823,11 @@ report() {
   Send {space}
 }
 
-能力技(n := 2) {
-  if !(A_TickCount - ts.能力技 > cd.能力技) {
+__$skill_dot_能力技__(n := 2) {
+  if !(A_TickCount - $ts.能力技 > $cd.能力技) {
     return
   }
-  ts.能力技 := A_TickCount
+  $ts.能力技 := A_TickCount
   能力技余额 := -n
   SetTimer 施放能力技, % 500
 }
@@ -868,80 +846,54 @@ report() {
 }
 
 能力技施放() {
-  if (倍增()) {
+  if (use("倍增")) {
     return
   }
-  if (鼓励()) {
+  if (use("鼓励")) {
     return
   }
-  if (促进()) {
+  if (use("促进")) {
     return
   }
-  if (即刻咏唱()) {
+  if (use("即刻咏唱")) {
     return
   }
-  if (飞刺()) {
+  if (use("飞刺")) {
     return
   }
-  if (六分反击()) {
+  if (use("六分反击")) {
     return
   }
-  if (短兵相接()) {
+  if (use("短兵相接")) {
     return
   }
-  if (交剑()) {
+  if (use("交剑")) {
     return
   }
-  if (醒梦()) {
+  if (use("醒梦")) {
     return
   }
 }
 
-单体攻击() {
-  if (isChanting()) {
+__$skill_dot_调整魔元__() {
+  if !($level >= 60) {
     return
   }
-  isA := hasStatus("连续咏唱")
-  isB := hasStatus("即刻咏唱")
-  isBR := hasStatus("赤火炎预备")
-  isWR := hasStatus("赤飞石预备")
-  if (长单体(isA, isB, isBR, isWR)) {
-    能力技()
+  if !(A_TickCount - $ts.倍增 > $cd.倍增 - 2000) {
     return
   }
-  if (isMoving()) {
-    续斩()
-    能力技()
+  if !($black >= 60 and $white >= 60) {
     return
   }
-  短单体(isA, isB, isBR, isWR)
+  distance := getDistance()
+  if !(distance == "near") {
+    return
+  }
+  use("划圆斩")
+  return true
 }
 
-群体攻击() {
-  if (isChanting()) {
-    return
-  }
-  isA := hasStatus("连续咏唱")
-  isB := hasStatus("即刻咏唱")
-  if (isA or isB) {
-    散碎()
-    能力技()
-    return
-  }
-  if (isMoving()) {
-    续斩()
-    能力技()
-    return
-  }
-  if (white >= black) {
-    赤震雷()
-  }
-  else {
-    赤烈风()
-  }
-}
-
-魔三连() {
+__$skill_dot_魔三连__() {
   isValid := true
   if (hasStatus("连续咏唱")) {
     isValid := false
@@ -950,225 +902,281 @@ report() {
     isValid := false
   }
   if !(isValid) {
-    单体攻击()
     return
   }
-  if (回刺()) {
-    能力技()
-    return
+  if (use("回刺")) {
+    return true
   }
-  if (交击斩()) {
-    能力技()
-    return
+  if (use("交击斩")) {
+    return true
   }
-  if (连攻()) {
-    能力技()
-    return
+  if (use("连攻")) {
+    return true
   }
-  if (赤神圣()) {
-    能力技()
-    return
+  if (use("赤神圣")) {
+    return true
   }
-  if (焦热()) {
-    能力技()
-    return
+  if (use("焦热")) {
+    return true
   }
 }
 
-魔划圆斩() {
-  isA := hasStatus("连续咏唱")
-  isB := hasStatus("即刻咏唱")
-  if (isA or isB) {
-    群体攻击()
+__$skill_dot_魔划圆斩__() {
+  if ($isIM) {
     return
   }
-  if (划圆斩()) {
-    能力技()
+  if !(use("划圆斩")) {
     return
   }
-  群体攻击()
-}
-
-短单体(isA, isB, isBR, isWR) {
-  if (isA or isB) {
-    return
-  }
-  if (调整魔元()) {
-    能力技()
-    return
-  }
-  if (black - white > 21) {
-    if (isWR) {
-      赤飞石()
-    }
-    else {
-      摇荡()
-    }
-    return
-  }
-  if (white - black > 21) {
-    if (isBR) {
-      赤火炎()
-    }
-    else {
-      摇荡()
-    }
-    return
-  }
-  if (isWR and isBR) {
-    if (black > white) {
-      赤飞石()
-    }
-    else {
-      赤火炎()
-    }
-    return
-  }
-  if (isWR) {
-    赤飞石()
-    return
-  }
-  if (isBR) {
-    赤火炎()
-    return
-  }
-  摇荡()
-}
-
-调整魔元() {
-  if !(level >= 60) {
-    return false
-  }
-  if !(A_TickCount - ts.倍增 > cd.倍增 - 2000) {
-    return false
-  }
-  if !(black >= 60 and white >= 60) {
-    return false
-  }
-  distance := getDistance()
-  if !(distance == "near") {
-    return false
-  }
-  划圆斩()
+  use("能力技")
   return true
 }
 
-长单体(isA, isB, isBR, isWR) {
-  if !(isA or isB) {
-    return false
+attackS() {
+  if (isChanting()) {
+    return
   }
-  if (black - white > 19) {
-    赤疾风()
-    return true
+  if (attackSL()) {
+    use("能力技")
+    return
   }
-  if (white - black > 19) {
-    赤闪雷()
-    return true
+  if (isMoving()) {
+    use("续斩")
+    use("能力技")
+    return
   }
-  if (isWR) {
-    赤闪雷()
-    return true
+  attackSS()
+}
+
+attackM() {
+  if (isChanting()) {
+    return
   }
-  if (isBR) {
-    赤疾风()
-    return true
+  if ($isIM) {
+    use("散碎")
+    use("能力技")
+    return
   }
-  if (white >= black) {
-    赤闪雷()
+  if (isMoving()) {
+    use("续斩")
+    use("能力技")
+    return
+  }
+  if ($white >= $black) {
+    use("赤震雷")
   }
   else {
-    赤疾风()
+    use("赤烈风")
+  }
+}
+
+attackSS() {
+  if ($isIM) {
+    return
+  }
+  if (use("调整魔元")) {
+    use("能力技")
+    return
+  }
+  if ($black - $white > 21) {
+    if ($isWR) {
+      use("赤飞石")
+    }
+    else {
+      use("摇荡")
+    }
+    return
+  }
+  if ($white - $black > 21) {
+    if ($isBR) {
+      use("赤火炎")
+    }
+    else {
+      use("摇荡")
+    }
+    return
+  }
+  attackSS2()
+}
+
+attackSS2() {
+  if ($isWR and $isBR) {
+    if ($black > $white) {
+      use("赤飞石")
+    }
+    else {
+      use("赤火炎")
+    }
+    return
+  }
+  if ($isWR) {
+    use("赤飞石")
+    return
+  }
+  if ($isBR) {
+    use("赤火炎")
+    return
+  }
+  use("摇荡")
+}
+
+attackSL() {
+  if !($isIM) {
+    return false
+  }
+  if ($black - $white > 19) {
+    use("赤疾风")
+    return true
+  }
+  if ($white - $black > 19) {
+    use("赤闪雷")
+    return true
+  }
+  if ($isWR) {
+    use("赤闪雷")
+    return true
+  }
+  if ($isBR) {
+    use("赤疾风")
+    return true
+  }
+  if ($white >= $black) {
+    use("赤闪雷")
+  }
+  else {
+    use("赤疾风")
   }
   return true
 }
 
-单体治疗() {
+healS() {
   if (isChanting()) {
     return
   }
-  isA := hasStatus("连续咏唱")
-  isB := hasStatus("即刻咏唱")
-  isBR := hasStatus("赤火炎预备")
-  isWR := hasStatus("赤飞石预备")
-  if (isA or isB) {
-    if !(索敌()) {
-      赤治疗()
+  if ($isIM) {
+    if !(use("索敌")) {
+      use("赤治疗")
       return
     }
   }
-  if (长单体(isA, isB, isBR, isWR)) {
-    能力技()
+  if (attackSL()) {
+    use("能力技")
     return
   }
   if (isMoving()) {
-    续斩()
-    能力技()
+    use("续斩")
+    use("能力技")
     return
   }
-  赤治疗()
+  use("赤治疗")
 }
 
-复活() {
+revive() {
   if (isChanting()) {
     return
   }
-  isA := hasStatus("连续咏唱")
-  isB := hasStatus("即刻咏唱")
-  isBR := hasStatus("赤火炎预备")
-  isWR := hasStatus("赤飞石预备")
-  if !(isA or isB) {
-    if !(索敌()) {
-      赤治疗()
+  if !($isIM) {
+    if !(use("索敌")) {
+      use("赤治疗")
       return
     }
   }
-  if (短单体(isA, isB, isBR, isWR)) {
+  if (attackSS()) {
     return
   }
   if (isMoving()) {
-    续斩()
-    能力技()
+    use("续斩")
+    use("能力技")
     return
   }
-  赤复活()
-  能力技()
+  use("赤复活")
+  use("能力技")
 }
 
 __$default__() {
-  cd.技能施放判断间隔 := 100
-  cd.技能施放补正 := 1500
-  cd.魔三连 := 15000
-  ts.回刺 := 0
-  cd.回刺 := 10000
-  ts.短兵相接 := 0
-  cd.短兵相接 := 40000
-  ts.赤疾风 := 0
-  ts.交击斩 := 0
-  cd.交击斩 := 10000
-  ts.飞刺 := 0
-  cd.飞刺 := 25000
-  ts.连攻 := 0
-  cd.连攻 := 10000
-  ts.促进 := 0
-  cd.促进 := 55000
-  ts.六分反击 := 0
-  cd.六分反击 := 35000
-  ts.鼓励 := 0
-  cd.鼓励 := 120000
-  ts.倍增 := 0
-  cd.倍增 := 110000
-  ts.交剑 := 0
-  cd.交剑 := 35000
-  ts.即刻咏唱 := 0
-  cd.即刻咏唱 := 60000
-  ts.醒梦 := 0
-  cd.醒梦 := 60000
-  ts.赤神圣 := 0
-  cd.赤神圣 := 10000
-  ts.焦热 := 0
-  cd.焦热 := 10000
-  ts.能力技 := 0
-  cd.能力技 := 1000
+  $cd.技能施放判断间隔 := 100
+  $cd.技能施放补正 := 1500
+  $cd.comboZ := 15000
+  $ts.回刺 := 0
+  $cd.回刺 := 10000
+  $skill.回刺 := Func("__$skill_dot_回刺__")
+  $watcher.回刺 := Func("__$watcher_dot_回刺__")
+  $skill.摇荡 := Func("__$skill_dot_摇荡__")
+  $skill.赤闪雷 := Func("__$skill_dot_赤闪雷__")
+  $ts.短兵相接 := 0
+  $cd.短兵相接 := 40000
+  $skill.短兵相接 := Func("__$skill_dot_短兵相接__")
+  $watcher.短兵相接 := Func("__$watcher_dot_短兵相接__")
+  $ts.赤疾风 := 0
+  $skill.赤疾风 := Func("__$skill_dot_赤疾风__")
+  $skill.散碎 := Func("__$skill_dot_散碎__")
+  $skill.赤震雷 := Func("__$skill_dot_赤震雷__")
+  $skill.赤烈风 := Func("__$skill_dot_赤烈风__")
+  $skill.赤火炎 := Func("__$skill_dot_赤火炎__")
+  $skill.赤飞石 := Func("__$skill_dot_赤飞石__")
+  $ts.交击斩 := 0
+  $cd.交击斩 := 10000
+  $skill.交击斩 := Func("__$skill_dot_交击斩__")
+  $watcher.交击斩 := Func("__$watcher_dot_交击斩__")
+  $skill.移转 := Func("__$skill_dot_移转__")
+  $ts.飞刺 := 0
+  $cd.飞刺 := 25000
+  $skill.飞刺 := Func("__$skill_dot_飞刺__")
+  $watcher.飞刺 := Func("__$watcher_dot_飞刺__")
+  $ts.连攻 := 0
+  $cd.连攻 := 10000
+  $skill.连攻 := Func("__$skill_dot_连攻__")
+  $watcher.连攻 := Func("__$watcher_dot_连攻__")
+  $ts.促进 := 0
+  $cd.促进 := 55000
+  $skill.促进 := Func("__$skill_dot_促进__")
+  $watcher.促进 := Func("__$watcher_dot_促进__")
+  $skill.划圆斩 := Func("__$skill_dot_划圆斩__")
+  $skill.赤治疗 := Func("__$skill_dot_赤治疗__")
+  $ts.六分反击 := 0
+  $cd.六分反击 := 35000
+  $skill.六分反击 := Func("__$skill_dot_六分反击__")
+  $watcher.六分反击 := Func("__$watcher_dot_六分反击__")
+  $ts.鼓励 := 0
+  $cd.鼓励 := 120000
+  $skill.鼓励 := Func("__$skill_dot_鼓励__")
+  $watcher.鼓励 := Func("__$watcher_dot_鼓励__")
+  $ts.倍增 := 0
+  $cd.倍增 := 110000
+  $skill.倍增 := Func("__$skill_dot_倍增__")
+  $watcher.倍增 := Func("__$watcher_dot_倍增__")
+  $skill.赤复活 := Func("__$skill_dot_赤复活__")
+  $ts.交剑 := 0
+  $cd.交剑 := 35000
+  $skill.交剑 := Func("__$skill_dot_交剑__")
+  $watcher.交剑 := Func("__$watcher_dot_交剑__")
+  $skill.续斩 := Func("__$skill_dot_续斩__")
+  $skill.昏乱 := Func("__$skill_dot_昏乱__")
+  $ts.即刻咏唱 := 0
+  $cd.即刻咏唱 := 60000
+  $skill.即刻咏唱 := Func("__$skill_dot_即刻咏唱__")
+  $watcher.即刻咏唱 := Func("__$watcher_dot_即刻咏唱__")
+  $ts.醒梦 := 0
+  $cd.醒梦 := 60000
+  $skill.醒梦 := Func("__$skill_dot_醒梦__")
+  $watcher.醒梦 := Func("__$watcher_dot_醒梦__")
+  $skill.沉稳咏唱 := Func("__$skill_dot_沉稳咏唱__")
+  $skill.冲刺 := Func("__$skill_dot_冲刺__")
+  $skill.清空信息 := Func("__$skill_dot_清空信息__")
+  $ts.赤神圣 := 0
+  $cd.赤神圣 := 10000
+  $skill.赤神圣 := Func("__$skill_dot_赤神圣__")
+  $watcher.赤神圣 := Func("__$watcher_dot_赤神圣__")
+  $ts.焦热 := 0
+  $cd.焦热 := 10000
+  $skill.焦热 := Func("__$skill_dot_焦热__")
+  $watcher.焦热 := Func("__$watcher_dot_焦热__")
+  $ts.能力技 := 0
+  $cd.能力技 := 1000
+  $skill.能力技 := Func("__$skill_dot_能力技__")
+  $skill.调整魔元 := Func("__$skill_dot_调整魔元__")
+  $skill.魔三连 := Func("__$skill_dot_魔三连__")
+  $skill.魔划圆斩 := Func("__$skill_dot_魔划圆斩__")
 }
 
 ; default
@@ -1201,27 +1209,27 @@ return
   if !(getGroup()) {
     return
   }
-  SetTimer 绑定攻击, Off
-  SetTimer 绑定攻击, % 300
-  攻击()
+  SetTimer bindAttack, Off
+  SetTimer bindAttack, % 300
+  attack()
 return
 
 2joy2::
   if !(getGroup()) {
     return
   }
-  SetTimer 绑定特殊攻击, Off
-  SetTimer 绑定特殊攻击, % 300
-  特殊攻击()
+  SetTimer bindAttackX, Off
+  SetTimer bindAttackX, % 300
+  attackX()
 return
 
 2joy3::
   if !(getGroup()) {
     return
   }
-  SetTimer 绑定治疗, Off
-  SetTimer 绑定治疗, % 300
-  治疗()
+  SetTimer bindHeal, Off
+  SetTimer bindHeal, % 300
+  heal()
 return
 
 2joy5::
@@ -1242,7 +1250,7 @@ return
   if !(getGroup()) {
     return
   }
-  冲刺()
+  use("冲刺")
 return
 
 ; eof

@@ -50,7 +50,7 @@ report = ->
   
   tsReport = A_TickCount
 
-  res = calcCD ts.即刻咏唱, cd.即刻咏唱
+  res = calcCD $ts.即刻咏唱, $cd.即刻咏唱
   if res
     msg = "#{msg}`n即刻咏唱：#{res}s"
   

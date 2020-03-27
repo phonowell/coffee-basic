@@ -22,8 +22,13 @@ SetMouseDelay 0, 50
 
 ; global variable
 
+global $cd := {}
+global $ts := {}
 global mp := 0
 global hasTarget := false
+global $level := 80
+global $skill := {}
+global $watcher := {}
 global 制作 := []
 global 加工 := []
 global 精修 := []
@@ -52,7 +57,7 @@ global 工匠的神速技巧 := []
 ; function
 
 calcCD(name) {
-  result := cd[name] - (A_TickCount - ts[name])
+  result := $cd[name] - (A_TickCount - $ts[name])
   if !(result > 0) {
     return 0
   }
@@ -62,6 +67,21 @@ calcCD(name) {
 
 clearTip() {
   ToolTip
+}
+
+clearWatcher(name, type := "used") {
+  if (type == "used") {
+    if !(isUsed(name)) {
+      return
+    }
+  }
+  else if (type == "status") {
+    if !(hasStatus(name)) {
+      return
+    }
+  }
+  SetTimer %$watcher[name]%, Off
+  $ts[name] := A_TickCount - $cd.技能施放补正
 }
 
 getGroup() {
@@ -171,18 +191,26 @@ resetKey() {
 
 resetTs() {
   for key, value in ts {
-    ts[key] := 0
+    $ts[key] := 0
   }
 }
 
 setLevel() {
-  InputBox level, , % "input level", , , , , , , , % level
-  if !(level > 0) {
-    level := 80
+  InputBox $level, , % "input level", , , , , , , , % $level
+  if !($level > 0) {
+    $level := 80
   }
-  if (level < 10) {
-    level := level * 10
+  if ($level < 10) {
+    $level := $level * 10
   }
+}
+
+use(name, option) {
+  return $skill[name](option)
+}
+
+watch(name) {
+  return $watcher[name]()
 }
 
 使用(list) {

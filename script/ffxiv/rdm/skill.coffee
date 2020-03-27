@@ -1,6 +1,6 @@
-cd.技能施放判断间隔 = 100
-cd.技能施放补正 = 1500
-cd.魔三连 = 15e3
+$cd.技能施放判断间隔 = 100
+$cd.技能施放补正 = 1500
+$cd.comboZ = 15e3
 
 # ---
 
@@ -8,13 +8,13 @@ cd.魔三连 = 15e3
 
 # ---
 
-摇荡 = -> $.press 'alt + 2'
+$skill.摇荡 = -> $.press 'alt + 2'
 
 # ---
 
-赤闪雷 = ->
+$skill.赤闪雷 = ->
   $.press 'alt + 3'
-  ts.赤疾风 = A_TickCount
+  $ts.赤疾风 = A_TickCount
 
 # ---
 
@@ -22,18 +22,18 @@ cd.魔三连 = 15e3
 
 # ---
 
-ts.赤疾风 = 0
-赤疾风 = ->
+$ts.赤疾风 = 0
+$skill.赤疾风 = ->
   $.press 'alt + 5'
-  ts.赤疾风 = A_TickCount
+  $ts.赤疾风 = A_TickCount
 
 # ---
 
-散碎 = -> $.press 'alt + 6'
-赤震雷 = -> $.press 'alt + 7'
-赤烈风 = -> $.press 'alt + 8'
-赤火炎 = -> $.press 'alt + 9'
-赤飞石 = -> $.press 'alt + 0'
+$skill.散碎 = -> $.press 'alt + 6'
+$skill.赤震雷 = -> $.press 'alt + 7'
+$skill.赤烈风 = -> $.press 'alt + 8'
+$skill.赤火炎 = -> $.press 'alt + 9'
+$skill.赤飞石 = -> $.press 'alt + 0'
 
 # ---
 
@@ -41,9 +41,9 @@ ts.赤疾风 = 0
 
 # ---
 
-移转 = ->
+$skill.移转 = ->
 
-  unless level >= 40
+  unless $level >= 40
     return false
 
   $.press 'alt + equal'
@@ -57,17 +57,17 @@ ts.赤疾风 = 0
 
 # ---
 
-划圆斩 = ->
+$skill.划圆斩 = ->
 
-  unless level >= 52
+  unless $level >= 52
     return false
 
-  unless black >= 20 and white >= 20
+  unless $black >= 20 and $white >= 20
     return false
 
   distance = getDistance()
   unless distance == 'near'
-    短兵相接 true
+    use '短兵相接', true
     return false
 
   $.press 'ctrl + 4'
@@ -75,9 +75,9 @@ ts.赤疾风 = 0
 
 # ---
 
-赤治疗 = ->
+$skill.赤治疗 = ->
 
-  unless level >= 54
+  unless $level >= 54
     return false
 
   $.press 'ctrl + 5'
@@ -91,9 +91,9 @@ ts.赤疾风 = 0
 
 # ---
 
-赤复活 = ->
+$skill.赤复活 = ->
 
-  unless level >= 64
+  unless $level >= 64
     return false
 
   $.press 'ctrl + 9'
@@ -105,9 +105,9 @@ ts.赤疾风 = 0
 
 # ---
 
-续斩 = ->
+$skill.续斩 = ->
 
-  unless level >= 76
+  unless $level >= 76
     return false
   
   $.press 'ctrl + minus'
@@ -115,7 +115,7 @@ ts.赤疾风 = 0
 
 # ---
 
-昏乱 = -> $.press 'shift + 1'
+$skill.昏乱 = -> $.press 'shift + 1'
 
 # ---
 
@@ -124,9 +124,9 @@ ts.赤疾风 = 0
 
 # ---
 
-沉稳咏唱 = ->
+$skill.沉稳咏唱 = ->
 
-  unless level >= 44
+  unless $level >= 44
     return false
 
   $.press 'shift + 4'
@@ -134,8 +134,8 @@ ts.赤疾风 = 0
 
 # ---
 
-冲刺 = -> $.press 'shift + minus'
-清空信息 = -> $.press 'shift + equal'
+$skill.冲刺 = -> $.press 'shift + minus'
+$skill.清空信息 = -> $.press 'shift + equal'
   
 # ---
 
@@ -144,3 +144,6 @@ ts.赤疾风 = 0
 # include ../common/skill/索敌
 # include ../common/skill/中断咏唱
 # include skill/能力技
+# include skill/调整魔元
+# include skill/魔三连
+# include skill/魔划圆斩

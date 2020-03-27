@@ -22,8 +22,13 @@ SetMouseDelay 0, 50
 
 ; global variable
 
+global $cd := {}
+global $ts := {}
 global mp := 0
 global hasTarget := false
+global $level := 80
+global $skill := {}
+global $watcher := {}
 global isDotEnabled := true
 global element := false
 global isMpLacking := false
@@ -33,7 +38,7 @@ global tsReport := 0
 ; function
 
 calcCD(name) {
-  result := cd[name] - (A_TickCount - ts[name])
+  result := $cd[name] - (A_TickCount - $ts[name])
   if !(result > 0) {
     return 0
   }
@@ -43,6 +48,21 @@ calcCD(name) {
 
 clearTip() {
   ToolTip
+}
+
+clearWatcher(name, type := "used") {
+  if (type == "used") {
+    if !(isUsed(name)) {
+      return
+    }
+  }
+  else if (type == "status") {
+    if !(hasStatus(name)) {
+      return
+    }
+  }
+  SetTimer %$watcher[name]%, Off
+  $ts[name] := A_TickCount - $cd.技能施放补正
 }
 
 getGroup() {
@@ -152,18 +172,26 @@ resetKey() {
 
 resetTs() {
   for key, value in ts {
-    ts[key] := 0
+    $ts[key] := 0
   }
 }
 
 setLevel() {
-  InputBox level, , % "input level", , , , , , , , % level
-  if !(level > 0) {
-    level := 80
+  InputBox $level, , % "input level", , , , , , , , % $level
+  if !($level > 0) {
+    $level := 80
   }
-  if (level < 10) {
-    level := level * 10
+  if ($level < 10) {
+    $level := $level * 10
   }
+}
+
+use(name, option) {
+  return $skill[name](option)
+}
+
+watch(name) {
+  return $watcher[name]()
 }
 
 攻击() {
@@ -172,22 +200,22 @@ setLevel() {
     return
   }
   report()
-  索敌()
+  use("索敌")
   if (group == "right") {
-    单体攻击()
+    attackS()
     return
   }
   if (group == "both") {
-    群体攻击()
+    attackM()
     return
   }
 }
 
-绑定攻击() {
+bindAttack() {
   GetKeyState __value__, 2joy4
   isPressing := __value__ == "D"
   if !(isPressing) {
-    SetTimer 绑定攻击, Off
+    SetTimer bindAttack, Off
     SetTimer 清空信息, % 0 - 5000
     return
   }
@@ -237,7 +265,7 @@ report() {
   msg := "" . msg . "`n使用Dot：" . isDotEnabled . ""
   msg := "" . msg . "`n耗时：" . A_TickCount - tsReport . "ms`n"
   tsReport := A_TickCount
-  res := calcCD(ts.即刻咏唱, cd.即刻咏唱)
+  res := calcCD($ts.即刻咏唱, $cd.即刻咏唱)
   if (res) {
     msg := "" . msg . "`n即刻咏唱：" . res . "s"
   }
@@ -262,14 +290,14 @@ report() {
   if (!isDotEnabled) {
     return false
   }
-  if !(A_TickCount - ts.闪雷 > cd.闪雷) {
+  if !(A_TickCount - $ts.闪雷 > $cd.闪雷) {
     return false
   }
   if (hasStatusTarget("闪雷")) {
     return false
   }
   Send {alt down}{4}{alt up}
-  ts.闪雷 := A_TickCount - 2000
+  $ts.闪雷 := A_TickCount - 2000
   return true
 }
 
@@ -290,14 +318,14 @@ report() {
 }
 
 震雷() {
-  if !(A_TickCount - ts.震雷 > cd.震雷) {
+  if !(A_TickCount - $ts.震雷 > $cd.震雷) {
     return false
   }
   if (hasStatusTarget("震雷")) {
     return false
   }
   Send {alt down}{9}{alt up}
-  ts.震雷 := A_TickCount - 2000
+  $ts.震雷 := A_TickCount - 2000
   return true
 }
 
@@ -318,20 +346,20 @@ report() {
 }
 
 即刻咏唱() {
-  if !(A_TickCount - ts.即刻咏唱 > cd.即刻咏唱) {
+  if !(A_TickCount - $ts.即刻咏唱 > $cd.即刻咏唱) {
     return false
   }
   Send {shift down}{5}{shift up}
-  SetTimer 监听即刻咏唱, % 200
+  SetTimer %$watcher.即刻咏唱%, % 200
   return true
 }
 
-监听即刻咏唱() {
+__$watcher_dot_即刻咏唱__() {
   if !(isUsed("即刻咏唱2")) {
     return
   }
-  SetTimer 监听即刻咏唱, Off
-  ts.即刻咏唱 := A_TickCount - 2000
+  SetTimer %$watcher.即刻咏唱%, Off
+  $ts.即刻咏唱 := A_TickCount - 2000
 }
 
 醒梦() {
@@ -355,7 +383,7 @@ report() {
   Send {shift down}{=}{shift up}
 }
 
-单体攻击() {
+attackS() {
   if (isChanting()) {
     return
   }
@@ -383,7 +411,7 @@ report() {
   return
 }
 
-群体攻击() {
+attackM() {
   if (isChanting()) {
     return
   }
@@ -412,12 +440,13 @@ report() {
 }
 
 __$default__() {
-  ts.闪雷 := 0
-  cd.闪雷 := 10000
-  ts.震雷 := 0
-  cd.震雷 := 10000
-  ts.即刻咏唱 := 0
-  cd.即刻咏唱 := 60000
+  $ts.闪雷 := 0
+  $cd.闪雷 := 10000
+  $ts.震雷 := 0
+  $cd.震雷 := 10000
+  $ts.即刻咏唱 := 0
+  $cd.即刻咏唱 := 60000
+  $watcher.即刻咏唱 := Func("__$watcher_dot_即刻咏唱__")
   SetTimer 清空信息, % 0 - 3000
 }
 
@@ -468,8 +497,8 @@ return
   if !(getGroup()) {
     return
   }
-  SetTimer 绑定攻击, Off
-  SetTimer 绑定攻击, % 300
+  SetTimer bindAttack, Off
+  SetTimer bindAttack, % 300
   攻击()
 return
 
