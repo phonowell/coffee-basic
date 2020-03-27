@@ -1,3 +1,15 @@
+calcCD = (name) ->
+  
+  result = cd[name] - (A_TickCount - ts[name])
+  
+  unless result > 0
+    return 0
+  
+  result = Math.round result / 1e3
+  return result
+
+# ---
+
 clearTip = -> $.tip()
 
 # ---
@@ -139,6 +151,14 @@ isTargeting = ->
 
 # ---
 
+makeReportMsg = (msg, name) ->
+  result = calcCD name
+  unless result
+    return msg
+  return "#{msg}`n#{name}：#{result}s"
+
+# ---
+
 resetKey = ->
   $.press 'alt:up'
   $.press 'ctrl:up'
@@ -150,5 +170,9 @@ resetTs = ->
 
 setLevel = ->
   level = prompt 'input level', level
+  
   unless level > 0
     level = 80
+
+  if level < 10
+    level = level * 10

@@ -51,6 +51,15 @@ global 工匠的神速技巧 := []
 
 ; function
 
+calcCD(name) {
+  result := cd[name] - (A_TickCount - ts[name])
+  if !(result > 0) {
+    return 0
+  }
+  result := Round(result / 1000)
+  return result
+}
+
 clearTip() {
   ToolTip
 }
@@ -146,6 +155,14 @@ isTargeting() {
   return false
 }
 
+makeReportMsg(msg, name) {
+  result := calcCD(name)
+  if !(result) {
+    return msg
+  }
+  return "" . msg . "`n" . name . "：" . result . "s"
+}
+
 resetKey() {
   Send {alt up}
   Send {ctrl up}
@@ -162,6 +179,9 @@ setLevel() {
   InputBox level, , % "input level", , , , , , , , % level
   if !(level > 0) {
     level := 80
+  }
+  if (level < 10) {
+    level := level * 10
   }
 }
 

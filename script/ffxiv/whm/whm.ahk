@@ -34,6 +34,15 @@ global cd := {}
 
 ; function
 
+calcCD(name) {
+  result := cd[name] - (A_TickCount - ts[name])
+  if !(result > 0) {
+    return 0
+  }
+  result := Round(result / 1000)
+  return result
+}
+
 clearTip() {
   ToolTip
 }
@@ -129,6 +138,14 @@ isTargeting() {
   return false
 }
 
+makeReportMsg(msg, name) {
+  result := calcCD(name)
+  if !(result) {
+    return msg
+  }
+  return "" . msg . "`n" . name . "：" . result . "s"
+}
+
 resetKey() {
   Send {alt up}
   Send {ctrl up}
@@ -145,6 +162,9 @@ setLevel() {
   InputBox level, , % "input level", , , , , , , , % level
   if !(level > 0) {
     level := 80
+  }
+  if (level < 10) {
+    level := level * 10
   }
 }
 
@@ -239,24 +259,6 @@ getWhite() {
   return 0
 }
 
-calcCD(ts, cd) {
-  result := cd - (A_TickCount - ts)
-  if !(result > 0) {
-    return 0
-  }
-  result := result / 1000
-  result := Round(result)
-  return result
-}
-
-makeMsg(msg, prefix, ts, cd) {
-  res := calcCD(ts, cd)
-  if !(res) {
-    return msg
-  }
-  return "" . msg . "`n" . prefix . "：" . res . "s"
-}
-
 report() {
   red := getRed()
   white := getWhite()
@@ -267,13 +269,13 @@ report() {
   msg := "" . msg . "`n白：" . white . " / 红：" . red . ""
   msg := "" . msg . "`n耗时：" . A_TickCount - tsReport . "ms`n"
   tsReport := A_TickCount
-  msg := makeMsg(msg, "神速咏唱", ts.神速咏唱, cd.神速咏唱)
-  msg := makeMsg(msg, "法令", ts.法令, cd.法令)
-  msg := makeMsg(msg, "无中生有", ts.无中生有, cd.无中生有)
-  msg := makeMsg(msg, "神名", ts.神名, cd.神名)
-  msg := makeMsg(msg, "全大赦", ts.全大赦, cd.全大赦)
-  msg := makeMsg(msg, "即刻咏唱", ts.即刻咏唱, cd.即刻咏唱)
-  msg := makeMsg(msg, "醒梦", ts.醒梦, cd.醒梦)
+  msg := makeReportMsg(msg, "神速咏唱")
+  msg := makeReportMsg(msg, "法令")
+  msg := makeReportMsg(msg, "无中生有")
+  msg := makeReportMsg(msg, "神名")
+  msg := makeReportMsg(msg, "全大赦")
+  msg := makeReportMsg(msg, "即刻咏唱")
+  msg := makeReportMsg(msg, "醒梦")
   ToolTip % msg, 410, 640
   SetTimer clearTip, Off
   SetTimer clearTip, % 0 - 5000
