@@ -37,6 +37,50 @@ global $isReporting := true
 
 ; function
 
+toggleView() {
+  GetKeyState __value__, 2joy5
+  isPressing := __value__ == "D"
+  if !(isPressing) {
+    SetTimer toggleView, Off
+    Send {ctrl up}{up up}
+    return
+  }
+  GetKeyState state, 2joyr
+  if (state < 20) {
+    Send {ctrl down}{up down}
+  }
+}
+
+attack() {
+  group := getGroup()
+  if !(group) {
+    return
+  }
+  use("获取状态")
+  use("报告")
+  if !(use("索敌")) {
+    return
+  }
+  if (group == "right") {
+    attackS()
+    return
+  }
+  if (group == "both") {
+    attackM()
+    return
+  }
+}
+
+bindAttack() {
+  GetKeyState __value__, 2joy4
+  isPressing := __value__ == "D"
+  if !(isPressing) {
+    SetTimer bindAttack, Off
+    return
+  }
+  attack()
+}
+
 calcCD(name) {
   result := $cd[name] - (A_TickCount - $ts[name])
   if !(result > 0) {
@@ -68,6 +112,7 @@ clearWatcher(name, type := "used") {
   __timer__ := $watcher[name]
   SetTimer %__timer__%, Off
   $ts[name] := A_TickCount - $cd.技能施放补正
+  return true
 }
 
 getGroup() {
@@ -208,50 +253,6 @@ watch(name) {
     return
   }
   return $watcher[name]()
-}
-
-attack() {
-  group := getGroup()
-  if !(group) {
-    return
-  }
-  use("获取状态")
-  use("报告")
-  if !(use("索敌")) {
-    return
-  }
-  if (group == "right") {
-    attackS()
-    return
-  }
-  if (group == "both") {
-    attackM()
-    return
-  }
-}
-
-bindAttack() {
-  GetKeyState __value__, 2joy4
-  isPressing := __value__ == "D"
-  if !(isPressing) {
-    SetTimer bindAttack, Off
-    return
-  }
-  attack()
-}
-
-toggleView() {
-  GetKeyState __value__, 2joy5
-  isPressing := __value__ == "D"
-  if !(isPressing) {
-    SetTimer toggleView, Off
-    Send {ctrl up}{up up}
-    return
-  }
-  GetKeyState state, 2joyr
-  if (state < 20) {
-    Send {ctrl down}{up down}
-  }
 }
 
 getRed() {
@@ -601,7 +602,7 @@ __$skill_dot_冲刺__() {
   Send {shift down}{-}{shift up}
 }
 
-__$skill_dot_清空信息__() {
+__$skill_dot_空白信息__() {
   Send {shift down}{=}{shift up}
 }
 
@@ -653,7 +654,9 @@ __$skill_dot_报告__() {
 
 __$skill_dot_获取状态__() {
   if (A_TickCount - $ts.获取状态 > 10000) {
-    use("清空信息")
+    use("空白信息")
+    use("空白信息")
+    use("空白信息")
   }
   $ts.获取状态 := A_TickCount
   $isMoving := isMoving()
@@ -774,7 +777,7 @@ __$default__() {
   $skill.沉稳咏唱 := Func("__$skill_dot_沉稳咏唱__")
   $skill.营救 := Func("__$skill_dot_营救__")
   $skill.冲刺 := Func("__$skill_dot_冲刺__")
-  $skill.清空信息 := Func("__$skill_dot_清空信息__")
+  $skill.空白信息 := Func("__$skill_dot_空白信息__")
   $skill.中断咏唱 := Func("__$skill_dot_中断咏唱__")
   $skill.索敌 := Func("__$skill_dot_索敌__")
   $ts.报告 := 0
@@ -807,6 +810,29 @@ return
   resetKey()
   SoundBeep
   ExitApp
+return
+
+2joy5::
+  if !(getGroup() == "both") {
+    SetTimer toggleView, Off
+    SetTimer toggleView, % 300
+    return
+  }
+  Send {shift down}{tab}{shift up}
+return
+
+2joy6::
+  if !(getGroup() == "both") {
+    return
+  }
+  Send {tab}
+return
+
+2joy12::
+  if !(getGroup()) {
+    return
+  }
+  use("冲刺")
 return
 
 2joy4::
@@ -874,29 +900,6 @@ return
     use("愈疗")
     return
   }
-return
-
-2joy5::
-  if !(getGroup() == "both") {
-    SetTimer toggleView, Off
-    SetTimer toggleView, % 300
-    return
-  }
-  Send {shift down}{tab}{shift up}
-return
-
-2joy6::
-  if !(getGroup() == "both") {
-    return
-  }
-  Send {tab}
-return
-
-2joy12::
-  if !(getGroup()) {
-    return
-  }
-  use("冲刺")
 return
 
 ; eof

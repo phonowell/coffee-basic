@@ -9,7 +9,7 @@ $skill.连攻 = ->
   unless A_TickCount - $ts.连攻 > $cd.连攻
     return
 
-  unless A_TickCount - $ts.交击斩 < $cd.comboZ
+  unless A_TickCount - $ts.交击斩 < $cd.魔三连
     return
 
   unless $black >= 25 and $white >= 25

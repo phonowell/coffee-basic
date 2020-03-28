@@ -213,7 +213,7 @@ $skill.营救 = ->
 # ---
 
 $skill.冲刺 = -> $.press 'shift + minus'
-$skill.清空信息 = -> $.press 'shift + equal'
+$skill.空白信息 = -> $.press 'shift + equal'
 
 # ---
 

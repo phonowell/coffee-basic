@@ -8,8 +8,4 @@ $skill.获取状态 = ->
     use '空白信息'
   $ts.获取状态 = A_TickCount
 
-  $isMoving = isMoving()
-  $isChanting = isChanting()
-
-  $red = getRed()
-  $white = getWhite()
+  $distance = getDistance()

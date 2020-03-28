@@ -65,6 +65,7 @@ clearWatcher(name, type := "used") {
   __timer__ := $watcher[name]
   SetTimer %__timer__%, Off
   $ts[name] := A_TickCount - $cd.技能施放补正
+  return true
 }
 
 getGroup() {
@@ -226,9 +227,12 @@ f6::
 return
 
 f9::
-  x := 1875
-  y := 723
+  x := 1479
+  y := 682
   PixelGetColor color, x, y, RGB
+  if (color == 0xD23A3A) {
+    return
+  }
   ToolTip % "" . x . ", " . y . ", " . color . ""
 return
 

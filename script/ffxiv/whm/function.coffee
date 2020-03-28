@@ -1,3 +1,7 @@
+# include ../common/function
+
+# ---
+
 $red = 0
 getRed = ->
 

@@ -42,6 +42,115 @@ global $isWR := false
 
 ; function
 
+toggleView() {
+  GetKeyState __value__, 2joy5
+  isPressing := __value__ == "D"
+  if !(isPressing) {
+    SetTimer toggleView, Off
+    Send {ctrl up}{up up}
+    return
+  }
+  GetKeyState state, 2joyr
+  if (state < 20) {
+    Send {ctrl down}{up down}
+  }
+}
+
+attack() {
+  group := getGroup()
+  if !(group) {
+    return
+  }
+  use("获取状态")
+  use("报告")
+  if !(use("索敌")) {
+    return
+  }
+  if (group == "right") {
+    attackS()
+    return
+  }
+  if (group == "both") {
+    attackM()
+    return
+  }
+}
+
+bindAttack() {
+  GetKeyState __value__, 2joy4
+  isPressing := __value__ == "D"
+  if !(isPressing) {
+    SetTimer bindAttack, Off
+    return
+  }
+  attack()
+}
+
+attackX() {
+  group := getGroup()
+  if !(group) {
+    return
+  }
+  use("获取状态")
+  use("报告")
+  if !(use("索敌")) {
+    return
+  }
+  if (group == "right") {
+    if !(use("魔三连")) {
+      attackS()
+      return
+    }
+    use("能力技")
+    return
+  }
+  if (group == "both") {
+    if !(use("魔划圆斩")) {
+      attackM()
+      return
+    }
+    use("能力技")
+    return
+  }
+}
+
+bindAttackX() {
+  GetKeyState __value__, 2joy2
+  isPressing := __value__ == "D"
+  if !(isPressing) {
+    SetTimer bindAttackX, Off
+    return
+  }
+  attackX()
+}
+
+heal() {
+  group := getGroup()
+  if !(group) {
+    return
+  }
+  use("获取状态")
+  use("报告")
+  if (group == "right") {
+    healS()
+    return
+  }
+  if (group == "both") {
+    revive()
+    return
+  }
+}
+
+bindHeal() {
+  GetKeyState __value__, 2joy3
+  isPressing := __value__ == "D"
+  if !(isPressing) {
+    SetTimer bindHeal, Off
+    return
+  }
+  heal()
+}
+
 calcCD(name) {
   result := $cd[name] - (A_TickCount - $ts[name])
   if !(result > 0) {
@@ -73,6 +182,7 @@ clearWatcher(name, type := "used") {
   __timer__ := $watcher[name]
   SetTimer %__timer__%, Off
   $ts[name] := A_TickCount - $cd.技能施放补正
+  return true
 }
 
 getGroup() {
@@ -215,115 +325,6 @@ watch(name) {
   return $watcher[name]()
 }
 
-attack() {
-  group := getGroup()
-  if !(group) {
-    return
-  }
-  use("获取状态")
-  use("报告")
-  if !(use("索敌")) {
-    return
-  }
-  if (group == "right") {
-    attackS()
-    return
-  }
-  if (group == "both") {
-    attackM()
-    return
-  }
-}
-
-bindAttack() {
-  GetKeyState __value__, 2joy4
-  isPressing := __value__ == "D"
-  if !(isPressing) {
-    SetTimer bindAttack, Off
-    return
-  }
-  attack()
-}
-
-attackX() {
-  group := getGroup()
-  if !(group) {
-    return
-  }
-  use("获取状态")
-  use("报告")
-  if !(use("索敌")) {
-    return
-  }
-  if (group == "right") {
-    if !(use("魔三连")) {
-      attackS()
-      return
-    }
-    use("能力技")
-    return
-  }
-  if (group == "both") {
-    if !(use("魔划圆斩")) {
-      attackM()
-      return
-    }
-    use("能力技")
-    return
-  }
-}
-
-bindAttackX() {
-  GetKeyState __value__, 2joy2
-  isPressing := __value__ == "D"
-  if !(isPressing) {
-    SetTimer bindAttackX, Off
-    return
-  }
-  attackX()
-}
-
-heal() {
-  group := getGroup()
-  if !(group) {
-    return
-  }
-  use("获取状态")
-  use("报告")
-  if (group == "right") {
-    healS()
-    return
-  }
-  if (group == "both") {
-    revive()
-    return
-  }
-}
-
-bindHeal() {
-  GetKeyState __value__, 2joy3
-  isPressing := __value__ == "D"
-  if !(isPressing) {
-    SetTimer bindHeal, Off
-    return
-  }
-  heal()
-}
-
-toggleView() {
-  GetKeyState __value__, 2joy5
-  isPressing := __value__ == "D"
-  if !(isPressing) {
-    SetTimer toggleView, Off
-    Send {ctrl up}{up up}
-    return
-  }
-  GetKeyState state, 2joyr
-  if (state < 20) {
-    Send {ctrl down}{up down}
-  }
-}
-
 getBlack() {
   PixelSearch x, y, 1023, 811, 1170, 811, 0x58483E, 10, Fast RGB
   if !(x) {
@@ -446,7 +447,7 @@ __$skill_dot_交击斩__() {
   if !(A_TickCount - $ts.交击斩 > $cd.交击斩) {
     return
   }
-  if !(A_TickCount - $ts.回刺 < $cd.comboZ) {
+  if !(A_TickCount - $ts.回刺 < $cd.魔三连) {
     return
   }
   if !($black >= 50 and $white >= 50) {
@@ -497,7 +498,7 @@ __$skill_dot_连攻__() {
   if !(A_TickCount - $ts.连攻 > $cd.连攻) {
     return
   }
-  if !(A_TickCount - $ts.交击斩 < $cd.comboZ) {
+  if !(A_TickCount - $ts.交击斩 < $cd.魔三连) {
     return
   }
   if !($black >= 25 and $white >= 25) {
@@ -526,7 +527,7 @@ __$skill_dot_促进__() {
   if !(A_TickCount - $ts.赤疾风 < 2000) {
     return
   }
-  if !(A_TickCount - $ts.回刺 > $cd.comboZ) {
+  if !(A_TickCount - $ts.回刺 > $cd.魔三连) {
     return
   }
   if ($black > 70 or $white > 70) {
@@ -613,7 +614,7 @@ __$skill_dot_倍增__() {
   if !(A_TickCount - $ts.倍增 > $cd.倍增) {
     return
   }
-  if (A_TickCount - $ts.回刺 < $cd.comboZ) {
+  if (A_TickCount - $ts.回刺 < $cd.魔三连) {
     return
   }
   if !($black >= 40 and $black <= 70) {
@@ -738,7 +739,7 @@ __$skill_dot_冲刺__() {
   Send {shift down}{-}{shift up}
 }
 
-__$skill_dot_清空信息__() {
+__$skill_dot_空白信息__() {
   Send {shift down}{=}{shift up}
 }
 
@@ -860,7 +861,9 @@ __$skill_dot_能力技__() {
 
 __$skill_dot_获取状态__() {
   if (A_TickCount - $ts.获取状态 > 10000) {
-    use("清空信息")
+    use("空白信息")
+    use("空白信息")
+    use("空白信息")
   }
   $ts.获取状态 := A_TickCount
   $isMoving := isMoving()
@@ -1147,7 +1150,6 @@ revive() {
 __$default__() {
   $cd.技能施放判断间隔 := 100
   $cd.技能施放补正 := 1500
-  $cd.comboZ := 15000
   $ts.回刺 := 0
   $cd.回刺 := 10000
   $skill.回刺 := Func("__$skill_dot_回刺__")
@@ -1213,7 +1215,7 @@ __$default__() {
   $watcher.醒梦 := Func("__$watcher_dot_醒梦__")
   $skill.沉稳咏唱 := Func("__$skill_dot_沉稳咏唱__")
   $skill.冲刺 := Func("__$skill_dot_冲刺__")
-  $skill.清空信息 := Func("__$skill_dot_清空信息__")
+  $skill.空白信息 := Func("__$skill_dot_空白信息__")
   $skill.中断咏唱 := Func("__$skill_dot_中断咏唱__")
   $skill.索敌 := Func("__$skill_dot_索敌__")
   $ts.报告 := 0
@@ -1232,6 +1234,7 @@ __$default__() {
   $cd.赤神圣 := 10000
   $skill.赤神圣 := Func("__$skill_dot_赤神圣__")
   $watcher.赤神圣 := Func("__$watcher_dot_赤神圣__")
+  $cd.魔三连 := 15000
   $skill.魔三连 := Func("__$skill_dot_魔三连__")
   $skill.魔划圆斩 := Func("__$skill_dot_魔划圆斩__")
 }
@@ -1260,6 +1263,29 @@ return
   ExitApp
 return
 
+2joy5::
+  if !(getGroup() == "both") {
+    SetTimer toggleView, Off
+    SetTimer toggleView, % 300
+    return
+  }
+  Send {shift down}{tab}{shift up}
+return
+
+2joy6::
+  if !(getGroup() == "both") {
+    return
+  }
+  Send {tab}
+return
+
+2joy12::
+  if !(getGroup()) {
+    return
+  }
+  use("冲刺")
+return
+
 2joy4::
   if !(getGroup()) {
     return
@@ -1285,29 +1311,6 @@ return
   SetTimer bindHeal, Off
   SetTimer bindHeal, % 300
   heal()
-return
-
-2joy5::
-  if !(getGroup() == "both") {
-    SetTimer toggleView, Off
-    SetTimer toggleView, % 300
-    return
-  }
-  Send {shift down}{tab}{shift up}
-return
-
-2joy6::
-  if !(getGroup() == "both") {
-    return
-  }
-  Send {tab}
-return
-
-2joy12::
-  if !(getGroup()) {
-    return
-  }
-  use("冲刺")
 return
 
 ; eof

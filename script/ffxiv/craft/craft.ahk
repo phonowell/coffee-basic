@@ -89,6 +89,7 @@ clearWatcher(name, type := "used") {
   __timer__ := $watcher[name]
   SetTimer %__timer__%, Off
   $ts[name] := A_TickCount - $cd.技能施放补正
+  return true
 }
 
 getGroup() {

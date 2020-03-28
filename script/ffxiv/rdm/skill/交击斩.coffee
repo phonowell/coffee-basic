@@ -9,7 +9,7 @@ $skill.交击斩 = ->
   unless A_TickCount - $ts.交击斩 > $cd.交击斩
     return
 
-  unless A_TickCount - $ts.回刺 < $cd.comboZ
+  unless A_TickCount - $ts.回刺 < $cd.魔三连
     return
 
   unless $black >= 50 and $white >= 50

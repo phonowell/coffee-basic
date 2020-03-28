@@ -1,6 +1,5 @@
 $cd.技能施放判断间隔 = 100
 $cd.技能施放补正 = 1500
-$cd.comboZ = 15e3
 
 # ---
 
@@ -135,7 +134,7 @@ $skill.沉稳咏唱 = ->
 # ---
 
 $skill.冲刺 = -> $.press 'shift + minus'
-$skill.清空信息 = -> $.press 'shift + equal'
+$skill.空白信息 = -> $.press 'shift + equal'
   
 # ---
 

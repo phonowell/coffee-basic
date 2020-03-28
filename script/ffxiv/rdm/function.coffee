@@ -1,3 +1,7 @@
+# include ../common/function
+
+# ---
+
 $black = 0
 getBlack = ->
   [x, y] = $.findColor '#58483e', 1023, 811, 1170, 811, 10

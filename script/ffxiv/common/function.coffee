@@ -30,6 +30,7 @@ clearWatcher = (name, type = 'used') ->
   
   clearInterval $watcher[name]
   $ts[name] = A_TickCount - $cd.技能施放补正
+  return true
 
 # ---
 
