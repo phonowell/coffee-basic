@@ -310,6 +310,20 @@ bindHeal() {
   heal()
 }
 
+toggleView() {
+  GetKeyState __value__, 2joy5
+  isPressing := __value__ == "D"
+  if !(isPressing) {
+    SetTimer toggleView, Off
+    Send {ctrl up}{up up}
+    return
+  }
+  GetKeyState state, 2joyr
+  if (state < 20) {
+    Send {ctrl down}{up down}
+  }
+}
+
 getBlack() {
   PixelSearch x, y, 1023, 811, 1170, 811, 0x58483E, 10, Fast RGB
   if !(x) {
@@ -728,85 +742,6 @@ __$skill_dot_清空信息__() {
   Send {shift down}{=}{shift up}
 }
 
-__$skill_dot_赤神圣__() {
-  if !($level >= 70) {
-    return
-  }
-  if !(A_TickCount - $ts.赤神圣 > $cd.赤神圣) {
-    return
-  }
-  if !(A_TickCount - $ts.连攻 < 15000) {
-    return
-  }
-  赤神圣施放()
-  SetTimer __$watcher_dot_赤神圣__, % $cd.技能施放判断间隔
-  return true
-}
-
-__$watcher_dot_赤神圣__() {
-  isA := isUsed("赤核爆")
-  isB := isUsed("赤神圣")
-  if !(isA or isB) {
-    return
-  }
-  SetTimer __$watcher_dot_赤神圣__, Off
-  $ts.赤神圣 := A_TickCount - $cd.技能施放补正
-}
-
-赤神圣施放() {
-  if ($black - $white > 9) {
-    use("赤疾风")
-    return
-  }
-  if ($white - $black > 9) {
-    use("赤闪雷")
-    return
-  }
-  if ($isBR and $isWR) {
-    if ($black > $white) {
-      use("赤疾风")
-    }
-    else {
-      use("赤闪雷")
-    }
-    return
-  }
-  if ($isBR) {
-    use("赤疾风")
-    return
-  }
-  if ($isWR) {
-    use("赤闪雷")
-    return
-  }
-  if ($black > $white) {
-    use("赤疾风")
-  }
-  else {
-    use("赤闪雷")
-  }
-}
-
-__$skill_dot_焦热__() {
-  if !($level >= 80) {
-    return
-  }
-  if !(A_TickCount - $ts.焦热 > $cd.焦热) {
-    SoundBeep
-    return
-  }
-  if !(A_TickCount - $ts.赤神圣 < 15000) {
-    return
-  }
-  use("摇荡")
-  SetTimer __$watcher_dot_焦热__, % $cd.技能施放判断间隔
-  return true
-}
-
-__$watcher_dot_焦热__() {
-  clearWatcher("焦热")
-}
-
 __$skill_dot_中断咏唱__() {
   if !($isChanting) {
     return
@@ -846,6 +781,26 @@ __$skill_dot_报告__() {
   ToolTip % msg, 410, 640
   SetTimer clearTip, Off
   SetTimer clearTip, % 0 - 10000
+}
+
+__$skill_dot_焦热__() {
+  if !($level >= 80) {
+    return
+  }
+  if !(A_TickCount - $ts.焦热 > $cd.焦热) {
+    SoundBeep
+    return
+  }
+  if !(A_TickCount - $ts.赤神圣 < 15000) {
+    return
+  }
+  use("摇荡")
+  SetTimer __$watcher_dot_焦热__, % $cd.技能施放判断间隔
+  return true
+}
+
+__$watcher_dot_焦热__() {
+  clearWatcher("焦热")
 }
 
 __$skill_dot_能力技__() {
@@ -935,6 +890,65 @@ __$skill_dot_调整魔元__() {
   }
   use("划圆斩")
   return true
+}
+
+__$skill_dot_赤神圣__() {
+  if !($level >= 70) {
+    return
+  }
+  if !(A_TickCount - $ts.赤神圣 > $cd.赤神圣) {
+    return
+  }
+  if !(A_TickCount - $ts.连攻 < 15000) {
+    return
+  }
+  赤神圣施放()
+  SetTimer __$watcher_dot_赤神圣__, % $cd.技能施放判断间隔
+  return true
+}
+
+__$watcher_dot_赤神圣__() {
+  isA := isUsed("赤核爆")
+  isB := isUsed("赤神圣")
+  if !(isA or isB) {
+    return
+  }
+  SetTimer __$watcher_dot_赤神圣__, Off
+  $ts.赤神圣 := A_TickCount - $cd.技能施放补正
+}
+
+赤神圣施放() {
+  if ($black - $white > 9) {
+    use("赤疾风")
+    return
+  }
+  if ($white - $black > 9) {
+    use("赤闪雷")
+    return
+  }
+  if ($isBR and $isWR) {
+    if ($black > $white) {
+      use("赤疾风")
+    }
+    else {
+      use("赤闪雷")
+    }
+    return
+  }
+  if ($isBR) {
+    use("赤疾风")
+    return
+  }
+  if ($isWR) {
+    use("赤闪雷")
+    return
+  }
+  if ($black > $white) {
+    use("赤疾风")
+  }
+  else {
+    use("赤闪雷")
+  }
 }
 
 __$skill_dot_魔三连__() {
@@ -1200,24 +1214,24 @@ __$default__() {
   $skill.沉稳咏唱 := Func("__$skill_dot_沉稳咏唱__")
   $skill.冲刺 := Func("__$skill_dot_冲刺__")
   $skill.清空信息 := Func("__$skill_dot_清空信息__")
-  $ts.赤神圣 := 0
-  $cd.赤神圣 := 10000
-  $skill.赤神圣 := Func("__$skill_dot_赤神圣__")
-  $watcher.赤神圣 := Func("__$watcher_dot_赤神圣__")
-  $ts.焦热 := 0
-  $cd.焦热 := 10000
-  $skill.焦热 := Func("__$skill_dot_焦热__")
-  $watcher.焦热 := Func("__$watcher_dot_焦热__")
   $skill.中断咏唱 := Func("__$skill_dot_中断咏唱__")
   $skill.索敌 := Func("__$skill_dot_索敌__")
   $ts.报告 := 0
   $skill.报告 := Func("__$skill_dot_报告__")
+  $ts.焦热 := 0
+  $cd.焦热 := 10000
+  $skill.焦热 := Func("__$skill_dot_焦热__")
+  $watcher.焦热 := Func("__$watcher_dot_焦热__")
   $ts.能力技 := 0
   $cd.能力技 := 1000
   $skill.能力技 := Func("__$skill_dot_能力技__")
   $ts.获取状态 := 0
   $skill.获取状态 := Func("__$skill_dot_获取状态__")
   $skill.调整魔元 := Func("__$skill_dot_调整魔元__")
+  $ts.赤神圣 := 0
+  $cd.赤神圣 := 10000
+  $skill.赤神圣 := Func("__$skill_dot_赤神圣__")
+  $watcher.赤神圣 := Func("__$watcher_dot_赤神圣__")
   $skill.魔三连 := Func("__$skill_dot_魔三连__")
   $skill.魔划圆斩 := Func("__$skill_dot_魔划圆斩__")
 }
@@ -1275,6 +1289,8 @@ return
 
 2joy5::
   if !(getGroup() == "both") {
+    SetTimer toggleView, Off
+    SetTimer toggleView, % 300
     return
   }
   Send {shift down}{tab}{shift up}

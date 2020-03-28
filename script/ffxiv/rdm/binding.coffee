@@ -31,12 +31,10 @@ attack = ->
   unless use '索敌'
     return
 
-  # 单体攻击
   if group == 'right'
     attackS()
     return
 
-  # 群体攻击
   if group == 'both'
     attackM()
     return
@@ -147,8 +145,22 @@ $.on '2-joy-3', ->
 
 # ---
 
+toggleView = ->
+
+  isPressing = $.isPressing '2-joy-5'
+  unless isPressing
+    clearInterval toggleView
+    $.press 'ctrl:up', 'up:up'
+    return
+
+  state = $.getState '2-joy-r'
+  if state < 20
+    $.press 'ctrl:down', 'up:down'
+
 $.on '2-joy-5', ->
   unless getGroup() == 'both'
+    clearInterval toggleView
+    setInterval toggleView, 300
     return
   $.press 'shift + tab'
 

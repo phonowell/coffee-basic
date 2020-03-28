@@ -139,13 +139,13 @@ $skill.清空信息 = -> $.press 'shift + equal'
   
 # ---
 
-# include skill/赤神圣
-# include skill/焦热
 # include ../common/skill/中断咏唱
 # include ../common/skill/索敌
 # include skill/报告
+# include skill/焦热
 # include skill/能力技
 # include skill/获取状态
 # include skill/调整魔元
+# include skill/赤神圣
 # include skill/魔三连
 # include skill/魔划圆斩

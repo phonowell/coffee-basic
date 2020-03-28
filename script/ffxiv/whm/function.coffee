@@ -1,4 +1,4 @@
-red = 0
+$red = 0
 getRed = ->
 
   color = $.getColor 1075, 818
@@ -17,7 +17,7 @@ getRed = ->
 
 # ---
 
-white = 0
+$white = 0
 getWhite = ->
   
   color = $.getColor 1078, 790

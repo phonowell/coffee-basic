@@ -3,12 +3,12 @@ $cd.技能施放补正 = 1500
 
 # ---
 
-飞石 = -> $.press 'alt + 1'
-治疗 = -> $.press 'alt + 2'
+$skill.飞石 = -> $.press 'alt + 1'
+$skill.治疗 = -> $.press 'alt + 2'
 
 # ---
 
-疾风 = ->
+$skill.疾风 = ->
 
   unless $isMoving
 
@@ -27,14 +27,14 @@ $cd.技能施放补正 = 1500
 
 # ---
 
-医治 = -> $.press 'alt + 4'
-复活 = -> $.press 'alt + 5'
-水流环 = -> $.press 'alt + 6'
-救疗 = -> $.press 'alt + 7'
+$skill.医治 = -> $.press 'alt + 4'
+$skill.复活 = -> $.press 'alt + 5'
+$skill.水流环 = -> $.press 'alt + 6'
+$skill.救疗 = -> $.press 'alt + 7'
 
 # ---
 
-医济 = ->
+$skill.医济 = ->
 
   unless $level >= 50
     return
@@ -51,7 +51,7 @@ $cd.技能施放补正 = 1500
 
 # ---
 
-再生 = ->
+$skill.再生 = ->
 
   unless $level >= 35
     return
@@ -67,7 +67,7 @@ $cd.技能施放补正 = 1500
 
 # ---
 
-愈疗 = ->
+$skill.愈疗 = ->
 
   unless $level >= 40
     return
@@ -77,7 +77,7 @@ $cd.技能施放补正 = 1500
 
 # ---
 
-神圣 = ->
+$skill.神圣 = ->
 
   unless $level >= 45
     return
@@ -87,7 +87,7 @@ $cd.技能施放补正 = 1500
 
 # ---
 
-天赐祝福 = ->
+$skill.天赐祝福 = ->
 
   unless $level >= 50
     return
@@ -97,12 +97,12 @@ $cd.技能施放补正 = 1500
 
 # ---
 
-安慰之心 = ->
+$skill.安慰之心 = ->
 
   unless $level >= 52
     return
 
-  unless white >= 1
+  unless $white >= 1
     return
 
   unless 能力技冷却判断()
@@ -113,7 +113,7 @@ $cd.技能施放补正 = 1500
 
 # ---
 
-庇护所 = ->
+$skill.庇护所 = ->
 
   unless $level >= 52
     return
@@ -129,7 +129,7 @@ $cd.技能施放补正 = 1500
 
 # ---
 
-神祝祷 = ->
+$skill.神祝祷 = ->
 
   unless $level >= 66
     return
@@ -143,12 +143,12 @@ $cd.技能施放补正 = 1500
 
 # ---
 
-苦难之心 = ->
+$skill.苦难之心 = ->
 
   unless $level >= 74
     return
 
-  unless red >= 3
+  unless $red >= 3
     return
 
   $.press 'ctrl + 9'
@@ -156,12 +156,12 @@ $cd.技能施放补正 = 1500
 
 # ---
 
-狂喜之心 = ->
+$skill.狂喜之心 = ->
 
   unless $level >= 76
     return
 
-  unless white >= 1
+  unless $white >= 1
     return
 
   unless 能力技冷却判断()
@@ -172,7 +172,7 @@ $cd.技能施放补正 = 1500
 
 # ---
 
-节制 = ->
+$skill.节制 = ->
 
   unless $level >= 80
     return
@@ -182,8 +182,8 @@ $cd.技能施放补正 = 1500
 
 # ---
 
-沉静 = -> $.press 'shift + 1'
-康复 = -> $.press 'shift + 2'
+$skill.沉静 = -> $.press 'shift + 1'
+$skill.康复 = -> $.press 'shift + 2'
 
 # ---
 
@@ -192,7 +192,7 @@ $cd.技能施放补正 = 1500
 
 # ---
 
-沉稳咏唱 = ->
+$skill.沉稳咏唱 = ->
 
   unless $level >= 44
     return
@@ -202,7 +202,7 @@ $cd.技能施放补正 = 1500
 
 # ---
 
-营救 = ->
+$skill.营救 = ->
 
   unless $level >= 48
     return
@@ -212,11 +212,13 @@ $cd.技能施放补正 = 1500
 
 # ---
 
-冲刺 = -> $.press 'shift + minus'
-清空信息 = -> $.press 'shift + equal'
+$skill.冲刺 = -> $.press 'shift + minus'
+$skill.清空信息 = -> $.press 'shift + equal'
 
 # ---
 
-# include ../common/skill/索敌
 # include ../common/skill/中断咏唱
+# include ../common/skill/索敌
+# include skill/报告
 # include skill/能力技
+# include skill/获取状态

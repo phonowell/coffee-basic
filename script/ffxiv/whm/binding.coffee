@@ -19,24 +19,22 @@ $.on 'alt + f4', ->
 
 # ---
 
-攻击 = ->
+attack = ->
 
   group = getGroup()
-
   unless group
     return
 
+  use '获取状态'
   use '报告'
   
   unless use '索敌'
     return
 
-  # attackS
   if group == 'right'
     attackS()
     return
 
-  # attackM
   if group == 'both'
     attackM()
     return
@@ -46,11 +44,9 @@ bindAttack = ->
   isPressing = $.isPressing '2-joy-4'
   unless isPressing
     clearInterval bindAttack
-    setTimeout $skill.清空信息, 10e3
     return
 
-  clearTimeout $skill.清空信息
-  攻击()
+  attack()
 
 $.on '2-joy-4', ->
 
@@ -59,73 +55,53 @@ $.on '2-joy-4', ->
 
   clearInterval bindAttack
   setInterval bindAttack, 300
-  攻击()
+  attack()
 
 # ---
 
-_治疗 = ->
+$.on '2-joy-2', ->
 
   group = getGroup()
-
   unless group
     return
 
+  use '获取状态'
   use '报告'
 
-  # 单体治疗
   if group == 'right'
-    单体治疗()
+    healS()
     return
 
-  # 群体治疗
   if group == 'both'
-    群体治疗()
+    healM()
     return
-
-绑定治疗 = ->
-
-  isPressing = $.isPressing '2-joy-2'
-  unless isPressing
-    clearInterval 绑定治疗
-    setTimeout $skill.清空信息, 10e3
-    return
-
-  clearTimeout $skill.清空信息
-  _治疗()
-
-$.on '2-joy-2', ->
-
-  unless getGroup()
-    return
-
-  clearInterval 绑定治疗
-  setInterval 绑定治疗, 300
-  _治疗()
 
 # ---
 
 $.on '2-joy-1', ->
 
   group = getGroup()
-
   unless group
     return
 
+  use '获取状态'
+  use '报告'
+
   # 护盾
   if group == 'right'
-    神祝祷()
+    use '神祝祷'
     return
 
   # 驱散
   if group == 'both'
-    康复()
+    use '康复'
     return
 
   # 复活
   if group == 'left'
-    即刻咏唱()
-    无中生有()
-    复活()
+    use '即刻咏唱'
+    use '无中生有'
+    use '复活'
     return
 
 # ---
@@ -133,23 +109,39 @@ $.on '2-joy-1', ->
 $.on '2-joy-3', ->
 
   group = getGroup()
-  
   unless group
     return
 
+  use '获取状态'
+  use '报告'
+
   if group == 'right'
-    庇护所()
+    use '庇护所'
     return
 
   if group == 'both'
-    无中生有()
-    愈疗()
+    use '无中生有'
+    use '愈疗'
     return
 
 # ---
 
+toggleView = ->
+
+  isPressing = $.isPressing '2-joy-5'
+  unless isPressing
+    clearInterval toggleView
+    $.press 'ctrl:up', 'up:up'
+    return
+
+  state = $.getState '2-joy-r'
+  if state < 20
+    $.press 'ctrl:down', 'up:down'
+
 $.on '2-joy-5', ->
   unless getGroup() == 'both'
+    clearInterval toggleView
+    setInterval toggleView, 300
     return
   $.press 'shift + tab'
 
@@ -161,4 +153,4 @@ $.on '2-joy-6', ->
 $.on '2-joy-12', ->
   unless getGroup()
     return
-  冲刺()
+  use '冲刺'

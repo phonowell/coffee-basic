@@ -1,7 +1,7 @@
 $ts.神速咏唱 = 0
 $cd.神速咏唱 = 150e3
 
-神速咏唱 = ->
+$skill.神速咏唱 = ->
 
   unless $level >= 30
     return
@@ -15,8 +15,4 @@ $cd.神速咏唱 = 150e3
   setInterval $watcher.神速咏唱, $cd.技能施放判断间隔
   return true
 
-$watcher.神速咏唱 = ->
-  unless hasStatus '神速咏唱'
-    return
-  clearInterval $watcher.神速咏唱
-  $ts.神速咏唱 = A_TickCount - $cd.技能施放补正
+$watcher.神速咏唱 = -> clearWatcher '神速咏唱', 'status'

@@ -1,7 +1,7 @@
 $ts.神名 = 0
 $cd.神名 = 60e3
 
-神名 = ->
+$skill.神名 = ->
 
   unless $level >= 60
     return
@@ -18,8 +18,4 @@ $cd.神名 = 60e3
   setInterval $watcher.神名, $cd.技能施放判断间隔
   return true
 
-$watcher.神名 = ->
-  unless isUsed '神名'
-    return
-  clearInterval $watcher.神名
-  $ts.神名 = A_TickCount - $cd.技能施放补正
+$watcher.神名 = -> clearWatcher '神名'
