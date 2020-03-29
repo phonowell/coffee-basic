@@ -1,15 +1,11 @@
 $ts.连攻 = 0
-$cd.连攻 = 10e3
 
 $skill.连攻 = ->
 
   unless $level >= 50
     return
 
-  unless A_TickCount - $ts.连攻 > $cd.连攻
-    return
-
-  unless A_TickCount - $ts.交击斩 < $cd.魔三连
+  unless $step == 2
     return
 
   unless $black >= 25 and $white >= 25
@@ -25,3 +21,11 @@ $watcher.连攻 = ->
     return
   clearInterval $watcher.连攻
   $ts.连攻 = A_TickCount - $cd.技能施放补正
+
+  clearTimeout resetStep
+
+  if $level >= 70
+    $step = 3
+    setTimeout resetStep, $cd.魔三连
+  else
+    $step = 0

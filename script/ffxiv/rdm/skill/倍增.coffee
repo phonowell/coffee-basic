@@ -9,9 +9,6 @@ $skill.倍增 = ->
   unless A_TickCount - $ts.倍增 > $cd.倍增
     return
 
-  if A_TickCount - $ts.回刺 < $cd.魔三连
-    return
-
   unless $black >= 40 and $black <= 70
     return
 

@@ -1,16 +1,11 @@
 $ts.焦热 = 0
-$cd.焦热 = 10e3
 
 $skill.焦热 = ->
 
   unless $level >= 80
     return
 
-  unless A_TickCount - $ts.焦热 > $cd.焦热
-    $.beep()
-    return
-
-  unless A_TickCount - $ts.赤神圣 < 15e3
+  unless $step == 4
     return
 
   use '摇荡'
@@ -18,4 +13,10 @@ $skill.焦热 = ->
   setInterval $watcher.焦热, $cd.技能施放判断间隔
   return true
 
-$watcher.焦热 = -> clearWatcher '焦热'
+$watcher.焦热 = ->
+  unless clearWatcher '焦热'
+    return
+  
+  clearTimeout resetStep
+
+  $step = 0

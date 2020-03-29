@@ -34,6 +34,7 @@ global $watcher := {}
 global $black := 0
 global $distance := "far"
 global $white := 0
+global $step := 0
 global $isReporting := true
 global $ap := 0
 global $isIM := false
@@ -294,7 +295,7 @@ resetKey() {
 }
 
 resetTs() {
-  for key, value in ts {
+  for key, value in $ts {
     $ts[key] := 0
   }
 }
@@ -307,6 +308,7 @@ setLevel() {
   if ($level < 10) {
     $level := $level * 10
   }
+  resetTs()
 }
 
 use(name, option := false) {
@@ -362,8 +364,12 @@ getWhite() {
   return percent
 }
 
+resetStep() {
+  $step := 0
+}
+
 __$skill_dot_回刺__() {
-  if !(A_TickCount - $ts.回刺 > $cd.回刺) {
+  if !($step == 0) {
     return
   }
   if !($black >= 80 and $white >= 80) {
@@ -386,6 +392,11 @@ __$watcher_dot_回刺__() {
   }
   SetTimer __$watcher_dot_回刺__, Off
   $ts.回刺 := A_TickCount - $cd.技能施放补正
+  SetTimer resetStep, Off
+  if ($level >= 35) {
+    $step := 1
+    SetTimer resetStep, % 0 - $cd.魔三连
+  }
 }
 
 __$skill_dot_摇荡__() {
@@ -444,10 +455,7 @@ __$skill_dot_交击斩__() {
   if !($level >= 35) {
     return
   }
-  if !(A_TickCount - $ts.交击斩 > $cd.交击斩) {
-    return
-  }
-  if !(A_TickCount - $ts.回刺 < $cd.魔三连) {
+  if !($step == 1) {
     return
   }
   if !($black >= 50 and $white >= 50) {
@@ -464,6 +472,14 @@ __$watcher_dot_交击斩__() {
   }
   SetTimer __$watcher_dot_交击斩__, Off
   $ts.交击斩 := A_TickCount - $cd.技能施放补正
+  SetTimer resetStep, Off
+  if ($level >= 50) {
+    $step := 2
+    SetTimer resetStep, % 0 - $cd.魔三连
+  }
+  else {
+    $step := 0
+  }
 }
 
 __$skill_dot_移转__() {
@@ -495,10 +511,7 @@ __$skill_dot_连攻__() {
   if !($level >= 50) {
     return
   }
-  if !(A_TickCount - $ts.连攻 > $cd.连攻) {
-    return
-  }
-  if !(A_TickCount - $ts.交击斩 < $cd.魔三连) {
+  if !($step == 2) {
     return
   }
   if !($black >= 25 and $white >= 25) {
@@ -515,6 +528,14 @@ __$watcher_dot_连攻__() {
   }
   SetTimer __$watcher_dot_连攻__, Off
   $ts.连攻 := A_TickCount - $cd.技能施放补正
+  SetTimer resetStep, Off
+  if ($level >= 70) {
+    $step := 3
+    SetTimer resetStep, % 0 - $cd.魔三连
+  }
+  else {
+    $step := 0
+  }
 }
 
 __$skill_dot_促进__() {
@@ -525,9 +546,6 @@ __$skill_dot_促进__() {
     return
   }
   if !(A_TickCount - $ts.赤疾风 < 2000) {
-    return
-  }
-  if !(A_TickCount - $ts.回刺 > $cd.魔三连) {
     return
   }
   if ($black > 70 or $white > 70) {
@@ -594,9 +612,6 @@ __$skill_dot_鼓励__() {
   if !(A_TickCount - $ts.鼓励 > $cd.鼓励) {
     return
   }
-  if !(A_TickCount - $ts.回刺 < $cd.回刺) {
-    return
-  }
   Send {ctrl down}{7}{ctrl up}
   $ts.鼓励 := A_TickCount - $cd.鼓励 + $cd.技能施放补正
   SetTimer __$watcher_dot_鼓励__, % $cd.技能施放判断间隔
@@ -612,9 +627,6 @@ __$skill_dot_倍增__() {
     return
   }
   if !(A_TickCount - $ts.倍增 > $cd.倍增) {
-    return
-  }
-  if (A_TickCount - $ts.回刺 < $cd.魔三连) {
     return
   }
   if !($black >= 40 and $black <= 70) {
@@ -682,9 +694,6 @@ __$skill_dot_即刻咏唱__() {
     return
   }
   if !(A_TickCount - $ts.即刻咏唱 > $cd.即刻咏唱) {
-    return
-  }
-  if !(A_TickCount - $ts.回刺 > $cd.回刺) {
     return
   }
   if ($black > 70 or $white > 70) {
@@ -788,11 +797,7 @@ __$skill_dot_焦热__() {
   if !($level >= 80) {
     return
   }
-  if !(A_TickCount - $ts.焦热 > $cd.焦热) {
-    SoundBeep
-    return
-  }
-  if !(A_TickCount - $ts.赤神圣 < 15000) {
+  if !($step == 4) {
     return
   }
   use("摇荡")
@@ -801,7 +806,11 @@ __$skill_dot_焦热__() {
 }
 
 __$watcher_dot_焦热__() {
-  clearWatcher("焦热")
+  if !(clearWatcher("焦热")) {
+    return
+  }
+  SetTimer resetStep, Off
+  $step := 0
 }
 
 __$skill_dot_能力技__() {
@@ -826,14 +835,16 @@ __$skill_dot_能力技__() {
     return
   }
   $ap--
-  能力技施放()
+  if ($step == 0) {
+    常时能力技()
+  }
+  else {
+    魔三连能力技()
+  }
 }
 
-能力技施放() {
+常时能力技() {
   if (use("倍增")) {
-    return
-  }
-  if (use("鼓励")) {
     return
   }
   if (use("促进")) {
@@ -855,6 +866,24 @@ __$skill_dot_能力技__() {
     return
   }
   if (use("醒梦")) {
+    return
+  }
+}
+
+魔三连能力技() {
+  if (use("鼓励")) {
+    return
+  }
+  if (use("飞刺")) {
+    return
+  }
+  if (use("六分反击")) {
+    return
+  }
+  if (use("短兵相接")) {
+    return
+  }
+  if (use("交剑")) {
     return
   }
 }
@@ -881,6 +910,9 @@ __$skill_dot_调整魔元__() {
   if !($level >= 60) {
     return
   }
+  if !($step == 0) {
+    return
+  }
   if !(A_TickCount - $ts.倍增 > $cd.倍增 - 2000) {
     return
   }
@@ -899,10 +931,7 @@ __$skill_dot_赤神圣__() {
   if !($level >= 70) {
     return
   }
-  if !(A_TickCount - $ts.赤神圣 > $cd.赤神圣) {
-    return
-  }
-  if !(A_TickCount - $ts.连攻 < 15000) {
+  if !($step == 3) {
     return
   }
   赤神圣施放()
@@ -918,6 +947,14 @@ __$watcher_dot_赤神圣__() {
   }
   SetTimer __$watcher_dot_赤神圣__, Off
   $ts.赤神圣 := A_TickCount - $cd.技能施放补正
+  SetTimer resetStep, Off
+  if ($level >= 80) {
+    $step := 4
+    SetTimer resetStep, % 0 - $cd.魔三连
+  }
+  else {
+    $step := 0
+  }
 }
 
 赤神圣施放() {
@@ -1151,7 +1188,6 @@ __$default__() {
   $cd.技能施放判断间隔 := 100
   $cd.技能施放补正 := 1500
   $ts.回刺 := 0
-  $cd.回刺 := 10000
   $skill.回刺 := Func("__$skill_dot_回刺__")
   $watcher.回刺 := Func("__$watcher_dot_回刺__")
   $skill.摇荡 := Func("__$skill_dot_摇荡__")
@@ -1168,7 +1204,6 @@ __$default__() {
   $skill.赤火炎 := Func("__$skill_dot_赤火炎__")
   $skill.赤飞石 := Func("__$skill_dot_赤飞石__")
   $ts.交击斩 := 0
-  $cd.交击斩 := 10000
   $skill.交击斩 := Func("__$skill_dot_交击斩__")
   $watcher.交击斩 := Func("__$watcher_dot_交击斩__")
   $skill.移转 := Func("__$skill_dot_移转__")
@@ -1177,7 +1212,6 @@ __$default__() {
   $skill.飞刺 := Func("__$skill_dot_飞刺__")
   $watcher.飞刺 := Func("__$watcher_dot_飞刺__")
   $ts.连攻 := 0
-  $cd.连攻 := 10000
   $skill.连攻 := Func("__$skill_dot_连攻__")
   $watcher.连攻 := Func("__$watcher_dot_连攻__")
   $ts.促进 := 0
@@ -1221,7 +1255,6 @@ __$default__() {
   $ts.报告 := 0
   $skill.报告 := Func("__$skill_dot_报告__")
   $ts.焦热 := 0
-  $cd.焦热 := 10000
   $skill.焦热 := Func("__$skill_dot_焦热__")
   $watcher.焦热 := Func("__$watcher_dot_焦热__")
   $ts.能力技 := 0
@@ -1231,7 +1264,6 @@ __$default__() {
   $skill.获取状态 := Func("__$skill_dot_获取状态__")
   $skill.调整魔元 := Func("__$skill_dot_调整魔元__")
   $ts.赤神圣 := 0
-  $cd.赤神圣 := 10000
   $skill.赤神圣 := Func("__$skill_dot_赤神圣__")
   $watcher.赤神圣 := Func("__$watcher_dot_赤神圣__")
   $cd.魔三连 := 15000

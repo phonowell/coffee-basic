@@ -1,9 +1,8 @@
 $ts.回刺 = 0
-$cd.回刺 = 10e3
 
 $skill.回刺 = ->
 
-  unless A_TickCount - $ts.回刺 > $cd.回刺
+  unless $step == 0
     return
 
   unless $black >= 80 and $white >= 80
@@ -26,3 +25,9 @@ $watcher.回刺 = ->
     return
   clearInterval $watcher.回刺
   $ts.回刺 = A_TickCount - $cd.技能施放补正
+
+  clearTimeout resetStep
+
+  if $level >= 35
+    $step = 1
+    setTimeout resetStep, $cd.魔三连

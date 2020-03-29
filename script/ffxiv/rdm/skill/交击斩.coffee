@@ -1,15 +1,11 @@
 $ts.交击斩 = 0
-$cd.交击斩 = 10e3
 
 $skill.交击斩 = ->
 
   unless $level >= 35
     return
 
-  unless A_TickCount - $ts.交击斩 > $cd.交击斩
-    return
-
-  unless A_TickCount - $ts.回刺 < $cd.魔三连
+  unless $step == 1
     return
 
   unless $black >= 50 and $white >= 50
@@ -25,3 +21,11 @@ $watcher.交击斩 = ->
     return
   clearInterval $watcher.交击斩
   $ts.交击斩 = A_TickCount - $cd.技能施放补正
+
+  clearTimeout resetStep
+
+  if $level >= 50
+    $step = 2
+    setTimeout resetStep, $cd.魔三连
+  else
+    $step = 0

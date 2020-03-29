@@ -9,9 +9,6 @@ $skill.即刻咏唱 = ->
   unless A_TickCount - $ts.即刻咏唱 > $cd.即刻咏唱
     return
 
-  unless A_TickCount - $ts.回刺 > $cd.回刺
-    return
-
   if $black > 70 or $white > 70
     return
 

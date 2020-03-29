@@ -191,7 +191,7 @@ resetKey = ->
   $.press 'shift:up'
 
 resetTs = ->
-  for key, value in ts
+  for key, value in $ts
     $ts[key] = 0
 # ---
 
@@ -205,6 +205,8 @@ setLevel = ->
 
   if $level < 10
     $level = $level * 10
+
+  resetTs()
 
 # ---
 

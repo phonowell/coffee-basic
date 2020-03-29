@@ -29,14 +29,14 @@ $skill.能力技 = ->
   
   $ap--
   
-  能力技施放()
+  if $step == 0
+    常时能力技()
+  else
+    魔三连能力技()
 
-能力技施放 = ->
+常时能力技 = ->
 
   if use '倍增'
-    return
-
-  if use '鼓励'
     return
 
   if use '促进'
@@ -58,4 +58,21 @@ $skill.能力技 = ->
     return
   
   if use '醒梦'
+    return
+
+魔三连能力技 = ->
+
+  if use '鼓励'
+    return
+
+  if use '飞刺'
+    return
+
+  if use '六分反击'
+    return
+
+  if use '短兵相接'
+    return
+
+  if use '交剑'
     return

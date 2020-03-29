@@ -46,3 +46,9 @@ getWhite = ->
   percent = (x - 1023) * 100 / (1170 - 1023)
   percent = Math.floor percent
   return percent
+
+# ---
+
+$step = 0
+
+resetStep = -> $step = 0

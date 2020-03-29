@@ -1,15 +1,11 @@
 $ts.赤神圣 = 0
-$cd.赤神圣 = 10e3
 
 $skill.赤神圣 = ->
 
   unless $level >= 70
     return
 
-  unless A_TickCount - $ts.赤神圣 > $cd.赤神圣
-    return
-
-  unless A_TickCount - $ts.连攻 < 15e3
+  unless $step == 3
     return
 
   赤神圣施放()
@@ -24,6 +20,14 @@ $watcher.赤神圣 = ->
     return
   clearInterval $watcher.赤神圣
   $ts.赤神圣 = A_TickCount - $cd.技能施放补正
+
+  clearTimeout resetStep
+
+  if $level >= 80
+    $step = 4
+    setTimeout resetStep, $cd.魔三连
+  else
+    $step = 0
 
 赤神圣施放 = ->
 

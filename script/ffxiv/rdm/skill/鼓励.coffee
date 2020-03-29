@@ -9,9 +9,6 @@ $skill.鼓励 = ->
   unless A_TickCount - $ts.鼓励 > $cd.鼓励
     return
 
-  unless A_TickCount - $ts.回刺 < $cd.回刺
-    return
-
   $.press 'ctrl + 7'
   
   $ts.鼓励 = A_TickCount - $cd.鼓励 + $cd.技能施放补正
