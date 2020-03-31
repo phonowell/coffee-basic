@@ -11,4 +11,7 @@ $skill.全蚀斩 = ->
   setInterval $watcher.全蚀斩, $cd.技能施放判断间隔
   return true
 
-$watcher.全蚀斩 = -> clearWatcher '全蚀斩'
+$watcher.全蚀斩 = ->
+  unless clearWatcher '全蚀斩'
+    return
+  $step = 0

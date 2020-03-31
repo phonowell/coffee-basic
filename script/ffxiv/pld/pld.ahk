@@ -347,7 +347,10 @@ __$skill_dot_全蚀斩__() {
 }
 
 __$watcher_dot_全蚀斩__() {
-  clearWatcher("全蚀斩")
+  if !(clearWatcher("全蚀斩")) {
+    return
+  }
+  $step := 0
 }
 
 __$skill_dot_盾牌猛击__() {
