@@ -1,18 +1,34 @@
-unless a
-  c
+# if
+if a > 1
+  1
 
-if a
-  if b
-    c
+# if-else
+if a > 1
+  1
+else
+  2
 
-if a 1
-  a
+# if-else-if
+if a > 1
+  1
+else if a > 2
+  2
+else
+  3
 
-if a != 1
-  a
+# inline
 
-unless a 1
-  a
+if a > 1 then 1
+if a > 1 then 1 else 2
 
-if a and b
-  a
+if a > 1 then 1
+else if a > 2 then 2
+else 3
+
+# unless
+unless a > 1 then 0
+
+# deep
+if a > 1
+  unless a > 2
+    3

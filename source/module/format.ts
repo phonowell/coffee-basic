@@ -39,6 +39,13 @@ function formatLine(line: string) {
     // break inline ->
     .replace(/-> (.*)/, `->\n${setDepth(depth + 1)}$1\n`)
 
+    // break then
+    .replace(/ then (.*)/, `\n${setDepth(depth + 1)}$1`)
+
+    // break else
+    .replace(/ else (.*)/, `\n${setDepth(depth)}else\n${setDepth(depth + 1)}$1`)
+    .replace(/else (?!if)(.*)/, `else\n${setDepth(depth + 1)}$1`)
+
   return `${setDepth(depth)}${line}`
 
 }

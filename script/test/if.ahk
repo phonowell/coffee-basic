@@ -1,25 +1,49 @@
 ﻿; function
 
 __$default__() {
-  if !(a) {
-    c
+  if (a > 1) {
+    1
   }
-  if (a) {
-    if (b) {
-      c
+  if (a > 1) {
+    1
+  }
+  else {
+    2
+  }
+  if (a > 1) {
+    1
+  }
+  else if (a > 2) {
+    2
+  }
+  else {
+    3
+  }
+  if (a > 1) {
+    1
+  }
+  if (a > 1) {
+    1
+  }
+  else {
+    2
+  }
+  if (a > 1) {
+    1
+  }
+  else if (a > 2) {
+    2
+  }
+  else {
+    3
+  }
+  if !(a > 1) {
+    0
+  }
+  if (a > 1) {
+    if !(a > 2) {
+      3
     }
-  }
-  if (a(1)) {
-    a
-  }
-  if (a != 1) {
-    a
-  }
-  if !(a(1)) {
-    a
-  }
-  if (a and b) {
-    a
   }
 }
 

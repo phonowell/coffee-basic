@@ -18,7 +18,6 @@ const listForbidden = [
   'interface',
   'prototype',
   'switch',
-  'then',
   'until',
   'when',
   'while'

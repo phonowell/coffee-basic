@@ -10,12 +10,44 @@
 alert 'hello'
 ```
 
+### clearInterval(funcName: any): void
+
+类似于`js`中的`clearInterval()`，但只能使用函数名作为参数。
+
+```coffeescript
+clearInterval fn
+```
+
+### clearTimeout(funcName: any): void
+
+类似于`js`中的`clearTimeout()`，但只能使用函数名作为参数。
+
+```coffeescript
+clearTimeout fn
+```
+
 ### prompt(message: string, defaultValue?: string): string
 
 没啥好说的。
 
 ```coffeescript
 msg = prompt 'input your message', 'hello?'
+```
+
+### setInterval(funcName: any): void
+
+类似于`js`中的`setInterval()`，但只能使用函数名作为参数。
+
+```coffeescript
+setInterval fn
+```
+
+### setTimeout(funcName: any): void
+
+类似于`js`中的`setTimeout()`，但只能使用函数名作为参数。
+
+```coffeescript
+setTimeout fn
 ```
 
 ### Math
@@ -35,22 +67,6 @@ d = Math.round 1.3 # Math.round(n: number): number
 
 ```coffeescript
 $.beep()
-```
-
-### $.clearInterval(funcName: any): void
-
-类似于`js`中的`clearInterval()`，但只能使用函数名作为参数。
-
-```coffeescript
-$.clearInterval fn
-```
-
-### $.clearTimeout(funcName: any): void
-
-类似于`js`中的`clearTimeout()`，但只能使用函数名作为参数。
-
-```coffeescript
-$.clearTimeout fn
 ```
 
 ### $.click(position?: string): void
@@ -171,22 +187,6 @@ $.reload()
 $.setFixed true # 置顶
 $.setFixed false # 取消置顶
 $.setFixed() # 切换
-```
-
-### $.setInterval(funcName: any): void
-
-类似于`js`中的`setInterval()`，但只能使用函数名作为参数。
-
-```coffeescript
-$.setInterval fn
-```
-
-### $.setTimeout(funcName: any): void
-
-类似于`js`中的`setTimeout()`，但只能使用函数名作为参数。
-
-```coffeescript
-$.setTimeout fn
 ```
 
 ### $.sleep(time: number): void
