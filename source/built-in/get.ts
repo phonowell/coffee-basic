@@ -12,7 +12,7 @@ export function $getColor({ argument, output }: IArgumentBuiltIn) {
     throw new Error('found no output')
   }
 
-  const result: string[] = []
+  const result = [] as string[]
 
   let [x, y] = argument
   if (!(x && y)) {

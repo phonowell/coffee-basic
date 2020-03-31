@@ -46,7 +46,7 @@ function validate(line: string) {
 export default (data: IData) => {
 
   let block = newBlock()
-  const result: string[] = []
+  const result = [] as string[]
   let isPending: boolean
 
   for (const line of data.main) {

@@ -33,7 +33,7 @@ function pickData(line: string) {
 // export
 export default (data: IData) => {
 
-  const content: string[] = []
+  const content = [] as string[]
 
   for (const line of data.main) {
 

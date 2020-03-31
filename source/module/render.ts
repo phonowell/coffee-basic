@@ -7,7 +7,7 @@ import { IBlock, IData, IOption } from '../type'
 
 function renderEvent(list: IBlock[]) {
 
-  let result: string[] = []
+  let result = [] as string[]
 
   for (const block of list) {
 
@@ -35,7 +35,7 @@ function renderEvent(list: IBlock[]) {
 
 function renderFunction(list: IBlock[]) {
 
-  let result: string[] = []
+  let result = [] as string[]
 
   for (const block of list) {
 
@@ -63,7 +63,7 @@ function renderFunction(list: IBlock[]) {
 
 function renderGlobalVariable(list: string[]) {
 
-  const result: string[] = []
+  const result = [] as string[]
 
   for (const line of list) {
     result.push(unquote(`global ${line}`))
@@ -76,7 +76,7 @@ function renderGlobalVariable(list: string[]) {
 // export
 export default (data: IData, option: IOption = {}) => {
 
-  let result: string[] = []
+  let result = [] as string[]
 
   // head
   if (!option.bare) {

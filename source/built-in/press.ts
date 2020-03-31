@@ -23,7 +23,7 @@ export function $isPressing({ argument, output }: IArgumentBuiltIn) {
 
 export function $press({ argument }: IArgumentBuiltIn) {
 
-  const listResult: string[] = []
+  const listResult = [] as string[]
   for (const arg of argument) {
 
     const list = arg
@@ -31,7 +31,7 @@ export function $press({ argument }: IArgumentBuiltIn) {
       .split('+')
 
     const max = list.length - 1
-    const listPre: string[] = []
+    const listPre = [] as string[]
 
     for (const _i in list) {
       if (!list.hasOwnProperty(_i)) {

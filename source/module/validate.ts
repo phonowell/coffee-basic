@@ -6,6 +6,18 @@ import { IData } from '../type'
 // const
 
 const listForbidden = [
+  '::',
+  '=>',
+  '@',
+  'case',
+  'class',
+  'exclude',
+  'export',
+  'import',
+  'include',
+  'interface',
+  'prototype',
+  'switch',
   'then',
   'until',
   'when',
@@ -42,6 +54,11 @@ export default (data: IData) => {
     // skip comment
     if (line.trim().startsWith('#')) {
       continue
+    }
+
+    if (line.includes('# ')) {
+      log('found inline comment', i)
+      result = false
     }
 
     // forbidden words

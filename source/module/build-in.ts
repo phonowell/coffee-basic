@@ -149,7 +149,7 @@ export default (data: IData) => {
 
   for (const block of [...data.fn, ...data.event]) {
 
-    let result: string[] = []
+    let result = [] as string[]
 
     for (const line of block.content) {
 

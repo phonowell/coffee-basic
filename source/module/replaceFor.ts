@@ -9,7 +9,7 @@ import { IData } from '../type'
 
 function execute(content: string[]) {
 
-  const result: string[] = []
+  const result = [] as string[]
   const cache: number[] = []
 
   for (const line of content) {
