@@ -681,6 +681,12 @@ __$skill_dot_续斩__() {
   if !($level >= 76) {
     return
   }
+  if !($black >= 5 and $black < 80) {
+    return
+  }
+  if !($white >= 5 and $white < 80) {
+    return
+  }
   Send {ctrl down}{-}{ctrl up}
   return true
 }
