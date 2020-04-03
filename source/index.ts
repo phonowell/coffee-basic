@@ -1,5 +1,5 @@
 import $ from '../lib/fire-keeper'
-import iconv = require('iconv-lite')
+import * as iconv from 'iconv-lite'
 
 import read_ from './read_'
 import transpile_ from './transpile_'
@@ -28,7 +28,7 @@ async function execute_(source: string, option: IOption) {
 }
 
 // export
-module.exports = async (
+export default async (
   source: string | string[], option: IOption = {}
 ) => {
 

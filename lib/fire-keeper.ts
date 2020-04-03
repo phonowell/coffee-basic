@@ -1,4 +1,4 @@
-import $ = require('fire-keeper')
+import * as $ from 'fire-keeper'
 
 interface FireKeeper {
 

@@ -3,7 +3,7 @@ import $ from '../lib/fire-keeper'
 // export
 export default async () => {
 
-  const parseAsync = $.require('./source/index')
+  const parseAsync = (await import('../source/index')).default
 
   $.watch('./script/ffxiv/**/*.coffee', async (e: { path: string }) => {
     const dirname = $.getDirname(e.path)

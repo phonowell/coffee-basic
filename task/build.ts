@@ -5,7 +5,7 @@ export default async () => {
 
   await $.remove_('./script/**/*.ahk')
 
-  const parseAsync = $.require('./source/index')
+  const parseAsync = (await import('../source/index')).default
 
   await parseAsync([
     './script/*.coffee',
