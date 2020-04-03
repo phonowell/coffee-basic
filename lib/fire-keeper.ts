@@ -6,6 +6,8 @@ interface FireKeeper {
 
   copy_(source: string[] | string, target: string, option?: string): Promise<FireKeeper>
 
+  compile_(source: string[] | string): Promise<FireKeeper>
+
   exec_(lines: string[] | string, option?: {
     ignoreError?: boolean
   }): Promise<string>
@@ -39,6 +41,8 @@ interface FireKeeper {
 
   os(): 'linux' | 'macos' | 'windows'
   os(input: 'linux' | 'macos' | 'windows'): boolean
+
+  parseString(input: any): string
 
   prompt_(option: {
     default?: boolean
@@ -80,6 +84,9 @@ interface FireKeeper {
   }): Promise<FireKeeper>
 
   source_(source: string[] | string): Promise<string[]>
+
+  task(name: string): any
+  task(name: string, fn: (...args: any[]) => any): FireKeeper
 
   type(input: any): string
 

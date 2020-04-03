@@ -1,4 +1,4 @@
-import $ from '../../source/fire-keeper'
+import $ from '../../lib/fire-keeper'
 import _ = require('lodash')
 
 import { getDepth, setDepth } from './fn'

@@ -1,4 +1,4 @@
-import $ from '../../source/fire-keeper'
+import $ from '../../lib/fire-keeper'
 
 // interface
 import { IData } from '../type'

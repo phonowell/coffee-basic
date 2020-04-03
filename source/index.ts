@@ -1,4 +1,4 @@
-import $ from '../source/fire-keeper'
+import $ from '../lib/fire-keeper'
 import iconv = require('iconv-lite')
 
 import read_ from './read_'

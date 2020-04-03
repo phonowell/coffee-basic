@@ -1,4 +1,4 @@
-import $ from '../../source/fire-keeper'
+import $ from '../../lib/fire-keeper'
 
 import { getDepth } from './fn'
 
