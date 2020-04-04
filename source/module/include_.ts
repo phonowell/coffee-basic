@@ -35,7 +35,16 @@ async function insert_(content: string, option: IOption) {
       .trim()
 
     source = `${$.getDirname(option.path)}/${source}.coffee`
-    const cont = await $.read_(source)
+    let cont = ''
+    if (source.includes('*')) {
+      const listCont = [] as string[]
+      for (const src of await $.source_(source)) {
+        listCont.push(await $.read_(src))
+      }
+      cont = listCont.join('\n')
+    } else {
+      cont = await $.read_(source)
+    }
 
     if ($.type(cont) !== 'string') {
       throw new Error(`invalid source '${source}'`)

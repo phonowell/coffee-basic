@@ -1,18 +1,18 @@
 $ts.战女神之怒 = 0
-$cd.战女神之怒 = 3e3
+$cd.战女神之怒 = 2500
 
 $skill.战女神之怒 = ->
 
   unless $level >= 26
     return
 
-  unless A_TickCount - $ts.战女神之怒 > $cd.战女神之怒
-    return
-
   unless $step == 2
     return
 
   unless $distance == 'near'
+    return
+
+  unless A_TickCount - $ts.战女神之怒 > $cd.战女神之怒
     return
 
   $.press 'alt + 8'

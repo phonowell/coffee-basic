@@ -1,15 +1,15 @@
 $ts.先锋剑 = 0
-$cd.先锋剑 = 3e3
+$cd.先锋剑 = 2500
 
 $skill.先锋剑 = ->
-
-  unless A_TickCount - $ts.先锋剑 > $cd.先锋剑
-    return
 
   unless $step == 0
     return
 
   unless $distance == 'near'
+    return
+
+  unless A_TickCount - $ts.先锋剑 > $cd.先锋剑
     return
 
   $.press 'alt + 1'

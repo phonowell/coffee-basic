@@ -3,10 +3,8 @@ $cd.技能施放补正 = 1500
 
 # ---
 
-# include skill/先锋剑
-# include skill/战逃反应
-# include skill/暴乱剑
-# include skill/全蚀斩
+# include ../common/skill/*
+# include skill/*
 
 $skill.盾牌猛击 = -> $.press 'alt + 5'
 
@@ -20,13 +18,9 @@ $skill.投盾 = ->
   $.press 'alt + 7'
   return true
 
-# include skill/战女神之怒
-
-$skill.预警 = -> $.press 'alt + 9'
-
 $skill.厄运流转 = -> $.press 'alt + 0'
 
-# include skill/深奥之灵
+$skill.盾阵 = -> $.press 'alt + equal'
 
 # ---
 
@@ -50,8 +44,3 @@ $skill.冲刺 = -> $.press 'shift + minus'
 $skill.空白信息 = -> $.press 'shift + equal'
 
 # ---
-
-# include ../common/skill/索敌
-# include skill/报告
-# include skill/能力技
-# include skill/获取状态

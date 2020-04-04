@@ -31,3 +31,7 @@ attackM = ->
   if use '全蚀斩'
     use '能力技'
     return
+
+  if use '日珥斩'
+    use '能力技'
+    return

@@ -6,6 +6,9 @@ $skill.深奥之灵 = ->
   unless $level >= 30
     return
 
+  unless $distance == 'near'
+    return
+
   unless A_TickCount - $ts.深奥之灵 > $cd.深奥之灵
     return
 

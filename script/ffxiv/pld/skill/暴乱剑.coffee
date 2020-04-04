@@ -1,15 +1,15 @@
 $ts.暴乱剑 = 0
-$cd.暴乱剑 = 3e3
+$cd.暴乱剑 = 2500
 
 $skill.暴乱剑 = ->
-
-  unless A_TickCount - $ts.暴乱剑 > $cd.暴乱剑
-    return
 
   unless $step == 1
     return
 
   unless $distance == 'near'
+    return
+
+  unless A_TickCount - $ts.暴乱剑 > $cd.暴乱剑
     return
 
   $.press 'alt + 3'

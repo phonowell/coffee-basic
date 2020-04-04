@@ -272,14 +272,31 @@ resetStep() {
   $step := 0
 }
 
-__$skill_dot_先锋剑__() {
-  if !(A_TickCount - $ts.先锋剑 > $cd.先锋剑) {
+__$skill_dot_中断咏唱__() {
+  if !($isChanting) {
     return
   }
+  Send {space}
+}
+
+__$skill_dot_索敌__() {
+  hasTarget := isTargeting()
+  if (hasTarget) {
+    return true
+  }
+  Send {f11}
+  hasTarget := isTargeting()
+  return hasTarget
+}
+
+__$skill_dot_先锋剑__() {
   if !($step == 0) {
     return
   }
   if !($distance == "near") {
+    return
+  }
+  if !(A_TickCount - $ts.先锋剑 > $cd.先锋剑) {
     return
   }
   Send {alt down}{1}{alt up}
@@ -296,6 +313,56 @@ __$watcher_dot_先锋剑__() {
   SetTimer resetStep, % 0 - 15000
 }
 
+__$skill_dot_全蚀斩__() {
+  if !($step < 20) {
+    return
+  }
+  if !(A_TickCount - $ts.全蚀斩 > $cd.全蚀斩) {
+    return
+  }
+  Send {alt down}{4}{alt up}
+  SetTimer __$watcher_dot_全蚀斩__, % $cd.技能施放判断间隔
+  return true
+}
+
+__$watcher_dot_全蚀斩__() {
+  if !(clearWatcher("全蚀斩")) {
+    return
+  }
+  if !($level >= 40) {
+    $step := 0
+    return
+  }
+  $step := 21
+  SetTimer resetStep, Off
+  SetTimer resetStep, % 15000
+}
+
+__$skill_dot_战女神之怒__() {
+  if !($level >= 26) {
+    return
+  }
+  if !($step == 2) {
+    return
+  }
+  if !($distance == "near") {
+    return
+  }
+  if !(A_TickCount - $ts.战女神之怒 > $cd.战女神之怒) {
+    return
+  }
+  Send {alt down}{8}{alt up}
+  SetTimer __$watcher_dot_战女神之怒__, % $cd.技能施放判断间隔
+  return true
+}
+
+__$watcher_dot_战女神之怒__() {
+  if !(clearWatcher("战女神之怒")) {
+    return
+  }
+  $step := 0
+}
+
 __$skill_dot_战逃反应__() {
   if !(A_TickCount - $ts.战逃反应 > $cd.战逃反应) {
     return
@@ -309,14 +376,51 @@ __$watcher_dot_战逃反应__() {
   clearWatcher("战逃反应", "status")
 }
 
-__$skill_dot_暴乱剑__() {
-  if !(A_TickCount - $ts.暴乱剑 > $cd.暴乱剑) {
+__$skill_dot_报告__() {
+  if !($isReporting) {
     return
   }
+  msg := "等级：" . $level . ""
+  msg := "" . msg . "`n目标距离：" . $distance . ""
+  msg := "" . msg . "`n耗时：" . A_TickCount - $ts.报告 . "ms`n"
+  $ts.报告 := A_TickCount
+  msg := makeReportMsg(msg, "战逃反应")
+  msg := makeReportMsg(msg, "深奥之灵")
+  ToolTip % msg, 410, 640
+  SetTimer clearTip, Off
+  SetTimer clearTip, % 0 - 10000
+}
+
+__$skill_dot_日珥斩__() {
+  if !($level >= 40) {
+    return
+  }
+  if !($step == 21) {
+    return
+  }
+  if !(A_TickCount - $ts.日珥斩 > $cd.日珥斩) {
+    return
+  }
+  Send {ctrl down}{1}{ctrl up}
+  SetTimer __$watcher_dot_日珥斩__, % $cd.技能施放判断间隔
+  return true
+}
+
+__$watcher_dot_日珥斩__() {
+  if !(clearWatcher("日珥斩")) {
+    return
+  }
+  $step := 0
+}
+
+__$skill_dot_暴乱剑__() {
   if !($step == 1) {
     return
   }
   if !($distance == "near") {
+    return
+  }
+  if !(A_TickCount - $ts.暴乱剑 > $cd.暴乱剑) {
     return
   }
   Send {alt down}{3}{alt up}
@@ -337,73 +441,11 @@ __$watcher_dot_暴乱剑__() {
   SetTimer resetStep, % 0 - 15000
 }
 
-__$skill_dot_全蚀斩__() {
-  if !(A_TickCount - $ts.全蚀斩 > $cd.全蚀斩) {
-    return
-  }
-  Send {alt down}{4}{alt up}
-  SetTimer __$watcher_dot_全蚀斩__, % $cd.技能施放判断间隔
-  return true
-}
-
-__$watcher_dot_全蚀斩__() {
-  if !(clearWatcher("全蚀斩")) {
-    return
-  }
-  $step := 0
-}
-
-__$skill_dot_盾牌猛击__() {
-  Send {alt down}{5}{alt up}
-}
-
-__$skill_dot_钢铁信念__() {
-  Send {alt down}{6}{alt up}
-}
-
-__$skill_dot_投盾__() {
-  if !($level >= 15) {
-    return
-  }
-  Send {alt down}{7}{alt up}
-  return true
-}
-
-__$skill_dot_战女神之怒__() {
-  if !($level >= 26) {
-    return
-  }
-  if !(A_TickCount - $ts.战女神之怒 > $cd.战女神之怒) {
-    return
-  }
-  if !($step == 2) {
+__$skill_dot_深奥之灵__() {
+  if !($level >= 30) {
     return
   }
   if !($distance == "near") {
-    return
-  }
-  Send {alt down}{8}{alt up}
-  SetTimer __$watcher_dot_战女神之怒__, % $cd.技能施放判断间隔
-  return true
-}
-
-__$watcher_dot_战女神之怒__() {
-  if !(clearWatcher("战女神之怒")) {
-    return
-  }
-  $step := 0
-}
-
-__$skill_dot_预警__() {
-  Send {alt down}{9}{alt up}
-}
-
-__$skill_dot_厄运流转__() {
-  Send {alt down}{0}{alt up}
-}
-
-__$skill_dot_深奥之灵__() {
-  if !($level >= 30) {
     return
   }
   if !(A_TickCount - $ts.深奥之灵 > $cd.深奥之灵) {
@@ -416,67 +458,6 @@ __$skill_dot_深奥之灵__() {
 
 __$watcher_dot_深奥之灵__() {
   clearWatcher("深奥之灵")
-}
-
-__$skill_dot_铁壁__() {
-  Send {shift down}{1}{shift up}
-}
-
-__$skill_dot_下踢__() {
-  Send {shift down}{2}{shift up}
-}
-
-__$skill_dot_挑衅__() {
-  Send {shift down}{3}{shift up}
-}
-
-__$skill_dot_插言__() {
-  Send {shift down}{4}{shift up}
-}
-
-__$skill_dot_血仇__() {
-  Send {shift down}{5}{shift up}
-}
-
-__$skill_dot_亲疏自行__() {
-  Send {shift down}{6}{shift up}
-}
-
-__$skill_dot_退避__() {
-  Send {shift down}{7}{shift up}
-}
-
-__$skill_dot_冲刺__() {
-  Send {shift down}{-}{shift up}
-}
-
-__$skill_dot_空白信息__() {
-  Send {shift down}{=}{shift up}
-}
-
-__$skill_dot_索敌__() {
-  hasTarget := isTargeting()
-  if (hasTarget) {
-    return true
-  }
-  Send {f11}
-  hasTarget := isTargeting()
-  return hasTarget
-}
-
-__$skill_dot_报告__() {
-  if !($isReporting) {
-    return
-  }
-  msg := "等级：" . $level . ""
-  msg := "" . msg . "`n目标距离：" . $distance . ""
-  msg := "" . msg . "`n耗时：" . A_TickCount - $ts.报告 . "ms`n"
-  $ts.报告 := A_TickCount
-  msg := makeReportMsg(msg, "战逃反应")
-  msg := makeReportMsg(msg, "深奥之灵")
-  ToolTip % msg, 410, 640
-  SetTimer clearTip, Off
-  SetTimer clearTip, % 0 - 10000
 }
 
 __$skill_dot_能力技__() {
@@ -524,6 +505,82 @@ __$skill_dot_获取状态__() {
   $distance := getDistance()
 }
 
+__$skill_dot_预警__() {
+  if !($level >= 38) {
+    return
+  }
+  if !(A_TickCount - $ts.预警 > $cd.预警) {
+    return
+  }
+  Send {alt down}{9}{alt up}
+  SetTimer __$watcher_dot_预警__, % $cd.技能施放判断间隔
+  return true
+}
+
+__$watcher_dot_预警__() {
+  clearWatcher("预警", "status")
+}
+
+__$skill_dot_盾牌猛击__() {
+  Send {alt down}{5}{alt up}
+}
+
+__$skill_dot_钢铁信念__() {
+  Send {alt down}{6}{alt up}
+}
+
+__$skill_dot_投盾__() {
+  if !($level >= 15) {
+    return
+  }
+  Send {alt down}{7}{alt up}
+  return true
+}
+
+__$skill_dot_厄运流转__() {
+  Send {alt down}{0}{alt up}
+}
+
+__$skill_dot_盾阵__() {
+  Send {alt down}{=}{alt up}
+}
+
+__$skill_dot_铁壁__() {
+  Send {shift down}{1}{shift up}
+}
+
+__$skill_dot_下踢__() {
+  Send {shift down}{2}{shift up}
+}
+
+__$skill_dot_挑衅__() {
+  Send {shift down}{3}{shift up}
+}
+
+__$skill_dot_插言__() {
+  Send {shift down}{4}{shift up}
+}
+
+__$skill_dot_血仇__() {
+  Send {shift down}{5}{shift up}
+}
+
+__$skill_dot_亲疏自行__() {
+  Send {shift down}{6}{shift up}
+}
+
+__$skill_dot_退避__() {
+  Send {shift down}{7}{shift up}
+}
+
+__$skill_dot_冲刺__() {
+  Send {shift down}{-}{shift up}
+}
+
+__$skill_dot_空白信息__() {
+  Send {shift down}{=}{shift up}
+}
+
 attackS() {
   if !($distance == "near") {
     return
@@ -547,40 +604,61 @@ attackM() {
     use("能力技")
     return
   }
+  if (use("日珥斩")) {
+    use("能力技")
+    return
+  }
 }
 
 __$default__() {
   $cd.技能施放判断间隔 := 100
   $cd.技能施放补正 := 1500
+  $skill.中断咏唱 := Func("__$skill_dot_中断咏唱__")
+  $skill.索敌 := Func("__$skill_dot_索敌__")
   $ts.先锋剑 := 0
-  $cd.先锋剑 := 3000
+  $cd.先锋剑 := 2500
   $skill.先锋剑 := Func("__$skill_dot_先锋剑__")
   $watcher.先锋剑 := Func("__$watcher_dot_先锋剑__")
+  $ts.全蚀斩 := 0
+  $cd.全蚀斩 := 2500
+  $skill.全蚀斩 := Func("__$skill_dot_全蚀斩__")
+  $watcher.全蚀斩 := Func("__$watcher_dot_全蚀斩__")
+  $ts.战女神之怒 := 0
+  $cd.战女神之怒 := 2500
+  $skill.战女神之怒 := Func("__$skill_dot_战女神之怒__")
+  $watcher.战女神之怒 := Func("__$watcher_dot_战女神之怒__")
   $ts.战逃反应 := 0
   $cd.战逃反应 := 60000
   $skill.战逃反应 := Func("__$skill_dot_战逃反应__")
   $watcher.战逃反应 := Func("__$watcher_dot_战逃反应__")
+  $ts.报告 := 0
+  $skill.报告 := Func("__$skill_dot_报告__")
+  $ts.日珥斩 := 0
+  $cd.日珥斩 := 2500
+  $skill.日珥斩 := Func("__$skill_dot_日珥斩__")
+  $watcher.日珥斩 := Func("__$watcher_dot_日珥斩__")
   $ts.暴乱剑 := 0
-  $cd.暴乱剑 := 3000
+  $cd.暴乱剑 := 2500
   $skill.暴乱剑 := Func("__$skill_dot_暴乱剑__")
   $watcher.暴乱剑 := Func("__$watcher_dot_暴乱剑__")
-  $ts.全蚀斩 := 0
-  $cd.全蚀斩 := 2000
-  $skill.全蚀斩 := Func("__$skill_dot_全蚀斩__")
-  $watcher.全蚀斩 := Func("__$watcher_dot_全蚀斩__")
-  $skill.盾牌猛击 := Func("__$skill_dot_盾牌猛击__")
-  $skill.钢铁信念 := Func("__$skill_dot_钢铁信念__")
-  $skill.投盾 := Func("__$skill_dot_投盾__")
-  $ts.战女神之怒 := 0
-  $cd.战女神之怒 := 3000
-  $skill.战女神之怒 := Func("__$skill_dot_战女神之怒__")
-  $watcher.战女神之怒 := Func("__$watcher_dot_战女神之怒__")
-  $skill.预警 := Func("__$skill_dot_预警__")
-  $skill.厄运流转 := Func("__$skill_dot_厄运流转__")
   $ts.深奥之灵 := 0
   $cd.深奥之灵 := 30000
   $skill.深奥之灵 := Func("__$skill_dot_深奥之灵__")
   $watcher.深奥之灵 := Func("__$watcher_dot_深奥之灵__")
+  $ts.能力技 := 0
+  $cd.能力技 := 1000
+  $skill.能力技 := Func("__$skill_dot_能力技__")
+  $ts.获取状态 := 0
+  $skill.获取状态 := Func("__$skill_dot_获取状态__")
+  $ts.预警 := 0
+  $cd.预警 := 120000
+  $skill.预警 := Func("__$skill_dot_预警__")
+  $watcher.预警 := Func("__$watcher_dot_预警__")
+  $skill.盾牌猛击 := Func("__$skill_dot_盾牌猛击__")
+  $skill.钢铁信念 := Func("__$skill_dot_钢铁信念__")
+  $skill.投盾 := Func("__$skill_dot_投盾__")
+  $skill.厄运流转 := Func("__$skill_dot_厄运流转__")
+  $skill.盾阵 := Func("__$skill_dot_盾阵__")
   $skill.铁壁 := Func("__$skill_dot_铁壁__")
   $skill.下踢 := Func("__$skill_dot_下踢__")
   $skill.挑衅 := Func("__$skill_dot_挑衅__")
@@ -590,14 +668,6 @@ __$default__() {
   $skill.退避 := Func("__$skill_dot_退避__")
   $skill.冲刺 := Func("__$skill_dot_冲刺__")
   $skill.空白信息 := Func("__$skill_dot_空白信息__")
-  $skill.索敌 := Func("__$skill_dot_索敌__")
-  $ts.报告 := 0
-  $skill.报告 := Func("__$skill_dot_报告__")
-  $ts.能力技 := 0
-  $cd.能力技 := 1000
-  $skill.能力技 := Func("__$skill_dot_能力技__")
-  $ts.获取状态 := 0
-  $skill.获取状态 := Func("__$skill_dot_获取状态__")
 }
 
 ; default
