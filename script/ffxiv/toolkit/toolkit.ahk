@@ -228,12 +228,8 @@ f6::
 return
 
 f9::
-  x := 1479
-  y := 682
+  MouseGetPos x, y
   PixelGetColor color, x, y, RGB
-  if (color == 0xD23A3A) {
-    return
-  }
   ToolTip % "" . x . ", " . y . ", " . color . ""
 return
 

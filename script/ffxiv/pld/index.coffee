@@ -35,3 +35,24 @@ attackM = ->
   if use '日珥斩'
     use '能力技'
     return
+
+# ---
+
+defendS = ->
+  if use '雪仇' then return
+  if use '盾阵' then return
+  $.beep()
+
+# ---
+
+defendH = ->
+  if use '铁壁' then return
+  if use '预警' then return
+  $.beep()
+
+# ---
+
+breakS = ->
+  if use '下踢' then return
+  if use '插言' then return
+  $.beep()

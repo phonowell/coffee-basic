@@ -42,86 +42,28 @@ $.on '2-joy-4', ->
 
 # ---
 
-# attackX = ->
+$.on '2-joy-2', ->
 
-#   group = getGroup()
-#   unless group
-#     return
+  group = getGroup()
+  unless group
+    return
 
-#   use '获取状态'
-#   use '报告'
+  if group == 'right'
+    defendS()
+    return
 
-#   unless use '索敌'
-#     return
-
-#   # 魔三连
-#   if group == 'right'
-#     unless use '魔三连'
-#       attackS()
-#       return
-#     use '能力技'
-#     return
-
-#   if group == 'both'
-#     unless use '魔划圆斩'
-#       attackM()
-#       return
-#     use '能力技'
-#     return
-
-# bindAttackX = ->
-
-#   isPressing = $.isPressing '2-joy-2'
-#   unless isPressing
-#     clearInterval bindAttackX
-#     return
-
-#   attackX()
-
-# $.on '2-joy-2', ->
-
-#   unless getGroup()
-#     return
-
-#   clearInterval bindAttackX
-#   setInterval bindAttackX, 300
-#   attackX()
+  if group == 'both'
+    defendH()
+    return
 
 # ---
 
-# heal = ->
+$.on '2-joy-1', ->
 
-#   group = getGroup()
-#   unless group
-#     return
+  group = getGroup()
+  unless group
+    return
 
-#   use '获取状态'
-#   use '报告'
-
-#   # 单体治疗
-#   if group == 'right'
-#     healS()
-#     return
-
-#   # 复活
-#   if group == 'both'
-#     revive()
-#     return
-
-# bindHeal = ->
-
-#   isPressing = $.isPressing '2-joy-3'
-#   unless isPressing
-#     clearInterval bindHeal
-#     return
-
-#   heal()
-
-# $.on '2-joy-3', ->
-
-#   unless getGroup()
-#     return
-
-#   clearInterval bindHeal
-#   setInterval bindHeal, 300
-#   heal()
+  if group == 'right'
+    breakS()
+    return

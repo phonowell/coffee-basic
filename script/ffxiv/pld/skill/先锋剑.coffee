@@ -3,7 +3,7 @@ $cd.先锋剑 = 2500
 
 $skill.先锋剑 = ->
 
-  unless $step == 0
+  unless $step == 0 or $step > 20
     return
 
   unless $distance == 'near'

@@ -20,22 +20,14 @@ $skill.投盾 = ->
 
 $skill.厄运流转 = -> $.press 'alt + 0'
 
-$skill.盾阵 = -> $.press 'alt + equal'
+# ---
+
+$skill.保护 = -> $.press 'ctrl + 2'
 
 # ---
 
-$skill.铁壁 = -> $.press 'shift + 1'
-
-$skill.下踢 = -> $.press 'shift + 2'
-
 $skill.挑衅 = -> $.press 'shift + 3'
-
-$skill.插言 = -> $.press 'shift + 4'
-
-$skill.血仇 = -> $.press 'shift + 5'
-
 $skill.亲疏自行 = -> $.press 'shift + 6'
-
 $skill.退避 = -> $.press 'shift + 7'
 
 # ---

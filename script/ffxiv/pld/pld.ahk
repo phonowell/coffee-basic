@@ -32,6 +32,7 @@ global $level := 80
 global $skill := {}
 global $watcher := {}
 global $distance := "far"
+global $gold := 0
 global $step := 0
 global $isReporting := true
 global $ap := 0
@@ -268,6 +269,19 @@ getDistance() {
   return "near"
 }
 
+getGold() {
+  if !($level >= 35) {
+    return 0
+  }
+  PixelSearch x, y, 1104, 806, 1247, 806, 0x58483E, 10, Fast RGB
+  if !(x) {
+    return 100
+  }
+  percent := (x - 1104) * 100 / (1247 - 1104)
+  percent := Round(percent / 5)
+  return percent * 5
+}
+
 resetStep() {
   $step := 0
 }
@@ -289,8 +303,24 @@ __$skill_dot_索敌__() {
   return hasTarget
 }
 
+__$skill_dot_下踢__() {
+  if !($distance == "near") {
+    return
+  }
+  if !(A_TickCount - $ts.下踢 > $cd.下踢) {
+    return
+  }
+  Send {shift down}{2}{shift up}
+  SetTimer __$watcher_dot_下踢__, % $cd.技能施放判断间隔
+  return true
+}
+
+__$watcher_dot_下踢__() {
+  clearWatcher("下踢")
+}
+
 __$skill_dot_先锋剑__() {
-  if !($step == 0) {
+  if !($step == 0 or $step > 20) {
     return
   }
   if !($distance == "near") {
@@ -381,14 +411,36 @@ __$skill_dot_报告__() {
     return
   }
   msg := "等级：" . $level . ""
+  msg := "" . msg . "`n忠义：" . $gold . ""
   msg := "" . msg . "`n目标距离：" . $distance . ""
   msg := "" . msg . "`n耗时：" . A_TickCount - $ts.报告 . "ms`n"
   $ts.报告 := A_TickCount
   msg := makeReportMsg(msg, "战逃反应")
+  msg := makeReportMsg(msg, "预警")
   msg := makeReportMsg(msg, "深奥之灵")
+  msg := makeReportMsg(msg, "铁壁")
+  msg := makeReportMsg(msg, "下踢")
+  msg := makeReportMsg(msg, "插言")
+  msg := makeReportMsg(msg, "雪仇")
   ToolTip % msg, 410, 640
   SetTimer clearTip, Off
   SetTimer clearTip, % 0 - 10000
+}
+
+__$skill_dot_插言__() {
+  if !($distance == "near") {
+    return
+  }
+  if !(A_TickCount - $ts.插言 > $cd.插言) {
+    return
+  }
+  Send {shift down}{4}{shift up}
+  SetTimer __$watcher_dot_插言__, % $cd.技能施放判断间隔
+  return true
+}
+
+__$watcher_dot_插言__() {
+  clearWatcher("插言")
 }
 
 __$skill_dot_日珥斩__() {
@@ -460,6 +512,25 @@ __$watcher_dot_深奥之灵__() {
   clearWatcher("深奥之灵")
 }
 
+__$skill_dot_盾阵__() {
+  if !($level >= 35) {
+    return
+  }
+  if !($gold >= 50) {
+    return
+  }
+  if !(A_TickCount - $ts.盾阵 > $cd.盾阵) {
+    return
+  }
+  Send {alt down}{=}{alt up}
+  SetTimer __$watcher_dot_盾阵__, % $cd.技能施放判断间隔
+  return true
+}
+
+__$watcher_dot_盾阵__() {
+  clearWatcher("盾阵", "status")
+}
+
 __$skill_dot_能力技__() {
   if !($ap == 0) {
     return
@@ -503,6 +574,33 @@ __$skill_dot_获取状态__() {
   }
   $ts.获取状态 := A_TickCount
   $distance := getDistance()
+  $gold := getGold()
+}
+
+__$skill_dot_铁壁__() {
+  if !(A_TickCount - $ts.铁壁 > $cd.铁壁) {
+    return
+  }
+  Send {shift down}{1}{shift up}
+  SetTimer __$watcher_dot_铁壁__, % $cd.技能施放判断间隔
+  return true
+}
+
+__$watcher_dot_铁壁__() {
+  clearWatcher("铁壁", "status")
+}
+
+__$skill_dot_雪仇__() {
+  if !(A_TickCount - $ts.雪仇 > $cd.雪仇) {
+    return
+  }
+  Send {shift down}{5}{shift up}
+  SetTimer __$watcher_dot_雪仇__, % $cd.技能施放判断间隔
+  return true
+}
+
+__$watcher_dot_雪仇__() {
+  clearWatcher("雪仇")
 }
 
 __$skill_dot_预警__() {
@@ -541,28 +639,12 @@ __$skill_dot_厄运流转__() {
   Send {alt down}{0}{alt up}
 }
 
-__$skill_dot_盾阵__() {
-  Send {alt down}{=}{alt up}
-}
-
-__$skill_dot_铁壁__() {
-  Send {shift down}{1}{shift up}
-}
-
-__$skill_dot_下踢__() {
-  Send {shift down}{2}{shift up}
+__$skill_dot_保护__() {
+  Send {ctrl down}{2}{ctrl up}
 }
 
 __$skill_dot_挑衅__() {
   Send {shift down}{3}{shift up}
-}
-
-__$skill_dot_插言__() {
-  Send {shift down}{4}{shift up}
-}
-
-__$skill_dot_血仇__() {
-  Send {shift down}{5}{shift up}
 }
 
 __$skill_dot_亲疏自行__() {
@@ -610,11 +692,45 @@ attackM() {
   }
 }
 
+defendS() {
+  if (use("雪仇")) {
+    return
+  }
+  if (use("盾阵")) {
+    return
+  }
+  SoundBeep
+}
+
+defendH() {
+  if (use("铁壁")) {
+    return
+  }
+  if (use("预警")) {
+    return
+  }
+  SoundBeep
+}
+
+breakS() {
+  if (use("下踢")) {
+    return
+  }
+  if (use("插言")) {
+    return
+  }
+  SoundBeep
+}
+
 __$default__() {
   $cd.技能施放判断间隔 := 100
   $cd.技能施放补正 := 1500
   $skill.中断咏唱 := Func("__$skill_dot_中断咏唱__")
   $skill.索敌 := Func("__$skill_dot_索敌__")
+  $ts.下踢 := 0
+  $cd.下踢 := 25000
+  $skill.下踢 := Func("__$skill_dot_下踢__")
+  $watcher.下踢 := Func("__$watcher_dot_下踢__")
   $ts.先锋剑 := 0
   $cd.先锋剑 := 2500
   $skill.先锋剑 := Func("__$skill_dot_先锋剑__")
@@ -633,6 +749,10 @@ __$default__() {
   $watcher.战逃反应 := Func("__$watcher_dot_战逃反应__")
   $ts.报告 := 0
   $skill.报告 := Func("__$skill_dot_报告__")
+  $ts.插言 := 0
+  $cd.插言 := 30000
+  $skill.插言 := Func("__$skill_dot_插言__")
+  $watcher.插言 := Func("__$watcher_dot_插言__")
   $ts.日珥斩 := 0
   $cd.日珥斩 := 2500
   $skill.日珥斩 := Func("__$skill_dot_日珥斩__")
@@ -645,11 +765,23 @@ __$default__() {
   $cd.深奥之灵 := 30000
   $skill.深奥之灵 := Func("__$skill_dot_深奥之灵__")
   $watcher.深奥之灵 := Func("__$watcher_dot_深奥之灵__")
+  $ts.盾阵 := 0
+  $cd.盾阵 := 5000
+  $skill.盾阵 := Func("__$skill_dot_盾阵__")
+  $watcher.盾阵 := Func("__$watcher_dot_盾阵__")
   $ts.能力技 := 0
   $cd.能力技 := 1000
   $skill.能力技 := Func("__$skill_dot_能力技__")
   $ts.获取状态 := 0
   $skill.获取状态 := Func("__$skill_dot_获取状态__")
+  $ts.铁壁 := 0
+  $cd.铁壁 := 90000
+  $skill.铁壁 := Func("__$skill_dot_铁壁__")
+  $watcher.铁壁 := Func("__$watcher_dot_铁壁__")
+  $ts.雪仇 := 0
+  $cd.雪仇 := 60000
+  $skill.雪仇 := Func("__$skill_dot_雪仇__")
+  $watcher.雪仇 := Func("__$watcher_dot_雪仇__")
   $ts.预警 := 0
   $cd.预警 := 120000
   $skill.预警 := Func("__$skill_dot_预警__")
@@ -658,12 +790,8 @@ __$default__() {
   $skill.钢铁信念 := Func("__$skill_dot_钢铁信念__")
   $skill.投盾 := Func("__$skill_dot_投盾__")
   $skill.厄运流转 := Func("__$skill_dot_厄运流转__")
-  $skill.盾阵 := Func("__$skill_dot_盾阵__")
-  $skill.铁壁 := Func("__$skill_dot_铁壁__")
-  $skill.下踢 := Func("__$skill_dot_下踢__")
+  $skill.保护 := Func("__$skill_dot_保护__")
   $skill.挑衅 := Func("__$skill_dot_挑衅__")
-  $skill.插言 := Func("__$skill_dot_插言__")
-  $skill.血仇 := Func("__$skill_dot_血仇__")
   $skill.亲疏自行 := Func("__$skill_dot_亲疏自行__")
   $skill.退避 := Func("__$skill_dot_退避__")
   $skill.冲刺 := Func("__$skill_dot_冲刺__")
@@ -724,6 +852,32 @@ return
   SetTimer bindAttack, Off
   SetTimer bindAttack, % 300
   attack()
+return
+
+2joy2::
+  group := getGroup()
+  if !(group) {
+    return
+  }
+  if (group == "right") {
+    defendS()
+    return
+  }
+  if (group == "both") {
+    defendH()
+    return
+  }
+return
+
+2joy1::
+  group := getGroup()
+  if !(group) {
+    return
+  }
+  if (group == "right") {
+    breakS()
+    return
+  }
 return
 
 ; eof
