@@ -3,6 +3,11 @@ $cd.技能施放补正 = 1500
 
 # ---
 
+# include ../common/skill/*
+# include skill/*
+
+# ---
+
 $skill.飞石 = -> $.press 'alt + 1'
 $skill.治疗 = -> $.press 'alt + 2'
 
@@ -44,10 +49,6 @@ $skill.医济 = ->
   
   $.press 'alt + 8'
   return true
-
-# ---
-
-# include skill/神速咏唱
 
 # ---
 
@@ -123,12 +124,6 @@ $skill.庇护所 = ->
 
 # ---
 
-# include skill/法令
-# include skill/无中生有
-# include skill/神名
-
-# ---
-
 $skill.神祝祷 = ->
 
   unless $level >= 66
@@ -136,10 +131,6 @@ $skill.神祝祷 = ->
 
   $.press 'ctrl + 7'
   return true
-
-# ---
-
-# include skill/全大赦
 
 # ---
 
@@ -187,11 +178,6 @@ $skill.康复 = -> $.press 'shift + 2'
 
 # ---
 
-# include skill/即刻咏唱
-# include skill/醒梦
-
-# ---
-
 $skill.沉稳咏唱 = ->
 
   unless $level >= 44
@@ -214,11 +200,3 @@ $skill.营救 = ->
 
 $skill.冲刺 = -> $.press 'shift + minus'
 $skill.空白信息 = -> $.press 'shift + equal'
-
-# ---
-
-# include ../common/skill/中断咏唱
-# include ../common/skill/索敌
-# include skill/报告
-# include skill/能力技
-# include skill/获取状态

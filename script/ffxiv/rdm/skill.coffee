@@ -3,40 +3,19 @@ $cd.技能施放补正 = 1500
 
 # ---
 
-# include skill/回刺
+# include ../common/skill/*
+# include skill/*
 
 # ---
 
 $skill.摇荡 = -> $.press 'alt + 2'
-
-# ---
-
-$skill.赤闪雷 = ->
-  $.press 'alt + 3'
-  $ts.赤疾风 = A_TickCount
-
-# ---
-
-# include skill/短兵相接
-
-# ---
-
-$ts.赤疾风 = 0
-$skill.赤疾风 = ->
-  $.press 'alt + 5'
-  $ts.赤疾风 = A_TickCount
-
-# ---
-
+$skill.赤闪雷 = -> $.press 'alt + 3'
+$skill.赤疾风 = -> $.press 'alt + 5'
 $skill.散碎 = -> $.press 'alt + 6'
 $skill.赤震雷 = -> $.press 'alt + 7'
 $skill.赤烈风 = -> $.press 'alt + 8'
 $skill.赤火炎 = -> $.press 'alt + 9'
 $skill.赤飞石 = -> $.press 'alt + 0'
-
-# ---
-
-# include skill/交击斩
 
 # ---
 
@@ -47,12 +26,6 @@ $skill.移转 = ->
 
   $.press 'alt + equal'
   return true
-
-# ---
-
-# include skill/飞刺
-# include skill/连攻
-# include skill/促进
 
 # ---
 
@@ -84,12 +57,6 @@ $skill.赤治疗 = ->
 
 # ---
 
-# include skill/六分反击
-# include skill/鼓励
-# include skill/倍增
-
-# ---
-
 $skill.赤复活 = ->
 
   unless $level >= 64
@@ -97,10 +64,6 @@ $skill.赤复活 = ->
 
   $.press 'ctrl + 9'
   return true
-
-# ---
-
-# include skill/交剑
 
 # ---
 
@@ -124,11 +87,6 @@ $skill.昏乱 = -> $.press 'shift + 1'
 
 # ---
 
-# include skill/即刻咏唱
-# include skill/醒梦
-
-# ---
-
 $skill.沉稳咏唱 = ->
 
   unless $level >= 44
@@ -141,16 +99,3 @@ $skill.沉稳咏唱 = ->
 
 $skill.冲刺 = -> $.press 'shift + minus'
 $skill.空白信息 = -> $.press 'shift + equal'
-  
-# ---
-
-# include ../common/skill/中断咏唱
-# include ../common/skill/索敌
-# include skill/报告
-# include skill/焦热
-# include skill/能力技
-# include skill/获取状态
-# include skill/调整魔元
-# include skill/赤神圣
-# include skill/魔三连
-# include skill/魔划圆斩
