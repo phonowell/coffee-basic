@@ -368,6 +368,22 @@ __$watcher_dot_全蚀斩__() {
   SetTimer resetStep, % 15000
 }
 
+__$skill_dot_厄运流转__() {
+  if !($level >= 50) {
+    return
+  }
+  if !(A_TickCount - $ts.厄运流转 > $cd.厄运流转) {
+    return
+  }
+  Send {alt down}{0}{alt up}
+  SetTimer __$watcher_dot_厄运流转__, % $cd.技能施放判断间隔
+  return true
+}
+
+__$watcher_dot_厄运流转__() {
+  clearWatcher("厄运流转")
+}
+
 __$skill_dot_战女神之怒__() {
   if !($level >= 26) {
     return
@@ -418,6 +434,7 @@ __$skill_dot_报告__() {
   msg := makeReportMsg(msg, "战逃反应")
   msg := makeReportMsg(msg, "预警")
   msg := makeReportMsg(msg, "深奥之灵")
+  msg := makeReportMsg(msg, "厄运流转")
   msg := makeReportMsg(msg, "铁壁")
   msg := makeReportMsg(msg, "下踢")
   msg := makeReportMsg(msg, "插言")
@@ -563,6 +580,9 @@ __$skill_dot_能力技__() {
   if (use("深奥之灵")) {
     return
   }
+  if (use("厄运流转")) {
+    return
+  }
   use("空白信息")
 }
 
@@ -633,10 +653,6 @@ __$skill_dot_投盾__() {
   }
   Send {alt down}{7}{alt up}
   return true
-}
-
-__$skill_dot_厄运流转__() {
-  Send {alt down}{0}{alt up}
 }
 
 __$skill_dot_保护__() {
@@ -739,6 +755,10 @@ __$default__() {
   $cd.全蚀斩 := 2500
   $skill.全蚀斩 := Func("__$skill_dot_全蚀斩__")
   $watcher.全蚀斩 := Func("__$watcher_dot_全蚀斩__")
+  $ts.厄运流转 := 0
+  $cd.厄运流转 := 25000
+  $skill.厄运流转 := Func("__$skill_dot_厄运流转__")
+  $watcher.厄运流转 := Func("__$watcher_dot_厄运流转__")
   $ts.战女神之怒 := 0
   $cd.战女神之怒 := 2500
   $skill.战女神之怒 := Func("__$skill_dot_战女神之怒__")
@@ -789,7 +809,6 @@ __$default__() {
   $skill.盾牌猛击 := Func("__$skill_dot_盾牌猛击__")
   $skill.钢铁信念 := Func("__$skill_dot_钢铁信念__")
   $skill.投盾 := Func("__$skill_dot_投盾__")
-  $skill.厄运流转 := Func("__$skill_dot_厄运流转__")
   $skill.保护 := Func("__$skill_dot_保护__")
   $skill.挑衅 := Func("__$skill_dot_挑衅__")
   $skill.亲疏自行 := Func("__$skill_dot_亲疏自行__")

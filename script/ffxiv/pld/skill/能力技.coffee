@@ -39,4 +39,7 @@ $skill.能力技 = ->
   if use '深奥之灵'
     return
 
+  if use '厄运流转'
+    return
+
   use '空白信息'

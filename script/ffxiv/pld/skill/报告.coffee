@@ -16,6 +16,7 @@ $skill.报告 = ->
   msg = makeReportMsg msg, '战逃反应'
   msg = makeReportMsg msg, '预警'
   msg = makeReportMsg msg, '深奥之灵'
+  msg = makeReportMsg msg, '厄运流转'
   msg = makeReportMsg msg, '铁壁'
   msg = makeReportMsg msg, '下踢'
   msg = makeReportMsg msg, '插言'

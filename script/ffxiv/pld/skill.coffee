@@ -18,8 +18,6 @@ $skill.投盾 = ->
   $.press 'alt + 7'
   return true
 
-$skill.厄运流转 = -> $.press 'alt + 0'
-
 # ---
 
 $skill.保护 = -> $.press 'ctrl + 2'
