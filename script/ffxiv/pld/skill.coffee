@@ -10,14 +10,6 @@ $skill.盾牌猛击 = -> $.press 'alt + 5'
 
 $skill.钢铁信念 = -> $.press 'alt + 6'
 
-$skill.投盾 = ->
-
-  unless $level >= 15
-    return
-
-  $.press 'alt + 7'
-  return true
-
 # ---
 
 $skill.保护 = -> $.press 'ctrl + 2'

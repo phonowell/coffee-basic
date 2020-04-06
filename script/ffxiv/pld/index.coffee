@@ -8,8 +8,6 @@
 attackS = ->
   
   unless $distance == 'near'
-    if $step == 0
-      use '投盾'
     return
 
   if use '先锋剑'
@@ -43,15 +41,9 @@ attackM = ->
 # ---
 
 defendS = ->
-  if use '雪仇' then return
-  if use '盾阵' then return
-  $.beep()
-
-# ---
-
-defendH = ->
   if use '铁壁' then return
   if use '预警' then return
+  if use '盾阵' then return
   $.beep()
 
 # ---

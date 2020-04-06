@@ -22,6 +22,10 @@ attack = ->
     attackM()
     return
 
+  if group == 'left'
+    use '投盾'
+    return
+
 bindAttack = ->
 
   isPressing = $.isPressing '2-joy-4'
@@ -49,10 +53,6 @@ $.on '2-joy-2', ->
     return
 
   if group == 'right'
-    defendH()
-    return
-
-  if group == 'both'
     defendS()
     return
 

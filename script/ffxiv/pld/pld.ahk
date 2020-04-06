@@ -71,6 +71,10 @@ attack() {
     attackM()
     return
   }
+  if (group == "left") {
+    use("投盾")
+    return
+  }
 }
 
 bindAttack() {
@@ -442,6 +446,25 @@ __$watcher_dot_战逃反应__() {
   clearWatcher("战逃反应", "status")
 }
 
+__$skill_dot_投盾__() {
+  if !($level >= 15) {
+    return
+  }
+  if !(A_TickCount - $ts.投盾 > $cd.投盾) {
+    return
+  }
+  Send {alt down}{7}{alt up}
+  SetTimer __$watcher_dot_投盾__, % $cd.技能施放判断间隔
+  return true
+}
+
+__$watcher_dot_投盾__() {
+  if !(clearWatcher("投盾")) {
+    return
+  }
+  $step := 0
+}
+
 __$skill_dot_报告__() {
   if !($isReporting) {
     return
@@ -721,14 +744,6 @@ __$skill_dot_钢铁信念__() {
   Send {alt down}{6}{alt up}
 }
 
-__$skill_dot_投盾__() {
-  if !($level >= 15) {
-    return
-  }
-  Send {alt down}{7}{alt up}
-  return true
-}
-
 __$skill_dot_保护__() {
   Send {ctrl down}{2}{ctrl up}
 }
@@ -755,9 +770,6 @@ __$skill_dot_空白信息__() {
 
 attackS() {
   if !($distance == "near") {
-    if ($step == 0) {
-      use("投盾")
-    }
     return
   }
   if (use("先锋剑")) {
@@ -790,20 +802,13 @@ attackM() {
 }
 
 defendS() {
-  if (use("雪仇")) {
-    return
-  }
-  if (use("盾阵")) {
-    return
-  }
-  SoundBeep
-}
-
-defendH() {
   if (use("铁壁")) {
     return
   }
   if (use("预警")) {
+    return
+  }
+  if (use("盾阵")) {
     return
   }
   SoundBeep
@@ -862,6 +867,10 @@ __$default__() {
   $cd.战逃反应 := 60000
   $skill.战逃反应 := Func("__$skill_dot_战逃反应__")
   $watcher.战逃反应 := Func("__$watcher_dot_战逃反应__")
+  $ts.投盾 := 0
+  $cd.投盾 := 2500
+  $skill.投盾 := Func("__$skill_dot_投盾__")
+  $watcher.投盾 := Func("__$watcher_dot_投盾__")
   $ts.报告 := 0
   $skill.报告 := Func("__$skill_dot_报告__")
   $ts.插言 := 0
@@ -912,7 +921,6 @@ __$default__() {
   $watcher.预警 := Func("__$watcher_dot_预警__")
   $skill.盾牌猛击 := Func("__$skill_dot_盾牌猛击__")
   $skill.钢铁信念 := Func("__$skill_dot_钢铁信念__")
-  $skill.投盾 := Func("__$skill_dot_投盾__")
   $skill.保护 := Func("__$skill_dot_保护__")
   $skill.挑衅 := Func("__$skill_dot_挑衅__")
   $skill.亲疏自行 := Func("__$skill_dot_亲疏自行__")
@@ -983,10 +991,6 @@ return
     return
   }
   if (group == "right") {
-    defendH()
-    return
-  }
-  if (group == "both") {
     defendS()
     return
   }
