@@ -9,9 +9,6 @@ $skill.战女神之怒 = ->
   unless $step == 2
     return
 
-  unless $distance == 'near'
-    return
-
   unless A_TickCount - $ts.战女神之怒 > $cd.战女神之怒
     return
 
@@ -21,7 +18,14 @@ $skill.战女神之怒 = ->
   return true
 
 $watcher.战女神之怒 = ->
-  unless clearWatcher '战女神之怒'
-    return
+
+  if $level < 60
+    unless clearWatcher '战女神之怒'
+      return
+  else
+    unless isUsed '王权剑'
+      return
+    clearInterval $watcher.战女神之怒
+    $ts.战女神之怒 = A_TickCount - $cd.技能施放补正
   
   $step = 0

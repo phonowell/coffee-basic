@@ -8,8 +8,8 @@
 attackS = ->
   
   unless $distance == 'near'
-    # if $step == 0
-    #   use '投盾'
+    if $step == 0
+      use '投盾'
     return
 
   if use '先锋剑'
@@ -17,6 +17,10 @@ attackS = ->
     return
   
   if use '暴乱剑'
+    use '能力技'
+    return
+
+  if use '沥血剑'
     use '能力技'
     return
   
@@ -55,4 +59,11 @@ defendH = ->
 breakS = ->
   if use '下踢' then return
   if use '插言' then return
+  $.beep()
+
+# ---
+
+healS = ->
+  if use '圣光幕帘' then return
+  if use '深仁厚泽' then return
   $.beep()

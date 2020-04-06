@@ -223,6 +223,7 @@ resetKey() {
   Send {alt up}
   Send {ctrl up}
   Send {shift up}
+  MouseMove 410, 640, 0
 }
 
 resetTs() {
@@ -304,10 +305,10 @@ __$skill_dot_索敌__() {
 }
 
 __$skill_dot_下踢__() {
-  if !($distance == "near") {
+  if !(A_TickCount - $ts.下踢 > $cd.下踢) {
     return
   }
-  if !(A_TickCount - $ts.下踢 > $cd.下踢) {
+  if (hasStatusTarget("眩晕")) {
     return
   }
   Send {shift down}{2}{shift up}
@@ -321,9 +322,6 @@ __$watcher_dot_下踢__() {
 
 __$skill_dot_先锋剑__() {
   if !($step == 0 or $step > 20) {
-    return
-  }
-  if !($distance == "near") {
     return
   }
   if !(A_TickCount - $ts.先锋剑 > $cd.先锋剑) {
@@ -384,14 +382,27 @@ __$watcher_dot_厄运流转__() {
   clearWatcher("厄运流转")
 }
 
+__$skill_dot_圣光幕帘__() {
+  if !($level >= 56) {
+    return
+  }
+  if !(A_TickCount - $ts.圣光幕帘 > $cd.圣光幕帘) {
+    return
+  }
+  Send {ctrl down}{5}{ctrl up}
+  SetTimer __$watcher_dot_圣光幕帘__, % $cd.技能施放判断间隔
+  return true
+}
+
+__$watcher_dot_圣光幕帘__() {
+  clearWatcher("圣光幕帘")
+}
+
 __$skill_dot_战女神之怒__() {
   if !($level >= 26) {
     return
   }
   if !($step == 2) {
-    return
-  }
-  if !($distance == "near") {
     return
   }
   if !(A_TickCount - $ts.战女神之怒 > $cd.战女神之怒) {
@@ -403,8 +414,17 @@ __$skill_dot_战女神之怒__() {
 }
 
 __$watcher_dot_战女神之怒__() {
-  if !(clearWatcher("战女神之怒")) {
-    return
+  if ($level < 60) {
+    if !(clearWatcher("战女神之怒")) {
+      return
+    }
+  }
+  else {
+    if !(isUsed("王权剑")) {
+      return
+    }
+    SetTimer __$watcher_dot_战女神之怒__, Off
+    $ts.战女神之怒 := A_TickCount - $cd.技能施放补正
   }
   $step := 0
 }
@@ -445,9 +465,6 @@ __$skill_dot_报告__() {
 }
 
 __$skill_dot_插言__() {
-  if !($distance == "near") {
-    return
-  }
   if !(A_TickCount - $ts.插言 > $cd.插言) {
     return
   }
@@ -486,9 +503,6 @@ __$skill_dot_暴乱剑__() {
   if !($step == 1) {
     return
   }
-  if !($distance == "near") {
-    return
-  }
   if !(A_TickCount - $ts.暴乱剑 > $cd.暴乱剑) {
     return
   }
@@ -510,11 +524,49 @@ __$watcher_dot_暴乱剑__() {
   SetTimer resetStep, % 0 - 15000
 }
 
-__$skill_dot_深奥之灵__() {
-  if !($level >= 30) {
+__$skill_dot_沥血剑__() {
+  if !($level >= 54) {
     return
   }
-  if !($distance == "near") {
+  if !($step == 2) {
+    return
+  }
+  if !(A_TickCount - $ts.沥血剑 > $cd.沥血剑) {
+    return
+  }
+  if (hasStatusTarget("沥血剑-敌")) {
+    return
+  }
+  Send {ctrl down}{4}{ctrl up}
+  SetTimer __$watcher_dot_沥血剑__, % $cd.技能施放判断间隔
+  return true
+}
+
+__$watcher_dot_沥血剑__() {
+  if !(clearWatcher("沥血剑")) {
+    return
+  }
+  $step := 0
+}
+
+__$skill_dot_深仁厚泽__() {
+  if !($level >= 58) {
+    return
+  }
+  if !(A_TickCount - $ts.深仁厚泽 > $cd.深仁厚泽) {
+    return
+  }
+  Send {ctrl down}{6}{ctrl up}
+  SetTimer __$watcher_dot_深仁厚泽__, % $cd.技能施放判断间隔
+  return true
+}
+
+__$watcher_dot_深仁厚泽__() {
+  clearWatcher("深仁厚泽")
+}
+
+__$skill_dot_深奥之灵__() {
+  if !($level >= 30) {
     return
   }
   if !(A_TickCount - $ts.深奥之灵 > $cd.深奥之灵) {
@@ -548,6 +600,16 @@ __$watcher_dot_盾阵__() {
   clearWatcher("盾阵", "status")
 }
 
+__$skill_dot_自动盾阵__() {
+  if !($level >= 35) {
+    return
+  }
+  if !($gold >= 95) {
+    return
+  }
+  use("盾阵")
+}
+
 __$skill_dot_能力技__() {
   if !($ap == 0) {
     return
@@ -574,6 +636,9 @@ __$skill_dot_能力技__() {
 }
 
 能力技施放() {
+  if !($distance == "near") {
+    return
+  }
   if (use("战逃反应")) {
     return
   }
@@ -581,6 +646,15 @@ __$skill_dot_能力技__() {
     return
   }
   if (use("厄运流转")) {
+    return
+  }
+  if (use("雪仇")) {
+    return
+  }
+  if (use("自动盾阵")) {
+    return
+  }
+  if (use("下踢")) {
     return
   }
   use("空白信息")
@@ -681,6 +755,9 @@ __$skill_dot_空白信息__() {
 
 attackS() {
   if !($distance == "near") {
+    if ($step == 0) {
+      use("投盾")
+    }
     return
   }
   if (use("先锋剑")) {
@@ -688,6 +765,10 @@ attackS() {
     return
   }
   if (use("暴乱剑")) {
+    use("能力技")
+    return
+  }
+  if (use("沥血剑")) {
     use("能力技")
     return
   }
@@ -738,6 +819,16 @@ breakS() {
   SoundBeep
 }
 
+healS() {
+  if (use("圣光幕帘")) {
+    return
+  }
+  if (use("深仁厚泽")) {
+    return
+  }
+  SoundBeep
+}
+
 __$default__() {
   $cd.技能施放判断间隔 := 100
   $cd.技能施放补正 := 1500
@@ -759,6 +850,10 @@ __$default__() {
   $cd.厄运流转 := 25000
   $skill.厄运流转 := Func("__$skill_dot_厄运流转__")
   $watcher.厄运流转 := Func("__$watcher_dot_厄运流转__")
+  $ts.圣光幕帘 := 0
+  $cd.圣光幕帘 := 90000
+  $skill.圣光幕帘 := Func("__$skill_dot_圣光幕帘__")
+  $watcher.圣光幕帘 := Func("__$watcher_dot_圣光幕帘__")
   $ts.战女神之怒 := 0
   $cd.战女神之怒 := 2500
   $skill.战女神之怒 := Func("__$skill_dot_战女神之怒__")
@@ -781,6 +876,14 @@ __$default__() {
   $cd.暴乱剑 := 2500
   $skill.暴乱剑 := Func("__$skill_dot_暴乱剑__")
   $watcher.暴乱剑 := Func("__$watcher_dot_暴乱剑__")
+  $ts.沥血剑 := 0
+  $cd.沥血剑 := 2500
+  $skill.沥血剑 := Func("__$skill_dot_沥血剑__")
+  $watcher.沥血剑 := Func("__$watcher_dot_沥血剑__")
+  $ts.深仁厚泽 := 0
+  $cd.深仁厚泽 := 2500
+  $skill.深仁厚泽 := Func("__$skill_dot_深仁厚泽__")
+  $watcher.深仁厚泽 := Func("__$watcher_dot_深仁厚泽__")
   $ts.深奥之灵 := 0
   $cd.深奥之灵 := 30000
   $skill.深奥之灵 := Func("__$skill_dot_深奥之灵__")
@@ -789,6 +892,7 @@ __$default__() {
   $cd.盾阵 := 5000
   $skill.盾阵 := Func("__$skill_dot_盾阵__")
   $watcher.盾阵 := Func("__$watcher_dot_盾阵__")
+  $skill.自动盾阵 := Func("__$skill_dot_自动盾阵__")
   $ts.能力技 := 0
   $cd.能力技 := 1000
   $skill.能力技 := Func("__$skill_dot_能力技__")
@@ -879,11 +983,11 @@ return
     return
   }
   if (group == "right") {
-    defendS()
+    defendH()
     return
   }
   if (group == "both") {
-    defendH()
+    defendS()
     return
   }
 return
@@ -895,6 +999,17 @@ return
   }
   if (group == "right") {
     breakS()
+    return
+  }
+return
+
+2joy3::
+  group := getGroup()
+  if !(group) {
+    return
+  }
+  if (group == "right") {
+    healS()
     return
   }
 return

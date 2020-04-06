@@ -49,11 +49,11 @@ $.on '2-joy-2', ->
     return
 
   if group == 'right'
-    defendS()
+    defendH()
     return
 
   if group == 'both'
-    defendH()
+    defendS()
     return
 
 # ---
@@ -66,4 +66,16 @@ $.on '2-joy-1', ->
 
   if group == 'right'
     breakS()
+    return
+
+# ---
+
+$.on '2-joy-3', ->
+
+  group = getGroup()
+  unless group
+    return
+
+  if group == 'right'
+    healS()
     return

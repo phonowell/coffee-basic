@@ -18,3 +18,13 @@ $skill.盾阵 = ->
   return true
 
 $watcher.盾阵 = -> clearWatcher '盾阵', 'status'
+
+$skill.自动盾阵 = ->
+
+  unless $level >= 35
+    return
+
+  unless $gold >= 95
+    return
+
+  use '盾阵'

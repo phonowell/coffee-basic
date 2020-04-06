@@ -6,9 +6,6 @@ $skill.暴乱剑 = ->
   unless $step == 1
     return
 
-  unless $distance == 'near'
-    return
-
   unless A_TickCount - $ts.暴乱剑 > $cd.暴乱剑
     return
 

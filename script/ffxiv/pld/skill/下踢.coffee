@@ -3,10 +3,10 @@ $cd.下踢 = 25e3
 
 $skill.下踢 = ->
 
-  unless $distance == 'near'
+  unless A_TickCount - $ts.下踢 > $cd.下踢
     return
 
-  unless A_TickCount - $ts.下踢 > $cd.下踢
+  if hasStatusTarget '眩晕'
     return
 
   $.press 'shift + 2'

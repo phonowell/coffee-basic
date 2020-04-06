@@ -3,9 +3,6 @@ $cd.插言 = 30e3
 
 $skill.插言 = ->
 
-  unless $distance == 'near'
-    return
-
   unless A_TickCount - $ts.插言 > $cd.插言
     return
 

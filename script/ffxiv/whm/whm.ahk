@@ -221,6 +221,7 @@ resetKey() {
   Send {alt up}
   Send {ctrl up}
   Send {shift up}
+  MouseMove 410, 640, 0
 }
 
 resetTs() {

@@ -6,9 +6,6 @@ $skill.先锋剑 = ->
   unless $step == 0 or $step > 20
     return
 
-  unless $distance == 'near'
-    return
-
   unless A_TickCount - $ts.先锋剑 > $cd.先锋剑
     return
 
