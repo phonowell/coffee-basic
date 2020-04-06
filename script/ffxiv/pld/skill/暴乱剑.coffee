@@ -20,6 +20,7 @@ $watcher.暴乱剑 = ->
   
   unless $level >= 26
     $step = 0
+    clearTimeout resetStep
     return
   
   $step = 2

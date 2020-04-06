@@ -20,6 +20,7 @@ $watcher.全蚀斩 = ->
 
   unless $level >= 40
     $step = 0
+    clearTimeout resetStep
     return
 
   $step = 21

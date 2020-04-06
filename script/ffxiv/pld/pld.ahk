@@ -363,6 +363,7 @@ __$watcher_dot_全蚀斩__() {
   }
   if !($level >= 40) {
     $step := 0
+    SetTimer resetStep, Off
     return
   }
   $step := 21
@@ -431,6 +432,7 @@ __$watcher_dot_战女神之怒__() {
     $ts.战女神之怒 := A_TickCount - $cd.技能施放补正
   }
   $step := 0
+  SetTimer resetStep, Off
 }
 
 __$skill_dot_战逃反应__() {
@@ -520,6 +522,7 @@ __$watcher_dot_日珥斩__() {
     return
   }
   $step := 0
+  SetTimer resetStep, Off
 }
 
 __$skill_dot_暴乱剑__() {
@@ -540,6 +543,7 @@ __$watcher_dot_暴乱剑__() {
   }
   if !($level >= 26) {
     $step := 0
+    SetTimer resetStep, Off
     return
   }
   $step := 2

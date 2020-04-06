@@ -22,3 +22,5 @@ $watcher.日珥斩 = ->
     return
 
   $step = 0
+
+  clearTimeout resetStep

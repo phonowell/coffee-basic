@@ -33,14 +33,9 @@ $skill.能力技 = ->
 
 能力技施放 = ->
 
-  unless $distance == 'near'
-    return
-
-  if use '战逃反应' then return
-  if use '深奥之灵' then return
-  if use '厄运流转' then return
-  if use '雪仇' then return
-  if use '自动盾阵' then return
-  if use '下踢' then return
+  if use '整备' then return
+  if use '虹吸弹' then return
+  if use '超荷' then return
+  if use '车式浮空炮塔' then return
 
   use '空白信息'

@@ -29,3 +29,4 @@ $watcher.战女神之怒 = ->
     $ts.战女神之怒 = A_TickCount - $cd.技能施放补正
   
   $step = 0
+  clearTimeout resetStep
