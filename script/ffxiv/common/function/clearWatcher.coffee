@@ -1,3 +1,6 @@
+$cd.技能施放判断间隔 = 100
+$cd.技能施放补正 = 1500
+
 clearWatcher = (name, type = 'hasUsed') ->
   
   if type == 'hasUsed'

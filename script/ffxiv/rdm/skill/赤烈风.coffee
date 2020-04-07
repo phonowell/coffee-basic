@@ -1,0 +1,1 @@
+$skill.赤烈风 = -> $.press 'alt + 8'

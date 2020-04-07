@@ -1,0 +1,1 @@
+$skill.赤火炎 = -> $.press 'alt + 9'

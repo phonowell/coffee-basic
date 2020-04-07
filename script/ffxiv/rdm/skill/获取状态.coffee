@@ -14,9 +14,10 @@ $skill.获取状态 = ->
 
   checkMoving()
   checkChanting()
+  checkDistance()
 
-  $black = getBlack()
-  $white = getWhite()
+  checkBlack()
+  checkWhite()
 
   isA = hasStatus '连续咏唱'
   isB = hasStatus '即刻咏唱'

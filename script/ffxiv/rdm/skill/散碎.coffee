@@ -1,0 +1,1 @@
+$skill.散碎 = -> $.press 'alt + 6'

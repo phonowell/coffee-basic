@@ -7,6 +7,7 @@ global $hp := 0
 global $isMoving := false
 global $mp := 0
 global $isTargeting := false
+global $step := 0
 global $level := 80
 global $skill := {}
 global $watcher := {}
@@ -173,6 +174,10 @@ resetKey() {
   MouseMove 410, 640, 0
 }
 
+resetStep() {
+  $step := 0
+}
+
 resetTs() {
   for key, value in $ts {
     $ts[key] := 0
@@ -223,6 +228,8 @@ __d_dot_display__() {
 }
 
 __$default__() {
+  $cd.技能施放判断间隔 := 100
+  $cd.技能施放补正 := 1500
   d.value := 2
   d.display := Func("__d_dot_display__")
 }

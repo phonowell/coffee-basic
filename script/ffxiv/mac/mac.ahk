@@ -29,12 +29,12 @@ global $hp := 0
 global $isMoving := false
 global $mp := 0
 global $isTargeting := false
+global $step := 0
 global $level := 80
 global $skill := {}
 global $watcher := {}
 global $blue := 0
 global $red := 0
-global $step := 0
 global $isReporting := true
 global $ap := 0
 
@@ -243,6 +243,10 @@ resetKey() {
   MouseMove 410, 640, 0
 }
 
+resetStep() {
+  $step := 0
+}
+
 resetTs() {
   for key, value in $ts {
     $ts[key] := 0
@@ -276,28 +280,26 @@ watch(name) {
   return $watcher[name]()
 }
 
-getBlue() {
+checkBlue() {
   PixelSearch x, y, 1105, 806, 1248, 506, 0x58483E, 10, Fast RGB
   if !(x) {
-    return 100
+    $blue := 100
+    return
   }
   percent := (x - 1105) * 100 / (1248 - 1105)
   percent := Round(percent / 5)
-  return percent * 5
+  $blue := percent * 5
 }
 
-getRed() {
+checkRed() {
   PixelSearch x, y, 1105, 760, 1248, 760, 0x58483E, 10, Fast RGB
   if !(x) {
-    return 100
+    $red := 100
+    return
   }
   percent := (x - 1105) * 100 / (1248 - 1105)
   percent := Round(percent / 5)
-  return percent * 5
-}
-
-resetStep() {
-  $step := 0
+  $red := percent * 5
 }
 
 __$skill_dot_中断咏唱__() {
@@ -305,6 +307,14 @@ __$skill_dot_中断咏唱__() {
     return
   }
   Send {space}
+}
+
+__$skill_dot_冲刺__() {
+  Send {shift down}{-}{shift up}
+}
+
+__$skill_dot_空白信息__() {
+  Send {shift down}{=}{shift up}
 }
 
 __$skill_dot_索敌__() {
@@ -584,14 +594,6 @@ __$watcher_dot_车式浮空炮塔__() {
   clearWatcher("车式浮空炮塔", "status")
 }
 
-__$skill_dot_冲刺__() {
-  Send {shift down}{-}{shift up}
-}
-
-__$skill_dot_空白信息__() {
-  Send {shift down}{=}{shift up}
-}
-
 attackS() {
   if (use("热冲击")) {
     use("能力技")
@@ -627,6 +629,8 @@ __$default__() {
   $cd.技能施放判断间隔 := 100
   $cd.技能施放补正 := 1500
   $skill.中断咏唱 := Func("__$skill_dot_中断咏唱__")
+  $skill.冲刺 := Func("__$skill_dot_冲刺__")
+  $skill.空白信息 := Func("__$skill_dot_空白信息__")
   $skill.索敌 := Func("__$skill_dot_索敌__")
   $ts.分裂弹 := 0
   $cd.分裂弹 := 2500
@@ -675,8 +679,6 @@ __$default__() {
   $cd.车式浮空炮塔 := 6000
   $skill.车式浮空炮塔 := Func("__$skill_dot_车式浮空炮塔__")
   $watcher.车式浮空炮塔 := Func("__$watcher_dot_车式浮空炮塔__")
-  $skill.冲刺 := Func("__$skill_dot_冲刺__")
-  $skill.空白信息 := Func("__$skill_dot_空白信息__")
 }
 
 ; default

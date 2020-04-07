@@ -1,0 +1,1 @@
+$skill.救疗 = -> $.press 'alt + 7'

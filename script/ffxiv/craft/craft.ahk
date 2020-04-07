@@ -29,6 +29,7 @@ global $hp := 0
 global $isMoving := false
 global $mp := 0
 global $isTargeting := false
+global $step := 0
 global $level := 80
 global $skill := {}
 global $watcher := {}
@@ -218,6 +219,10 @@ resetKey() {
   MouseMove 410, 640, 0
 }
 
+resetStep() {
+  $step := 0
+}
+
 resetTs() {
   for key, value in $ts {
     $ts[key] := 0
@@ -257,6 +262,8 @@ watch(name) {
 }
 
 __$default__() {
+  $cd.技能施放判断间隔 := 100
+  $cd.技能施放补正 := 1500
   制作[0] := "alt + 1"
   制作[1] := 2500
   加工[0] := "alt + 2"

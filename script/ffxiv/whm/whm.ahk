@@ -29,6 +29,7 @@ global $hp := 0
 global $isMoving := false
 global $mp := 0
 global $isTargeting := false
+global $step := 0
 global $level := 80
 global $skill := {}
 global $watcher := {}
@@ -241,6 +242,10 @@ resetKey() {
   MouseMove 410, 640, 0
 }
 
+resetStep() {
+  $step := 0
+}
+
 resetTs() {
   for key, value in $ts {
     $ts[key] := 0
@@ -274,36 +279,42 @@ watch(name) {
   return $watcher[name]()
 }
 
-getRed() {
+checkRed() {
   PixelGetColor color, 1075, 818, RGB
   if !(color == 0xDEB673) {
-    return 3
+    $red := 3
+    return
   }
   PixelGetColor color, 1057, 818, RGB
   if !(color == 0xDEB673) {
-    return 2
+    $red := 2
+    return
   }
   PixelGetColor color, 1039, 818, RGB
   if !(color == 0xDEB673) {
-    return 1
+    $red := 1
+    return
   }
-  return 0
+  $red := 0
 }
 
-getWhite() {
+checkWhite() {
   PixelGetColor color, 1078, 790, RGB
   if !(color == 0xD6B273) {
-    return 3
+    $white := 3
+    return
   }
   PixelGetColor color, 1058, 790, RGB
   if !(color == 0xD6B273) {
-    return 2
+    $white := 2
+    return
   }
   PixelGetColor color, 1038, 790, RGB
   if !(color == 0xD6B273) {
-    return 1
+    $white := 1
+    return
   }
-  return 0
+  $white := 0
 }
 
 __$skill_dot_中断咏唱__() {
@@ -311,6 +322,14 @@ __$skill_dot_中断咏唱__() {
     return
   }
   Send {space}
+}
+
+__$skill_dot_冲刺__() {
+  Send {shift down}{-}{shift up}
+}
+
+__$skill_dot_空白信息__() {
+  Send {shift down}{=}{shift up}
 }
 
 __$skill_dot_索敌__() {
@@ -343,6 +362,35 @@ __$watcher_dot_全大赦__() {
   clearWatcher("全大赦")
 }
 
+__$skill_dot_再生__() {
+  if !($level >= 35) {
+    return
+  }
+  if (hasStatusByTarget("再生")) {
+    return
+  }
+  if !(能力技冷却判断()) {
+    return
+  }
+  Send {alt down}{0}{alt up}
+  return true
+}
+
+__$skill_dot_医治__() {
+  Send {alt down}{4}{alt up}
+}
+
+__$skill_dot_医济__() {
+  if !($level >= 50) {
+    return
+  }
+  if (hasStatus("医济")) {
+    return
+  }
+  Send {alt down}{8}{alt up}
+  return true
+}
+
 __$skill_dot_即刻咏唱__() {
   if !($level >= 18) {
     return
@@ -360,225 +408,8 @@ __$watcher_dot_即刻咏唱__() {
   clearWatcher("即刻咏唱", "status")
 }
 
-__$skill_dot_报告__() {
-  if !($isReporting) {
-    return
-  }
-  msg := "等级：" . $level . " / 魔力：" . $mp . "%"
-  msg := "" . msg . "`n白：" . $white . " / 红：" . $red . ""
-  msg := "" . msg . "`n咏唱：" . $isChanting . " / 移动：" . $isMoving . ""
-  msg := "" . msg . "`n耗时：" . A_TickCount - $ts.报告 . "ms`n"
-  $ts.报告 := A_TickCount
-  msg := makeReportMsg(msg, "神速咏唱")
-  msg := makeReportMsg(msg, "法令")
-  msg := makeReportMsg(msg, "无中生有")
-  msg := makeReportMsg(msg, "神名")
-  msg := makeReportMsg(msg, "全大赦")
-  msg := makeReportMsg(msg, "即刻咏唱")
-  msg := makeReportMsg(msg, "醒梦")
-  ToolTip % msg, 410, 640
-  SetTimer clearTip, Off
-  SetTimer clearTip, % 0 - 10000
-}
-
-__$skill_dot_无中生有__() {
-  if !($level >= 58) {
-    return
-  }
-  if !(A_TickCount - $ts.无中生有 > $cd.无中生有) {
-    return
-  }
-  Send {ctrl down}{5}{ctrl up}
-  $ts.无中生有 := A_TickCount - $cd.无中生有 + $cd.技能施放补正
-  SetTimer __$watcher_dot_无中生有__, % $cd.技能施放判断间隔
-  return true
-}
-
-__$watcher_dot_无中生有__() {
-  clearWatcher("无中生有", "status")
-}
-
-__$skill_dot_法令__() {
-  if !($level >= 56) {
-    return
-  }
-  if !(A_TickCount - $ts.法令 > $cd.法令) {
-    return
-  }
-  Send {ctrl down}{4}{ctrl up}
-  $ts.法令 := A_TickCount - $cd.法令 + $cd.技能施放补正
-  SetTimer __$watcher_dot_法令__, % $cd.技能施放判断间隔
-  return true
-}
-
-__$watcher_dot_法令__() {
-  clearWatcher("法令")
-}
-
-__$skill_dot_神名__() {
-  if !($level >= 60) {
-    return
-  }
-  if !(A_TickCount - $ts.神名 > $cd.神名) {
-    return
-  }
-  if !(能力技冷却判断()) {
-    return
-  }
-  Send {ctrl down}{6}{ctrl up}
-  $ts.神名 := A_TickCount - $cd.神名 + $cd.技能施放补正
-  SetTimer __$watcher_dot_神名__, % $cd.技能施放判断间隔
-  return true
-}
-
-__$watcher_dot_神名__() {
-  clearWatcher("神名")
-}
-
-__$skill_dot_神速咏唱__() {
-  if !($level >= 30) {
-    return
-  }
-  if !(A_TickCount - $ts.神速咏唱 > $cd.神速咏唱) {
-    return
-  }
-  Send {alt down}{9}{alt up}
-  $ts.神速咏唱 := A_TickCount - $cd.神速咏唱 + $cd.技能施放补正
-  SetTimer __$watcher_dot_神速咏唱__, % $cd.技能施放判断间隔
-  return true
-}
-
-__$watcher_dot_神速咏唱__() {
-  clearWatcher("神速咏唱", "status")
-}
-
-能力技冷却判断() {
-  if !(A_TickCount - $ts.能力技 > $cd.能力技) {
-    return
-  }
-  $ts.能力技 := A_TickCount
-  return true
-}
-
-__$skill_dot_获取状态__() {
-  if (A_TickCount - $ts.获取状态 > 10000) {
-    use("空白信息")
-    use("空白信息")
-    use("空白信息")
-  }
-  $ts.获取状态 := A_TickCount
-  checkMoving()
-  checkChanting()
-  $red := getRed()
-  $white := getWhite()
-}
-
-__$skill_dot_醒梦__() {
-  if !($level >= 24) {
-    return
-  }
-  if !(A_TickCount - $ts.醒梦 > $cd.醒梦) {
-    return
-  }
-  checkMp()
-  if ($mp > 50) {
-    return
-  }
-  Send {shift down}{4}{shift up}
-  $ts.醒梦 := A_TickCount - $cd.醒梦 + $cd.技能施放补正
-  SetTimer __$watcher_dot_醒梦__, % $cd.技能施放判断间隔
-  return true
-}
-
-__$watcher_dot_醒梦__() {
-  clearWatcher("醒梦", "status")
-}
-
-__$skill_dot_飞石__() {
-  Send {alt down}{1}{alt up}
-}
-
-__$skill_dot_治疗__() {
-  Send {alt down}{2}{alt up}
-}
-
-__$skill_dot_疾风__() {
-  if !($isMoving) {
-    if ($level >= 72) {
-      if (hasStatusByTarget("天辉")) {
-        return
-      }
-    }
-    else if ($level >= 46) {
-      if (hasStatusByTarget("烈风")) {
-        return
-      }
-    }
-    else {
-      if (hasStatusByTarget("疾风")) {
-        return
-      }
-    }
-  }
-  Send {alt down}{3}{alt up}
-  return true
-}
-
-__$skill_dot_医治__() {
-  Send {alt down}{4}{alt up}
-}
-
 __$skill_dot_复活__() {
   Send {alt down}{5}{alt up}
-}
-
-__$skill_dot_水流环__() {
-  Send {alt down}{6}{alt up}
-}
-
-__$skill_dot_救疗__() {
-  Send {alt down}{7}{alt up}
-}
-
-__$skill_dot_医济__() {
-  if !($level >= 50) {
-    return
-  }
-  if (hasStatus("医济")) {
-    return
-  }
-  Send {alt down}{8}{alt up}
-  return true
-}
-
-__$skill_dot_再生__() {
-  if !($level >= 35) {
-    return
-  }
-  if (hasStatusByTarget("再生")) {
-    return
-  }
-  if !(能力技冷却判断()) {
-    return
-  }
-  Send {alt down}{0}{alt up}
-  return true
-}
-
-__$skill_dot_愈疗__() {
-  if !($level >= 40) {
-    return
-  }
-  Send {alt down}{-}{alt up}
-  return true
-}
-
-__$skill_dot_神圣__() {
-  if !($level >= 45) {
-    return
-  }
-  Send {alt down}{=}{alt up}
-  return true
 }
 
 __$skill_dot_天赐祝福__() {
@@ -611,23 +442,79 @@ __$skill_dot_庇护所__() {
   return true
 }
 
-__$skill_dot_神祝祷__() {
-  if !($level >= 66) {
+__$skill_dot_康复__() {
+  Send {shift down}{2}{shift up}
+}
+
+__$skill_dot_愈疗__() {
+  if !($level >= 40) {
     return
   }
-  Send {ctrl down}{7}{ctrl up}
+  Send {alt down}{-}{alt up}
   return true
 }
 
-__$skill_dot_苦难之心__() {
-  if !($level >= 74) {
+__$skill_dot_报告__() {
+  if !($isReporting) {
     return
   }
-  if !($red >= 3) {
+  msg := "等级：" . $level . " / 魔力：" . $mp . "%"
+  msg := "" . msg . "`n白：" . $white . " / 红：" . $red . ""
+  msg := "" . msg . "`n咏唱：" . $isChanting . " / 移动：" . $isMoving . ""
+  msg := "" . msg . "`n耗时：" . A_TickCount - $ts.报告 . "ms`n"
+  $ts.报告 := A_TickCount
+  msg := makeReportMsg(msg, "神速咏唱")
+  msg := makeReportMsg(msg, "法令")
+  msg := makeReportMsg(msg, "无中生有")
+  msg := makeReportMsg(msg, "神名")
+  msg := makeReportMsg(msg, "全大赦")
+  msg := makeReportMsg(msg, "即刻咏唱")
+  msg := makeReportMsg(msg, "醒梦")
+  ToolTip % msg, 410, 640
+  SetTimer clearTip, Off
+  SetTimer clearTip, % 0 - 10000
+}
+
+__$skill_dot_救疗__() {
+  Send {alt down}{7}{alt up}
+}
+
+__$skill_dot_无中生有__() {
+  if !($level >= 58) {
     return
   }
-  Send {ctrl down}{9}{ctrl up}
+  if !(A_TickCount - $ts.无中生有 > $cd.无中生有) {
+    return
+  }
+  Send {ctrl down}{5}{ctrl up}
+  $ts.无中生有 := A_TickCount - $cd.无中生有 + $cd.技能施放补正
+  SetTimer __$watcher_dot_无中生有__, % $cd.技能施放判断间隔
   return true
+}
+
+__$watcher_dot_无中生有__() {
+  clearWatcher("无中生有", "status")
+}
+
+__$skill_dot_治疗__() {
+  Send {alt down}{2}{alt up}
+}
+
+__$skill_dot_法令__() {
+  if !($level >= 56) {
+    return
+  }
+  if !(A_TickCount - $ts.法令 > $cd.法令) {
+    return
+  }
+  Send {ctrl down}{4}{ctrl up}
+  $ts.法令 := A_TickCount - $cd.法令 + $cd.技能施放补正
+  SetTimer __$watcher_dot_法令__, % $cd.技能施放判断间隔
+  return true
+}
+
+__$watcher_dot_法令__() {
+  clearWatcher("法令")
 }
 
 __$skill_dot_狂喜之心__() {
@@ -644,44 +531,136 @@ __$skill_dot_狂喜之心__() {
   return true
 }
 
-__$skill_dot_节制__() {
-  if !($level >= 80) {
-    return
+__$skill_dot_疾风__() {
+  if !($isMoving) {
+    if ($level >= 72) {
+      if (hasStatusByTarget("天辉")) {
+        return
+      }
+    }
+    else if ($level >= 46) {
+      if (hasStatusByTarget("烈风")) {
+        return
+      }
+    }
+    else {
+      if (hasStatusByTarget("疾风")) {
+        return
+      }
+    }
   }
-  Send {ctrl down}{-}{ctrl up}
+  Send {alt down}{3}{alt up}
   return true
 }
 
-__$skill_dot_沉静__() {
-  Send {shift down}{1}{shift up}
-}
-
-__$skill_dot_康复__() {
-  Send {shift down}{2}{shift up}
-}
-
-__$skill_dot_沉稳咏唱__() {
-  if !($level >= 44) {
+__$skill_dot_神名__() {
+  if !($level >= 60) {
     return
   }
-  Send {shift down}{5}{shift up}
+  if !(A_TickCount - $ts.神名 > $cd.神名) {
+    return
+  }
+  if !(能力技冷却判断()) {
+    return
+  }
+  Send {ctrl down}{6}{ctrl up}
+  $ts.神名 := A_TickCount - $cd.神名 + $cd.技能施放补正
+  SetTimer __$watcher_dot_神名__, % $cd.技能施放判断间隔
   return true
 }
 
-__$skill_dot_营救__() {
-  if !($level >= 48) {
+__$watcher_dot_神名__() {
+  clearWatcher("神名")
+}
+
+__$skill_dot_神圣__() {
+  if !($level >= 45) {
     return
   }
-  Send {shift down}{6}{shift up}
+  Send {alt down}{=}{alt up}
   return true
 }
 
-__$skill_dot_冲刺__() {
-  Send {shift down}{-}{shift up}
+__$skill_dot_神祝祷__() {
+  if !($level >= 66) {
+    return
+  }
+  Send {ctrl down}{7}{ctrl up}
+  return true
 }
 
-__$skill_dot_空白信息__() {
-  Send {shift down}{=}{shift up}
+__$skill_dot_神速咏唱__() {
+  if !($level >= 30) {
+    return
+  }
+  if !(A_TickCount - $ts.神速咏唱 > $cd.神速咏唱) {
+    return
+  }
+  Send {alt down}{9}{alt up}
+  $ts.神速咏唱 := A_TickCount - $cd.神速咏唱 + $cd.技能施放补正
+  SetTimer __$watcher_dot_神速咏唱__, % $cd.技能施放判断间隔
+  return true
+}
+
+__$watcher_dot_神速咏唱__() {
+  clearWatcher("神速咏唱", "status")
+}
+
+能力技冷却判断() {
+  if !(A_TickCount - $ts.能力技 > $cd.能力技) {
+    return
+  }
+  $ts.能力技 := A_TickCount
+  return true
+}
+
+__$skill_dot_苦难之心__() {
+  if !($level >= 74) {
+    return
+  }
+  if !($red >= 3) {
+    return
+  }
+  Send {ctrl down}{9}{ctrl up}
+  return true
+}
+
+__$skill_dot_获取状态__() {
+  if (A_TickCount - $ts.获取状态 > 10000) {
+    use("空白信息")
+    use("空白信息")
+    use("空白信息")
+  }
+  $ts.获取状态 := A_TickCount
+  checkMoving()
+  checkChanting()
+  checkRed()
+  checkWhite()
+}
+
+__$skill_dot_醒梦__() {
+  if !($level >= 24) {
+    return
+  }
+  if !(A_TickCount - $ts.醒梦 > $cd.醒梦) {
+    return
+  }
+  checkMp()
+  if ($mp > 50) {
+    return
+  }
+  Send {shift down}{4}{shift up}
+  $ts.醒梦 := A_TickCount - $cd.醒梦 + $cd.技能施放补正
+  SetTimer __$watcher_dot_醒梦__, % $cd.技能施放判断间隔
+  return true
+}
+
+__$watcher_dot_醒梦__() {
+  clearWatcher("醒梦", "status")
+}
+
+__$skill_dot_飞石__() {
+  Send {alt down}{1}{alt up}
 }
 
 attackS() {
@@ -746,35 +725,53 @@ __$default__() {
   $cd.技能施放判断间隔 := 100
   $cd.技能施放补正 := 1500
   $skill.中断咏唱 := Func("__$skill_dot_中断咏唱__")
+  $skill.冲刺 := Func("__$skill_dot_冲刺__")
+  $skill.空白信息 := Func("__$skill_dot_空白信息__")
   $skill.索敌 := Func("__$skill_dot_索敌__")
   $ts.全大赦 := 0
   $cd.全大赦 := 60000
   $skill.全大赦 := Func("__$skill_dot_全大赦__")
   $watcher.全大赦 := Func("__$watcher_dot_全大赦__")
+  $skill.再生 := Func("__$skill_dot_再生__")
+  $skill.医治 := Func("__$skill_dot_医治__")
+  $skill.医济 := Func("__$skill_dot_医济__")
   $ts.即刻咏唱 := 0
   $cd.即刻咏唱 := 60000
   $skill.即刻咏唱 := Func("__$skill_dot_即刻咏唱__")
   $watcher.即刻咏唱 := Func("__$watcher_dot_即刻咏唱__")
+  $skill.复活 := Func("__$skill_dot_复活__")
+  $skill.天赐祝福 := Func("__$skill_dot_天赐祝福__")
+  $skill.安慰之心 := Func("__$skill_dot_安慰之心__")
+  $skill.庇护所 := Func("__$skill_dot_庇护所__")
+  $skill.康复 := Func("__$skill_dot_康复__")
+  $skill.愈疗 := Func("__$skill_dot_愈疗__")
   $ts.报告 := 0
   $skill.报告 := Func("__$skill_dot_报告__")
+  $skill.救疗 := Func("__$skill_dot_救疗__")
   $ts.无中生有 := 0
   $cd.无中生有 := 120000
   $skill.无中生有 := Func("__$skill_dot_无中生有__")
   $watcher.无中生有 := Func("__$watcher_dot_无中生有__")
+  $skill.治疗 := Func("__$skill_dot_治疗__")
   $ts.法令 := 0
   $cd.法令 := 45000
   $skill.法令 := Func("__$skill_dot_法令__")
   $watcher.法令 := Func("__$watcher_dot_法令__")
+  $skill.狂喜之心 := Func("__$skill_dot_狂喜之心__")
+  $skill.疾风 := Func("__$skill_dot_疾风__")
   $ts.神名 := 0
   $cd.神名 := 60000
   $skill.神名 := Func("__$skill_dot_神名__")
   $watcher.神名 := Func("__$watcher_dot_神名__")
+  $skill.神圣 := Func("__$skill_dot_神圣__")
+  $skill.神祝祷 := Func("__$skill_dot_神祝祷__")
   $ts.神速咏唱 := 0
   $cd.神速咏唱 := 150000
   $skill.神速咏唱 := Func("__$skill_dot_神速咏唱__")
   $watcher.神速咏唱 := Func("__$watcher_dot_神速咏唱__")
   $ts.能力技 := 0
   $cd.能力技 := 300
+  $skill.苦难之心 := Func("__$skill_dot_苦难之心__")
   $ts.获取状态 := 0
   $skill.获取状态 := Func("__$skill_dot_获取状态__")
   $ts.醒梦 := 0
@@ -782,29 +779,6 @@ __$default__() {
   $skill.醒梦 := Func("__$skill_dot_醒梦__")
   $watcher.醒梦 := Func("__$watcher_dot_醒梦__")
   $skill.飞石 := Func("__$skill_dot_飞石__")
-  $skill.治疗 := Func("__$skill_dot_治疗__")
-  $skill.疾风 := Func("__$skill_dot_疾风__")
-  $skill.医治 := Func("__$skill_dot_医治__")
-  $skill.复活 := Func("__$skill_dot_复活__")
-  $skill.水流环 := Func("__$skill_dot_水流环__")
-  $skill.救疗 := Func("__$skill_dot_救疗__")
-  $skill.医济 := Func("__$skill_dot_医济__")
-  $skill.再生 := Func("__$skill_dot_再生__")
-  $skill.愈疗 := Func("__$skill_dot_愈疗__")
-  $skill.神圣 := Func("__$skill_dot_神圣__")
-  $skill.天赐祝福 := Func("__$skill_dot_天赐祝福__")
-  $skill.安慰之心 := Func("__$skill_dot_安慰之心__")
-  $skill.庇护所 := Func("__$skill_dot_庇护所__")
-  $skill.神祝祷 := Func("__$skill_dot_神祝祷__")
-  $skill.苦难之心 := Func("__$skill_dot_苦难之心__")
-  $skill.狂喜之心 := Func("__$skill_dot_狂喜之心__")
-  $skill.节制 := Func("__$skill_dot_节制__")
-  $skill.沉静 := Func("__$skill_dot_沉静__")
-  $skill.康复 := Func("__$skill_dot_康复__")
-  $skill.沉稳咏唱 := Func("__$skill_dot_沉稳咏唱__")
-  $skill.营救 := Func("__$skill_dot_营救__")
-  $skill.冲刺 := Func("__$skill_dot_冲刺__")
-  $skill.空白信息 := Func("__$skill_dot_空白信息__")
 }
 
 ; default

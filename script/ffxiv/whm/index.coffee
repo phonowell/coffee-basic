@@ -1,7 +1,9 @@
 # use admin
 # include binding
-# include function
-# include skill
+# include ../common/function/*
+# include function/*
+# include ../common/skill/*
+# include skill/*
 
 # ---
 

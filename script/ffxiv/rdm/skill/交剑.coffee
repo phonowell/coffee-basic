@@ -9,7 +9,6 @@ $skill.交剑 = ->
   unless A_TickCount - $ts.交剑 > $cd.交剑
     return
 
-  $distance = getDistance()
   unless $distance == 'near'
     return
 

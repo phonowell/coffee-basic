@@ -1,0 +1,1 @@
+$skill.复活 = -> $.press 'alt + 5'

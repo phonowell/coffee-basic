@@ -11,5 +11,5 @@ $skill.获取状态 = ->
   checkMoving()
   checkChanting()
 
-  $red = getRed()
-  $white = getWhite()
+  checkRed()
+  checkWhite()

@@ -1,0 +1,1 @@
+$skill.赤震雷 = -> $.press 'alt + 7'

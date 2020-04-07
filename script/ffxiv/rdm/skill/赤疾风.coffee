@@ -1,0 +1,1 @@
+$skill.赤疾风 = -> $.press 'alt + 5'

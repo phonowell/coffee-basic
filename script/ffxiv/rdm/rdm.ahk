@@ -29,13 +29,13 @@ global $hp := 0
 global $isMoving := false
 global $mp := 0
 global $isTargeting := false
+global $step := 0
 global $level := 80
 global $skill := {}
 global $watcher := {}
 global $black := 0
 global $distance := "far"
 global $white := 0
-global $step := 0
 global $isReporting := true
 global $ap := 0
 global $isIM := false
@@ -312,6 +312,10 @@ resetKey() {
   MouseMove 410, 640, 0
 }
 
+resetStep() {
+  $step := 0
+}
+
 resetTs() {
   for key, value in $ts {
     $ts[key] := 0
@@ -345,45 +349,47 @@ watch(name) {
   return $watcher[name]()
 }
 
-getBlack() {
+checkBlack() {
   PixelSearch x, y, 1023, 811, 1170, 811, 0x58483E, 10, Fast RGB
   if !(x) {
-    return 100
+    $black := 100
+    return
   }
   percent := (x - 1023) * 100 / (1170 - 1023)
   percent := Floor(percent)
-  return percent
+  $black := percent
 }
 
-getDistance() {
+checkDistance() {
   if !(hasTarget) {
-    return "far"
+    $distance := "far"
+    return
   }
   PixelGetColor color, 1875, 723, RGB
   if (color == 0x1A1D1E) {
-    return "near"
+    $distance := "near"
+    return
   }
   if (color == 0x101312) {
-    return "near"
+    $distance := "near"
+    return
   }
   if (color == 0x101211) {
-    return "near"
+    $distance := "near"
+    return
   }
-  return "far"
+  $distance := "far"
 }
 
-getWhite() {
+checkWhite() {
   PixelSearch x, y, 1023, 798, 1170, 798, 0x58483E, 10, Fast RGB
   if !(x) {
-    return 100
+    $white := 100
+    return
   }
   percent := (x - 1023) * 100 / (1170 - 1023)
   percent := Floor(percent)
-  return percent
-}
-
-resetStep() {
-  $step := 0
+  $white := percent
 }
 
 __$skill_dot_中断咏唱__() {
@@ -391,6 +397,14 @@ __$skill_dot_中断咏唱__() {
     return
   }
   Send {space}
+}
+
+__$skill_dot_冲刺__() {
+  Send {shift down}{-}{shift up}
+}
+
+__$skill_dot_空白信息__() {
+  Send {shift down}{=}{shift up}
 }
 
 __$skill_dot_索敌__() {
@@ -441,7 +455,6 @@ __$skill_dot_交剑__() {
   if !(A_TickCount - $ts.交剑 > $cd.交剑) {
     return
   }
-  $distance := getDistance()
   if !($distance == "near") {
     return
   }
@@ -521,6 +534,22 @@ __$watcher_dot_六分反击__() {
   clearWatcher("六分反击")
 }
 
+__$skill_dot_划圆斩__() {
+  if !($level >= 52) {
+    return
+  }
+  if !($black >= 20 and $white >= 20) {
+    return
+  }
+  checkDistance()
+  if !($distance == "near") {
+    use("短兵相接", true)
+    return
+  }
+  Send {ctrl down}{4}{ctrl up}
+  return true
+}
+
 __$skill_dot_即刻咏唱__() {
   if !($level >= 18) {
     return
@@ -555,7 +584,6 @@ __$skill_dot_回刺__() {
     return
   }
   use("中断咏唱")
-  $distance := getDistance()
   if !($distance == "near") {
     use("短兵相接", true)
     return
@@ -602,6 +630,14 @@ __$skill_dot_报告__() {
   SetTimer clearTip, % 0 - 10000
 }
 
+__$skill_dot_摇荡__() {
+  Send {alt down}{2}{alt up}
+}
+
+__$skill_dot_散碎__() {
+  Send {alt down}{6}{alt up}
+}
+
 __$skill_dot_焦热__() {
   if !($level >= 80) {
     return
@@ -626,7 +662,6 @@ __$skill_dot_短兵相接__(isForced := false) {
   if !(A_TickCount - $ts.短兵相接 > $cd.短兵相接) {
     return
   }
-  $distance := getDistance()
   if !($distance == "near" or isForced) {
     return
   }
@@ -638,6 +673,28 @@ __$skill_dot_短兵相接__(isForced := false) {
 
 __$watcher_dot_短兵相接__() {
   clearWatcher("短兵相接")
+}
+
+__$skill_dot_移转__() {
+  if !($level >= 40) {
+    return
+  }
+  Send {alt down}{=}{alt up}
+  return true
+}
+
+__$skill_dot_续斩__() {
+  if !($level >= 76) {
+    return
+  }
+  if !($black >= 5 and $black < 80) {
+    return
+  }
+  if !($white >= 5 and $white < 80) {
+    return
+  }
+  Send {ctrl down}{-}{ctrl up}
+  return true
 }
 
 __$skill_dot_能力技__() {
@@ -724,8 +781,9 @@ __$skill_dot_获取状态__() {
   $ts.获取状态 := A_TickCount
   checkMoving()
   checkChanting()
-  $black := getBlack()
-  $white := getWhite()
+  checkDistance()
+  checkBlack()
+  checkWhite()
   isA := hasStatus("连续咏唱")
   isB := hasStatus("即刻咏唱")
   $isIM := isA or isB
@@ -746,12 +804,39 @@ __$skill_dot_调整魔元__() {
   if !($black >= 60 and $white >= 60) {
     return
   }
-  $distance := getDistance()
   if !($distance == "near") {
     return
   }
   use("划圆斩")
   return true
+}
+
+__$skill_dot_赤复活__() {
+  if !($level >= 64) {
+    return
+  }
+  Send {ctrl down}{9}{ctrl up}
+  return true
+}
+
+__$skill_dot_赤治疗__() {
+  if !($level >= 54) {
+    return
+  }
+  Send {ctrl down}{5}{ctrl up}
+  return true
+}
+
+__$skill_dot_赤火炎__() {
+  Send {alt down}{9}{alt up}
+}
+
+__$skill_dot_赤烈风__() {
+  Send {alt down}{8}{alt up}
+}
+
+__$skill_dot_赤疾风__() {
+  Send {alt down}{5}{alt up}
 }
 
 __$skill_dot_赤神圣__() {
@@ -816,6 +901,18 @@ __$watcher_dot_赤神圣__() {
   else {
     use("赤闪雷")
   }
+}
+
+__$skill_dot_赤闪雷__() {
+  Send {alt down}{3}{alt up}
+}
+
+__$skill_dot_赤震雷__() {
+  Send {alt down}{7}{alt up}
+}
+
+__$skill_dot_赤飞石__() {
+  Send {alt down}{0}{alt up}
 }
 
 __$skill_dot_连攻__() {
@@ -934,112 +1031,6 @@ __$skill_dot_鼓励__() {
 
 __$watcher_dot_鼓励__() {
   clearWatcher("鼓励")
-}
-
-__$skill_dot_摇荡__() {
-  Send {alt down}{2}{alt up}
-}
-
-__$skill_dot_赤闪雷__() {
-  Send {alt down}{3}{alt up}
-}
-
-__$skill_dot_赤疾风__() {
-  Send {alt down}{5}{alt up}
-}
-
-__$skill_dot_散碎__() {
-  Send {alt down}{6}{alt up}
-}
-
-__$skill_dot_赤震雷__() {
-  Send {alt down}{7}{alt up}
-}
-
-__$skill_dot_赤烈风__() {
-  Send {alt down}{8}{alt up}
-}
-
-__$skill_dot_赤火炎__() {
-  Send {alt down}{9}{alt up}
-}
-
-__$skill_dot_赤飞石__() {
-  Send {alt down}{0}{alt up}
-}
-
-__$skill_dot_移转__() {
-  if !($level >= 40) {
-    return
-  }
-  Send {alt down}{=}{alt up}
-  return true
-}
-
-__$skill_dot_划圆斩__() {
-  if !($level >= 52) {
-    return
-  }
-  if !($black >= 20 and $white >= 20) {
-    return
-  }
-  $distance := getDistance()
-  if !($distance == "near") {
-    use("短兵相接", true)
-    return
-  }
-  Send {ctrl down}{4}{ctrl up}
-  return true
-}
-
-__$skill_dot_赤治疗__() {
-  if !($level >= 54) {
-    return
-  }
-  Send {ctrl down}{5}{ctrl up}
-  return true
-}
-
-__$skill_dot_赤复活__() {
-  if !($level >= 64) {
-    return
-  }
-  Send {ctrl down}{9}{ctrl up}
-  return true
-}
-
-__$skill_dot_续斩__() {
-  if !($level >= 76) {
-    return
-  }
-  if !($black >= 5 and $black < 80) {
-    return
-  }
-  if !($white >= 5 and $white < 80) {
-    return
-  }
-  Send {ctrl down}{-}{ctrl up}
-  return true
-}
-
-__$skill_dot_昏乱__() {
-  Send {shift down}{1}{shift up}
-}
-
-__$skill_dot_沉稳咏唱__() {
-  if !($level >= 44) {
-    return
-  }
-  Send {shift down}{4}{shift up}
-  return true
-}
-
-__$skill_dot_冲刺__() {
-  Send {shift down}{-}{shift up}
-}
-
-__$skill_dot_空白信息__() {
-  Send {shift down}{=}{shift up}
 }
 
 attackS() {
@@ -1207,6 +1198,8 @@ __$default__() {
   $cd.技能施放判断间隔 := 100
   $cd.技能施放补正 := 1500
   $skill.中断咏唱 := Func("__$skill_dot_中断咏唱__")
+  $skill.冲刺 := Func("__$skill_dot_冲刺__")
+  $skill.空白信息 := Func("__$skill_dot_空白信息__")
   $skill.索敌 := Func("__$skill_dot_索敌__")
   $ts.交击斩 := 0
   $skill.交击斩 := Func("__$skill_dot_交击斩__")
@@ -1227,6 +1220,7 @@ __$default__() {
   $cd.六分反击 := 35000
   $skill.六分反击 := Func("__$skill_dot_六分反击__")
   $watcher.六分反击 := Func("__$watcher_dot_六分反击__")
+  $skill.划圆斩 := Func("__$skill_dot_划圆斩__")
   $ts.即刻咏唱 := 0
   $cd.即刻咏唱 := 60000
   $skill.即刻咏唱 := Func("__$skill_dot_即刻咏唱__")
@@ -1236,6 +1230,8 @@ __$default__() {
   $watcher.回刺 := Func("__$watcher_dot_回刺__")
   $ts.报告 := 0
   $skill.报告 := Func("__$skill_dot_报告__")
+  $skill.摇荡 := Func("__$skill_dot_摇荡__")
+  $skill.散碎 := Func("__$skill_dot_散碎__")
   $ts.焦热 := 0
   $skill.焦热 := Func("__$skill_dot_焦热__")
   $watcher.焦热 := Func("__$watcher_dot_焦热__")
@@ -1243,15 +1239,25 @@ __$default__() {
   $cd.短兵相接 := 40000
   $skill.短兵相接 := Func("__$skill_dot_短兵相接__")
   $watcher.短兵相接 := Func("__$watcher_dot_短兵相接__")
+  $skill.移转 := Func("__$skill_dot_移转__")
+  $skill.续斩 := Func("__$skill_dot_续斩__")
   $ts.能力技 := 0
   $cd.能力技 := 1000
   $skill.能力技 := Func("__$skill_dot_能力技__")
   $ts.获取状态 := 0
   $skill.获取状态 := Func("__$skill_dot_获取状态__")
   $skill.调整魔元 := Func("__$skill_dot_调整魔元__")
+  $skill.赤复活 := Func("__$skill_dot_赤复活__")
+  $skill.赤治疗 := Func("__$skill_dot_赤治疗__")
+  $skill.赤火炎 := Func("__$skill_dot_赤火炎__")
+  $skill.赤烈风 := Func("__$skill_dot_赤烈风__")
+  $skill.赤疾风 := Func("__$skill_dot_赤疾风__")
   $ts.赤神圣 := 0
   $skill.赤神圣 := Func("__$skill_dot_赤神圣__")
   $watcher.赤神圣 := Func("__$watcher_dot_赤神圣__")
+  $skill.赤闪雷 := Func("__$skill_dot_赤闪雷__")
+  $skill.赤震雷 := Func("__$skill_dot_赤震雷__")
+  $skill.赤飞石 := Func("__$skill_dot_赤飞石__")
   $ts.连攻 := 0
   $skill.连攻 := Func("__$skill_dot_连攻__")
   $watcher.连攻 := Func("__$watcher_dot_连攻__")
@@ -1270,23 +1276,6 @@ __$default__() {
   $cd.鼓励 := 120000
   $skill.鼓励 := Func("__$skill_dot_鼓励__")
   $watcher.鼓励 := Func("__$watcher_dot_鼓励__")
-  $skill.摇荡 := Func("__$skill_dot_摇荡__")
-  $skill.赤闪雷 := Func("__$skill_dot_赤闪雷__")
-  $skill.赤疾风 := Func("__$skill_dot_赤疾风__")
-  $skill.散碎 := Func("__$skill_dot_散碎__")
-  $skill.赤震雷 := Func("__$skill_dot_赤震雷__")
-  $skill.赤烈风 := Func("__$skill_dot_赤烈风__")
-  $skill.赤火炎 := Func("__$skill_dot_赤火炎__")
-  $skill.赤飞石 := Func("__$skill_dot_赤飞石__")
-  $skill.移转 := Func("__$skill_dot_移转__")
-  $skill.划圆斩 := Func("__$skill_dot_划圆斩__")
-  $skill.赤治疗 := Func("__$skill_dot_赤治疗__")
-  $skill.赤复活 := Func("__$skill_dot_赤复活__")
-  $skill.续斩 := Func("__$skill_dot_续斩__")
-  $skill.昏乱 := Func("__$skill_dot_昏乱__")
-  $skill.沉稳咏唱 := Func("__$skill_dot_沉稳咏唱__")
-  $skill.冲刺 := Func("__$skill_dot_冲刺__")
-  $skill.空白信息 := Func("__$skill_dot_空白信息__")
 }
 
 ; default

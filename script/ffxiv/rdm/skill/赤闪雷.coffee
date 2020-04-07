@@ -1,0 +1,1 @@
+$skill.赤闪雷 = -> $.press 'alt + 3'

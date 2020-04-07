@@ -1,0 +1,1 @@
+$skill.康复 = -> $.press 'shift + 2'

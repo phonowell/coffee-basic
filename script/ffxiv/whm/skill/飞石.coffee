@@ -1,0 +1,1 @@
+$skill.飞石 = -> $.press 'alt + 1'

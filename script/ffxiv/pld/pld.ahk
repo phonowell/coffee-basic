@@ -29,12 +29,12 @@ global $hp := 0
 global $isMoving := false
 global $mp := 0
 global $isTargeting := false
+global $step := 0
 global $level := 80
 global $skill := {}
 global $watcher := {}
 global $distance := "far"
 global $gold := 0
-global $step := 0
 global $isReporting := true
 global $ap := 0
 
@@ -247,6 +247,10 @@ resetKey() {
   MouseMove 410, 640, 0
 }
 
+resetStep() {
+  $step := 0
+}
+
 resetTs() {
   for key, value in $ts {
     $ts[key] := 0
@@ -280,32 +284,32 @@ watch(name) {
   return $watcher[name]()
 }
 
-getDistance() {
+checkDistance() {
   if !(hasTarget) {
-    return "far"
+    $distance := "far"
+    return
   }
   PixelGetColor color, 1479, 682, RGB
   if (color == 0xD23A3A) {
-    return "far"
+    $distance := "far"
+    return
   }
-  return "near"
+  $distance := "near"
 }
 
-getGold() {
+checkGold() {
   if !($level >= 35) {
-    return 0
+    $gold := 0
+    return
   }
   PixelSearch x, y, 1104, 806, 1247, 806, 0x58483E, 10, Fast RGB
   if !(x) {
-    return 100
+    $gold := 100
+    return
   }
   percent := (x - 1104) * 100 / (1247 - 1104)
   percent := Round(percent / 5)
-  return percent * 5
-}
-
-resetStep() {
-  $step := 0
+  $gold := percent * 5
 }
 
 __$skill_dot_中断咏唱__() {
@@ -313,6 +317,14 @@ __$skill_dot_中断咏唱__() {
     return
   }
   Send {space}
+}
+
+__$skill_dot_冲刺__() {
+  Send {shift down}{-}{shift up}
+}
+
+__$skill_dot_空白信息__() {
+  Send {shift down}{=}{shift up}
 }
 
 __$skill_dot_索敌__() {
@@ -711,8 +723,8 @@ __$skill_dot_获取状态__() {
     use("空白信息")
   }
   $ts.获取状态 := A_TickCount
-  $distance := getDistance()
-  $gold := getGold()
+  checkDistance()
+  checkGold()
 }
 
 __$skill_dot_铁壁__() {
@@ -755,38 +767,6 @@ __$skill_dot_预警__() {
 
 __$watcher_dot_预警__() {
   clearWatcher("预警", "status")
-}
-
-__$skill_dot_盾牌猛击__() {
-  Send {alt down}{5}{alt up}
-}
-
-__$skill_dot_钢铁信念__() {
-  Send {alt down}{6}{alt up}
-}
-
-__$skill_dot_保护__() {
-  Send {ctrl down}{2}{ctrl up}
-}
-
-__$skill_dot_挑衅__() {
-  Send {shift down}{3}{shift up}
-}
-
-__$skill_dot_亲疏自行__() {
-  Send {shift down}{6}{shift up}
-}
-
-__$skill_dot_退避__() {
-  Send {shift down}{7}{shift up}
-}
-
-__$skill_dot_冲刺__() {
-  Send {shift down}{-}{shift up}
-}
-
-__$skill_dot_空白信息__() {
-  Send {shift down}{=}{shift up}
 }
 
 attackS() {
@@ -859,6 +839,8 @@ __$default__() {
   $cd.技能施放判断间隔 := 100
   $cd.技能施放补正 := 1500
   $skill.中断咏唱 := Func("__$skill_dot_中断咏唱__")
+  $skill.冲刺 := Func("__$skill_dot_冲刺__")
+  $skill.空白信息 := Func("__$skill_dot_空白信息__")
   $skill.索敌 := Func("__$skill_dot_索敌__")
   $ts.下踢 := 0
   $cd.下踢 := 25000
@@ -940,14 +922,6 @@ __$default__() {
   $cd.预警 := 120000
   $skill.预警 := Func("__$skill_dot_预警__")
   $watcher.预警 := Func("__$watcher_dot_预警__")
-  $skill.盾牌猛击 := Func("__$skill_dot_盾牌猛击__")
-  $skill.钢铁信念 := Func("__$skill_dot_钢铁信念__")
-  $skill.保护 := Func("__$skill_dot_保护__")
-  $skill.挑衅 := Func("__$skill_dot_挑衅__")
-  $skill.亲疏自行 := Func("__$skill_dot_亲疏自行__")
-  $skill.退避 := Func("__$skill_dot_退避__")
-  $skill.冲刺 := Func("__$skill_dot_冲刺__")
-  $skill.空白信息 := Func("__$skill_dot_空白信息__")
 }
 
 ; default

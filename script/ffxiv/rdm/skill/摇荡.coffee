@@ -1,0 +1,1 @@
+$skill.摇荡 = -> $.press 'alt + 2'
