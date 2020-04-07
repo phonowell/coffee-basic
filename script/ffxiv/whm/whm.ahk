@@ -24,6 +24,7 @@ SetMouseDelay 0, 50
 
 global $cd := {}
 global $ts := {}
+global $hp := 0
 global $mp := 0
 global $isChanting := false
 global $isMoving := false
@@ -52,8 +53,8 @@ toggleView() {
 }
 
 attack() {
-  group := getGroup()
-  if !(group) {
+  trigger := getCurrentTrigger()
+  if !(trigger) {
     return
   }
   use("获取状态")
@@ -61,11 +62,11 @@ attack() {
   if !(use("索敌")) {
     return
   }
-  if (group == "right") {
+  if (trigger == "right") {
     attackS()
     return
   }
-  if (group == "both") {
+  if (trigger == "both") {
     attackM()
     return
   }
@@ -81,7 +82,7 @@ bindAttack() {
   attack()
 }
 
-calcCD(name) {
+calcCd(name) {
   result := $cd[name] - (A_TickCount - $ts[name])
   if !(result > 0) {
     return 0
@@ -90,13 +91,37 @@ calcCD(name) {
   return result
 }
 
+checkHp() {
+  PixelSearch x, y, 21, 36, 168, 36, 0x58483E, 10, Fast RGB
+  if !(x) {
+    $hp := 100
+    return
+  }
+  percent := (x - 21) * 100 / (168 - 21)
+  percent := Round(percent)
+  $hp := percent
+  return
+}
+
+checkMp() {
+  PixelSearch x, y, 181, 36, 328, 36, 0x58483E, 10, Fast RGB
+  if !(x) {
+    $mp := 100
+    return
+  }
+  percent := (x - 181) * 100 / (328 - 181)
+  percent := Round(percent)
+  $mp := precent
+  return
+}
+
 clearTip() {
   ToolTip
 }
 
-clearWatcher(name, type := "used") {
-  if (type == "used") {
-    if !(isUsed(name)) {
+clearWatcher(name, type := "hasUsed") {
+  if (type == "hasUsed") {
+    if !(hasUsed(name)) {
       return
     }
   }
@@ -115,7 +140,7 @@ clearWatcher(name, type := "used") {
   return true
 }
 
-getGroup() {
+getCurrentTrigger() {
   GetKeyState __value__, 2joy7
   isLT := __value__ == "D"
   GetKeyState __value__, 2joy8
@@ -132,16 +157,6 @@ getGroup() {
   return
 }
 
-getMp() {
-  PixelSearch x, y, 181, 36, 328, 36, 0x58483E, 10, Fast RGB
-  if !(x) {
-    return 100
-  }
-  percent := (x - 181) * 100 / (328 - 181)
-  percent := Floor(percent)
-  return percent
-}
-
 hasStatus(name) {
   ImageSearch x, y, 725, 840, 925, 875, % A_ScriptDir . "\" . "image\" . name . ".png"
   if (x > 0 and y > 0) {
@@ -150,7 +165,7 @@ hasStatus(name) {
   return false
 }
 
-hasStatusTarget(name) {
+hasStatusByTarget(name) {
   ImageSearch x, y, 725, 765, 925, 800, % A_ScriptDir . "\" . "image\" . name . ".png"
   if (x > 0 and y > 0) {
     return true
@@ -158,7 +173,7 @@ hasStatusTarget(name) {
   return false
 }
 
-isUsed(name) {
+hasUsed(name) {
   ImageSearch x, y, 60, 915, 225, 975, % A_ScriptDir . "\" . "image\" . name . ".png"
   if (x > 0 and y > 0) {
     return true
@@ -210,7 +225,7 @@ isTargeting() {
 }
 
 makeReportMsg(msg, name) {
-  result := calcCD(name)
+  result := calcCd(name)
   if !(result > 1) {
     return msg
   }
@@ -463,7 +478,7 @@ __$skill_dot_醒梦__() {
   if !(A_TickCount - $ts.醒梦 > $cd.醒梦) {
     return
   }
-  $mp := getMp()
+  checkMp()
   if ($mp > 50) {
     return
   }
@@ -488,17 +503,17 @@ __$skill_dot_治疗__() {
 __$skill_dot_疾风__() {
   if !($isMoving) {
     if ($level >= 72) {
-      if (hasStatusTarget("天辉")) {
+      if (hasStatusByTarget("天辉")) {
         return
       }
     }
     else if ($level >= 46) {
-      if (hasStatusTarget("烈风")) {
+      if (hasStatusByTarget("烈风")) {
         return
       }
     }
     else {
-      if (hasStatusTarget("疾风")) {
+      if (hasStatusByTarget("疾风")) {
         return
       }
     }
@@ -538,7 +553,7 @@ __$skill_dot_再生__() {
   if !($level >= 35) {
     return
   }
-  if (hasStatusTarget("再生")) {
+  if (hasStatusByTarget("再生")) {
     return
   }
   if !(能力技冷却判断()) {
@@ -815,7 +830,7 @@ return
 return
 
 2joy5::
-  if !(getGroup() == "both") {
+  if !(getCurrentTrigger() == "both") {
     SetTimer toggleView, Off
     SetTimer toggleView, % 300
     return
@@ -824,21 +839,21 @@ return
 return
 
 2joy6::
-  if !(getGroup() == "both") {
+  if !(getCurrentTrigger() == "both") {
     return
   }
   Send {tab}
 return
 
 2joy12::
-  if !(getGroup()) {
+  if !(getCurrentTrigger()) {
     return
   }
   use("冲刺")
 return
 
 2joy4::
-  if !(getGroup()) {
+  if !(getCurrentTrigger()) {
     return
   }
   SetTimer bindAttack, Off
@@ -847,38 +862,38 @@ return
 return
 
 2joy2::
-  group := getGroup()
-  if !(group) {
+  trigger := getCurrentTrigger()
+  if !(trigger) {
     return
   }
   use("获取状态")
   use("报告")
-  if (group == "right") {
+  if (trigger == "right") {
     healS()
     return
   }
-  if (group == "both") {
+  if (trigger == "both") {
     healM()
     return
   }
 return
 
 2joy1::
-  group := getGroup()
-  if !(group) {
+  trigger := getCurrentTrigger()
+  if !(trigger) {
     return
   }
   use("获取状态")
   use("报告")
-  if (group == "right") {
+  if (trigger == "right") {
     use("神祝祷")
     return
   }
-  if (group == "both") {
+  if (trigger == "both") {
     use("康复")
     return
   }
-  if (group == "left") {
+  if (trigger == "left") {
     use("即刻咏唱")
     use("无中生有")
     use("复活")
@@ -887,17 +902,17 @@ return
 return
 
 2joy3::
-  group := getGroup()
-  if !(group) {
+  trigger := getCurrentTrigger()
+  if !(trigger) {
     return
   }
   use("获取状态")
   use("报告")
-  if (group == "right") {
+  if (trigger == "right") {
     use("庇护所")
     return
   }
-  if (group == "both") {
+  if (trigger == "both") {
     use("无中生有")
     use("愈疗")
     return

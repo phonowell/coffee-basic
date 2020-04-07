@@ -4,8 +4,8 @@
 
 attack = ->
 
-  group = getGroup()
-  unless group
+  trigger = getCurrentTrigger()
+  unless trigger
     return
 
   use '获取状态'
@@ -14,11 +14,11 @@ attack = ->
   unless use '索敌'
     return
 
-  if group == 'right'
+  if trigger == 'right'
     attackS()
     return
 
-  if group == 'both'
+  if trigger == 'both'
     attackM()
     return
 
@@ -33,7 +33,7 @@ bindAttack = ->
 
 $.on '2-joy-4', ->
 
-  unless getGroup()
+  unless getCurrentTrigger()
     return
 
   clearInterval bindAttack
@@ -44,18 +44,18 @@ $.on '2-joy-4', ->
 
 $.on '2-joy-2', ->
 
-  group = getGroup()
-  unless group
+  trigger = getCurrentTrigger()
+  unless trigger
     return
 
   use '获取状态'
   use '报告'
 
-  if group == 'right'
+  if trigger == 'right'
     healS()
     return
 
-  if group == 'both'
+  if trigger == 'both'
     healM()
     return
 
@@ -63,25 +63,25 @@ $.on '2-joy-2', ->
 
 $.on '2-joy-1', ->
 
-  group = getGroup()
-  unless group
+  trigger = getCurrentTrigger()
+  unless trigger
     return
 
   use '获取状态'
   use '报告'
 
   # 护盾
-  if group == 'right'
+  if trigger == 'right'
     use '神祝祷'
     return
 
   # 驱散
-  if group == 'both'
+  if trigger == 'both'
     use '康复'
     return
 
   # 复活
-  if group == 'left'
+  if trigger == 'left'
     use '即刻咏唱'
     use '无中生有'
     use '复活'
@@ -91,18 +91,18 @@ $.on '2-joy-1', ->
   
 $.on '2-joy-3', ->
 
-  group = getGroup()
-  unless group
+  trigger = getCurrentTrigger()
+  unless trigger
     return
 
   use '获取状态'
   use '报告'
 
-  if group == 'right'
+  if trigger == 'right'
     use '庇护所'
     return
 
-  if group == 'both'
+  if trigger == 'both'
     use '无中生有'
     use '愈疗'
     return

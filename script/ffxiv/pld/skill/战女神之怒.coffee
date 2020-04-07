@@ -23,7 +23,7 @@ $watcher.战女神之怒 = ->
     unless clearWatcher '战女神之怒'
       return
   else
-    unless isUsed '王权剑'
+    unless hasUsed '王权剑'
       return
     clearInterval $watcher.战女神之怒
     $ts.战女神之怒 = A_TickCount - $cd.技能施放补正

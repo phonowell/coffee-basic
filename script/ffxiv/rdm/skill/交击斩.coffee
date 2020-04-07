@@ -17,7 +17,7 @@ $skill.交击斩 = ->
   return true
 
 $watcher.交击斩 = ->
-  unless isUsed '魔交击斩'
+  unless hasUsed '魔交击斩'
     return
   clearInterval $watcher.交击斩
   $ts.交击斩 = A_TickCount - $cd.技能施放补正

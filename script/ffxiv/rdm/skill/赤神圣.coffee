@@ -14,8 +14,8 @@ $skill.赤神圣 = ->
   return true
 
 $watcher.赤神圣 = ->
-  isA = isUsed '赤核爆'
-  isB = isUsed '赤神圣'
+  isA = hasUsed '赤核爆'
+  isB = hasUsed '赤神圣'
   unless isA or isB
     return
   clearInterval $watcher.赤神圣

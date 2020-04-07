@@ -24,6 +24,7 @@ SetMouseDelay 0, 50
 
 global $cd := {}
 global $ts := {}
+global $hp := 0
 global $mp := 0
 global $isChanting := false
 global $isMoving := false
@@ -54,8 +55,8 @@ toggleView() {
 }
 
 attack() {
-  group := getGroup()
-  if !(group) {
+  trigger := getCurrentTrigger()
+  if !(trigger) {
     return
   }
   use("获取状态")
@@ -63,15 +64,15 @@ attack() {
   if !(use("索敌")) {
     return
   }
-  if (group == "right") {
+  if (trigger == "right") {
     attackS()
     return
   }
-  if (group == "both") {
+  if (trigger == "both") {
     attackM()
     return
   }
-  if (group == "left") {
+  if (trigger == "left") {
     use("投盾")
     return
   }
@@ -87,7 +88,7 @@ bindAttack() {
   attack()
 }
 
-calcCD(name) {
+calcCd(name) {
   result := $cd[name] - (A_TickCount - $ts[name])
   if !(result > 0) {
     return 0
@@ -96,13 +97,37 @@ calcCD(name) {
   return result
 }
 
+checkHp() {
+  PixelSearch x, y, 21, 36, 168, 36, 0x58483E, 10, Fast RGB
+  if !(x) {
+    $hp := 100
+    return
+  }
+  percent := (x - 21) * 100 / (168 - 21)
+  percent := Round(percent)
+  $hp := percent
+  return
+}
+
+checkMp() {
+  PixelSearch x, y, 181, 36, 328, 36, 0x58483E, 10, Fast RGB
+  if !(x) {
+    $mp := 100
+    return
+  }
+  percent := (x - 181) * 100 / (328 - 181)
+  percent := Round(percent)
+  $mp := precent
+  return
+}
+
 clearTip() {
   ToolTip
 }
 
-clearWatcher(name, type := "used") {
-  if (type == "used") {
-    if !(isUsed(name)) {
+clearWatcher(name, type := "hasUsed") {
+  if (type == "hasUsed") {
+    if !(hasUsed(name)) {
       return
     }
   }
@@ -121,7 +146,7 @@ clearWatcher(name, type := "used") {
   return true
 }
 
-getGroup() {
+getCurrentTrigger() {
   GetKeyState __value__, 2joy7
   isLT := __value__ == "D"
   GetKeyState __value__, 2joy8
@@ -138,16 +163,6 @@ getGroup() {
   return
 }
 
-getMp() {
-  PixelSearch x, y, 181, 36, 328, 36, 0x58483E, 10, Fast RGB
-  if !(x) {
-    return 100
-  }
-  percent := (x - 181) * 100 / (328 - 181)
-  percent := Floor(percent)
-  return percent
-}
-
 hasStatus(name) {
   ImageSearch x, y, 725, 840, 925, 875, % A_ScriptDir . "\" . "image\" . name . ".png"
   if (x > 0 and y > 0) {
@@ -156,7 +171,7 @@ hasStatus(name) {
   return false
 }
 
-hasStatusTarget(name) {
+hasStatusByTarget(name) {
   ImageSearch x, y, 725, 765, 925, 800, % A_ScriptDir . "\" . "image\" . name . ".png"
   if (x > 0 and y > 0) {
     return true
@@ -164,7 +179,7 @@ hasStatusTarget(name) {
   return false
 }
 
-isUsed(name) {
+hasUsed(name) {
   ImageSearch x, y, 60, 915, 225, 975, % A_ScriptDir . "\" . "image\" . name . ".png"
   if (x > 0 and y > 0) {
     return true
@@ -216,7 +231,7 @@ isTargeting() {
 }
 
 makeReportMsg(msg, name) {
-  result := calcCD(name)
+  result := calcCd(name)
   if !(result > 1) {
     return msg
   }
@@ -312,7 +327,7 @@ __$skill_dot_下踢__() {
   if !(A_TickCount - $ts.下踢 > $cd.下踢) {
     return
   }
-  if (hasStatusTarget("眩晕")) {
+  if (hasStatusByTarget("眩晕")) {
     return
   }
   Send {shift down}{2}{shift up}
@@ -425,7 +440,7 @@ __$watcher_dot_战女神之怒__() {
     }
   }
   else {
-    if !(isUsed("王权剑")) {
+    if !(hasUsed("王权剑")) {
       return
     }
     SetTimer __$watcher_dot_战女神之怒__, Off
@@ -561,7 +576,7 @@ __$skill_dot_沥血剑__() {
   if !(A_TickCount - $ts.沥血剑 > $cd.沥血剑) {
     return
   }
-  if (hasStatusTarget("沥血剑-敌")) {
+  if (hasStatusByTarget("沥血剑-敌")) {
     return
   }
   Send {ctrl down}{4}{ctrl up}
@@ -958,7 +973,7 @@ return
 return
 
 2joy5::
-  if !(getGroup() == "both") {
+  if !(getCurrentTrigger() == "both") {
     SetTimer toggleView, Off
     SetTimer toggleView, % 300
     return
@@ -967,21 +982,21 @@ return
 return
 
 2joy6::
-  if !(getGroup() == "both") {
+  if !(getCurrentTrigger() == "both") {
     return
   }
   Send {tab}
 return
 
 2joy12::
-  if !(getGroup()) {
+  if !(getCurrentTrigger()) {
     return
   }
   use("冲刺")
 return
 
 2joy4::
-  if !(getGroup()) {
+  if !(getCurrentTrigger()) {
     return
   }
   SetTimer bindAttack, Off
@@ -990,33 +1005,33 @@ return
 return
 
 2joy2::
-  group := getGroup()
-  if !(group) {
+  trigger := getCurrentTrigger()
+  if !(trigger) {
     return
   }
-  if (group == "right") {
+  if (trigger == "right") {
     defendS()
     return
   }
 return
 
 2joy1::
-  group := getGroup()
-  if !(group) {
+  trigger := getCurrentTrigger()
+  if !(trigger) {
     return
   }
-  if (group == "right") {
+  if (trigger == "right") {
     breakS()
     return
   }
 return
 
 2joy3::
-  group := getGroup()
-  if !(group) {
+  trigger := getCurrentTrigger()
+  if !(trigger) {
     return
   }
-  if (group == "right") {
+  if (trigger == "right") {
     healS()
     return
   }

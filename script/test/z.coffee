@@ -1,3 +1,5 @@
+# include ../ffxiv/common/function/*
+
 d = {}
 
 d.value = 2

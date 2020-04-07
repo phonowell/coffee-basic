@@ -12,7 +12,7 @@ $skill.沥血剑 = ->
   unless A_TickCount - $ts.沥血剑 > $cd.沥血剑
     return
 
-  if hasStatusTarget '沥血剑-敌'
+  if hasStatusByTarget '沥血剑-敌'
     return
 
   $.press 'ctrl + 4'

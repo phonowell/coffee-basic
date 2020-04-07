@@ -1,5 +1,5 @@
 # use admin
-# include ../common/function
+# include ../common/function/*
 # include binding
 # include skill
 

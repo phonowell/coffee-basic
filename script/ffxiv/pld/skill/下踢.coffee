@@ -6,7 +6,7 @@ $skill.下踢 = ->
   unless A_TickCount - $ts.下踢 > $cd.下踢
     return
 
-  if hasStatusTarget '眩晕'
+  if hasStatusByTarget '眩晕'
     return
 
   $.press 'shift + 2'

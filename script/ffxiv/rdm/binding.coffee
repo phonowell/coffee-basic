@@ -4,8 +4,8 @@
 
 attack = ->
 
-  group = getGroup()
-  unless group
+  trigger = getCurrentTrigger()
+  unless trigger
     return
 
   use '获取状态'
@@ -14,11 +14,11 @@ attack = ->
   unless use '索敌'
     return
 
-  if group == 'right'
+  if trigger == 'right'
     attackS()
     return
 
-  if group == 'both'
+  if trigger == 'both'
     attackM()
     return
 
@@ -33,7 +33,7 @@ bindAttack = ->
 
 $.on '2-joy-4', ->
 
-  unless getGroup()
+  unless getCurrentTrigger()
     return
 
   clearInterval bindAttack
@@ -44,8 +44,8 @@ $.on '2-joy-4', ->
 
 attackX = ->
 
-  group = getGroup()
-  unless group
+  trigger = getCurrentTrigger()
+  unless trigger
     return
 
   use '获取状态'
@@ -55,14 +55,14 @@ attackX = ->
     return
 
   # 魔三连
-  if group == 'right'
+  if trigger == 'right'
     unless use '魔三连'
       attackS()
       return
     use '能力技'
     return
 
-  if group == 'both'
+  if trigger == 'both'
     unless use '魔划圆斩'
       attackM()
       return
@@ -80,7 +80,7 @@ bindAttackX = ->
 
 $.on '2-joy-2', ->
 
-  unless getGroup()
+  unless getCurrentTrigger()
     return
 
   clearInterval bindAttackX
@@ -91,20 +91,20 @@ $.on '2-joy-2', ->
 
 heal = ->
 
-  group = getGroup()
-  unless group
+  trigger = getCurrentTrigger()
+  unless trigger
     return
 
   use '获取状态'
   use '报告'
 
   # 单体治疗
-  if group == 'right'
+  if trigger == 'right'
     healS()
     return
 
   # 复活
-  if group == 'both'
+  if trigger == 'both'
     revive()
     return
 
@@ -119,7 +119,7 @@ bindHeal = ->
 
 $.on '2-joy-3', ->
 
-  unless getGroup()
+  unless getCurrentTrigger()
     return
 
   clearInterval bindHeal

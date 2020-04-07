@@ -1,0 +1,1 @@
+clearTip = -> $.tip()

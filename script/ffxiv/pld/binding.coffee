@@ -4,8 +4,8 @@
 
 attack = ->
 
-  group = getGroup()
-  unless group
+  trigger = getCurrentTrigger()
+  unless trigger
     return
 
   use '获取状态'
@@ -14,15 +14,15 @@ attack = ->
   unless use '索敌'
     return
 
-  if group == 'right'
+  if trigger == 'right'
     attackS()
     return
 
-  if group == 'both'
+  if trigger == 'both'
     attackM()
     return
 
-  if group == 'left'
+  if trigger == 'left'
     use '投盾'
     return
 
@@ -37,7 +37,7 @@ bindAttack = ->
 
 $.on '2-joy-4', ->
 
-  unless getGroup()
+  unless getCurrentTrigger()
     return
 
   clearInterval bindAttack
@@ -48,11 +48,11 @@ $.on '2-joy-4', ->
 
 $.on '2-joy-2', ->
 
-  group = getGroup()
-  unless group
+  trigger = getCurrentTrigger()
+  unless trigger
     return
 
-  if group == 'right'
+  if trigger == 'right'
     defendS()
     return
 
@@ -60,11 +60,11 @@ $.on '2-joy-2', ->
 
 $.on '2-joy-1', ->
 
-  group = getGroup()
-  unless group
+  trigger = getCurrentTrigger()
+  unless trigger
     return
 
-  if group == 'right'
+  if trigger == 'right'
     breakS()
     return
 
@@ -72,10 +72,10 @@ $.on '2-joy-1', ->
 
 $.on '2-joy-3', ->
 
-  group = getGroup()
-  unless group
+  trigger = getCurrentTrigger()
+  unless trigger
     return
 
-  if group == 'right'
+  if trigger == 'right'
     healS()
     return

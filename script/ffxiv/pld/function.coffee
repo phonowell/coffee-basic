@@ -1,4 +1,4 @@
-# include ../common/function
+# include ../common/function/*
 
 # ---
 

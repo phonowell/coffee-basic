@@ -17,7 +17,7 @@ $skill.连攻 = ->
   return true
 
 $watcher.连攻 = ->
-  unless isUsed '魔连攻'
+  unless hasUsed '魔连攻'
     return
   clearInterval $watcher.连攻
   $ts.连攻 = A_TickCount - $cd.技能施放补正

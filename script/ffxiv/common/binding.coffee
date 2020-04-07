@@ -32,18 +32,18 @@ toggleView = ->
     $.press 'ctrl:down', 'up:down'
 
 $.on '2-joy-5', ->
-  unless getGroup() == 'both'
+  unless getCurrentTrigger() == 'both'
     clearInterval toggleView
     setInterval toggleView, 300
     return
   $.press 'shift + tab'
 
 $.on '2-joy-6', ->
-  unless getGroup() == 'both'
+  unless getCurrentTrigger() == 'both'
     return
   $.press 'tab'
 
 $.on '2-joy-12', ->
-  unless getGroup()
+  unless getCurrentTrigger()
     return
   use '冲刺'

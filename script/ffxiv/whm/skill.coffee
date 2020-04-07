@@ -18,13 +18,13 @@ $skill.疾风 = ->
   unless $isMoving
 
     if $level >= 72
-      if hasStatusTarget '天辉'
+      if hasStatusByTarget '天辉'
         return
     else if $level >= 46
-      if hasStatusTarget '烈风'
+      if hasStatusByTarget '烈风'
         return
     else
-      if hasStatusTarget '疾风'
+      if hasStatusByTarget '疾风'
         return
   
   $.press 'alt + 3'
@@ -57,7 +57,7 @@ $skill.再生 = ->
   unless $level >= 35
     return
   
-  if hasStatusTarget '再生'
+  if hasStatusByTarget '再生'
     return
 
   unless 能力技冷却判断()

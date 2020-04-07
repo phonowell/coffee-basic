@@ -21,7 +21,7 @@ $skill.回刺 = ->
   return true
 
 $watcher.回刺 = ->
-  unless isUsed '魔回刺'
+  unless hasUsed '魔回刺'
     return
   clearInterval $watcher.回刺
   $ts.回刺 = A_TickCount - $cd.技能施放补正

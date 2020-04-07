@@ -24,6 +24,7 @@ SetMouseDelay 0, 50
 
 global $cd := {}
 global $ts := {}
+global $hp := 0
 global $mp := 0
 global $isChanting := false
 global $isMoving := false
@@ -37,7 +38,7 @@ global time := 1
 
 ; function
 
-calcCD(name) {
+calcCd(name) {
   result := $cd[name] - (A_TickCount - $ts[name])
   if !(result > 0) {
     return 0
@@ -46,13 +47,37 @@ calcCD(name) {
   return result
 }
 
+checkHp() {
+  PixelSearch x, y, 21, 36, 168, 36, 0x58483E, 10, Fast RGB
+  if !(x) {
+    $hp := 100
+    return
+  }
+  percent := (x - 21) * 100 / (168 - 21)
+  percent := Round(percent)
+  $hp := percent
+  return
+}
+
+checkMp() {
+  PixelSearch x, y, 181, 36, 328, 36, 0x58483E, 10, Fast RGB
+  if !(x) {
+    $mp := 100
+    return
+  }
+  percent := (x - 181) * 100 / (328 - 181)
+  percent := Round(percent)
+  $mp := precent
+  return
+}
+
 clearTip() {
   ToolTip
 }
 
-clearWatcher(name, type := "used") {
-  if (type == "used") {
-    if !(isUsed(name)) {
+clearWatcher(name, type := "hasUsed") {
+  if (type == "hasUsed") {
+    if !(hasUsed(name)) {
       return
     }
   }
@@ -71,7 +96,7 @@ clearWatcher(name, type := "used") {
   return true
 }
 
-getGroup() {
+getCurrentTrigger() {
   GetKeyState __value__, 2joy7
   isLT := __value__ == "D"
   GetKeyState __value__, 2joy8
@@ -88,16 +113,6 @@ getGroup() {
   return
 }
 
-getMp() {
-  PixelSearch x, y, 181, 36, 328, 36, 0x58483E, 10, Fast RGB
-  if !(x) {
-    return 100
-  }
-  percent := (x - 181) * 100 / (328 - 181)
-  percent := Floor(percent)
-  return percent
-}
-
 hasStatus(name) {
   ImageSearch x, y, 725, 840, 925, 875, % A_ScriptDir . "\" . "image\" . name . ".png"
   if (x > 0 and y > 0) {
@@ -106,7 +121,7 @@ hasStatus(name) {
   return false
 }
 
-hasStatusTarget(name) {
+hasStatusByTarget(name) {
   ImageSearch x, y, 725, 765, 925, 800, % A_ScriptDir . "\" . "image\" . name . ".png"
   if (x > 0 and y > 0) {
     return true
@@ -114,7 +129,7 @@ hasStatusTarget(name) {
   return false
 }
 
-isUsed(name) {
+hasUsed(name) {
   ImageSearch x, y, 60, 915, 225, 975, % A_ScriptDir . "\" . "image\" . name . ".png"
   if (x > 0 and y > 0) {
     return true
@@ -166,7 +181,7 @@ isTargeting() {
 }
 
 makeReportMsg(msg, name) {
-  result := calcCD(name)
+  result := calcCd(name)
   if !(result > 1) {
     return msg
   }
