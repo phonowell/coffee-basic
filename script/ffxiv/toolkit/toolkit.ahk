@@ -24,10 +24,10 @@ SetMouseDelay 0, 50
 
 global $cd := {}
 global $ts := {}
-global $hp := 0
-global $mp := 0
 global $isChanting := false
+global $hp := 0
 global $isMoving := false
+global $mp := 0
 global hasTarget := false
 global $level := 80
 global $skill := {}
@@ -44,6 +44,16 @@ calcCd(name) {
   return result
 }
 
+checkChanting() {
+  if ($isMoving) {
+    $isChanting := false
+    return
+  }
+  PixelGetColor color, 1130, 865, RGB
+  $isChanting := color == 0x2B1B13
+  return
+}
+
 checkHp() {
   PixelSearch x, y, 21, 36, 168, 36, 0x58483E, 10, Fast RGB
   if !(x) {
@@ -54,6 +64,20 @@ checkHp() {
   percent := Round(percent)
   $hp := percent
   return
+}
+
+checkMoving() {
+  GetKeyState dis, 2joyx
+  if (dis < 40 or dis > 60) {
+    $isMoving := true
+    return
+  }
+  GetKeyState dis, 2joyy
+  if (dis < 40 or dis > 60) {
+    $isMoving := true
+    return
+  }
+  $isMoving := false
 }
 
 checkMp() {
@@ -129,32 +153,6 @@ hasStatusByTarget(name) {
 hasUsed(name) {
   ImageSearch x, y, 60, 915, 225, 975, % A_ScriptDir . "\" . "image\" . name . ".png"
   if (x > 0 and y > 0) {
-    return true
-  }
-  return false
-}
-
-isChanting() {
-  if ($isMoving) {
-    return false
-  }
-  PixelGetColor color, 1130, 865, RGB
-  return color == 0x2B1B13
-}
-
-isMoving() {
-  GetKeyState dis, 2joyx
-  if (dis < 40) {
-    return true
-  }
-  if (dis > 60) {
-    return true
-  }
-  GetKeyState dis, 2joyy
-  if (dis < 40) {
-    return true
-  }
-  if (dis > 60) {
     return true
   }
   return false
