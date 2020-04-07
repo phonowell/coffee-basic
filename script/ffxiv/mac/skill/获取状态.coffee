@@ -8,5 +8,5 @@ $skill.获取状态 = ->
     use '空白信息'
   $ts.获取状态 = A_TickCount
 
-  $blue = getBlue()
-  $red = getRed()
+  checkBlue()
+  checkRed()

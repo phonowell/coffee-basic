@@ -2,7 +2,7 @@ $distance = 'far'
 
 checkDistance = ->
 
-  unless hasTarget
+  unless $isTargeting
     $distance = 'far'
     return
 

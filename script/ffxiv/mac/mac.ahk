@@ -144,22 +144,22 @@ checkMp() {
 checkTargeting() {
   PixelGetColor color, 650, 65, RGB
   if (color == 0xFF8888) {
-    $hasTarget := true
+    $isTargeting := true
     return
   }
   if (color == 0xFFC888) {
-    $hasTarget := true
+    $isTargeting := true
     return
   }
   if (color == 0xEBD788) {
-    $hasTarget := true
+    $isTargeting := true
     return
   }
   if (color == 0xFFB1FF) {
-    $hasTarget := true
+    $isTargeting := true
     return
   }
-  $hasTarget := false
+  $isTargeting := false
 }
 
 clearTip() {
@@ -359,7 +359,7 @@ __$skill_dot_报告__() {
   msg := "" . msg . "`n电：" . $blue . " / 热：" . $red . ""
   msg := "" . msg . "`n耗时：" . A_TickCount - $ts.报告 . "ms`n"
   $ts.报告 := A_TickCount
-  msg := makeReportMsg(msg, ["热弹", "整备", "虹吸弹", "超荷", "车式浮空炮塔"])
+  msg := makeReportMsg(msg, ["热弹", "整备", "虹吸弹", "超荷", "车式浮空炮塔", "野火"])
   ToolTip % msg, 410, 640
   SetTimer clearTip, Off
   SetTimer clearTip, % 0 - 10000
@@ -513,13 +513,20 @@ __$skill_dot_能力技__() {
 }
 
 能力技施放() {
+  if ($ap == 1) {
+    if (use("野火")) {
+      return
+    }
+  }
+  else {
+    if (use("超荷")) {
+      return
+    }
+  }
   if (use("整备")) {
     return
   }
   if (use("虹吸弹")) {
-    return
-  }
-  if (use("超荷")) {
     return
   }
   if (use("车式浮空炮塔")) {
@@ -535,8 +542,8 @@ __$skill_dot_获取状态__() {
     use("空白信息")
   }
   $ts.获取状态 := A_TickCount
-  $blue := getBlue()
-  $red := getRed()
+  checkBlue()
+  checkRed()
 }
 
 __$skill_dot_虹吸弹__() {
@@ -591,6 +598,25 @@ __$skill_dot_车式浮空炮塔__() {
 
 __$watcher_dot_车式浮空炮塔__() {
   clearWatcher("车式浮空炮塔", "status")
+}
+
+__$skill_dot_野火__() {
+  if !($level >= 45) {
+    return
+  }
+  if !($red >= 50) {
+    return
+  }
+  if !(A_TickCount - $ts.野火 > $cd.野火) {
+    return
+  }
+  Send {alt down}{=}{alt up}
+  SetTimer __$watcher_dot_野火__, % $cd.技能施放判断间隔
+  return true
+}
+
+__$watcher_dot_野火__() {
+  clearWatcher("野火")
 }
 
 attackS() {
@@ -678,6 +704,10 @@ __$default__() {
   $cd.车式浮空炮塔 := 6000
   $skill.车式浮空炮塔 := Func("__$skill_dot_车式浮空炮塔__")
   $watcher.车式浮空炮塔 := Func("__$watcher_dot_车式浮空炮塔__")
+  $ts.野火 := 0
+  $cd.野火 := 120000
+  $skill.野火 := Func("__$skill_dot_野火__")
+  $watcher.野火 := Func("__$watcher_dot_野火__")
 }
 
 ; default

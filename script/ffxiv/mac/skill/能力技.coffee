@@ -33,9 +33,13 @@ $skill.能力技 = ->
 
 能力技施放 = ->
 
+  if $ap == 1
+    if use '野火' then return
+  else
+    if use '超荷' then return
+
   if use '整备' then return
   if use '虹吸弹' then return
-  if use '超荷' then return
   if use '车式浮空炮塔' then return
 
   use '空白信息'

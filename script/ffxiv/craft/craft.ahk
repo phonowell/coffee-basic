@@ -120,22 +120,22 @@ checkMp() {
 checkTargeting() {
   PixelGetColor color, 650, 65, RGB
   if (color == 0xFF8888) {
-    $hasTarget := true
+    $isTargeting := true
     return
   }
   if (color == 0xFFC888) {
-    $hasTarget := true
+    $isTargeting := true
     return
   }
   if (color == 0xEBD788) {
-    $hasTarget := true
+    $isTargeting := true
     return
   }
   if (color == 0xFFB1FF) {
-    $hasTarget := true
+    $isTargeting := true
     return
   }
-  $hasTarget := false
+  $isTargeting := false
 }
 
 clearTip() {
