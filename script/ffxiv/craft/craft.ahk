@@ -204,12 +204,15 @@ hasUsed(name) {
   return false
 }
 
-makeReportMsg(msg, name) {
-  result := calcCd(name)
-  if !(result > 1) {
-    return msg
+makeReportMsg(msg, list) {
+  for __i__, name in list {
+    result := calcCd(name)
+    if !(result > 1) {
+      continue
+    }
+    msg := "" . msg . "`n" . name . "：" . result . "s"
   }
-  return "" . msg . "`n" . name . "：" . result . "s"
+  return msg
 }
 
 resetKey() {

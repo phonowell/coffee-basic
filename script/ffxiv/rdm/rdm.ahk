@@ -297,12 +297,15 @@ hasUsed(name) {
   return false
 }
 
-makeReportMsg(msg, name) {
-  result := calcCd(name)
-  if !(result > 1) {
-    return msg
+makeReportMsg(msg, list) {
+  for __i__, name in list {
+    result := calcCd(name)
+    if !(result > 1) {
+      continue
+    }
+    msg := "" . msg . "`n" . name . "：" . result . "s"
   }
-  return "" . msg . "`n" . name . "：" . result . "s"
+  return msg
 }
 
 resetKey() {
@@ -616,15 +619,7 @@ __$skill_dot_报告__() {
   msg := "" . msg . "`n咏唱：" . $isChanting . " / 移动：" . $isMoving . " / 目标距离：" . $distance . ""
   msg := "" . msg . "`n耗时：" . A_TickCount - $ts.报告 . "ms`n"
   $ts.报告 := A_TickCount
-  msg := makeReportMsg(msg, "短兵相接")
-  msg := makeReportMsg(msg, "飞刺")
-  msg := makeReportMsg(msg, "促进")
-  msg := makeReportMsg(msg, "六分反击")
-  msg := makeReportMsg(msg, "鼓励")
-  msg := makeReportMsg(msg, "倍增")
-  msg := makeReportMsg(msg, "交剑")
-  msg := makeReportMsg(msg, "即刻咏唱")
-  msg := makeReportMsg(msg, "醒梦")
+  msg := makeReportMsg(msg, ["短兵相接", "飞刺", "促进", "六分反击", "鼓励", "倍增", "交剑", "即刻咏唱", "醒梦"])
   ToolTip % msg, 410, 640
   SetTimer clearTip, Off
   SetTimer clearTip, % 0 - 10000

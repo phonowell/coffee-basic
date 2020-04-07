@@ -13,13 +13,15 @@ $skill.报告 = ->
   
   $ts.报告 = A_TickCount
 
-  msg = makeReportMsg msg, '神速咏唱'
-  msg = makeReportMsg msg, '法令'
-  msg = makeReportMsg msg, '无中生有'
-  msg = makeReportMsg msg, '神名'
-  msg = makeReportMsg msg, '全大赦'
-  msg = makeReportMsg msg, '即刻咏唱'
-  msg = makeReportMsg msg, '醒梦'
+  msg = makeReportMsg msg, [
+    '神速咏唱'
+    '法令'
+    '无中生有'
+    '神名'
+    '全大赦'
+    '即刻咏唱'
+    '醒梦'
+  ]
   
   $.tip msg, 410, 640
   clearTimeout clearTip

@@ -232,12 +232,15 @@ hasUsed(name) {
   return false
 }
 
-makeReportMsg(msg, name) {
-  result := calcCd(name)
-  if !(result > 1) {
-    return msg
+makeReportMsg(msg, list) {
+  for __i__, name in list {
+    result := calcCd(name)
+    if !(result > 1) {
+      continue
+    }
+    msg := "" . msg . "`n" . name . "：" . result . "s"
   }
-  return "" . msg . "`n" . name . "：" . result . "s"
+  return msg
 }
 
 resetKey() {
@@ -505,14 +508,7 @@ __$skill_dot_报告__() {
   msg := "" . msg . "`n目标距离：" . $distance . ""
   msg := "" . msg . "`n耗时：" . A_TickCount - $ts.报告 . "ms`n"
   $ts.报告 := A_TickCount
-  msg := makeReportMsg(msg, "战逃反应")
-  msg := makeReportMsg(msg, "预警")
-  msg := makeReportMsg(msg, "深奥之灵")
-  msg := makeReportMsg(msg, "厄运流转")
-  msg := makeReportMsg(msg, "铁壁")
-  msg := makeReportMsg(msg, "下踢")
-  msg := makeReportMsg(msg, "插言")
-  msg := makeReportMsg(msg, "雪仇")
+  msg := makeReportMsg(msg, ["战逃反应", "预警", "深奥之灵", "厄运流转", "铁壁", "下踢", "插言", "雪仇"])
   ToolTip % msg, 410, 640
   SetTimer clearTip, Off
   SetTimer clearTip, % 0 - 10000

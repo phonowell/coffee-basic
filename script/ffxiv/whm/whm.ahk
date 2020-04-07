@@ -227,12 +227,15 @@ hasUsed(name) {
   return false
 }
 
-makeReportMsg(msg, name) {
-  result := calcCd(name)
-  if !(result > 1) {
-    return msg
+makeReportMsg(msg, list) {
+  for __i__, name in list {
+    result := calcCd(name)
+    if !(result > 1) {
+      continue
+    }
+    msg := "" . msg . "`n" . name . "：" . result . "s"
   }
-  return "" . msg . "`n" . name . "：" . result . "s"
+  return msg
 }
 
 resetKey() {
@@ -463,13 +466,7 @@ __$skill_dot_报告__() {
   msg := "" . msg . "`n咏唱：" . $isChanting . " / 移动：" . $isMoving . ""
   msg := "" . msg . "`n耗时：" . A_TickCount - $ts.报告 . "ms`n"
   $ts.报告 := A_TickCount
-  msg := makeReportMsg(msg, "神速咏唱")
-  msg := makeReportMsg(msg, "法令")
-  msg := makeReportMsg(msg, "无中生有")
-  msg := makeReportMsg(msg, "神名")
-  msg := makeReportMsg(msg, "全大赦")
-  msg := makeReportMsg(msg, "即刻咏唱")
-  msg := makeReportMsg(msg, "醒梦")
+  msg := makeReportMsg(msg, ["神速咏唱", "法令", "无中生有", "神名", "全大赦", "即刻咏唱", "醒梦"])
   ToolTip % msg, 410, 640
   SetTimer clearTip, Off
   SetTimer clearTip, % 0 - 10000

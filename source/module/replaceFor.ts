@@ -29,8 +29,17 @@ function execute(content: string[]) {
     }
 
     if (line.includes('for')) {
+
+      let _line = line
+        .replace(' of ', ' in ')
+
+      if(!_line.includes(',')){
+        _line = _line
+        .replace('for', 'for __i__,')
+      }
+
       cache.push(depth)
-      result.push(`${line.replace(' of ', ' in ')} {`)
+      result.push(`${_line} {`)
       continue
     }
 

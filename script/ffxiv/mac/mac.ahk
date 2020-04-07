@@ -228,12 +228,15 @@ hasUsed(name) {
   return false
 }
 
-makeReportMsg(msg, name) {
-  result := calcCd(name)
-  if !(result > 1) {
-    return msg
+makeReportMsg(msg, list) {
+  for __i__, name in list {
+    result := calcCd(name)
+    if !(result > 1) {
+      continue
+    }
+    msg := "" . msg . "`n" . name . "：" . result . "s"
   }
-  return "" . msg . "`n" . name . "：" . result . "s"
+  return msg
 }
 
 resetKey() {
@@ -356,11 +359,7 @@ __$skill_dot_报告__() {
   msg := "" . msg . "`n电：" . $blue . " / 热：" . $red . ""
   msg := "" . msg . "`n耗时：" . A_TickCount - $ts.报告 . "ms`n"
   $ts.报告 := A_TickCount
-  msg := makeReportMsg(msg, "热弹")
-  msg := makeReportMsg(msg, "整备")
-  msg := makeReportMsg(msg, "虹吸弹")
-  msg := makeReportMsg(msg, "超荷")
-  msg := makeReportMsg(msg, "车式浮空炮塔")
+  msg := makeReportMsg(msg, ["热弹", "整备", "虹吸弹", "超荷", "车式浮空炮塔"])
   ToolTip % msg, 410, 640
   SetTimer clearTip, Off
   SetTimer clearTip, % 0 - 10000

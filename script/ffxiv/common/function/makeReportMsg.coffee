@@ -1,5 +1,9 @@
-makeReportMsg = (msg, name) ->
-  result = calcCd name
-  unless result > 1
-    return msg
-  return "#{msg}`n#{name}：#{result}s"
+makeReportMsg = (msg, list) ->
+  
+  for name in list
+    result = calcCd name
+    unless result > 1
+      continue
+    msg = "#{msg}`n#{name}：#{result}s"
+  
+  return msg
