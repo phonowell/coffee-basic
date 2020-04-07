@@ -1,10 +1,10 @@
 $skill.索敌 = ->
 
-  hasTarget = isTargeting()
-  if hasTarget
+  checkTargeting()
+  if $isTargeting
     return true
 
   $.press 'f11'
 
-  hasTarget = isTargeting()
-  return hasTarget
+  checkTargeting()
+  return $isTargeting

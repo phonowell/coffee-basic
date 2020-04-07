@@ -1,3 +1,3 @@
 resetTs = ->
-  for key, value in $ts
+  for key, value of $ts
     $ts[key] = 0

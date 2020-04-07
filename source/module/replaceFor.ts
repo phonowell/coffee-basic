@@ -10,15 +10,15 @@ import { IData } from '../type'
 function execute(content: string[]) {
 
   const result = [] as string[]
-  const cache: number[] = []
+  const cache = [] as number[]
 
   for (const line of content) {
 
-    const n = getDepth(line)
-    if (n <= _.last(cache)) {
+    const depth = getDepth(line)
+    if (depth <= _.last(cache)) {
 
-      const m = _.indexOf(cache, n)
-      const list = cache.slice(m)
+      const n = _.indexOf(cache, depth)
+      const list = cache.slice(n)
       list.reverse()
 
       for (const j of list) {
@@ -29,8 +29,8 @@ function execute(content: string[]) {
     }
 
     if (line.includes('for')) {
-      cache.push(n)
-      result.push(`${line} {`)
+      cache.push(depth)
+      result.push(`${line.replace(' of ', ' in ')} {`)
       continue
     }
 

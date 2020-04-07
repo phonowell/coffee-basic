@@ -28,7 +28,7 @@ global $isChanting := false
 global $hp := 0
 global $isMoving := false
 global $mp := 0
-global hasTarget := false
+global $isTargeting := false
 global $level := 80
 global $skill := {}
 global $watcher := {}
@@ -116,6 +116,27 @@ checkMp() {
   return
 }
 
+checkTargeting() {
+  PixelGetColor color, 650, 65, RGB
+  if (color == 0xFF8888) {
+    $hasTarget := true
+    return
+  }
+  if (color == 0xFFC888) {
+    $hasTarget := true
+    return
+  }
+  if (color == 0xEBD788) {
+    $hasTarget := true
+    return
+  }
+  if (color == 0xFFB1FF) {
+    $hasTarget := true
+    return
+  }
+  $hasTarget := false
+}
+
 clearTip() {
   ToolTip
 }
@@ -177,23 +198,6 @@ hasStatusByTarget(name) {
 hasUsed(name) {
   ImageSearch x, y, 60, 915, 225, 975, % A_ScriptDir . "\" . "image\" . name . ".png"
   if (x > 0 and y > 0) {
-    return true
-  }
-  return false
-}
-
-isTargeting() {
-  PixelGetColor color, 650, 65, RGB
-  if (color == 0xFF8888) {
-    return true
-  }
-  if (color == 0xFFC888) {
-    return true
-  }
-  if (color == 0xEBD788) {
-    return true
-  }
-  if (color == 0xFFB1FF) {
     return true
   }
   return false
