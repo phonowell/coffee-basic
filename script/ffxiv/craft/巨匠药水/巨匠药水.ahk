@@ -158,26 +158,17 @@ getCurrentTrigger() {
 
 hasStatus(name) {
   ImageSearch x, y, 725, 840, 925, 875, % A_ScriptDir . "\" . "image\" . name . ".png"
-  if (x > 0 and y > 0) {
-    return true
-  }
-  return false
+  return x > 0 and y > 0
 }
 
 hasStatusByTarget(name) {
   ImageSearch x, y, 725, 765, 925, 800, % A_ScriptDir . "\" . "image\" . name . ".png"
-  if (x > 0 and y > 0) {
-    return true
-  }
-  return false
+  return x > 0 and y > 0
 }
 
 hasUsed(name) {
   ImageSearch x, y, 60, 915, 225, 975, % A_ScriptDir . "\" . "image\" . name . ".png"
-  if (x > 0 and y > 0) {
-    return true
-  }
-  return false
+  return x > 0 and y > 0
 }
 
 makeReportMsg(msg, list) {

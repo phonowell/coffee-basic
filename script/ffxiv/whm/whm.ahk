@@ -202,26 +202,17 @@ getCurrentTrigger() {
 
 hasStatus(name) {
   ImageSearch x, y, 725, 840, 925, 875, % A_ScriptDir . "\" . "image\" . name . ".png"
-  if (x > 0 and y > 0) {
-    return true
-  }
-  return false
+  return x > 0 and y > 0
 }
 
 hasStatusByTarget(name) {
   ImageSearch x, y, 725, 765, 925, 800, % A_ScriptDir . "\" . "image\" . name . ".png"
-  if (x > 0 and y > 0) {
-    return true
-  }
-  return false
+  return x > 0 and y > 0
 }
 
 hasUsed(name) {
   ImageSearch x, y, 60, 915, 225, 975, % A_ScriptDir . "\" . "image\" . name . ".png"
-  if (x > 0 and y > 0) {
-    return true
-  }
-  return false
+  return x > 0 and y > 0
 }
 
 makeReportMsg(msg, list) {
@@ -366,13 +357,14 @@ __$skill_dot_再生__() {
   if !($level >= 35) {
     return
   }
+  if !(A_TickCount - $ts.再生 > $cd.再生) {
+    return
+  }
   if (hasStatusByTarget("再生")) {
     return
   }
-  if !(能力技冷却判断()) {
-    return
-  }
   Send {alt down}{0}{alt up}
+  $ts.再生 := A_TickCount - $cd.再生 + $cd.技能施放补正
   return true
 }
 
@@ -533,8 +525,8 @@ __$skill_dot_狂喜之心__() {
   return true
 }
 
-__$skill_dot_疾风__() {
-  if !($isMoving) {
+__$skill_dot_疾风__(isForced := false) {
+  if !(isForced) {
     if ($level >= 72) {
       if (hasStatusByTarget("天辉")) {
         return
@@ -671,11 +663,16 @@ attackS() {
   use("苦难之心")
   use("神速咏唱")
   if ($isMoving) {
-    use("疾风")
+    use("疾风", true)
     return
   }
-  use("疾风")
-  use("飞石")
+  if (use("疾风")) {
+    return
+  }
+  if (use("飞石")) {
+    return
+  }
+  SoundBeep
 }
 
 attackM() {
@@ -689,10 +686,13 @@ attackM() {
   use("无中生有")
   use("即刻咏唱")
   if ($isMoving) {
-    use("疾风")
+    use("疾风", true)
     return
   }
-  use("神圣")
+  if (use("神圣")) {
+    return
+  }
+  SoundBeep
 }
 
 healS() {
@@ -758,6 +758,8 @@ __$default__() {
   $cd.全大赦 := 60000
   $skill.全大赦 := Func("__$skill_dot_全大赦__")
   $watcher.全大赦 := Func("__$watcher_dot_全大赦__")
+  $ts.再生 := 0
+  $cd.再生 := 2500
   $skill.再生 := Func("__$skill_dot_再生__")
   $skill.医治 := Func("__$skill_dot_医治__")
   $ts.医济 := 0

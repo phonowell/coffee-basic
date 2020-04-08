@@ -74,16 +74,18 @@ interface FireKeeper {
 
   remove_(source: string | string[]): Promise<FireKeeper>
 
-  stat_(source: string): Promise<{
-    ctime: Date
-    mtimeMs: number
-  }>
-
   say_(text: string, option?: {
     lang?: string
   }): Promise<FireKeeper>
 
+  sleep_(ms: number): Promise<FireKeeper>
+
   source_(source: string[] | string): Promise<string[]>
+  
+  stat_(source: string): Promise<{
+    ctime: Date
+    mtimeMs: number
+  }>
 
   task(name: string): any
   task(name: string, fn: (...args: any[]) => any): FireKeeper

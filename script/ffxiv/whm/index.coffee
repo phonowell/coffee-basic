@@ -18,11 +18,13 @@ attackS = ->
   use '神速咏唱'
 
   if $isMoving
-    use '疾风'
+    use '疾风', true
     return
 
-  use '疾风'
-  use '飞石'
+  if use '疾风' then return
+  if use '飞石' then return
+
+  $.beep()
 
 attackM = ->
 
@@ -37,10 +39,12 @@ attackM = ->
   use '即刻咏唱'
 
   if $isMoving
-    use '疾风'
+    use '疾风', true
     return
 
-  use '神圣'
+  if use '神圣' then return
+
+  $.beep()
 
 # ---
 
