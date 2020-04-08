@@ -99,7 +99,6 @@ checkChanting() {
   }
   PixelGetColor color, 1130, 865, RGB
   $isChanting := color == 0x2B1B13
-  return
 }
 
 checkHp() {
@@ -111,7 +110,6 @@ checkHp() {
   percent := (x - 21) * 100 / (168 - 21)
   percent := Round(percent)
   $hp := percent
-  return
 }
 
 checkMoving() {
@@ -136,8 +134,7 @@ checkMp() {
   }
   percent := (x - 181) * 100 / (328 - 181)
   percent := Round(percent)
-  $mp := precent
-  return
+  $mp := percent
 }
 
 checkTargeting() {
@@ -381,23 +378,26 @@ __$skill_dot_再生__() {
 
 __$skill_dot_医治__() {
   Send {alt down}{4}{alt up}
+  return true
 }
 
 __$skill_dot_医济__() {
   if !($level >= 50) {
     return
   }
-  if (hasStatus("医济")) {
+  if !(A_TickCount - $ts.医济 > $cd.医济) {
     return
   }
   Send {alt down}{8}{alt up}
+  SetTimer __$watcher_dot_医济__, % $cd.技能施放判断间隔
   return true
 }
 
+__$watcher_dot_医济__() {
+  clearWatcher("医济")
+}
+
 __$skill_dot_即刻咏唱__() {
-  if !($level >= 18) {
-    return
-  }
   if !(A_TickCount - $ts.即刻咏唱 > $cd.即刻咏唱) {
     return
   }
@@ -473,7 +473,11 @@ __$skill_dot_报告__() {
 }
 
 __$skill_dot_救疗__() {
+  if !($level >= 30) {
+    return
+  }
   Send {alt down}{7}{alt up}
+  return true
 }
 
 __$skill_dot_无中生有__() {
@@ -495,6 +499,7 @@ __$watcher_dot_无中生有__() {
 
 __$skill_dot_治疗__() {
   Send {alt down}{2}{alt up}
+  return true
 }
 
 __$skill_dot_法令__() {
@@ -636,9 +641,6 @@ __$skill_dot_获取状态__() {
 }
 
 __$skill_dot_醒梦__() {
-  if !($level >= 24) {
-    return
-  }
   if !(A_TickCount - $ts.醒梦 > $cd.醒梦) {
     return
   }
@@ -698,12 +700,25 @@ healS() {
     return
   }
   use("醒梦")
-  use("法令")
-  use("神名")
-  use("安慰之心")
-  use("再生")
-  use("救疗")
-  use("治疗")
+  if (use("法令")) {
+    return
+  }
+  if (use("神名")) {
+    return
+  }
+  if (use("安慰之心")) {
+    return
+  }
+  if (use("再生")) {
+    return
+  }
+  if (use("救疗")) {
+    return
+  }
+  if (use("治疗")) {
+    return
+  }
+  SoundBeep
 }
 
 healM() {
@@ -711,11 +726,25 @@ healM() {
     return
   }
   use("醒梦")
-  use("法令")
-  use("全大赦")
-  use("狂喜之心")
-  use("医济")
-  use("医治")
+  if (use("法令")) {
+    return
+  }
+  if (use("全大赦")) {
+    return
+  }
+  if (use("狂喜之心")) {
+    return
+  }
+  if (use("医济")) {
+    return
+  }
+  if (use("愈疗")) {
+    return
+  }
+  if (use("医治")) {
+    return
+  }
+  SoundBeep
 }
 
 __$default__() {
@@ -731,7 +760,10 @@ __$default__() {
   $watcher.全大赦 := Func("__$watcher_dot_全大赦__")
   $skill.再生 := Func("__$skill_dot_再生__")
   $skill.医治 := Func("__$skill_dot_医治__")
+  $ts.医济 := 0
+  $cd.医济 := 15000
   $skill.医济 := Func("__$skill_dot_医济__")
+  $watcher.医济 := Func("__$watcher_dot_医济__")
   $ts.即刻咏唱 := 0
   $cd.即刻咏唱 := 60000
   $skill.即刻咏唱 := Func("__$skill_dot_即刻咏唱__")
@@ -883,11 +915,6 @@ return
   use("报告")
   if (trigger == "right") {
     use("庇护所")
-    return
-  }
-  if (trigger == "both") {
-    use("无中生有")
-    use("愈疗")
     return
   }
 return

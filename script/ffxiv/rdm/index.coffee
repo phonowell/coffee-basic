@@ -40,6 +40,16 @@ attackM = ->
     use '能力技'
     return
 
+  if $isWR
+    use '赤飞石'
+    use '能力技'
+    return
+
+  if $isBR
+    use '赤火炎'
+    use '能力技'
+    return
+
   if $white >= $black
     use '赤震雷'
   else

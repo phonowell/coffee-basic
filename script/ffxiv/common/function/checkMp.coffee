@@ -10,5 +10,4 @@ checkMp = ->
   
   percent = (x - 181) * 100 / (328 - 181)
   percent = Math.round percent
-  $mp = precent
-  return
+  $mp = percent

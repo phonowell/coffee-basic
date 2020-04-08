@@ -169,7 +169,6 @@ checkChanting() {
   }
   PixelGetColor color, 1130, 865, RGB
   $isChanting := color == 0x2B1B13
-  return
 }
 
 checkHp() {
@@ -181,7 +180,6 @@ checkHp() {
   percent := (x - 21) * 100 / (168 - 21)
   percent := Round(percent)
   $hp := percent
-  return
 }
 
 checkMoving() {
@@ -206,8 +204,7 @@ checkMp() {
   }
   percent := (x - 181) * 100 / (328 - 181)
   percent := Round(percent)
-  $mp := precent
-  return
+  $mp := percent
 }
 
 checkTargeting() {
@@ -478,6 +475,9 @@ __$skill_dot_促进__() {
   if !(A_TickCount - $ts.促进 > $cd.促进) {
     return
   }
+  if !(A_TickCount - $ts.赤疾风 < 2000) {
+    return
+  }
   if ($black > 70 or $white > 70) {
     return
   }
@@ -554,9 +554,6 @@ __$skill_dot_划圆斩__() {
 }
 
 __$skill_dot_即刻咏唱__() {
-  if !($level >= 18) {
-    return
-  }
   if !(A_TickCount - $ts.即刻咏唱 > $cd.即刻咏唱) {
     return
   }
@@ -630,7 +627,11 @@ __$skill_dot_摇荡__() {
 }
 
 __$skill_dot_散碎__() {
+  if !($level >= 15) {
+    return
+  }
   Send {alt down}{6}{alt up}
+  return true
 }
 
 __$skill_dot_焦热__() {
@@ -823,15 +824,24 @@ __$skill_dot_赤治疗__() {
 }
 
 __$skill_dot_赤火炎__() {
+  if !($level >= 30) {
+    return
+  }
   Send {alt down}{9}{alt up}
+  return true
 }
 
 __$skill_dot_赤烈风__() {
+  if !($level >= 22) {
+    return
+  }
   Send {alt down}{8}{alt up}
+  return true
 }
 
 __$skill_dot_赤疾风__() {
   Send {alt down}{5}{alt up}
+  $ts.赤疾风 := A_TickCount - $cd.赤疾风 + $cd.技能施放补正
 }
 
 __$skill_dot_赤神圣__() {
@@ -900,14 +910,23 @@ __$watcher_dot_赤神圣__() {
 
 __$skill_dot_赤闪雷__() {
   Send {alt down}{3}{alt up}
+  $ts.赤疾风 := A_TickCount - $cd.赤疾风 + $cd.技能施放补正
 }
 
 __$skill_dot_赤震雷__() {
+  if !($level >= 22) {
+    return
+  }
   Send {alt down}{7}{alt up}
+  return true
 }
 
 __$skill_dot_赤飞石__() {
+  if !($level >= 30) {
+    return
+  }
   Send {alt down}{0}{alt up}
+  return true
 }
 
 __$skill_dot_连攻__() {
@@ -942,9 +961,6 @@ __$watcher_dot_连攻__() {
 }
 
 __$skill_dot_醒梦__() {
-  if !($level >= 24) {
-    return
-  }
   if !(A_TickCount - $ts.醒梦 > $cd.醒梦) {
     return
   }
@@ -1055,6 +1071,16 @@ attackM() {
   }
   if ($isMoving) {
     use("续斩")
+    use("能力技")
+    return
+  }
+  if ($isWR) {
+    use("赤飞石")
+    use("能力技")
+    return
+  }
+  if ($isBR) {
+    use("赤火炎")
     use("能力技")
     return
   }
@@ -1246,6 +1272,8 @@ __$default__() {
   $skill.赤治疗 := Func("__$skill_dot_赤治疗__")
   $skill.赤火炎 := Func("__$skill_dot_赤火炎__")
   $skill.赤烈风 := Func("__$skill_dot_赤烈风__")
+  $ts.赤疾风 := 0
+  $cd.赤疾风 := 2500
   $skill.赤疾风 := Func("__$skill_dot_赤疾风__")
   $ts.赤神圣 := 0
   $skill.赤神圣 := Func("__$skill_dot_赤神圣__")

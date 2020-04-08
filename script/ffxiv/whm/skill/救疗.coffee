@@ -1,1 +1,7 @@
-$skill.救疗 = -> $.press 'alt + 7'
+$skill.救疗 = ->
+
+  unless $level >= 30
+    return
+
+  $.press 'alt + 7'
+  return true

@@ -31,7 +31,6 @@ checkChanting() {
   }
   PixelGetColor color, 1130, 865, RGB
   $isChanting := color == 0x2B1B13
-  return
 }
 
 checkHp() {
@@ -43,7 +42,6 @@ checkHp() {
   percent := (x - 21) * 100 / (168 - 21)
   percent := Round(percent)
   $hp := percent
-  return
 }
 
 checkMoving() {
@@ -68,8 +66,7 @@ checkMp() {
   }
   percent := (x - 181) * 100 / (328 - 181)
   percent := Round(percent)
-  $mp := precent
-  return
+  $mp := percent
 }
 
 checkTargeting() {

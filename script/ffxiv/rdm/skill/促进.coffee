@@ -9,6 +9,9 @@ $skill.促进 = ->
   unless A_TickCount - $ts.促进 > $cd.促进
     return
 
+  unless A_TickCount - $ts.赤疾风 < 2e3
+    return
+
   if $black > 70 or $white > 70
     return
 

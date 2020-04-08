@@ -101,8 +101,3 @@ $.on '2-joy-3', ->
   if trigger == 'right'
     use '庇护所'
     return
-
-  if trigger == 'both'
-    use '无中生有'
-    use '愈疗'
-    return

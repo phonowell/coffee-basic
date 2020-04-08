@@ -50,12 +50,15 @@ healS = ->
     return
 
   use '醒梦'
-  use '法令'
-  use '神名'
-  use '安慰之心'
-  use '再生'
-  use '救疗'
-  use '治疗'
+
+  if use '法令' then return
+  if use '神名' then return
+  if use '安慰之心' then return
+  if use '再生' then return
+  if use '救疗' then return
+  if use '治疗' then return
+
+  $.beep()
 
 healM = ->
 
@@ -63,8 +66,12 @@ healM = ->
     return
 
   use '醒梦'
-  use '法令'
-  use '全大赦'
-  use '狂喜之心'
-  use '医济'
-  use '医治'
+
+  if use '法令' then return
+  if use '全大赦' then return
+  if use '狂喜之心' then return
+  if use '医济' then return
+  if use '愈疗' then return
+  if use '医治' then return
+  
+  $.beep()
