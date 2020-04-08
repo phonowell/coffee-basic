@@ -1,0 +1,1 @@
+$skill.凶星 = -> $.press 'alt + 1'

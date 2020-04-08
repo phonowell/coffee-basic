@@ -22,9 +22,7 @@ attackS = ->
     return
 
   if use '疾风' then return
-  if use '飞石' then return
-
-  $.beep()
+  use '飞石'
 
 attackM = ->
 
@@ -42,9 +40,7 @@ attackM = ->
     use '疾风', true
     return
 
-  if use '神圣' then return
-
-  $.beep()
+  use '神圣'
 
 # ---
 
@@ -60,9 +56,7 @@ healS = ->
   if use '安慰之心' then return
   if use '再生' then return
   if use '救疗' then return
-  if use '治疗' then return
-
-  $.beep()
+  use '治疗'
 
 healM = ->
 
@@ -76,6 +70,4 @@ healM = ->
   if use '狂喜之心' then return
   if use '医济' then return
   if use '愈疗' then return
-  if use '医治' then return
-  
-  $.beep()
+  use '医治'
