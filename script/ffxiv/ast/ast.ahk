@@ -421,8 +421,15 @@ __$skill_dot_烧灼__(isForced := false) {
     return
   }
   if !(isForced) {
-    if (hasStatusByTarget("烧灼")) {
-      return
+    if ($level >= 46) {
+      if (hasStatusByTarget("炽灼")) {
+        return
+      }
+    }
+    else {
+      if (hasStatusByTarget("烧灼")) {
+        return
+      }
     }
   }
   Send {alt down}{3}{alt up}
