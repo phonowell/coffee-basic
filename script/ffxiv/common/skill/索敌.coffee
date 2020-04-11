@@ -1,10 +1,7 @@
 $skill.索敌 = ->
 
-  checkTargeting()
   if $isTargeting
-    return true
+    return
 
   $.press 'f11'
-
-  checkTargeting()
-  return $isTargeting
+  return true
