@@ -6,6 +6,9 @@ $skill.圣光幕帘 = ->
   unless $level >= 56
     return
 
+  unless $isTargeting
+    return
+
   unless A_TickCount - $ts.圣光幕帘 > $cd.圣光幕帘
     return
 

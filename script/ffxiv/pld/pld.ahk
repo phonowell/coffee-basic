@@ -61,9 +61,6 @@ attack() {
   }
   use("获取状态")
   use("报告")
-  if !(use("索敌")) {
-    return
-  }
   if (trigger == "right") {
     attackS()
     return
@@ -73,7 +70,7 @@ attack() {
     return
   }
   if (trigger == "left") {
-    use("投盾")
+    attackF()
     return
   }
 }
@@ -319,13 +316,11 @@ __$skill_dot_空白信息__() {
 }
 
 __$skill_dot_索敌__() {
-  checkTargeting()
   if ($isTargeting) {
-    return true
+    return
   }
   Send {f11}
-  checkTargeting()
-  return $isTargeting
+  return true
 }
 
 __$skill_dot_下踢__() {
@@ -409,6 +404,9 @@ __$watcher_dot_厄运流转__() {
 
 __$skill_dot_圣光幕帘__() {
   if !($level >= 56) {
+    return
+  }
+  if !($isTargeting) {
     return
   }
   if !(A_TickCount - $ts.圣光幕帘 > $cd.圣光幕帘) {
@@ -504,6 +502,9 @@ __$skill_dot_报告__() {
 
 __$skill_dot_插言__() {
   if !(A_TickCount - $ts.插言 > $cd.插言) {
+    return
+  }
+  if (hasStatusByTarget("眩晕")) {
     return
   }
   Send {shift down}{4}{shift up}
@@ -676,6 +677,9 @@ __$skill_dot_能力技__() {
 }
 
 能力技施放() {
+  if !($isTargeting) {
+    return
+  }
   if !($distance == "near") {
     return
   }
@@ -694,9 +698,6 @@ __$skill_dot_能力技__() {
   if (use("自动盾阵")) {
     return
   }
-  if (use("下踢")) {
-    return
-  }
   use("空白信息")
 }
 
@@ -707,6 +708,7 @@ __$skill_dot_获取状态__() {
     use("空白信息")
   }
   $ts.获取状态 := A_TickCount
+  checkTargeting()
   checkDistance()
   checkGold()
 }
@@ -754,6 +756,10 @@ __$watcher_dot_预警__() {
 }
 
 attackS() {
+  if !($isTargeting) {
+    use("索敌")
+    return
+  }
   if !($distance == "near") {
     return
   }
@@ -786,7 +792,18 @@ attackM() {
   }
 }
 
+attackF() {
+  if !($isTargeting) {
+    use("索敌")
+    return
+  }
+  use("投盾")
+}
+
 defendS() {
+  if !($isTargeting) {
+    return
+  }
   if (use("铁壁")) {
     return
   }
@@ -800,6 +817,9 @@ defendS() {
 }
 
 breakS() {
+  if !($isTargeting) {
+    return
+  }
   if (use("下踢")) {
     return
   }

@@ -8,6 +8,10 @@
 # ---
 
 attackS = ->
+
+  unless $isTargeting
+    use '索敌'
+    return
   
   unless $distance == 'near'
     return
@@ -42,22 +46,44 @@ attackM = ->
 
 # ---
 
+attackF = ->
+
+  unless $isTargeting
+    use '索敌'
+    return
+  
+  use '投盾'
+
+# ---
+
 defendS = ->
+
+  unless $isTargeting
+    return
+
   if use '铁壁' then return
   if use '预警' then return
   if use '盾阵' then return
+  
   $.beep()
 
 # ---
 
 breakS = ->
+
+  unless $isTargeting
+    return
+
   if use '下踢' then return
   if use '插言' then return
+
   $.beep()
 
 # ---
 
 healS = ->
+  
   if use '圣光幕帘' then return
   if use '深仁厚泽' then return
+  
   $.beep()
