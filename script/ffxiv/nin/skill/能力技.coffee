@@ -34,6 +34,7 @@ $skill.能力技 = ->
 能力技施放 = ->
 
   unless $distance == 'near'
+    use '空白信息'
     return
 
   if use '夺取' then return

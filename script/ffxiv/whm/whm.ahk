@@ -60,9 +60,6 @@ attack() {
   }
   use("获取状态")
   use("报告")
-  if !(use("索敌")) {
-    return
-  }
   if (trigger == "right") {
     attackS()
     return
@@ -324,13 +321,11 @@ __$skill_dot_空白信息__() {
 }
 
 __$skill_dot_索敌__() {
-  checkTargeting()
   if ($isTargeting) {
-    return true
+    return
   }
   Send {f11}
-  checkTargeting()
-  return $isTargeting
+  return true
 }
 
 __$skill_dot_全大赦__() {
@@ -525,8 +520,8 @@ __$skill_dot_狂喜之心__() {
   return true
 }
 
-__$skill_dot_疾风__(isForced := false) {
-  if !(isForced) {
+__$skill_dot_疾风__() {
+  if !($isMoving) {
     if ($level >= 72) {
       if (hasStatusByTarget("天辉")) {
         return
@@ -626,6 +621,7 @@ __$skill_dot_获取状态__() {
     use("空白信息")
   }
   $ts.获取状态 := A_TickCount
+  checkTargeting()
   checkMoving()
   checkChanting()
   checkRed()
@@ -655,44 +651,42 @@ __$skill_dot_飞石__() {
 }
 
 attackS() {
+  if !($isTargeting) {
+    use("索敌")
+    return
+  }
   if ($isChanting) {
     return
   }
   use("醒梦")
   use("法令")
-  use("苦难之心")
-  use("神速咏唱")
-  if ($isMoving) {
-    use("疾风", true)
+  if (use("苦难之心")) {
     return
   }
+  use("神速咏唱")
   if (use("疾风")) {
     return
   }
-  if (use("飞石")) {
-    return
-  }
-  SoundBeep
+  use("飞石")
 }
 
 attackM() {
+  if !($isTargeting) {
+    use("索敌")
+    return
+  }
   if ($isChanting) {
     return
   }
   use("醒梦")
   use("法令")
-  use("苦难之心")
+  if (use("苦难之心")) {
+    return
+  }
   use("神速咏唱")
   use("无中生有")
   use("即刻咏唱")
-  if ($isMoving) {
-    use("疾风", true)
-    return
-  }
-  if (use("神圣")) {
-    return
-  }
-  SoundBeep
+  use("神圣")
 }
 
 healS() {
@@ -715,10 +709,7 @@ healS() {
   if (use("救疗")) {
     return
   }
-  if (use("治疗")) {
-    return
-  }
-  SoundBeep
+  use("治疗")
 }
 
 healM() {
@@ -741,10 +732,7 @@ healM() {
   if (use("愈疗")) {
     return
   }
-  if (use("医治")) {
-    return
-  }
-  SoundBeep
+  use("医治")
 }
 
 __$default__() {

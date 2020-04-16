@@ -33,6 +33,10 @@ $skill.能力技 = ->
 
 能力技施放 = ->
 
+  unless $isTargeting
+    use '空白信息'
+    return
+
   if use '猛者强击' then return
   if use '失血箭' then return
   if use '纷乱箭' then return

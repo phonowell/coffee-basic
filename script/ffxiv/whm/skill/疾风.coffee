@@ -1,6 +1,6 @@
-$skill.疾风 = (isForced = false) ->
+$skill.疾风 = ->
 
-  unless isForced
+  unless $isMoving
 
     if $level >= 72
       if hasStatusByTarget '天辉' then return

@@ -9,36 +9,40 @@
 
 attackS = ->
 
+  unless $isTargeting
+    use '索敌'
+    return
+
   if $isChanting
     return
 
   use '醒梦'
   use '法令'
-  use '苦难之心'
-  use '神速咏唱'
 
-  if $isMoving
-    use '疾风', true
-    return
+  if use '苦难之心' then return
+  
+  use '神速咏唱'
 
   if use '疾风' then return
   use '飞石'
 
 attackM = ->
 
+  unless $isTargeting
+    use '索敌'
+    return
+
   if $isChanting
     return
 
   use '醒梦'
   use '法令'
-  use '苦难之心'
+
+  if use '苦难之心' then return
+
   use '神速咏唱'
   use '无中生有'
   use '即刻咏唱'
-
-  if $isMoving
-    use '疾风', true
-    return
 
   use '神圣'
 

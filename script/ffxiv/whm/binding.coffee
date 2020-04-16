@@ -10,9 +10,6 @@ attack = ->
 
   use '获取状态'
   use '报告'
-  
-  unless use '索敌'
-    return
 
   if trigger == 'right'
     attackS()

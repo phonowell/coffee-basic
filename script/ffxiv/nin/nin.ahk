@@ -307,6 +307,29 @@ __$skill_dot_索敌__() {
   return true
 }
 
+__$skill_dot_八卦无刃杀__() {
+  if !($level >= 52) {
+    return
+  }
+  if !($step == 21) {
+    return
+  }
+  if !(A_TickCount - $ts.八卦无刃杀 > $cd.八卦无刃杀) {
+    return
+  }
+  Send {ctrl down}{5}{ctrl up}
+  SetTimer __$watcher_dot_八卦无刃杀__, % $cd.技能施放判断间隔
+  return true
+}
+
+__$watcher_dot_八卦无刃杀__() {
+  if !(clearWatcher("八卦无刃杀")) {
+    return
+  }
+  $step := 0
+  SetTimer resetStep, Off
+}
+
 __$skill_dot_内丹__() {
   if !(A_TickCount - $ts.内丹 > $cd.内丹) {
     return
@@ -321,7 +344,7 @@ __$watcher_dot_内丹__() {
 }
 
 __$skill_dot_双刃旋__() {
-  if !($step == 0) {
+  if !($step == 0 or $step > 20) {
     return
   }
   if !(A_TickCount - $ts.双刃旋 > $cd.双刃旋) {
@@ -394,6 +417,9 @@ __$skill_dot_忍术__() {
 
 __$skill_dot_扫腿__() {
   if !(A_TickCount - $ts.扫腿 > $cd.扫腿) {
+    return
+  }
+  if (hasStatusByTarget("眩晕")) {
     return
   }
   Send {shift down}{3}{shift up}
@@ -534,6 +560,7 @@ __$skill_dot_能力技__() {
 
 能力技施放() {
   if !($distance == "near") {
+    use("空白信息")
     return
   }
   if (use("夺取")) {
@@ -557,9 +584,26 @@ __$skill_dot_血雨飞花__() {
   if !($level >= 38) {
     return
   }
+  if !(A_TickCount - $ts.血雨飞花 > $cd.血雨飞花) {
+    return
+  }
   Send {alt down}{0}{alt up}
-  $step := 0
+  SetTimer __$watcher_dot_血雨飞花__, % $cd.技能施放判断间隔
   return true
+}
+
+__$watcher_dot_血雨飞花__() {
+  if !(clearWatcher("血雨飞花")) {
+    return
+  }
+  if !($level >= 52) {
+    $step := 0
+    SetTimer resetStep, Off
+    return
+  }
+  $step := 21
+  SetTimer resetStep, Off
+  SetTimer resetStep, % 15000
 }
 
 __$skill_dot_飞刀__() {
@@ -598,8 +642,8 @@ attackS() {
 }
 
 attackM() {
-  if !($isTargeting) {
-    use("索敌")
+  if (use("八卦无刃杀")) {
+    use("能力技")
     return
   }
   if (use("血雨飞花")) {
@@ -656,6 +700,10 @@ __$default__() {
   $skill.冲刺 := Func("__$skill_dot_冲刺__")
   $skill.空白信息 := Func("__$skill_dot_空白信息__")
   $skill.索敌 := Func("__$skill_dot_索敌__")
+  $ts.八卦无刃杀 := 0
+  $cd.八卦无刃杀 := 2500
+  $skill.八卦无刃杀 := Func("__$skill_dot_八卦无刃杀__")
+  $watcher.八卦无刃杀 := Func("__$watcher_dot_八卦无刃杀__")
   $ts.内丹 := 0
   $cd.内丹 := 120000
   $skill.内丹 := Func("__$skill_dot_内丹__")
@@ -705,7 +753,10 @@ __$default__() {
   $skill.能力技 := Func("__$skill_dot_能力技__")
   $ts.获取状态 := 0
   $skill.获取状态 := Func("__$skill_dot_获取状态__")
+  $ts.血雨飞花 := 0
+  $cd.血雨飞花 := 2500
   $skill.血雨飞花 := Func("__$skill_dot_血雨飞花__")
+  $watcher.血雨飞花 := Func("__$watcher_dot_血雨飞花__")
   $skill.飞刀 := Func("__$skill_dot_飞刀__")
 }
 

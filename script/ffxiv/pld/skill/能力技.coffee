@@ -34,15 +34,18 @@ $skill.能力技 = ->
 能力技施放 = ->
 
   unless $isTargeting
+    use '空白信息'
     return
 
   unless $distance == 'near'
+    use '空白信息'
     return
 
   if use '战逃反应' then return
   if use '深奥之灵' then return
   if use '厄运流转' then return
   if use '雪仇' then return
+  if use '亲疏自行' then return
   if use '自动盾阵' then return
 
   use '空白信息'

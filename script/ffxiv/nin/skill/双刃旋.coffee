@@ -3,7 +3,7 @@ $cd.双刃旋 = 2500
 
 $skill.双刃旋 = ->
 
-  unless $step == 0
+  unless $step == 0 or $step > 20
     return
 
   unless A_TickCount - $ts.双刃旋 > $cd.双刃旋

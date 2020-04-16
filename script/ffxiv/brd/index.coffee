@@ -9,6 +9,10 @@
 
 attackS = ->
 
+  unless $isTargeting
+    use '索敌'
+    return
+
   if use '直线射击'
     use '能力技'
     return
@@ -28,6 +32,10 @@ attackS = ->
 # ---
 
 attackM = ->
+
+  unless $isTargeting
+    use '索敌'
+    return
 
   if use '连珠箭'
     use '能力技'

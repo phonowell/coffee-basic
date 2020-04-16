@@ -6,6 +6,13 @@ $skill.伤足 = ->
   unless A_TickCount - $ts.伤足 > $cd.伤足
     return
 
+  if hasStatusByTarget '加重'
+    return
+  if hasStatusByTarget '止步'
+    return
+  if hasStatusByTarget '眩晕'
+    return
+
   $.press 'shift + 3'
 
   setInterval $watcher.伤足, $cd.技能施放判断间隔

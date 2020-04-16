@@ -59,9 +59,6 @@ attack() {
   }
   use("获取状态")
   use("报告")
-  if !(use("索敌")) {
-    return
-  }
   if (trigger == "right") {
     attackS()
     return
@@ -285,17 +282,24 @@ __$skill_dot_空白信息__() {
 }
 
 __$skill_dot_索敌__() {
-  checkTargeting()
   if ($isTargeting) {
-    return true
+    return
   }
   Send {f11}
-  checkTargeting()
-  return $isTargeting
+  return true
 }
 
 __$skill_dot_伤腿__() {
   if !(A_TickCount - $ts.伤腿 > $cd.伤腿) {
+    return
+  }
+  if (hasStatusByTarget("加重")) {
+    return
+  }
+  if (hasStatusByTarget("止步")) {
+    return
+  }
+  if (hasStatusByTarget("眩晕")) {
     return
   }
   Send {shift down}{1}{shift up}
@@ -309,6 +313,15 @@ __$watcher_dot_伤腿__() {
 
 __$skill_dot_伤足__() {
   if !(A_TickCount - $ts.伤足 > $cd.伤足) {
+    return
+  }
+  if (hasStatusByTarget("加重")) {
+    return
+  }
+  if (hasStatusByTarget("止步")) {
+    return
+  }
+  if (hasStatusByTarget("眩晕")) {
     return
   }
   Send {shift down}{3}{shift up}
@@ -350,18 +363,26 @@ __$skill_dot_报告__() {
   msg := "等级：" . $level . ""
   msg := "" . msg . "`n耗时：" . A_TickCount - $ts.报告 . "ms`n"
   $ts.报告 := A_TickCount
-  msg := makeReportMsg(msg, ["猛者强击", "失血箭", "纷乱箭", "贤者的叙事谣", "伤腿", "伤足"])
+  msg := makeReportMsg(msg, ["猛者强击", "毒咬箭", "失血箭", "风蚀箭", "纷乱箭", "贤者的叙事谣", "伤腿", "伤足"])
   ToolTip % msg, 410, 640
   SetTimer clearTip, Off
   SetTimer clearTip, % 0 - 10000
 }
 
 __$skill_dot_毒咬箭__() {
-  if (hasStatusByTarget("毒咬箭")) {
+  if !(hasStatusByTarget("毒咬箭-敌")) {
+    $ts.毒咬箭 := 0
+  }
+  if !(A_TickCount - $ts.毒咬箭 > $cd.毒咬箭) {
     return
   }
   Send {alt down}{4}{alt up}
+  SetTimer __$watcher_dot_毒咬箭__, % $cd.技能施放判断间隔
   return true
+}
+
+__$watcher_dot_毒咬箭__() {
+  clearWatcher("毒咬箭")
 }
 
 __$skill_dot_猛者强击__() {
@@ -433,6 +454,10 @@ __$skill_dot_能力技__() {
 }
 
 能力技施放() {
+  if !($isTargeting) {
+    use("空白信息")
+    return
+  }
   if (use("猛者强击")) {
     return
   }
@@ -461,6 +486,7 @@ __$skill_dot_获取状态__() {
     use("空白信息")
   }
   $ts.获取状态 := A_TickCount
+  checkTargeting()
 }
 
 __$skill_dot_贤者的叙事谣__() {
@@ -494,14 +520,26 @@ __$skill_dot_风蚀箭__() {
   if !($level >= 30) {
     return
   }
-  if (hasStatusByTarget("风蚀箭")) {
+  if !(hasStatusByTarget("风蚀箭-敌")) {
+    $ts.风蚀箭 := 0
+  }
+  if !(A_TickCount - $ts.风蚀箭 > $cd.风蚀箭) {
     return
   }
   Send {alt down}{7}{alt up}
+  SetTimer __$watcher_dot_风蚀箭__, % $cd.技能施放判断间隔
   return true
 }
 
+__$watcher_dot_风蚀箭__() {
+  clearWatcher("风蚀箭")
+}
+
 attackS() {
+  if !($isTargeting) {
+    use("索敌")
+    return
+  }
   if (use("直线射击")) {
     use("能力技")
     return
@@ -521,6 +559,10 @@ attackS() {
 }
 
 attackM() {
+  if !($isTargeting) {
+    use("索敌")
+    return
+  }
   if (use("连珠箭")) {
     use("能力技")
     return
@@ -550,7 +592,10 @@ __$default__() {
   $skill.强力射击 := Func("__$skill_dot_强力射击__")
   $ts.报告 := 0
   $skill.报告 := Func("__$skill_dot_报告__")
+  $ts.毒咬箭 := 0
+  $cd.毒咬箭 := 27000
   $skill.毒咬箭 := Func("__$skill_dot_毒咬箭__")
+  $watcher.毒咬箭 := Func("__$watcher_dot_毒咬箭__")
   $ts.猛者强击 := 0
   $cd.猛者强击 := 80000
   $skill.猛者强击 := Func("__$skill_dot_猛者强击__")
@@ -570,7 +615,10 @@ __$default__() {
   $skill.贤者的叙事谣 := Func("__$skill_dot_贤者的叙事谣__")
   $watcher.贤者的叙事谣 := Func("__$watcher_dot_贤者的叙事谣__")
   $skill.连珠箭 := Func("__$skill_dot_连珠箭__")
+  $ts.风蚀箭 := 0
+  $cd.风蚀箭 := 27000
   $skill.风蚀箭 := Func("__$skill_dot_风蚀箭__")
+  $watcher.风蚀箭 := Func("__$watcher_dot_风蚀箭__")
 }
 
 ; default

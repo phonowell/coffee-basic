@@ -339,6 +339,19 @@ __$watcher_dot_下踢__() {
   clearWatcher("下踢")
 }
 
+__$skill_dot_亲疏自行__() {
+  if !(A_TickCount - $ts.亲疏自行 > $cd.亲疏自行) {
+    return
+  }
+  Send {shift down}{6}{shift up}
+  SetTimer __$watcher_dot_亲疏自行__, % $cd.技能施放判断间隔
+  return true
+}
+
+__$watcher_dot_亲疏自行__() {
+  clearWatcher("亲疏自行", "status")
+}
+
 __$skill_dot_先锋剑__() {
   if !($step == 0 or $step > 20) {
     return
@@ -494,7 +507,7 @@ __$skill_dot_报告__() {
   msg := "" . msg . "`n目标距离：" . $distance . ""
   msg := "" . msg . "`n耗时：" . A_TickCount - $ts.报告 . "ms`n"
   $ts.报告 := A_TickCount
-  msg := makeReportMsg(msg, ["战逃反应", "预警", "深奥之灵", "厄运流转", "铁壁", "下踢", "插言", "雪仇"])
+  msg := makeReportMsg(msg, ["战逃反应", "预警", "深奥之灵", "厄运流转", "铁壁", "下踢", "插言", "雪仇", "亲疏自行"])
   ToolTip % msg, 410, 640
   SetTimer clearTip, Off
   SetTimer clearTip, % 0 - 10000
@@ -678,9 +691,11 @@ __$skill_dot_能力技__() {
 
 能力技施放() {
   if !($isTargeting) {
+    use("空白信息")
     return
   }
   if !($distance == "near") {
+    use("空白信息")
     return
   }
   if (use("战逃反应")) {
@@ -693,6 +708,9 @@ __$skill_dot_能力技__() {
     return
   }
   if (use("雪仇")) {
+    return
+  }
+  if (use("亲疏自行")) {
     return
   }
   if (use("自动盾阵")) {
@@ -850,6 +868,10 @@ __$default__() {
   $cd.下踢 := 25000
   $skill.下踢 := Func("__$skill_dot_下踢__")
   $watcher.下踢 := Func("__$watcher_dot_下踢__")
+  $ts.亲疏自行 := 0
+  $cd.亲疏自行 := 120000
+  $skill.亲疏自行 := Func("__$skill_dot_亲疏自行__")
+  $watcher.亲疏自行 := Func("__$watcher_dot_亲疏自行__")
   $ts.先锋剑 := 0
   $cd.先锋剑 := 2500
   $skill.先锋剑 := Func("__$skill_dot_先锋剑__")

@@ -36,8 +36,8 @@ attackS = ->
 
 attackM = ->
 
-  unless $isTargeting
-    use '索敌'
+  if use '八卦无刃杀'
+    use '能力技'
     return
   
   if use '血雨飞花'
