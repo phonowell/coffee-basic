@@ -12,37 +12,40 @@ attackS = ->
   unless $isTargeting
     use '索敌'
     return
+
+  if use '圣灵'
+    return
   
   unless $isNear
+    $.beep()
     return
 
-  if use '先锋剑'
-    use '能力技'
-    return
-  
-  if use '暴乱剑'
-    use '能力技'
-    return
+  for skill in [
+    '先锋剑'
+    '暴乱剑'
+    '沥血剑'
+    '战女神之怒'
+  ]
 
-  if use '沥血剑'
-    use '能力技'
-    return
-  
-  if use '战女神之怒'
-    use '能力技'
-    return
+    if use skill
+      use '能力技'
+      break
 
 # ---
 
 attackM = ->
-  
-  if use '全蚀斩'
-    use '能力技'
+
+  if use '圣环'
     return
 
-  if use '日珥斩'
-    use '能力技'
-    return
+  for skill in [
+    '全蚀斩'
+    '日珥斩'
+  ]
+
+    if use skill
+      use '能力技'
+      break
 
 # ---
 
@@ -61,9 +64,13 @@ defendS = ->
   unless $isTargeting
     return
 
-  if use '铁壁' then return
-  if use '预警' then return
-  if use '盾阵' then return
+  for skill in [
+    '铁壁'
+    '预警'
+    '盾阵'
+  ]
+    if use skill
+      return
   
   $.beep()
 
@@ -74,16 +81,24 @@ breakS = ->
   unless $isTargeting
     return
 
-  if use '下踢' then return
-  if use '插言' then return
+  for skill in [
+    '下踢'
+    '插言'
+  ]
+    if use skill
+      return
 
   $.beep()
 
 # ---
 
 healS = ->
-  
-  if use '圣光幕帘' then return
-  if use '深仁厚泽' then return
+
+  for skill in [
+    '圣光幕帘'
+    '深仁厚泽'
+  ]
+    if use skill
+      return
   
   $.beep()

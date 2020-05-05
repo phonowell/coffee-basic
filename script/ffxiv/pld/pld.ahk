@@ -28,48 +28,31 @@ global $isChanting := false
 global $hp := 0
 global $isMoving := false
 global $mp := 0
+global $isNear := false
 global $isTargeting := false
+global $trigger := false
 global $step := 0
 global $level := 80
 global $skill := {}
 global $watcher := {}
-global $distance := "far"
 global $gold := 0
 global $isReporting := true
 global $ap := 0
 
 ; function
 
-toggleView() {
-  GetKeyState __value__, 2joy5
-  isPressing := __value__ == "D"
-  if !(isPressing) {
-    SetTimer toggleView, Off
-    Send {ctrl up}{up up}
-    return
-  }
-  GetKeyState state, 2joyr
-  if (state < 20) {
-    Send {ctrl down}{up down}
-  }
-}
-
 attack() {
-  trigger := getCurrentTrigger()
-  if !(trigger) {
-    return
-  }
   use("获取状态")
   use("报告")
-  if (trigger == "right") {
+  if ($trigger == "right") {
     attackS()
     return
   }
-  if (trigger == "both") {
+  if ($trigger == "both") {
     attackM()
     return
   }
-  if (trigger == "left") {
+  if ($trigger == "left") {
     attackF()
     return
   }
@@ -97,67 +80,109 @@ calcCd(name) {
 checkChanting() {
   if ($isMoving) {
     $isChanting := false
-    return
+    return $isChanting
   }
   PixelGetColor color, 1130, 865, RGB
   $isChanting := color == 0x2B1B13
+  return isChanting
 }
 
 checkHp() {
   PixelSearch x, y, 21, 36, 168, 36, 0x58483E, 10, Fast RGB
   if !(x) {
     $hp := 100
-    return
+    return $hp
   }
   percent := (x - 21) * 100 / (168 - 21)
   percent := Round(percent)
   $hp := percent
+  return $hp
 }
 
 checkMoving() {
   GetKeyState dis, 2joyx
   if (dis < 40 or dis > 60) {
     $isMoving := true
-    return
+    return $isMoving
   }
   GetKeyState dis, 2joyy
   if (dis < 40 or dis > 60) {
     $isMoving := true
-    return
+    return $isMoving
   }
   $isMoving := false
+  return $isMoving
 }
 
 checkMp() {
   PixelSearch x, y, 181, 36, 328, 36, 0x58483E, 10, Fast RGB
   if !(x) {
     $mp := 100
-    return
+    return $mp
   }
   percent := (x - 181) * 100 / (328 - 181)
   percent := Round(percent)
   $mp := percent
+  return $mp
+}
+
+checkNear() {
+  if !($isTargeting) {
+    $isNear := false
+    return $isNear
+  }
+  PixelGetColor color, 1479, 682, RGB
+  if (color == 0xD23A3A) {
+    $isNear := false
+    return $isNear
+  }
+  $isNear := true
+  return $isNear
 }
 
 checkTargeting() {
   PixelGetColor color, 650, 65, RGB
   if (color == 0xFF8888) {
-    $isTargeting := true
-    return
+    return setTargeting()
   }
   if (color == 0xFFC888) {
-    $isTargeting := true
-    return
+    return setTargeting()
   }
   if (color == 0xEBD788) {
-    $isTargeting := true
-    return
+    return setTargeting()
   }
   if (color == 0xFFB1FF) {
-    $isTargeting := true
-    return
+    return setTargeting()
   }
   $isTargeting := false
+  return $isTargeting
+}
+
+setTargeting() {
+  $isTargeting := true
+  $ts.targeting := A_TickCount
+  return $isTargeting
+}
+
+checkTrigger() {
+  GetKeyState __value__, 2joy7
+  isLT := __value__ == "D"
+  GetKeyState __value__, 2joy8
+  isRT := __value__ == "D"
+  if (isLT and isRT) {
+    $trigger := "both"
+    return $trigger
+  }
+  if (isLT) {
+    $trigger := "left"
+    return $trigger
+  }
+  if (isRT) {
+    $trigger := "right"
+    return $trigger
+  }
+  $trigger := false
+  return $trigger
 }
 
 clearTip() {
@@ -185,23 +210,6 @@ clearWatcher(name, type := "hasUsed") {
   return true
 }
 
-getCurrentTrigger() {
-  GetKeyState __value__, 2joy7
-  isLT := __value__ == "D"
-  GetKeyState __value__, 2joy8
-  isRT := __value__ == "D"
-  if (isLT and isRT) {
-    return "both"
-  }
-  if (isLT) {
-    return "left"
-  }
-  if (isRT) {
-    return "right"
-  }
-  return
-}
-
 hasStatus(name) {
   ImageSearch x, y, 725, 840, 925, 875, % A_ScriptDir . "\" . "image\" . name . ".png"
   return x > 0 and y > 0
@@ -217,13 +225,20 @@ hasUsed(name) {
   return x > 0 and y > 0
 }
 
-makeReportMsg(msg, list) {
+makeReportMsg(msg := false, list := false) {
+  if !(msg) {
+    msg := "Lv." . $level . " / " . $trigger . " / " . A_TickCount - $ts.报告 . " ms"
+    msg := "" . msg . "`nhp: " . $hp . " / mp: " . $mp . ""
+    msg := "" . msg . "`ntargeting: " . $isTargeting . " / near: " . $isNear . ""
+    msg := "" . msg . "`nmoving: " . $isMoving . " / chanting: " . $isChanting . ""
+    return msg
+  }
   for __i__, name in list {
     result := calcCd(name)
     if !(result > 1) {
       continue
     }
-    msg := "" . msg . "`n" . name . "：" . result . "s"
+    msg := "" . msg . "`n" . name . ": " . result . " s"
   }
   return msg
 }
@@ -272,19 +287,6 @@ watch(name) {
   return $watcher[name]()
 }
 
-checkDistance() {
-  if !($isTargeting) {
-    $distance := "far"
-    return
-  }
-  PixelGetColor color, 1479, 682, RGB
-  if (color == 0xD23A3A) {
-    $distance := "far"
-    return
-  }
-  $distance := "near"
-}
-
 checkGold() {
   if !($level >= 35) {
     $gold := 0
@@ -302,22 +304,25 @@ checkGold() {
 
 __$skill_dot_中断咏唱__() {
   if !($isChanting) {
-    return
+    return true
   }
   Send {space}
+  return true
 }
 
 __$skill_dot_冲刺__() {
   Send {shift down}{-}{shift up}
+  return true
 }
 
 __$skill_dot_空白信息__() {
   Send {shift down}{=}{shift up}
+  return true
 }
 
 __$skill_dot_索敌__() {
   if ($isTargeting) {
-    return
+    return true
   }
   Send {f11}
   return true
@@ -434,6 +439,61 @@ __$watcher_dot_圣光幕帘__() {
   clearWatcher("圣光幕帘")
 }
 
+__$skill_dot_圣灵__() {
+  if !($level >= 64) {
+    return
+  }
+  if !($mp >= 20) {
+    return
+  }
+  if !(hasStatus("安魂祈祷")) {
+    return
+  }
+  Send {ctrl down}{8}{ctrl up}
+  $step := 0
+  return true
+}
+
+__$skill_dot_圣环__() {
+  if !($level >= 72) {
+    return
+  }
+  if !($mp >= 20) {
+    return
+  }
+  if !(hasStatus("安魂祈祷")) {
+    return
+  }
+  Send {ctrl down}{-}{ctrl up}
+  $step := 0
+  return true
+}
+
+__$skill_dot_安魂祈祷__() {
+  if !($level >= 68) {
+    return
+  }
+  if !($isTargeting) {
+    return
+  }
+  if !($mp > 80) {
+    return
+  }
+  if !($step == 0) {
+    return
+  }
+  if !(A_TickCount - $ts.安魂祈祷 > $cd.安魂祈祷) {
+    return
+  }
+  Send {ctrl down}{9}{ctrl up}
+  SetTimer __$watcher_dot_安魂祈祷__, % $cd.技能施放判断间隔
+  return true
+}
+
+__$watcher_dot_安魂祈祷__() {
+  clearWatcher("安魂祈祷", "status")
+}
+
 __$skill_dot_战女神之怒__() {
   if !($level >= 26) {
     return
@@ -502,12 +562,12 @@ __$skill_dot_报告__() {
   if !($isReporting) {
     return
   }
-  msg := "等级：" . $level . ""
-  msg := "" . msg . "`n忠义：" . $gold . ""
-  msg := "" . msg . "`n目标距离：" . $distance . ""
-  msg := "" . msg . "`n耗时：" . A_TickCount - $ts.报告 . "ms`n"
+  msg := makeReportMsg()
+  msg := "" . msg . "`n"
+  msg := "" . msg . "`ngold: " . $gold . ""
+  msg := "" . msg . "`n"
   $ts.报告 := A_TickCount
-  msg := makeReportMsg(msg, ["战逃反应", "预警", "深奥之灵", "厄运流转", "铁壁", "下踢", "插言", "雪仇", "亲疏自行"])
+  msg := makeReportMsg(msg, ["战逃反应", "预警", "深奥之灵", "厄运流转", "沥血剑", "安魂祈祷", "铁壁", "下踢", "插言", "雪仇", "亲疏自行"])
   ToolTip % msg, 410, 640
   SetTimer clearTip, Off
   SetTimer clearTip, % 0 - 10000
@@ -585,10 +645,10 @@ __$skill_dot_沥血剑__() {
   if !($step == 2) {
     return
   }
-  if !(A_TickCount - $ts.沥血剑 > $cd.沥血剑) {
-    return
+  if !(hasStatusByTarget("沥血剑-敌")) {
+    $ts.沥血剑 := 0
   }
-  if (hasStatusByTarget("沥血剑-敌")) {
+  if !(A_TickCount - $ts.沥血剑 > $cd.沥血剑) {
     return
   }
   Send {ctrl down}{4}{ctrl up}
@@ -607,6 +667,16 @@ __$skill_dot_深仁厚泽__() {
   if !($level >= 58) {
     return
   }
+  if ($level >= 64) {
+    if !($mp >= 20) {
+      return
+    }
+  }
+  else {
+    if !($mp >= 40) {
+      return
+    }
+  }
   if !(A_TickCount - $ts.深仁厚泽 > $cd.深仁厚泽) {
     return
   }
@@ -616,7 +686,10 @@ __$skill_dot_深仁厚泽__() {
 }
 
 __$watcher_dot_深仁厚泽__() {
-  clearWatcher("深仁厚泽")
+  if !(clearWatcher("深仁厚泽")) {
+    return
+  }
+  $step := 0
 }
 
 __$skill_dot_深奥之灵__() {
@@ -694,29 +767,15 @@ __$skill_dot_能力技__() {
     use("空白信息")
     return
   }
-  if !($distance == "near") {
+  if !($isNear) {
     use("空白信息")
     return
   }
-  if (use("战逃反应")) {
-    return
+  for __i__, skill in ["战逃反应", "深奥之灵", "厄运流转", "安魂祈祷", "雪仇", "亲疏自行", "自动盾阵", "空白信息"] {
+    if (use(skill)) {
+      break
+    }
   }
-  if (use("深奥之灵")) {
-    return
-  }
-  if (use("厄运流转")) {
-    return
-  }
-  if (use("雪仇")) {
-    return
-  }
-  if (use("亲疏自行")) {
-    return
-  }
-  if (use("自动盾阵")) {
-    return
-  }
-  use("空白信息")
 }
 
 __$skill_dot_获取状态__() {
@@ -726,8 +785,11 @@ __$skill_dot_获取状态__() {
     use("空白信息")
   }
   $ts.获取状态 := A_TickCount
+  checkTrigger()
   checkTargeting()
-  checkDistance()
+  checkNear()
+  checkMoving()
+  checkMp()
   checkGold()
 }
 
@@ -778,35 +840,30 @@ attackS() {
     use("索敌")
     return
   }
-  if !($distance == "near") {
+  if (use("圣灵")) {
     return
   }
-  if (use("先锋剑")) {
-    use("能力技")
+  if !($isNear) {
+    SoundBeep
     return
   }
-  if (use("暴乱剑")) {
-    use("能力技")
-    return
-  }
-  if (use("沥血剑")) {
-    use("能力技")
-    return
-  }
-  if (use("战女神之怒")) {
-    use("能力技")
-    return
+  for __i__, skill in ["先锋剑", "暴乱剑", "沥血剑", "战女神之怒"] {
+    if (use(skill)) {
+      use("能力技")
+      break
+    }
   }
 }
 
 attackM() {
-  if (use("全蚀斩")) {
-    use("能力技")
+  if (use("圣环")) {
     return
   }
-  if (use("日珥斩")) {
-    use("能力技")
-    return
+  for __i__, skill in ["全蚀斩", "日珥斩"] {
+    if (use(skill)) {
+      use("能力技")
+      break
+    }
   }
 }
 
@@ -822,14 +879,10 @@ defendS() {
   if !($isTargeting) {
     return
   }
-  if (use("铁壁")) {
-    return
-  }
-  if (use("预警")) {
-    return
-  }
-  if (use("盾阵")) {
-    return
+  for __i__, skill in ["铁壁", "预警", "盾阵"] {
+    if (use(skill)) {
+      return
+    }
   }
   SoundBeep
 }
@@ -838,26 +891,25 @@ breakS() {
   if !($isTargeting) {
     return
   }
-  if (use("下踢")) {
-    return
-  }
-  if (use("插言")) {
-    return
+  for __i__, skill in ["下踢", "插言"] {
+    if (use(skill)) {
+      return
+    }
   }
   SoundBeep
 }
 
 healS() {
-  if (use("圣光幕帘")) {
-    return
-  }
-  if (use("深仁厚泽")) {
-    return
+  for __i__, skill in ["圣光幕帘", "深仁厚泽"] {
+    if (use(skill)) {
+      return
+    }
   }
   SoundBeep
 }
 
 __$default__() {
+  $ts.targeting := 0
   $cd.技能施放判断间隔 := 100
   $cd.技能施放补正 := 1500
   $skill.中断咏唱 := Func("__$skill_dot_中断咏唱__")
@@ -888,6 +940,12 @@ __$default__() {
   $cd.圣光幕帘 := 90000
   $skill.圣光幕帘 := Func("__$skill_dot_圣光幕帘__")
   $watcher.圣光幕帘 := Func("__$watcher_dot_圣光幕帘__")
+  $skill.圣灵 := Func("__$skill_dot_圣灵__")
+  $skill.圣环 := Func("__$skill_dot_圣环__")
+  $ts.安魂祈祷 := 0
+  $cd.安魂祈祷 := 60000
+  $skill.安魂祈祷 := Func("__$skill_dot_安魂祈祷__")
+  $watcher.安魂祈祷 := Func("__$watcher_dot_安魂祈祷__")
   $ts.战女神之怒 := 0
   $cd.战女神之怒 := 2500
   $skill.战女神之怒 := Func("__$skill_dot_战女神之怒__")
@@ -915,7 +973,7 @@ __$default__() {
   $skill.暴乱剑 := Func("__$skill_dot_暴乱剑__")
   $watcher.暴乱剑 := Func("__$watcher_dot_暴乱剑__")
   $ts.沥血剑 := 0
-  $cd.沥血剑 := 2500
+  $cd.沥血剑 := 18000
   $skill.沥血剑 := Func("__$skill_dot_沥血剑__")
   $watcher.沥血剑 := Func("__$watcher_dot_沥血剑__")
   $ts.深仁厚泽 := 0
@@ -974,31 +1032,15 @@ return
   ExitApp
 return
 
-2joy5::
-  if !(getCurrentTrigger() == "both") {
-    SetTimer toggleView, Off
-    SetTimer toggleView, % 300
-    return
-  }
-  Send {shift down}{tab}{shift up}
-return
-
-2joy6::
-  if !(getCurrentTrigger() == "both") {
-    return
-  }
-  Send {tab}
-return
-
 2joy12::
-  if !(getCurrentTrigger()) {
+  if !(checkTrigger()) {
     return
   }
   use("冲刺")
 return
 
 2joy4::
-  if !(getCurrentTrigger()) {
+  if !(checkTrigger()) {
     return
   }
   SetTimer bindAttack, Off
@@ -1007,33 +1049,30 @@ return
 return
 
 2joy2::
-  trigger := getCurrentTrigger()
-  if !(trigger) {
+  if !(checkTrigger()) {
     return
   }
-  if (trigger == "right") {
+  if ($trigger == "right") {
     defendS()
     return
   }
 return
 
 2joy1::
-  trigger := getCurrentTrigger()
-  if !(trigger) {
+  if !(checkTrigger()) {
     return
   }
-  if (trigger == "right") {
+  if ($trigger == "right") {
     breakS()
     return
   }
 return
 
 2joy3::
-  trigger := getCurrentTrigger()
-  if !(trigger) {
+  if !(checkTrigger()) {
     return
   }
-  if (trigger == "right") {
+  if ($trigger == "right") {
     healS()
     return
   }

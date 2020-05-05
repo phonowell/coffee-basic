@@ -6,10 +6,10 @@ $skill.报告 = ->
   unless $isReporting
     return
 
-  msg = "等级：#{$level}"
-  msg = "#{msg}`n忠义：#{$gold}"
-  msg = "#{msg}`n目标距离：#{$distance}"
-  msg = "#{msg}`n耗时：#{A_TickCount - $ts.报告}ms`n"
+  msg = makeReportMsg()
+  msg = "#{msg}`n"
+  msg = "#{msg}`ngold: #{$gold}"
+  msg = "#{msg}`n"
   
   $ts.报告 = A_TickCount
 
@@ -18,6 +18,8 @@ $skill.报告 = ->
     '预警'
     '深奥之灵'
     '厄运流转'
+    '沥血剑'
+    '安魂祈祷'
     '铁壁'
     '下踢'
     '插言'

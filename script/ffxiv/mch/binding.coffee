@@ -26,7 +26,8 @@ bindAttack = ->
 
 $.on '2-joy-4', ->
 
-  unless checkTrigger() then return
+  unless checkTrigger()
+    return
 
   clearInterval bindAttack
   setInterval bindAttack, 300

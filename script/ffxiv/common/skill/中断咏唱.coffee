@@ -1,4 +1,5 @@
 $skill.中断咏唱 = ->
   unless $isChanting
-    return
+    return true
   $.press 'space'
+  return true

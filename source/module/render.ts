@@ -129,10 +129,9 @@ export default (data: IData, option: IOption = {}) => {
     ]
   }
 
-  for (const i in result) {
-    if (!result.hasOwnProperty(i)) continue
-    result[i] = result[i].trimEnd()
-  }
+  result.forEach((value, i) => {
+    result[i] = value.trimEnd()
+  })
 
   return result
     .join('\n')

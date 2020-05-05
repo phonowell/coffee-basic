@@ -120,14 +120,11 @@ const pickOption = (line: string) => {
     .replace(/'[^']+?'/g, (text: string): string => text.replace(/,/g, '__comma__'))
     .replace(/"[^"]+?"/g, (text: string): string => text.replace(/,/g, '__comma__'))
     .split(',')
-
-  for (const i in arg) {
-    if (!arg.hasOwnProperty(i)) continue
-    const it = arg[i]
-    arg[i] = it
-      .trim()
-      .replace(/__comma__/g, ',')
-  }
+    .map((it) => {
+      return it
+        .trim()
+        .replace(/__comma__/g, ',')
+    })
 
   // return
   const argument = arg

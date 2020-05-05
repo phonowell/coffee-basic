@@ -131,11 +131,9 @@ const validate = (text: string) => {
 // export
 export default (data: IData) => {
 
-  for (const _i in data.var) {
-    if (!data.var.hasOwnProperty(_i)) continue
-    const i = parseInt(_i, 10)
-    data.var[i] = format(data.var[i])
-  }
+  data.var.forEach((value, i) => {
+    data.var[i] = format(value)
+  })
 
   for (const block of [...data.fn, ...data.event]) {
     const list = [] as string[]

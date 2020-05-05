@@ -1,5 +1,5 @@
 $ts.沥血剑 = 0
-$cd.沥血剑 = 2500
+$cd.沥血剑 = 18e3
 
 $skill.沥血剑 = ->
 
@@ -9,10 +9,10 @@ $skill.沥血剑 = ->
   unless $step == 2
     return
 
-  unless A_TickCount - $ts.沥血剑 > $cd.沥血剑
-    return
+  unless hasStatusByTarget '沥血剑-敌'
+    $ts.沥血剑 = 0
 
-  if hasStatusByTarget '沥血剑-敌'
+  unless A_TickCount - $ts.沥血剑 > $cd.沥血剑
     return
 
   $.press 'ctrl + 4'

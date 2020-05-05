@@ -20,5 +20,8 @@ $.on 'alt + f4', ->
 # ---
 
 $.on '2-joy-12', ->
-  unless checkTrigger() then return
+  
+  unless checkTrigger()
+    return
+  
   use '冲刺'

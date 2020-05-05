@@ -41,11 +41,15 @@ $skill.能力技 = ->
     use '空白信息'
     return
 
-  if use '战逃反应' then return
-  if use '深奥之灵' then return
-  if use '厄运流转' then return
-  if use '雪仇' then return
-  if use '亲疏自行' then return
-  if use '自动盾阵' then return
-
-  use '空白信息'
+  for skill in [
+    '战逃反应'
+    '深奥之灵'
+    '厄运流转'
+    '安魂祈祷'
+    '雪仇'
+    '亲疏自行'
+    '自动盾阵'
+    '空白信息'
+  ]
+    if use skill
+      break
