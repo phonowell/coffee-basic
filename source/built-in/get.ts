@@ -8,9 +8,7 @@ import { IArgumentBuiltIn } from '../type'
 // export
 export function $getColor({ argument, output }: IArgumentBuiltIn) {
 
-  if (!output) {
-    throw new Error('found no output')
-  }
+  if (!output) throw new Error('found no output')
 
   const result = [] as string[]
 
@@ -24,21 +22,17 @@ export function $getColor({ argument, output }: IArgumentBuiltIn) {
   result.push(`PixelGetColor ${output}, ${x}, ${y}, RGB`)
 
   return result
-
 }
 
 export function $getPosition({ output }: IArgumentBuiltIn) {
 
-  if (!output) {
-    throw new Error('found no output')
-  }
+  if (!output) throw new Error('found no output')
 
   const [x, y] = _.trim(output, ' []')
     .replace(/\s/g, '')
     .split(',')
 
   return `MouseGetPos ${x}, ${y}`
-
 }
 
 export function $getState({ argument, output }: IArgumentBuiltIn) {

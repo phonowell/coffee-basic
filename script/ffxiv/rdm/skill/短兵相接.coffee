@@ -6,7 +6,7 @@ $skill.短兵相接 = (isForced = false) ->
   unless A_TickCount - $ts.短兵相接 > $cd.短兵相接
     return
 
-  unless $distance == 'near' or isForced
+  unless $isNear or isForced
     return
 
   $.press 'alt + 4'

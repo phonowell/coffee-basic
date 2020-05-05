@@ -7,20 +7,16 @@ import { IData } from '../type'
 
 // function
 
-function formatLine(line: string) {
+const formatLine = (line: string) => {
 
   const depth = getDepth(line)
 
   // remove blank line
   line = line.trim()
-  if (!line) {
-    return
-  }
+  if (!line) return
 
   // remove comment
-  if (line.startsWith('#')) {
-    return
-  }
+  if (line.startsWith('#')) return
 
   line = line
 
@@ -47,10 +43,9 @@ function formatLine(line: string) {
     .replace(/else (?!if)(.*)/, `else\n${setDepth(depth + 1)}$1`)
 
   return `${setDepth(depth)}${line}`
-
 }
 
-function makeArrayInline(list: string[]) {
+const makeArrayInline = (list: string[]) => {
 
   return list
 
@@ -66,7 +61,6 @@ function makeArrayInline(list: string[]) {
     })
 
     .split('__break__')
-
 }
 
 // export
@@ -75,18 +69,13 @@ export default (data: IData) => {
   const result = [] as string[]
 
   for (const line of makeArrayInline(data.main)) {
-
     const _line = formatLine(line)
-    if (!_line) {
-      continue
-    }
+    if (!_line) continue
     result.push(_line)
-
   }
 
   result.push('')
   data.main = result
     .join('\n')
     .split('\n')
-
 }

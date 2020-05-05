@@ -11,7 +11,7 @@ import { IOption } from './type'
 
 // function
 
-async function execute_(source: string, option: IOption) {
+const execute_ = async (source: string, option: IOption) => {
 
   const content = await read_(source)
   Object.assign(option, { path: source })
@@ -24,7 +24,6 @@ async function execute_(source: string, option: IOption) {
   await write_(source, result)
 
   return result
-
 }
 
 // export
@@ -33,7 +32,7 @@ export default async (
 ) => {
 
   const listSource = await $.source_(source)
-  if(!listSource.length){
+  if (!listSource.length) {
     $.info(`found no script(s) from '${source}'`)
     return
   }
@@ -41,5 +40,4 @@ export default async (
   for (const src of listSource) {
     await execute_(src, option)
   }
-
 }

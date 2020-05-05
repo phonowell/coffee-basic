@@ -7,7 +7,7 @@ import { IData } from '../type'
 
 // function
 
-function execute(content: string[]) {
+const execute = (content: string[]) => {
 
   const result = [] as string[]
   const cache: number[] = []
@@ -25,7 +25,6 @@ function execute(content: string[]) {
         cache.pop()
         result.push(`${setDepth(j)}}`)
       }
-
     }
 
     if (line.startsWith('$.loop')) {
@@ -40,41 +39,28 @@ function execute(content: string[]) {
             .replace('->', '')
             .trim()
 
-          if (!n) {
-            return 'loop {'
-          }
-
-          if (!_.isNaN(parseInt(n, 10))) {
-            return `loop ${n} {`
-          }
-
+          if (!n) return 'loop {'
+          if (!_.isNaN(parseInt(n, 10))) return `loop ${n} {`
           return `loop %${n}% {`
-
         })
         .replace(/\s{2,}/g, ' ')
 
       result.push(_line)
       continue
-
     }
 
     result.push(line)
-
   }
 
   return result
-
 }
 
 // export
 export default (data: IData) => {
 
-  if (!data.raw.includes('$.loop')) {
-    return
-  }
+  if (!data.raw.includes('$.loop')) return
 
   for (const block of [...data.fn, ...data.event]) {
     block.content = execute(block.content)
   }
-
 }

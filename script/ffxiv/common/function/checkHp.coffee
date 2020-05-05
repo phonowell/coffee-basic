@@ -6,8 +6,9 @@ checkHp = ->
   
   unless x
     $hp = 100
-    return
+    return $hp
   
   percent = (x - 21) * 100 / (168 - 21)
   percent = Math.round percent
   $hp = percent
+  return $hp

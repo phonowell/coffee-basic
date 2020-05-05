@@ -12,5 +12,4 @@ export function $setFixed({ argument }: IArgumentBuiltIn) {
   }
 
   return `Winset AlwaysOnTop, ${isFixed}, A`
-
 }

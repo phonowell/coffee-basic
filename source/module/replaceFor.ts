@@ -7,7 +7,7 @@ import { IData } from '../type'
 
 // function
 
-function execute(content: string[]) {
+const execute = (content: string[]) => {
 
   const result = [] as string[]
   const cache = [] as number[]
@@ -25,7 +25,6 @@ function execute(content: string[]) {
         cache.pop()
         result.push(`${setDepth(j)}}`)
       }
-
     }
 
     if (line.includes('for')) {
@@ -33,9 +32,9 @@ function execute(content: string[]) {
       let _line = line
         .replace(' of ', ' in ')
 
-      if(!_line.includes(',')){
+      if (!~_line.search(/for \S+?, /)) {
         _line = _line
-        .replace('for', 'for __i__,')
+          .replace('for', 'for __i__,')
       }
 
       cache.push(depth)
@@ -44,22 +43,17 @@ function execute(content: string[]) {
     }
 
     result.push(line)
-
   }
 
   return result
-
 }
 
 // export
 export default (data: IData) => {
 
-  if (!data.raw.includes('for')) {
-    return
-  }
+  if (!data.raw.includes('for')) return
 
   for (const block of [...data.fn, ...data.event]) {
     block.content = execute(block.content)
   }
-
 }

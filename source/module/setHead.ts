@@ -19,7 +19,6 @@ export default (data: IData) => {
       '  ExitApp',
       '}'
     ]
-
   }
 
   result = [
@@ -44,5 +43,4 @@ export default (data: IData) => {
   //
 
   data.head = result
-
 }

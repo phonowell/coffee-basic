@@ -7,5 +7,4 @@ export default async (source: string, content: string) => {
   const extname = '.ahk'
 
   await $.write_(`${dirname}/${basename}${extname}`, content)
-
 }

@@ -10,7 +10,7 @@ $skill.回刺 = ->
 
   use '中断咏唱'
 
-  unless $distance == 'near'
+  unless $isNear
     use '短兵相接', true
     return
 

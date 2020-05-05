@@ -33,13 +33,47 @@ $skill.能力技 = ->
 
 能力技施放 = ->
 
+  unless $isTargeting
+    use '空白信息'
+    return
+
+  unless $isNear
+    use '空白信息'
+    return
+
+  if $isOverheat
+    能力技施放B()
+    return
+
+  能力技施放A()
+
+能力技施放A = ->
+
   if $ap == 1
-    if use '野火' then return
+    if use '野火'
+      return
   else
-    if use '超荷' then return
+    if use '超荷'
+      return
 
-  if use '整备' then return
-  if use '虹吸弹' then return
-  if use '车式浮空炮塔' then return
+  for skill in [
+    '整备'
+    '虹吸弹'
+    '车式浮空炮塔'
+    '弹射'
+    '伤腿'
+    '伤足'
+    '空白信息'
+  ]
+    if use skill
+      break
 
-  use '空白信息'
+
+能力技施放B = ->
+  for skill in [
+    '虹吸弹'
+    '弹射'
+    '空白信息'
+  ]
+    if use skill
+      break

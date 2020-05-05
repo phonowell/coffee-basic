@@ -1,23 +1,26 @@
 $isTargeting = false
+$ts.targeting = 0
 
 checkTargeting = ->
 
   color = $.getColor 650, 65
 
   if color == 0xFF8888
-    $isTargeting = true
-    return
+    return setTargeting()
 
   if color == 0xFFC888
-    $isTargeting = true
-    return
+    return setTargeting()
 
   if color == 0xEBD788
-    $isTargeting = true
-    return
+    return setTargeting()
 
   if color == 0xFFB1FF
-    $isTargeting = true
-    return
+    return setTargeting()
 
   $isTargeting = false
+  return $isTargeting
+
+setTargeting = ->
+  $isTargeting = true
+  $ts.targeting = A_TickCount
+  return $isTargeting

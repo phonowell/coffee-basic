@@ -7,7 +7,7 @@ import { IData } from '../type'
 
 // function
 
-function execute(content: string[]) {
+const execute = (content: string[]) => {
 
   const result = [] as string[]
   const cache: number[] = []
@@ -28,7 +28,6 @@ function execute(content: string[]) {
         cache.pop()
         result.push(`${setDepth(j)}}`)
       }
-
     }
 
     if (line.search(/(if |else)/) !== -1) {
@@ -43,11 +42,9 @@ function execute(content: string[]) {
     }
 
     result.push(line)
-
   }
 
   return result
-
 }
 
 // export
@@ -58,12 +55,9 @@ export default (data: IData) => {
     data.raw.includes('unless')
   ].includes(true)
 
-  if (!isValid) {
-    return
-  }
+  if (!isValid) return
 
   for (const block of [...data.fn, ...data.event]) {
     block.content = execute(block.content)
   }
-
 }

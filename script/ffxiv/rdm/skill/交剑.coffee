@@ -9,7 +9,7 @@ $skill.交剑 = ->
   unless A_TickCount - $ts.交剑 > $cd.交剑
     return
 
-  unless $distance == 'near'
+  unless $isNear
     return
 
   $.press 'ctrl + 0'

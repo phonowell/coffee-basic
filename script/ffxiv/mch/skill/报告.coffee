@@ -6,9 +6,10 @@ $skill.报告 = ->
   unless $isReporting
     return
 
-  msg = "等级：#{$level}"
-  msg = "#{msg}`n电：#{$blue} / 热：#{$red}"
-  msg = "#{msg}`n耗时：#{A_TickCount - $ts.报告}ms`n"
+  msg = makeReportMsg()
+  msg = "#{msg}`n"
+  msg = "#{msg}`nred: #{$red} / blue: #{$blue} / overheat: #{$isOverheat}"
+  msg = "#{msg}`n"
   
   $ts.报告 = A_TickCount
 
@@ -17,8 +18,10 @@ $skill.报告 = ->
     '整备'
     '虹吸弹'
     '超荷'
-    '车式浮空炮塔'
     '野火'
+    '弹射'
+    '伤腿'
+    '伤足'
   ]
   
   $.tip msg, 410, 640

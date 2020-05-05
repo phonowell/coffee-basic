@@ -5,11 +5,6 @@ import { IData } from '../type'
 
 // export
 export default (data: IData) => {
-
-  if (!(data.main.join('\n').trim())) {
-    return
-  }
-
+  if (!(data.main.join('\n').trim())) return
   regFn(data, '$default', '', data.main)
-
 }

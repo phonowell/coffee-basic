@@ -15,5 +15,4 @@ export default async (source: string) => {
   }
 
   return cont
-
 }

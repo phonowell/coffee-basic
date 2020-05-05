@@ -14,7 +14,7 @@ $skill.获取状态 = ->
 
   checkMoving()
   checkChanting()
-  checkDistance()
+  checkNear()
 
   checkBlack()
   checkWhite()

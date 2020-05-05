@@ -5,7 +5,7 @@ import { IData } from '../type'
 
 // function
 
-function filterType(line: string) {
+const filterType = (line: string) => {
 
   let type: string
 
@@ -31,10 +31,9 @@ function filterType(line: string) {
     .replace(') {', '')
 
   return [type, line]
-
 }
 
-function format(line: string) {
+const format = (line: string) => {
 
   const depth = getDepth(line)
 
@@ -56,15 +55,14 @@ function format(line: string) {
   let result = line
     .replace(/[^\s=\()\{},\+\-\*\/]+\s+[^=]+/g, (text) => {
 
-      if (text.search(/[=<>]/) !== -1) {
-        return text
-      }
+      if (text.search(/[=<>]/) !== -1) return text
 
       const [key, ..._value] = text.split(' ')
       const value = (_value.join(' ')).trim()
 
       isInvalid = [
         key === 'if',
+        key.endsWith(':'),
         // ---
         value === '!',
         value.startsWith('and '),
@@ -78,16 +76,9 @@ function format(line: string) {
         value.startsWith('!= '),
         value.startsWith('== ')
       ].includes(true)
-      if (isInvalid) {
-        return text
-      }
-
-      if (isOriginal(key)) {
-        return `${key}.Call(${value})`
-      }
-
+      if (isInvalid) return text
+      if (isOriginal(key)) return `${key}.Call(${value})`
       return `${key}(${value})`
-
     })
 
   if (type === 'return') {
@@ -101,10 +92,9 @@ function format(line: string) {
   }
 
   return `${setDepth(depth)}${result}`
-
 }
 
-function isOriginal(name: string) {
+const isOriginal = (name: string) => {
   if (!(name.includes('.') || name.includes('['))) {
     return false
   }
@@ -120,7 +110,7 @@ function isOriginal(name: string) {
   return true
 }
 
-function validate(text: string) {
+const validate = (text: string) => {
 
   const list = [
     'else {',
@@ -130,24 +120,19 @@ function validate(text: string) {
 
   let result = true
   for (const key of list) {
-    if (!text.includes(key)) {
-      continue
-    }
+    if (!text.includes(key)) continue
     result = false
     break
   }
 
   return result
-
 }
 
 // export
 export default (data: IData) => {
 
   for (const _i in data.var) {
-    if (!data.var.hasOwnProperty(_i)) {
-      continue
-    }
+    if (!data.var.hasOwnProperty(_i)) continue
     const i = parseInt(_i, 10)
     data.var[i] = format(data.var[i])
   }
@@ -159,5 +144,4 @@ export default (data: IData) => {
     }
     block.content = list
   }
-
 }

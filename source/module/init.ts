@@ -14,5 +14,4 @@ export default (content: string) => {
     mode: [],
     var: [] // global variable
   } as IData
-
 }

@@ -23,5 +23,4 @@ export default async () => {
   await parseAsync('./script/test/*.coffee', {
     bare: true
   })
-
 }

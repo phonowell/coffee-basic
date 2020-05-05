@@ -8,7 +8,7 @@ import { IData, IOption } from '../type'
 
 // function
 
-async function insert_(content: string, option: IOption) {
+const insert_ = async (content: string, option: IOption) => {
 
   // format
   const listContent = content
@@ -56,11 +56,9 @@ async function insert_(content: string, option: IOption) {
     }
 
     result.push((await insert_(cont, option)).join('\n'))
-
   }
 
   return result
-
 }
 
 // export
@@ -73,5 +71,4 @@ export default async (data: IData, option: IOption) => {
 
   data.main = data.raw
     .split('\n')
-
 }

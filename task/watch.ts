@@ -18,5 +18,4 @@ export default async () => {
   $.watch('./script/test/*.coffee', async (e: { path: string }) => {
     await parseAsync(e.path)
   })
-
 }

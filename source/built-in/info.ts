@@ -27,11 +27,7 @@ export function $info({ argument, output }: IArgumentBuiltIn, data: IData) {
 }
 
 export function $prompt({ argument, output }: IArgumentBuiltIn, data: IData) {
-
-  if (!output) {
-    throw new Error('found no output')
-  }
-
+  if (!output) throw new Error('found no output')
   const [message, value] = argument
   return `InputBox ${output}, , % ${message || ''}, , , , , , , , % ${value || ''}`
 }

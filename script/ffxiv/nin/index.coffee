@@ -13,7 +13,7 @@ attackS = ->
     use '索敌'
     return
   
-  unless $distance == 'near'
+  unless $isNear
     return
 
   if use '影牙'

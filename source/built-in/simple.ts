@@ -8,13 +8,9 @@ export function $beep() {
 }
 
 export function $click({ argument }: IArgumentBuiltIn) {
-
-  if (!argument[0]) {
-    return 'Click'
-  } else {
-    return `Click % ${argument[0].replace(/:/g, ' ')}`
-  }
-
+  return argument[0]
+    ? `Click % ${argument[0].replace(/:/g, ' ')}`
+    : 'Click'
 }
 
 export function $exit({ output }: IArgumentBuiltIn, data: IData) {

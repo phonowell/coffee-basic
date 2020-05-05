@@ -6,8 +6,8 @@ $skill.划圆斩 = ->
   unless $black >= 20 and $white >= 20
     return
 
-  checkDistance()
-  unless $distance == 'near'
+  checkNear()
+  unless $isNear
     use '短兵相接', true
     return
 

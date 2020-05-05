@@ -65,16 +65,12 @@ const Rule = {
 
 // function
 
-function format(line: string, data: IData) {
+const format = (line: string, data: IData) => {
 
-  if (!line.includes('(')) {
-    return line
-  }
+  if (!line.includes('(')) return line
 
   const option = pickOption(line)
-  if (!option) {
-    return line
-  }
+  if (!option) return line
   const { argument, depth, name, output } = option
 
   // not found
@@ -101,10 +97,9 @@ function format(line: string, data: IData) {
     }
     return _result
   }
-
 }
 
-function pickOption(line: string) {
+const pickOption = (line: string) => {
 
   const depth = getDepth(line)
 
@@ -119,9 +114,7 @@ function pickOption(line: string) {
     name = list[1].trim()
   }
 
-  if (name.includes(' ')) {
-    return
-  }
+  if (name.includes(' ')) return
 
   arg = _.trim(arg.join('('), ' ()')
     .replace(/'[^']+?'/g, (text: string): string => text.replace(/,/g, '__comma__'))
@@ -129,9 +122,7 @@ function pickOption(line: string) {
     .split(',')
 
   for (const i in arg) {
-    if (!arg.hasOwnProperty(i)) {
-      continue
-    }
+    if (!arg.hasOwnProperty(i)) continue
     const it = arg[i]
     arg[i] = it
       .trim()
@@ -141,7 +132,6 @@ function pickOption(line: string) {
   // return
   const argument = arg
   return { argument, depth, name, output } as IOption
-
 }
 
 // export
@@ -161,11 +151,8 @@ export default (data: IData) => {
       }
 
       result = [...result, ...res]
-
     }
 
     block.content = result
-
   }
-
 }

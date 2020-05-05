@@ -5,29 +5,18 @@ import { IData } from '../type'
 
 // function
 
-function pickData(line: string) {
+const pickData = (line: string) => {
 
-  if (getDepth(line)) {
-    return
-  }
-
-  if (!line.includes('=')) {
-    return
-  }
-
-  if (line.includes('->')) {
-    return
-  }
+  if (getDepth(line)) return
+  if (!line.includes('=')) return
+  if (line.includes('->')) return
 
   let [key, value] = line.split('=')
   key = key.trim()
   value = value.trim()
-  if (key.search(/[\s\{\}\(\)\[\]\.,'"]/) !== -1) {
-    return
-  }
+  if (key.search(/[\s\{\}\(\)\[\]\.,'"]/) !== -1) return
 
   return [key, value]
-
 }
 
 // export
@@ -51,9 +40,7 @@ export default (data: IData) => {
         .replace(/[\[\]]/g, '')
         .split(',')
       for (const i in list) {
-        if (!list.hasOwnProperty(i)) {
-          continue
-        }
+        if (!list.hasOwnProperty(i)) continue
         content.push(`${key}[${i}] = ${list[i].trim()}`)
       }
       data.var.push(`${key} = []`)
@@ -61,9 +48,7 @@ export default (data: IData) => {
     }
 
     data.var.push(`${key} = ${value}`)
-
   }
 
   data.main = content
-
 }

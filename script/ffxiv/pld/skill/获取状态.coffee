@@ -9,5 +9,5 @@ $skill.获取状态 = ->
   $ts.获取状态 = A_TickCount
 
   checkTargeting()
-  checkDistance()
+  checkNear()
   checkGold()

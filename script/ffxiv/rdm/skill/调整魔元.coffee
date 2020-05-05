@@ -12,7 +12,7 @@ $skill.调整魔元 = ->
   unless $black >= 60 and $white >= 60
     return
   
-  unless $distance == 'near'
+  unless $isNear
     return
   
   use '划圆斩'

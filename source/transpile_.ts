@@ -22,15 +22,13 @@ import { IOption } from './type'
 
 // function
 
-async function execute_(content: string, option: IOption) {
+const execute_ = async (content: string, option: IOption) => {
 
   const data = init(content)
 
   await include_(data, option)
 
-  if(!validate(data)){
-    return ''
-  }
+  if (!validate(data)) return ''
 
   pickMode(data)
   format(data)
@@ -51,7 +49,6 @@ async function execute_(content: string, option: IOption) {
   buildIn(data)
 
   return render(data, option)
-
 }
 
 // export

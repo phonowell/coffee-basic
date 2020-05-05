@@ -5,7 +5,7 @@ import { IBlock, IData, IOption } from '../type'
 
 // function
 
-function renderEvent(list: IBlock[]) {
+const renderEvent = (list: IBlock[]) => {
 
   let result = [] as string[]
 
@@ -13,9 +13,7 @@ function renderEvent(list: IBlock[]) {
 
     const content = []
     for (const line of block.content) {
-      if (!line.trim()) {
-        continue
-      }
+      if (!line.trim()) continue
       content.push(`  ${unquote(line)}`)
     }
 
@@ -26,14 +24,12 @@ function renderEvent(list: IBlock[]) {
       ...content,
       'return'
     ]
-
   }
 
   return result
-
 }
 
-function renderFunction(list: IBlock[]) {
+const renderFunction = (list: IBlock[]) => {
 
   let result = [] as string[]
 
@@ -41,9 +37,7 @@ function renderFunction(list: IBlock[]) {
 
     const content = []
     for (const line of block.content) {
-      if (!line.trim()) {
-        continue
-      }
+      if (!line.trim()) continue
       content.push(`  ${unquote(line)}`)
     }
 
@@ -54,14 +48,12 @@ function renderFunction(list: IBlock[]) {
       ...content,
       '}'
     ]
-
   }
 
   return result
-
 }
 
-function renderGlobalVariable(list: string[]) {
+const renderGlobalVariable = (list: string[]) => {
 
   const result = [] as string[]
 
@@ -70,7 +62,6 @@ function renderGlobalVariable(list: string[]) {
   }
 
   return result
-
 }
 
 // export
@@ -139,9 +130,7 @@ export default (data: IData, option: IOption = {}) => {
   }
 
   for (const i in result) {
-    if (!result.hasOwnProperty(i)) {
-      continue
-    }
+    if (!result.hasOwnProperty(i)) continue
     result[i] = result[i].trimEnd()
   }
 
@@ -151,5 +140,4 @@ export default (data: IData, option: IOption = {}) => {
     .replace(/\n{2,}/g, '\n\n')
     .replace(/'/g, '"')
     .replace(/\s=\s/g, ' := ')
-
 }

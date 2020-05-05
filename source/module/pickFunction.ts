@@ -7,7 +7,7 @@ import { IData } from '../type'
 
 // function
 
-function getName(line: string) {
+const getName = (line: string) => {
 
   const [name, ...arg] = line
     .trim()
@@ -18,28 +18,19 @@ function getName(line: string) {
     name.trim(),
     _.trim(arg.join('='), ' ()')
   ]
-
 }
 
-function validate(line: string) {
+const validate = (line: string) => {
 
-  if (getDepth(line)) {
-    return
-  }
+  if (getDepth(line)) return
 
   line = line
     .trim()
 
-  if (line.startsWith('$.')) {
-    return
-  }
-
-  if (!line.endsWith('->')) {
-    return
-  }
+  if (line.startsWith('$.')) return
+  if (!line.endsWith('->')) return
 
   return true
-
 }
 
 // export
@@ -62,7 +53,6 @@ export default (data: IData) => {
       block.content.push('')
       data.fn.push(block)
       block = newBlock()
-
     }
 
     if (!validate(line)) {
@@ -82,11 +72,9 @@ export default (data: IData) => {
     }
 
     Object.assign(block, { name: _name, argument })
-
   }
 
   //
 
   data.main = result
-
 }

@@ -10,5 +10,4 @@ export default async () => {
   await parseAsync(source, {
     bare: isBare
   })
-
 }

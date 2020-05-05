@@ -37,7 +37,7 @@ $skill.能力技 = ->
     use '空白信息'
     return
 
-  unless $distance == 'near'
+  unless $isNear
     use '空白信息'
     return
 

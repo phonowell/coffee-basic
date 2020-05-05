@@ -7,7 +7,7 @@ import { IData } from '../type'
 
 // function
 
-function format(text: string) {
+const format = (text: string) => {
   return text
     .toLowerCase()
     .replace(/[\s-]/g, '')
@@ -27,7 +27,7 @@ function format(text: string) {
     .replace(/:/g, ' ')
 }
 
-function getName(line: string) {
+const getName = (line: string) => {
 
   const name = line
     .replace(/\s/g, '')
@@ -35,28 +35,19 @@ function getName(line: string) {
     .replace(',->', '')
 
   return format(_.trim(name, " '\""))
-
 }
 
-function validate(line: string) {
+const validate = (line: string) => {
 
-  if (getDepth(line)) {
-    return
-  }
+  if (getDepth(line)) return
 
   line = line
     .trim()
 
-  if (!line.startsWith('$.on')) {
-    return
-  }
-
-  if (!line.endsWith('->')) {
-    return
-  }
+  if (!line.startsWith('$.on')) return
+  if (!line.endsWith('->')) return
 
   return true
-
 }
 
 // export
@@ -79,7 +70,6 @@ export default (data: IData) => {
       block.content.push('')
       data.event.push(block)
       block = newBlock()
-
     }
 
     if (!validate(line)) {
@@ -90,11 +80,9 @@ export default (data: IData) => {
     isPending = true
     const name = getName(line)
     Object.assign(block, { name })
-
   }
 
   //
 
   data.main = result
-
 }

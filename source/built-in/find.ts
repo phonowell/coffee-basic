@@ -31,9 +31,7 @@ export function $findColor({ argument, output }: IArgumentBuiltIn) {
 
   // output
 
-  if (!output) {
-    throw new Error('found no output')
-  }
+  if (!output) throw new Error('found no output')
 
   const [oX, oY] = _.trim(output, ' []')
     .replace(/\s/g, '')
@@ -63,9 +61,7 @@ export function $findImage({ argument, output }: IArgumentBuiltIn) {
 
   // output
 
-  if (!output) {
-    throw new Error('found no output')
-  }
+  if (!output) throw new Error('found no output')
 
   const [oX, oY] = _.trim(output, ' []')
     .replace(/\s/g, '')
@@ -86,5 +82,4 @@ export function $findImage({ argument, output }: IArgumentBuiltIn) {
     `${x1}, ${y1}, ${x2}, ${y2},`,
     `% A_ScriptDir . \"\\\" . ${target}`
   ].join(' ')
-
 }

@@ -25,7 +25,7 @@ const listForbidden = [
 
 // function
 
-function log(message: string, i: number) {
+const log = (message: string, i: number) => {
   $.i(`line ${i + 1}: ${message}`)
   return message
 }
@@ -37,9 +37,7 @@ export default (data: IData) => {
 
   const listRaw = data.raw.split('\n')
   for (const _i in listRaw) {
-    if (!listRaw.hasOwnProperty(_i)) {
-      continue
-    }
+    if (!listRaw.hasOwnProperty(_i)) continue
 
     const i = parseInt(_i, 10)
     const line = listRaw[i]
@@ -51,9 +49,7 @@ export default (data: IData) => {
     }
 
     // skip comment
-    if (line.trim().startsWith('#')) {
-      continue
-    }
+    if (line.trim().startsWith('#')) continue
 
     if (line.includes('# ')) {
       log('found inline comment', i)
@@ -62,15 +58,11 @@ export default (data: IData) => {
 
     // forbidden words
     for (const word of listForbidden) {
-      if (!line.includes(word)) {
-        continue
-      }
+      if (!line.includes(word)) continue
       log(`found forbidden word '${word}'`, i)
       result = false
     }
-
   }
 
   return result
-
 }

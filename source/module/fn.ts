@@ -31,7 +31,6 @@ export function formatKey(input: string) {
     .replace(/plus/g, '+')
     // --
     .replace(/:/g, ' ')
-
 }
 
 export function getDepth(line: string) {
@@ -54,14 +53,11 @@ export function regFn(data: IData, name: string, argument: string | string[], co
   }
   content.push('')
 
-  if (_.findIndex(data.fn, { name }) !== -1) {
-    return name
-  }
+  if (_.findIndex(data.fn, { name }) !== -1) return name
 
   data.fn.push({ name, argument: argument as string, content })
 
   return name
-
 }
 
 export function setDepth(n: number) {
@@ -69,25 +65,17 @@ export function setDepth(n: number) {
 }
 
 export function trim(input: string) {
-
-  if (!["'", '"'].includes(input[0])) {
-    return input
-  }
-
+  if (!["'", '"'].includes(input[0])) return input
   return input.slice(1, (input.length - 1))
-
 }
 
 export function unquote(line: string) {
 
-  if (!line.includes('#{')) {
-    return line
-  }
+  if (!line.includes('#{')) return line
 
   return line
     .replace(/#{/g, '" . ')
     .replace(/}/g, ' . "')
     .replace(/\.\s*""\s*\./g, '.')
     .replace(/"\s*\.\s*\.\s*"/g, '')
-
 }

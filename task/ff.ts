@@ -3,14 +3,14 @@ import * as _ from 'lodash'
 
 // function
 
-async function load_(){
+const load_ = async () => {
 
   const listResult = [] as {
     title: string
     value: string
   }[]
 
-  for(const source of await $.source_('./script/ffxiv/**/index.coffee')){
+  for (const source of await $.source_('./script/ffxiv/**/index.coffee')) {
 
     const dirname = $.getBasename($.getDirname(source))
 
@@ -18,11 +18,9 @@ async function load_(){
       title: dirname,
       value: source
     })
-
   }
 
   return listResult
-
 }
 
 // export
@@ -33,7 +31,7 @@ export default async () => {
   const { target } = $.argv()
   const list = await load_()
 
-  const source = target ? _.find(list, {title: target}).value : await $.prompt_({
+  const source = target ? _.find(list, { title: target }).value : await $.prompt_({
     id: 'target-ff',
     list: await load_(),
     type: 'auto'
@@ -52,5 +50,4 @@ export default async () => {
   const temp = `${dirname}/index.ahk`
   await $.write_(`${dirname}/${basename}.ahk`, await $.read_(temp))
   await $.remove_(temp)
-
 }

@@ -7,9 +7,7 @@ import { IArgumentBuiltIn } from '../type'
 
 export function $isPressing({ argument, output }: IArgumentBuiltIn) {
 
-  if (!output) {
-    throw new Error('found no output')
-  }
+  if (!output) throw new Error('found no output')
 
   const key = argument[0]
     .replace(/['"]/g, '')
@@ -18,7 +16,6 @@ export function $isPressing({ argument, output }: IArgumentBuiltIn) {
     `GetKeyState __value__, ${formatKey(key)}`,
     `${output} = __value__ == \"D\"`
   ]
-
 }
 
 export function $press({ argument }: IArgumentBuiltIn) {
@@ -34,9 +31,7 @@ export function $press({ argument }: IArgumentBuiltIn) {
     const listPre = [] as string[]
 
     for (const _i in list) {
-      if (!list.hasOwnProperty(_i)) {
-        continue
-      }
+      if (!list.hasOwnProperty(_i)) continue
 
       const i = parseInt(_i, 10)
       const key = list[i]
@@ -48,16 +43,13 @@ export function $press({ argument }: IArgumentBuiltIn) {
       }
 
       listResult.push(formatKey(key))
-
     }
 
     listPre.reverse()
     for (const key of listPre) {
       listResult.push(formatKey(`${key}:up`))
     }
-
   }
 
   return `Send {${listResult.join('}{')}}`
-
 }

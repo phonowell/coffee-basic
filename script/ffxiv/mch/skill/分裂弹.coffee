@@ -15,8 +15,16 @@ $skill.分裂弹 = ->
   return true
 
 $watcher.分裂弹 = ->
-  unless clearWatcher '分裂弹'
-    return
+  
+  unless $level >= 54
+    unless hasUsed '分裂弹'
+      return
+  else
+    unless hasUsed '热分裂弹'
+      return
+  
+  clearInterval $watcher.分裂弹
+  $ts.分裂弹 = A_TickCount - $cd.技能施放补正
 
   $step = 1
 
