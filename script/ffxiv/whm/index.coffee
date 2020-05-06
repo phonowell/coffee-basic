@@ -16,15 +16,16 @@ attackS = ->
   if $isChanting
     return
 
-  use '醒梦'
-  use '法令'
-
-  if use '苦难之心' then return
-  
-  use '神速咏唱'
-
-  if use '疾风' then return
-  use '飞石'
+  for skill in [
+    '醒梦'
+    '法令'
+    '苦难之心'
+    '神速咏唱'
+    '疾风'
+    '飞石'
+  ]
+    if use skill
+      return
 
 attackM = ->
 
@@ -35,16 +36,17 @@ attackM = ->
   if $isChanting
     return
 
-  use '醒梦'
-  use '法令'
-
-  if use '苦难之心' then return
-
-  use '神速咏唱'
-  use '无中生有'
-  use '即刻咏唱'
-
-  use '神圣'
+  for skill in [
+    '醒梦'
+    '法令'
+    '苦难之心'
+    '神速咏唱'
+    '无中生有'
+    '即刻咏唱'
+    '神圣'
+  ]
+    if use skill
+      return
 
 # ---
 
@@ -55,12 +57,16 @@ healS = ->
 
   use '醒梦'
 
-  if use '法令' then return
-  if use '神名' then return
-  if use '安慰之心' then return
-  if use '再生' then return
-  if use '救疗' then return
-  use '治疗'
+  for skill in [
+    '法令'
+    '神名'
+    '安慰之心'
+    '再生'
+    '救疗'
+    '治疗'
+  ]
+    if use skill
+      return
 
 healM = ->
 
@@ -68,10 +74,14 @@ healM = ->
     return
 
   use '醒梦'
+  use '全大赦'
 
-  if use '法令' then return
-  if use '全大赦' then return
-  if use '狂喜之心' then return
-  if use '医济' then return
-  if use '愈疗' then return
-  use '医治'
+  for skill in [
+    '法令'
+    '狂喜之心'
+    '医济'
+    '愈疗'
+    '医治'
+  ]
+    if use skill
+      return

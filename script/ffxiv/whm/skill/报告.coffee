@@ -6,10 +6,10 @@ $skill.报告 = ->
   unless $isReporting
     return
 
-  msg = "等级：#{$level} / 魔力：#{$mp}%"
-  msg = "#{msg}`n白：#{$white} / 红：#{$red}"
-  msg = "#{msg}`n咏唱：#{$isChanting} / 移动：#{$isMoving}"
-  msg = "#{msg}`n耗时：#{A_TickCount - $ts.报告}ms`n"
+  msg = makeReportMsg()
+  msg = "#{msg}`n"
+  msg = "#{msg}`nwhite: #{$white} / red: #{$red}"
+  msg = "#{msg}`n"
   
   $ts.报告 = A_TickCount
 

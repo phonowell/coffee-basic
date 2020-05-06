@@ -26,10 +26,9 @@ attackS = ->
     '沥血剑'
     '战女神之怒'
   ]
-
     if use skill
       use '能力技'
-      break
+      return
 
 # ---
 

@@ -6,6 +6,9 @@ $skill.狂喜之心 = ->
   unless $white >= 1
     return
 
+  unless $red < 3
+    return
+
   unless 能力技冷却判断()
     return
 

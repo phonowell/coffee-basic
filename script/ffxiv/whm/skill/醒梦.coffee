@@ -6,7 +6,6 @@ $skill.醒梦 = ->
   unless A_TickCount - $ts.醒梦 > $cd.醒梦
     return
 
-  checkMp()
   if $mp > 50
     return
 
