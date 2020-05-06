@@ -6,8 +6,8 @@ $skill.报告 = ->
   unless $isReporting
     return
 
-  msg = "等级：#{$level}"
-  msg = "#{msg}`n耗时：#{A_TickCount - $ts.报告}ms`n"
+  msg = makeReportMsg()
+  msg = "#{msg}`n"
   
   $ts.报告 = A_TickCount
 

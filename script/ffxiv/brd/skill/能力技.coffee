@@ -37,11 +37,14 @@ $skill.能力技 = ->
     use '空白信息'
     return
 
-  if use '猛者强击' then return
-  if use '失血箭' then return
-  if use '纷乱箭' then return
-  if use '贤者的叙事谣' then return
-  if use '伤腿' then return
-  if use '伤足' then return
-
-  use '空白信息'
+  for skill in [
+    '猛者强击'
+    '死亡箭雨', '失血箭'
+    '纷乱箭'
+    '贤者的叙事谣'
+    '伤腿'
+    '伤足'
+    '空白信息'
+  ]
+    if use skill
+      break

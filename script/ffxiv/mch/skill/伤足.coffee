@@ -3,7 +3,8 @@ $cd.伤足 = 30e3
 
 $skill.伤足 = ->
 
-  unless $isMoving then return
+  unless $isMoving
+    return
 
   unless A_TickCount - $ts.伤足 > $cd.伤足
     return

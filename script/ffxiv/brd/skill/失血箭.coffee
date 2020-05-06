@@ -15,4 +15,7 @@ $skill.失血箭 = ->
   setInterval $watcher.失血箭, $cd.技能施放判断间隔
   return true
 
-$watcher.失血箭 = -> clearWatcher '失血箭'
+$watcher.失血箭 = ->
+  unless clearWatcher '失血箭'
+    return
+  $ts.死亡箭雨 = $ts.失血箭

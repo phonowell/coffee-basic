@@ -11,23 +11,23 @@ attackS = ->
 
   unless $isTargeting
     use '索敌'
+    use '速行'
     return
 
-  if use '直线射击'
-    use '能力技'
+  unless $isNear
+    $.beep()
     return
 
-  if use '风蚀箭'
-    use '能力技'
-    return
+  for skill in [
+    '直线射击'
+    '风蚀箭'
+    '毒咬箭'
+    '强力射击'
+  ]
 
-  if use '毒咬箭'
-    use '能力技'
-    return
-
-  if use '强力射击'
-    use '能力技'
-    return
+    if use skill
+      use '能力技'
+      break
 
 # ---
 
@@ -35,10 +35,13 @@ attackM = ->
 
   unless $isTargeting
     use '索敌'
+    use '速行'
+    return
+
+  unless $isNear
+    $.beep()
     return
 
   if use '连珠箭'
     use '能力技'
     return
-
-  return
