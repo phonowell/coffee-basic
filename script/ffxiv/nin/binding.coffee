@@ -4,22 +4,18 @@
 
 attack = ->
 
-  trigger = getCurrentTrigger()
-  unless trigger
-    return
-
   use '获取状态'
   use '报告'
 
-  if trigger == 'right'
+  if $trigger == 'right'
     attackS()
     return
 
-  if trigger == 'both'
+  if $trigger == 'both'
     attackM()
     return
 
-  if trigger == 'left'
+  if $trigger == 'left'
     attackF()
     return
 
@@ -34,7 +30,7 @@ bindAttack = ->
 
 $.on '2-joy-4', ->
 
-  unless getCurrentTrigger()
+  unless checkTrigger()
     return
 
   clearInterval bindAttack
@@ -45,11 +41,10 @@ $.on '2-joy-4', ->
 
 $.on '2-joy-2', ->
 
-  trigger = getCurrentTrigger()
-  unless trigger
+  unless checkTrigger()
     return
 
-  if trigger == 'right'
+  if $trigger == 'right'
     defendS()
     return
 
@@ -57,15 +52,14 @@ $.on '2-joy-2', ->
 
 $.on '2-joy-1', ->
 
-  trigger = getCurrentTrigger()
-  unless trigger
+  unless checkTrigger()
     return
 
-  if trigger == 'right'
+  if $trigger == 'right'
     breakS()
     return
 
-  if trigger == 'both'
+  if $trigger == 'both'
     breakH()
     return
 

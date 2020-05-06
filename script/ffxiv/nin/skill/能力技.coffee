@@ -37,6 +37,9 @@ $skill.能力技 = ->
     use '空白信息'
     return
 
-  if use '夺取' then return
-
-  use '空白信息'
+  for skill in [
+    '夺取'
+    '空白信息'
+  ]
+    if use skill
+      return

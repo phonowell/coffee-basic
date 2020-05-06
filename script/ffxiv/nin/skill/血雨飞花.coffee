@@ -6,6 +6,9 @@ $skill.血雨飞花 = ->
   unless $level >= 38
     return
 
+  unless $step < 20
+    return
+
   unless A_TickCount - $ts.血雨飞花 > $cd.血雨飞花
     return
 
@@ -15,6 +18,7 @@ $skill.血雨飞花 = ->
   return true
 
 $watcher.血雨飞花 = ->
+
   unless clearWatcher '血雨飞花'
     return
 

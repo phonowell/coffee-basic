@@ -47,4 +47,4 @@ $skill.能力技 = ->
     '空白信息'
   ]
     if use skill
-      break
+      return

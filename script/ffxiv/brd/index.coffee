@@ -15,7 +15,6 @@ attackS = ->
     return
 
   unless $isNear
-    $.beep()
     return
 
   for skill in [
@@ -24,7 +23,6 @@ attackS = ->
     '毒咬箭'
     '强力射击'
   ]
-
     if use skill
       use '能力技'
       break
