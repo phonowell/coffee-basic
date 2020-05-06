@@ -1,13 +1,13 @@
-$skill.烧灼 = (isForced = false) ->
+$skill.烧灼 = ->
 
-  if $isIM
-    return
+  unless $isMoving
 
-  unless isForced
     if $level >= 46
-      if hasStatusByTarget '炽灼' then return
+      if hasStatusByTarget '炽灼'
+        return
     else
-      if hasStatusByTarget '烧灼' then return
+      if hasStatusByTarget '烧灼'
+        return
   
   $.press 'alt + 3'
   return true

@@ -9,42 +9,48 @@
 
 attackS = ->
 
+  unless $isTargeting
+    use '索敌'
+    return
+
   if $isChanting
     return
 
-  use '醒梦'
-  use '光速'
-  use '抽卡'
+  for skill in [
+    '醒梦'
+    '光速'
+    '抽卡'
+  ]
+    use skill
 
-  if $isIM
-    use '凶星'
-    return
-    
-  if $isMoving
-    use '烧灼', true
-    return
-
-  if use '烧灼' then return
-  use '凶星'
+  for skill in [
+    '烧灼'
+    '凶星'
+  ]
+    if use skill
+      return
 
 attackM = ->
 
+  unless $isTargeting
+    use '索敌'
+    return
+
   if $isChanting
     return
 
-  use '醒梦'
-  use '光速'
-  use '抽卡'
+  for skill in [
+    '醒梦'
+    '光速'
+    '抽卡'
+  ]
+    use skill
 
-  if $isIM
-    use '重力'
-    return
-
-  if $isMoving
-    use '烧灼', true
-    return
-
-  use '重力'
+  for skill in [
+    '重力'
+  ]
+    if use skill
+      return
 
 # ---
 
@@ -53,24 +59,37 @@ healS = ->
   if $isChanting
     return
 
-  if use '先天禀赋' then return
-  
-  use '醒梦'
-  use '光速'
-  use '抽卡'
+  for skill in [
+    '醒梦'
+    '光速'
+    '抽卡'
+  ]
+    use skill
 
-  if use '吉星相位' then return
-  if use '福星' then return
-  use '吉星'
+  for skill in [
+    '先天禀赋'
+    '吉星相位'
+    '福星'
+    '吉星'
+  ]
+    if use skill
+      return
 
 healM = ->
 
   if $isChanting
     return
 
-  use '醒梦'
-  use '光速'
-  use '抽卡'
+  for skill in [
+    '醒梦'
+    '光速'
+    '抽卡'
+  ]
+    use skill
 
-  if use '阳星相位' then return
-  use '阳星'
+  for skill in [
+    '阳星相位'
+    '阳星'
+  ]
+    if use skill
+      return

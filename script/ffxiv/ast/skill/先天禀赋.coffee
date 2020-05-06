@@ -6,9 +6,6 @@ $skill.先天禀赋 = ->
   unless $level >= 15
     return
 
-  if $isIM
-    return
-
   unless A_TickCount - $ts.先天禀赋 > $cd.先天禀赋
     return
 

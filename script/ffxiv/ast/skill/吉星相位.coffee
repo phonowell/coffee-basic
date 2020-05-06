@@ -6,9 +6,6 @@ $skill.吉星相位 = ->
   unless $level >= 34
     return
 
-  if $isIM
-    return
-
   unless A_TickCount - $ts.吉星相位 > $cd.吉星相位
     return
   
