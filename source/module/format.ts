@@ -52,13 +52,12 @@ const makeArrayInline = (list: string[]) => {
     .join('__break__')
 
     // []
-    .replace(/\[[^\[]*?\]/g, (text) => {
-      return text
-        .replace(/\s*__break__\s*/g, '__comma__')
-        .replace(/\[__comma__/g, '[')
-        .replace(/__comma__\]/g, ']')
-        .replace(/__comma__/g, ', ')
-    })
+    .replace(/\[[^\[]*?\]/g, (text) => text
+      .replace(/\s*__break__\s*/g, '__comma__')
+      .replace(/\[__comma__/g, '[')
+      .replace(/__comma__\]/g, ']')
+      .replace(/__comma__/g, ', ')
+    )
 
     .split('__break__')
 }

@@ -8,9 +8,8 @@ import { IArgumentBuiltIn } from '../type'
 export function $open({ argument, output }: IArgumentBuiltIn) {
   const arg = trim(argument[0])
   const result = [`Run ${arg}`]
-  if (output) {
+  if (output)
     result.push(`${output} = ${arg}`)
-  }
   return result
 }
 

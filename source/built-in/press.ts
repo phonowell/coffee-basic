@@ -46,9 +46,8 @@ export function $press({ argument }: IArgumentBuiltIn) {
     }
 
     listPre.reverse()
-    for (const key of listPre) {
+    for (const key of listPre)
       listResult.push(formatKey(`${key}:up`))
-    }
   }
 
   return `Send {${listResult.join('}{')}}`

@@ -9,8 +9,7 @@ export default (data: IData) => {
   ]
 
   // mode admin
-  if (data.mode.includes('admin')) {
-
+  if (data.mode.includes('admin'))
     result = [
       ...result,
       '',
@@ -19,7 +18,6 @@ export default (data: IData) => {
       '  ExitApp',
       '}'
     ]
-  }
 
   result = [
     ...result,

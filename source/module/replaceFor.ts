@@ -53,7 +53,6 @@ export default (data: IData) => {
 
   if (!data.raw.includes('for')) return
 
-  for (const block of [...data.fn, ...data.event]) {
+  for (const block of [...data.fn, ...data.event])
     block.content = execute(block.content)
-  }
 }

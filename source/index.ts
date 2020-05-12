@@ -37,7 +37,6 @@ export default async (
     return
   }
 
-  for (const src of listSource) {
+  for (const src of listSource)
     await execute_(src, option)
-  }
 }

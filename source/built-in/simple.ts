@@ -15,9 +15,8 @@ export function $click({ argument }: IArgumentBuiltIn) {
 
 export function $exit({ output }: IArgumentBuiltIn, data: IData) {
   const result = ['ExitApp']
-  if (output) {
+  if (output)
     result.push(`${output} = 42`)
-  }
   return result
 }
 
@@ -26,9 +25,8 @@ export function $move({ argument, output }: IArgumentBuiltIn, data: IData) {
   const result = [
     `MouseMove ${arg}`
   ]
-  if (output) {
+  if (output)
     result.push(`${output} = [${arg}]`)
-  }
   return result
 }
 

@@ -77,24 +77,21 @@ const format = (line: string, data: IData) => {
   const fn = Rule[name]
   if (!fn) {
     let _result = `${name}(${argument.join(', ')})`
-    if (output) {
+    if (output)
       _result = `${output} = ${_result}`
-    }
     return `${setDepth(depth)}${_result}`
   }
 
   // return
   const result = fn(option, data) as string | string[]
 
-  if ($.type(result) === 'string') {
+  if ($.type(result) === 'string')
     return `${setDepth(depth)}${result as string}`
-  }
 
   if ($.type(result) === 'array') {
     const _result = [] as string[]
-    for (const _line of result as string[]) {
+    for (const _line of result as string[])
       _result.push(`${setDepth(depth)}${_line}`)
-    }
     return _result
   }
 }
@@ -120,11 +117,10 @@ const pickOption = (line: string) => {
     .replace(/'[^']+?'/g, (text: string): string => text.replace(/,/g, '__comma__'))
     .replace(/"[^"]+?"/g, (text: string): string => text.replace(/,/g, '__comma__'))
     .split(',')
-    .map((it) => {
-      return it
-        .trim()
-        .replace(/__comma__/g, ',')
-    })
+    .map((it) => it
+      .trim()
+      .replace(/__comma__/g, ',')
+    )
 
   // return
   const argument = arg

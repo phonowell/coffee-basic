@@ -7,22 +7,18 @@ import { IArgumentBuiltIn } from '../type'
 
 function format(text: string) {
 
-  if (text.includes('0x')) {
-    return text
-  }
+  if (text.includes('0x')) return text
 
   text = _.trim(text, " '\"#")
 
-  if (text.length === 3) {
+  if (text.length === 3)
     text = [
       _.repeat(text[0], 2),
       _.repeat(text[1], 2),
       _.repeat(text[2], 2)
     ].join('')
-  }
 
   return `0x${text.toUpperCase()}`
-
 }
 
 // export
@@ -45,9 +41,8 @@ export function $findColor({ argument, output }: IArgumentBuiltIn) {
   y2 = y2 || 'A_ScreenHeight'
   variation = variation || '0'
 
-  if (target.startsWith('"#')) {
+  if (target.startsWith('"#'))
     target = format(target)
-  }
 
   return [
     `PixelSearch ${oX}, ${oY},`,

@@ -24,8 +24,7 @@ const validate = (line: string) => {
 
   if (getDepth(line)) return
 
-  line = line
-    .trim()
+  line = line.trim()
 
   if (line.startsWith('$.')) return
   if (!line.endsWith('->')) return
@@ -67,9 +66,8 @@ export default (data: IData) => {
     if (name.includes('.')) {
       _name = encodeFnName(name)
       result.push(`${name} = Func('${_name}')`)
-    } else {
+    } else
       _name = name
-    }
 
     Object.assign(block, { name: _name, argument })
   }

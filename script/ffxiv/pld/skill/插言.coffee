@@ -9,7 +9,7 @@ $skill.插言 = ->
   if hasStatusByTarget '眩晕'
     return
 
-  $.press 'shift + 4'
+  $.press 'shift + 6'
 
   setInterval $watcher.插言, $cd.技能施放判断间隔
   return true

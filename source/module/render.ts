@@ -57,9 +57,8 @@ const renderGlobalVariable = (list: string[]) => {
 
   const result = [] as string[]
 
-  for (const line of list) {
+  for (const line of list)
     result.push(unquote(`global ${line}`))
-  }
 
   return result
 }
@@ -70,15 +69,14 @@ export default (data: IData, option: IOption = {}) => {
   let result = [] as string[]
 
   // head
-  if (!option.bare) {
+  if (!option.bare)
     result = [
       ...result,
       ...data.head
     ]
-  }
 
   // global variable
-  if (data.var.length) {
+  if (data.var.length)
     result = [
       ...result,
       '',
@@ -86,10 +84,9 @@ export default (data: IData, option: IOption = {}) => {
       '',
       ...(renderGlobalVariable(data.var))
     ]
-  }
 
   // function
-  if (data.fn.length) {
+  if (data.fn.length)
     result = [
       ...result,
       '',
@@ -97,20 +94,18 @@ export default (data: IData, option: IOption = {}) => {
       '',
       ...(renderFunction(data.fn))
     ]
-  }
 
   // main
-  if (data.main.join('\n').trim()) {
+  if (data.main.join('\n').trim())
     result = [
       ...result,
       '',
       '; default',
       '__$default__()'
     ]
-  }
 
   // event
-  if (data.event.length) {
+  if (data.event.length)
     result = [
       ...result,
       '',
@@ -118,20 +113,18 @@ export default (data: IData, option: IOption = {}) => {
       '',
       ...(renderEvent(data.event))
     ]
-  }
 
   // foot
-  if (!option.bare) {
+  if (!option.bare)
     result = [
       ...result,
       '',
       ...data.foot
     ]
-  }
 
-  result.forEach((value, i) => {
+  result.forEach((value, i) =>
     result[i] = value.trimEnd()
-  })
+  )
 
   return result
     .join('\n')

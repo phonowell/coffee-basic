@@ -4,15 +4,14 @@ import $ from '../lib/fire-keeper'
 export default async (source: string) => {
 
   const extname = '.coffee'
-  if (!source.includes(extname)) {
+  if (!source.includes(extname))
     throw new Error(`invalid source '${source}'`)
-  }
+
 
   const cont = await $.read_(source) as string
 
-  if(!cont){
+  if (!cont)
     throw new Error(`invalid source '${source}'`)
-  }
 
   return cont
 }

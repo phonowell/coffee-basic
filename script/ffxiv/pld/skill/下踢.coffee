@@ -9,7 +9,7 @@ $skill.下踢 = ->
   if hasStatusByTarget '眩晕'
     return
 
-  $.press 'shift + 2'
+  $.press 'shift + 4'
 
   setInterval $watcher.下踢, $cd.技能施放判断间隔
   return true

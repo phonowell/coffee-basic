@@ -52,6 +52,5 @@ const execute_ = async (content: string, option: IOption) => {
 }
 
 // export
-export default async (content: string, option: IOption) => {
-  return await execute_(content, option)
-}
+export default async (content: string, option: IOption) =>
+  await execute_(content, option)

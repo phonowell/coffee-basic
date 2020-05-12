@@ -5,11 +5,10 @@ import { IArgumentBuiltIn } from '../type'
 export function $setFixed({ argument }: IArgumentBuiltIn) {
 
   let isFixed = 'Toggle'
-  if (argument[0] === 'true') {
+  if (argument[0] === 'true')
     isFixed = 'On'
-  } else if (argument[0] === 'false') {
+  else if (argument[0] === 'false')
     isFixed = 'Off'
-  }
 
   return `Winset AlwaysOnTop, ${isFixed}, A`
 }

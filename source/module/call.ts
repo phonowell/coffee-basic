@@ -11,24 +11,19 @@ const filterType = (line: string) => {
 
   if (line.startsWith('return ')) {
     type = 'return'
-    line = line
-      .replace('return ', '')
+    line = line.replace('return ', '')
   } else if (line.startsWith('if (')) {
     type = 'if'
-    line = line
-      .replace('if (', '')
+    line = line.replace('if (', '')
   } else if (line.startsWith('if !(')) {
     type = 'unless'
-    line = line
-      .replace('if !(', '')
+    line = line.replace('if !(', '')
   } else if (line.startsWith('else if (')) {
     type = 'else-if'
-    line = line
-      .replace('else if (', '')
+    line = line.replace('else if (', '')
   }
 
-  line = line
-    .replace(') {', '')
+  line = line.replace(') {', '')
 
   return [type, line]
 }
@@ -43,9 +38,8 @@ const format = (line: string) => {
     .replace(/await\s+/g, '')
 
   // validate
-  if (!validate(line)) {
+  if (!validate(line))
     return `${setDepth(depth)}${line}`
-  }
 
   let type: string
   [type, line] = filterType(line)
@@ -81,31 +75,27 @@ const format = (line: string) => {
       return `${key}(${value})`
     })
 
-  if (type === 'return') {
+  if (type === 'return')
     result = `return ${result}`
-  } else if (type === 'if') {
+  else if (type === 'if')
     result = `if (${result}) {`
-  } else if (type === 'unless') {
+  else if (type === 'unless')
     result = `if !(${result}) {`
-  } else if (type === 'else-if') {
+  else if (type === 'else-if')
     result = `else if (${result}) {`
-  }
 
   return `${setDepth(depth)}${result}`
 }
 
 const isOriginal = (name: string) => {
-  if (!(name.includes('.') || name.includes('['))) {
+  if (!(name.includes('.') || name.includes('[')))
     return false
-  }
 
-  if (name.startsWith('$.')) {
+  if (name.startsWith('$.'))
     return false
-  }
 
-  if (name.startsWith('Math.')) {
+  if (name.startsWith('Math.'))
     return false
-  }
 
   return true
 }
@@ -137,9 +127,8 @@ export default (data: IData) => {
 
   for (const block of [...data.fn, ...data.event]) {
     const list = [] as string[]
-    for (const line of block.content) {
+    for (const line of block.content)
       list.push(format(line))
-    }
     block.content = list
   }
 }

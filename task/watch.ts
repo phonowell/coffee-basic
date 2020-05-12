@@ -15,7 +15,7 @@ export default async () => {
     await $.remove_(target)
   })
 
-  $.watch('./script/test/*.coffee', async (e: { path: string }) => {
+  $.watch('./script/test/*.coffee', async (e: { path: string }) =>
     await parseAsync(e.path)
-  })
+  )
 }

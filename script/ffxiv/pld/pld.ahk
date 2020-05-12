@@ -335,7 +335,7 @@ __$skill_dot_下踢__() {
   if (hasStatusByTarget("眩晕")) {
     return
   }
-  Send {shift down}{2}{shift up}
+  Send {shift down}{4}{shift up}
   SetTimer __$watcher_dot_下踢__, % $cd.技能施放判断间隔
   return true
 }
@@ -348,7 +348,7 @@ __$skill_dot_亲疏自行__() {
   if !(A_TickCount - $ts.亲疏自行 > $cd.亲疏自行) {
     return
   }
-  Send {shift down}{6}{shift up}
+  Send {shift down}{8}{shift up}
   SetTimer __$watcher_dot_亲疏自行__, % $cd.技能施放判断间隔
   return true
 }
@@ -580,7 +580,7 @@ __$skill_dot_插言__() {
   if (hasStatusByTarget("眩晕")) {
     return
   }
-  Send {shift down}{4}{shift up}
+  Send {shift down}{6}{shift up}
   SetTimer __$watcher_dot_插言__, % $cd.技能施放判断间隔
   return true
 }
@@ -797,7 +797,7 @@ __$skill_dot_铁壁__() {
   if !(A_TickCount - $ts.铁壁 > $cd.铁壁) {
     return
   }
-  Send {shift down}{1}{shift up}
+  Send {shift down}{3}{shift up}
   SetTimer __$watcher_dot_铁壁__, % $cd.技能施放判断间隔
   return true
 }
@@ -810,7 +810,7 @@ __$skill_dot_雪仇__() {
   if !(A_TickCount - $ts.雪仇 > $cd.雪仇) {
     return
   }
-  Send {shift down}{5}{shift up}
+  Send {shift down}{7}{shift up}
   SetTimer __$watcher_dot_雪仇__, % $cd.技能施放判断间隔
   return true
 }
@@ -850,7 +850,7 @@ attackS() {
   for __i__, skill in ["先锋剑", "暴乱剑", "沥血剑", "战女神之怒"] {
     if (use(skill)) {
       use("能力技")
-      break
+      return
     }
   }
 }
@@ -973,7 +973,7 @@ __$default__() {
   $skill.暴乱剑 := Func("__$skill_dot_暴乱剑__")
   $watcher.暴乱剑 := Func("__$watcher_dot_暴乱剑__")
   $ts.沥血剑 := 0
-  $cd.沥血剑 := 18000
+  $cd.沥血剑 := 21000 - 3000
   $skill.沥血剑 := Func("__$skill_dot_沥血剑__")
   $watcher.沥血剑 := Func("__$watcher_dot_沥血剑__")
   $ts.深仁厚泽 := 0

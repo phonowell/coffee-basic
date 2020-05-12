@@ -38,17 +38,14 @@ const insert_ = async (content: string, option: IOption) => {
     let cont = ''
     if (source.includes('*')) {
       const listCont = [] as string[]
-      for (const src of await $.source_(source)) {
+      for (const src of await $.source_(source))
         listCont.push(await $.read_(src))
-      }
       cont = listCont.join('\n')
-    } else {
+    } else
       cont = await $.read_(source)
-    }
 
-    if ($.type(cont) !== 'string') {
+    if ($.type(cont) !== 'string')
       throw new Error(`invalid source '${source}'`)
-    }
 
     if (!cont.includes('# include')) {
       result.push(cont)

@@ -2,8 +2,7 @@
 import { IData } from '../type'
 
 // export
-export default (data: IData) => {
+export default (data: IData) =>
   data.foot = [
     '; eof'
   ]
-}
