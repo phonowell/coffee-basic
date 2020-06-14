@@ -11,12 +11,12 @@ const pickData = (line: string) => {
   if (!line.includes('=')) return
   if (line.includes('->')) return
 
-  let [key, value] = line.split('=')
-  key = key.trim()
-  value = value.trim()
+  const [key, value] = line
+    .split('=')
+    .map(it => it.trim())
   if (key.search(/[\s\{\}\(\)\[\]\.,'"]/) !== -1) return
 
-  return [key, value]
+  return [key, value] as [string, string]
 }
 
 // export
@@ -25,10 +25,7 @@ export default (data: IData) => {
   const content = [] as string[]
 
   for (const line of data.main) {
-
-    let key: string
-    let value: string
-    [key, value] = pickData(line) || []
+    const [key, value] = pickData(line) || []
 
     if (!(key && value)) {
       content.push(line)
@@ -36,13 +33,11 @@ export default (data: IData) => {
     }
 
     if (value.includes('[')) {
-      const list = value
+      value
         .replace(/[\[\]]/g, '')
         .split(',')
-      for (const i in list) {
-        if (!list.hasOwnProperty(i)) continue
-        content.push(`${key}[${i}] = ${list[i].trim()}`)
-      }
+        .map(it => it.trim())
+        .forEach((it, i) => content.push(`${key}[${i}] = ${it}`))
       data.var.push(`${key} = []`)
       continue
     }

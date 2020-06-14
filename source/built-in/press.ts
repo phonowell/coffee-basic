@@ -30,20 +30,16 @@ export function $press({ argument }: IArgumentBuiltIn) {
     const max = list.length - 1
     const listPre = [] as string[]
 
-    for (const _i in list) {
-      if (!list.hasOwnProperty(_i)) continue
-
-      const i = parseInt(_i, 10)
-      const key = list[i]
+    list.forEach((key, i) => {
 
       if (i < max) {
         listPre.push(key)
         listResult.push(formatKey(`${key}:down`))
-        continue
+        return
       }
 
       listResult.push(formatKey(key))
-    }
+    })
 
     listPre.reverse()
     for (const key of listPre)

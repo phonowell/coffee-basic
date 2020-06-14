@@ -60,6 +60,7 @@ export default (data: IData) => {
 
   if (!data.raw.includes('$.loop')) return
 
-  for (const block of [...data.fn, ...data.event])
+  [...data.fn, ...data.event].forEach(block =>
     block.content = execute(block.content)
+  )
 }

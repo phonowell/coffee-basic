@@ -38,7 +38,5 @@ export default (data: IData) => {
     'SetMouseDelay 0, 50'
   ]
 
-  //
-
   data.head = result
 }

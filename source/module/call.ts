@@ -121,14 +121,9 @@ const validate = (text: string) => {
 // export
 export default (data: IData) => {
 
-  data.var.forEach((value, i) => {
-    data.var[i] = format(value)
-  })
+  data.var = data.var.map(value => format(value));
 
-  for (const block of [...data.fn, ...data.event]) {
-    const list = [] as string[]
-    for (const line of block.content)
-      list.push(format(line))
-    block.content = list
-  }
+  [...data.fn, ...data.event].forEach(block =>
+    block.content = block.content.map(line => format(line))
+  )
 }

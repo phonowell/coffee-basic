@@ -36,11 +36,7 @@ export default (data: IData) => {
   let result = true
 
   const listRaw = data.raw.split('\n')
-  for (const _i in listRaw) {
-    if (!listRaw.hasOwnProperty(_i)) continue
-
-    const i = parseInt(_i, 10)
-    const line = listRaw[i]
+  listRaw.forEach((line, i) => {
 
     // block comment
     if (line.includes('###')) {
@@ -49,7 +45,7 @@ export default (data: IData) => {
     }
 
     // skip comment
-    if (line.trim().startsWith('#')) continue
+    if (line.trim().startsWith('#')) return
 
     if (line.includes('# ')) {
       log('found inline comment', i)
@@ -62,7 +58,7 @@ export default (data: IData) => {
       log(`found forbidden word '${word}'`, i)
       result = false
     }
-  }
+  })
 
   return result
 }

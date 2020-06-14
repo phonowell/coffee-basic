@@ -4,7 +4,7 @@ import * as _ from 'lodash'
 // interface
 import { IBlock, IData } from '../type'
 
-// export
+// function
 
 export function encodeFnName(name: string) {
   name = name
@@ -29,7 +29,7 @@ export function formatKey(input: string) {
     .replace(/pagedown/g, 'pgdn')
     .replace(/pageup/g, 'pgup')
     .replace(/plus/g, '+')
-    // --
+    // ---
     .replace(/:/g, ' ')
 }
 

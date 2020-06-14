@@ -7,7 +7,6 @@ export default async (source: string) => {
   if (!source.includes(extname))
     throw new Error(`invalid source '${source}'`)
 
-
   const cont = await $.read_(source) as string
 
   if (!cont)

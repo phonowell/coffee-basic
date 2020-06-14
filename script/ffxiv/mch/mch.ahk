@@ -226,6 +226,7 @@ hasUsed(name) {
 makeReportMsg(msg := false, list := false) {
   if !(msg) {
     msg := "Lv." . $level . " / " . $trigger . " / " . A_TickCount - $ts.报告 . " ms"
+    msg := "" . msg . "`nhp: " . $hp . " / mp: " . $mp . ""
     msg := "" . msg . "`ntargeting: " . $isTargeting . " / near: " . $isNear . ""
     msg := "" . msg . "`nmoving: " . $isMoving . " / chanting: " . $isChanting . ""
     return msg
@@ -317,13 +318,15 @@ checkRed() {
 
 __$skill_dot_中断咏唱__() {
   if !($isChanting) {
-    return
+    return true
   }
   Send {space}
+  return true
 }
 
 __$skill_dot_冲刺__() {
   Send {shift down}{-}{shift up}
+  return true
 }
 
 __$skill_dot_空白信息__() {
@@ -637,6 +640,7 @@ __$skill_dot_获取状态__() {
     use("空白信息")
   }
   $ts.获取状态 := A_TickCount
+  checkTrigger()
   checkTargeting()
   checkNear()
   checkMoving()

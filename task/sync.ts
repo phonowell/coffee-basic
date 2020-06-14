@@ -19,17 +19,19 @@ class M {
       await $.isExisted_(target)
     ]
 
-    const mtime = isExisted[0] && isExisted[1] ? [
-      (await $.stat_(source)).mtimeMs,
-      (await $.stat_(target)).mtimeMs
-    ] : [0, 0]
+    const mtime = isExisted[0] && isExisted[1]
+      ? [
+        (await $.stat_(source)).mtimeMs,
+        (await $.stat_(target)).mtimeMs
+      ]
+      : [0, 0]
 
     const choice = [] as {
       title: string
       value: string
     }[]
 
-    if (isExisted[0]) {
+    if (isExisted[0])
       choice.push({
         title: [
           'overwrite, export',
@@ -37,9 +39,8 @@ class M {
         ].join(' '),
         value: 'export'
       })
-    }
 
-    if (isExisted[1]) {
+    if (isExisted[1])
       choice.push({
         title: [
           'overwrite, import',
@@ -47,7 +48,6 @@ class M {
         ].join(' '),
         value: 'import'
       })
-    }
 
     choice.push({
       title: 'skip',
@@ -83,23 +83,17 @@ class M {
       const { basename, dirname, extname } = $.getName(target)
       target = `${dirname}/${basename}-${namespace}-${version}${extname}`
 
-      if (await $.isSame_([source, target])) {
-        continue
-      }
+      if (await $.isSame_([source, target])) continue
 
       $.info(`'${source}' is different from '${target}'`)
 
       const value = await this.ask_(source, target)
-      if (!value) {
-        break
-      }
+      if (!value) break
 
       await this.overwrite_(value, source, target)
-
     }
 
     return this
-
   }
 
   async load_() {
@@ -107,22 +101,19 @@ class M {
     $.info().pause()
     const listSource = await $.source_('./data/sync/**/*.yaml')
     const listData = [] as string[][]
-    for (const source of listSource) {
+    for (const source of listSource)
       listData.push(await $.read_(source))
-    }
     $.info().resume()
 
     let result = [] as string[]
 
-    for (const data of listData) {
+    for (const data of listData)
       result = [
         ...result,
         ...data
       ]
-    }
 
     return _.uniq(result)
-
   }
 
   async overwrite_(value: string, source: string, target: string) {
@@ -138,9 +129,7 @@ class M {
     }
 
     return this
-
   }
-
 }
 
 // export
