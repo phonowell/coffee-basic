@@ -45,7 +45,9 @@ export function newBlock() {
   } as IBlock
 }
 
-export function regFn(data: IData, name: string, argument: string | string[], content: string[]) {
+export function regFn(
+  data: IData, name: string, argument: string | string[], content: string[]
+) {
 
   name = `__${name}__`
   if ($.type(argument) === 'array') {

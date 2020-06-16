@@ -9,7 +9,7 @@ $skill.投盾 = ->
   unless A_TickCount - $ts.投盾 > $cd.投盾
     return
 
-  $.press 'alt + 7'
+  $.press 'ctrl + 7'
 
   setInterval $watcher.投盾, $cd.技能施放判断间隔
   return true

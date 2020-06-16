@@ -15,7 +15,7 @@ $skill.沥血剑 = ->
   unless A_TickCount - $ts.沥血剑 > $cd.沥血剑
     return
 
-  $.press 'ctrl + 4'
+  $.press 'alt + 4'
 
   setInterval $watcher.沥血剑, $cd.技能施放判断间隔
   return true

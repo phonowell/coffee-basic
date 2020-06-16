@@ -12,7 +12,7 @@ $skill.日珥斩 = ->
   unless A_TickCount - $ts.日珥斩 > $cd.日珥斩
     return
 
-  $.press 'ctrl + 1'
+  $.press 'alt + 1'
 
   setInterval $watcher.日珥斩, $cd.技能施放判断间隔
   return true

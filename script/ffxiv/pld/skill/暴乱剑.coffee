@@ -9,7 +9,7 @@ $skill.暴乱剑 = ->
   unless A_TickCount - $ts.暴乱剑 > $cd.暴乱剑
     return
 
-  $.press 'alt + 3'
+  $.press 'ctrl + 3'
 
   setInterval $watcher.暴乱剑, $cd.技能施放判断间隔
   return true

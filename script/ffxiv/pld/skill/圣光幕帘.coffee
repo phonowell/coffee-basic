@@ -12,7 +12,7 @@ $skill.圣光幕帘 = ->
   unless A_TickCount - $ts.圣光幕帘 > $cd.圣光幕帘
     return
 
-  $.press 'ctrl + 5'
+  $.press 'alt + 5'
 
   setInterval $watcher.圣光幕帘, $cd.技能施放判断间隔
   return true

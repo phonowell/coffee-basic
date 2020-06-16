@@ -9,7 +9,7 @@ $skill.圣环 = ->
   unless hasStatus '安魂祈祷'
     return
 
-  $.press 'ctrl + minus'
+  $.press 'alt + minus'
 
   $step = 0
   return true

@@ -9,7 +9,7 @@ $skill.预警 = ->
   unless A_TickCount - $ts.预警 > $cd.预警
     return
 
-  $.press 'alt + 9'
+  $.press 'ctrl + 9'
 
   setInterval $watcher.预警, $cd.技能施放判断间隔
   return true

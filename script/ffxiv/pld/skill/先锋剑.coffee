@@ -9,7 +9,7 @@ $skill.先锋剑 = ->
   unless A_TickCount - $ts.先锋剑 > $cd.先锋剑
     return
 
-  $.press 'alt + 1'
+  $.press 'ctrl + 1'
 
   setInterval $watcher.先锋剑, $cd.技能施放判断间隔
   return true

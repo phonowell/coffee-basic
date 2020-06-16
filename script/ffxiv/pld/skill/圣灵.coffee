@@ -9,7 +9,7 @@ $skill.圣灵 = ->
   unless hasStatus '安魂祈祷'
     return
 
-  $.press 'ctrl + 8'
+  $.press 'alt + 8'
 
   $step = 0
   return true

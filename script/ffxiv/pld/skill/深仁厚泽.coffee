@@ -16,7 +16,7 @@ $skill.深仁厚泽 = ->
   unless A_TickCount - $ts.深仁厚泽 > $cd.深仁厚泽
     return
 
-  $.press 'ctrl + 6'
+  $.press 'alt + 6'
 
   setInterval $watcher.深仁厚泽, $cd.技能施放判断间隔
   return true

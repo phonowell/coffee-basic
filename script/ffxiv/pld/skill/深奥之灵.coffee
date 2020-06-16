@@ -9,7 +9,7 @@ $skill.深奥之灵 = ->
   unless A_TickCount - $ts.深奥之灵 > $cd.深奥之灵
     return
 
-  $.press 'alt + minus'
+  $.press 'ctrl + minus'
 
   setInterval $watcher.深奥之灵, $cd.技能施放判断间隔
   return true

@@ -12,7 +12,7 @@ $skill.战女神之怒 = ->
   unless A_TickCount - $ts.战女神之怒 > $cd.战女神之怒
     return
 
-  $.press 'alt + 8'
+  $.press 'ctrl + 8'
 
   setInterval $watcher.战女神之怒, $cd.技能施放判断间隔
   return true

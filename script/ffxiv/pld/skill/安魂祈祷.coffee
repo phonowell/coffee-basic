@@ -18,7 +18,7 @@ $skill.安魂祈祷 = ->
   unless A_TickCount - $ts.安魂祈祷 > $cd.安魂祈祷
     return
 
-  $.press 'ctrl + 9'
+  $.press 'alt + 9'
 
   setInterval $watcher.安魂祈祷, $cd.技能施放判断间隔
   return true

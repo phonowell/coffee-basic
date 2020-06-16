@@ -9,7 +9,7 @@ $skill.厄运流转 = ->
   unless A_TickCount - $ts.厄运流转 > $cd.厄运流转
     return
 
-  $.press 'alt + 0'
+  $.press 'ctrl + 0'
 
   setInterval $watcher.厄运流转, $cd.技能施放判断间隔
   return true

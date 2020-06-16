@@ -1,3 +1,3 @@
 $skill.空白信息 = ->
-  $.press 'shift + equal'
+  $.press 'ctrl + alt + equal'
   return true

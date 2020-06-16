@@ -131,7 +131,7 @@ checkNear() {
     $isNear := false
     return $isNear
   }
-  PixelGetColor color, 1479, 682, RGB
+  PixelGetColor color, 1803, 764, RGB
   if (color == 0xD23A3A) {
     $isNear := false
     return $isNear
@@ -311,12 +311,12 @@ __$skill_dot_中断咏唱__() {
 }
 
 __$skill_dot_冲刺__() {
-  Send {shift down}{-}{shift up}
+  Send {ctrl down}{alt down}{-}{alt up}{ctrl up}
   return true
 }
 
 __$skill_dot_空白信息__() {
-  Send {shift down}{=}{shift up}
+  Send {ctrl down}{alt down}{=}{alt up}{ctrl up}
   return true
 }
 
@@ -335,7 +335,7 @@ __$skill_dot_下踢__() {
   if (hasStatusByTarget("眩晕")) {
     return
   }
-  Send {shift down}{4}{shift up}
+  Send {ctrl down}{alt down}{2}{alt up}{ctrl up}
   SetTimer __$watcher_dot_下踢__, % $cd.技能施放判断间隔
   return true
 }
@@ -348,7 +348,7 @@ __$skill_dot_亲疏自行__() {
   if !(A_TickCount - $ts.亲疏自行 > $cd.亲疏自行) {
     return
   }
-  Send {shift down}{8}{shift up}
+  Send {ctrl down}{alt down}{6}{alt up}{ctrl up}
   SetTimer __$watcher_dot_亲疏自行__, % $cd.技能施放判断间隔
   return true
 }
@@ -364,7 +364,7 @@ __$skill_dot_先锋剑__() {
   if !(A_TickCount - $ts.先锋剑 > $cd.先锋剑) {
     return
   }
-  Send {alt down}{1}{alt up}
+  Send {ctrl down}{1}{ctrl up}
   SetTimer __$watcher_dot_先锋剑__, % $cd.技能施放判断间隔
   return true
 }
@@ -385,7 +385,7 @@ __$skill_dot_全蚀斩__() {
   if !(A_TickCount - $ts.全蚀斩 > $cd.全蚀斩) {
     return
   }
-  Send {alt down}{4}{alt up}
+  Send {ctrl down}{4}{ctrl up}
   SetTimer __$watcher_dot_全蚀斩__, % $cd.技能施放判断间隔
   return true
 }
@@ -411,7 +411,7 @@ __$skill_dot_厄运流转__() {
   if !(A_TickCount - $ts.厄运流转 > $cd.厄运流转) {
     return
   }
-  Send {alt down}{0}{alt up}
+  Send {ctrl down}{0}{ctrl up}
   SetTimer __$watcher_dot_厄运流转__, % $cd.技能施放判断间隔
   return true
 }
@@ -430,7 +430,7 @@ __$skill_dot_圣光幕帘__() {
   if !(A_TickCount - $ts.圣光幕帘 > $cd.圣光幕帘) {
     return
   }
-  Send {ctrl down}{5}{ctrl up}
+  Send {alt down}{5}{alt up}
   SetTimer __$watcher_dot_圣光幕帘__, % $cd.技能施放判断间隔
   return true
 }
@@ -449,7 +449,7 @@ __$skill_dot_圣灵__() {
   if !(hasStatus("安魂祈祷")) {
     return
   }
-  Send {ctrl down}{8}{ctrl up}
+  Send {alt down}{8}{alt up}
   $step := 0
   return true
 }
@@ -464,7 +464,7 @@ __$skill_dot_圣环__() {
   if !(hasStatus("安魂祈祷")) {
     return
   }
-  Send {ctrl down}{-}{ctrl up}
+  Send {alt down}{-}{alt up}
   $step := 0
   return true
 }
@@ -485,7 +485,7 @@ __$skill_dot_安魂祈祷__() {
   if !(A_TickCount - $ts.安魂祈祷 > $cd.安魂祈祷) {
     return
   }
-  Send {ctrl down}{9}{ctrl up}
+  Send {alt down}{9}{alt up}
   SetTimer __$watcher_dot_安魂祈祷__, % $cd.技能施放判断间隔
   return true
 }
@@ -504,7 +504,7 @@ __$skill_dot_战女神之怒__() {
   if !(A_TickCount - $ts.战女神之怒 > $cd.战女神之怒) {
     return
   }
-  Send {alt down}{8}{alt up}
+  Send {ctrl down}{8}{ctrl up}
   SetTimer __$watcher_dot_战女神之怒__, % $cd.技能施放判断间隔
   return true
 }
@@ -530,7 +530,7 @@ __$skill_dot_战逃反应__() {
   if !(A_TickCount - $ts.战逃反应 > $cd.战逃反应) {
     return
   }
-  Send {alt down}{2}{alt up}
+  Send {ctrl down}{2}{ctrl up}
   SetTimer __$watcher_dot_战逃反应__, % $cd.技能施放判断间隔
   return true
 }
@@ -546,7 +546,7 @@ __$skill_dot_投盾__() {
   if !(A_TickCount - $ts.投盾 > $cd.投盾) {
     return
   }
-  Send {alt down}{7}{alt up}
+  Send {ctrl down}{7}{ctrl up}
   SetTimer __$watcher_dot_投盾__, % $cd.技能施放判断间隔
   return true
 }
@@ -567,7 +567,7 @@ __$skill_dot_报告__() {
   msg := "" . msg . "`ngold: " . $gold . ""
   msg := "" . msg . "`n"
   $ts.报告 := A_TickCount
-  msg := makeReportMsg(msg, ["战逃反应", "预警", "深奥之灵", "厄运流转", "沥血剑", "安魂祈祷", "铁壁", "下踢", "插言", "雪仇", "亲疏自行"])
+  msg := makeReportMsg(msg, ["战逃反应", "预警", "深奥之灵", "厄运流转", "沥血剑", "安魂祈祷", "调停", "铁壁", "下踢", "插言", "雪仇", "亲疏自行"])
   ToolTip % msg, 410, 640
   SetTimer clearTip, Off
   SetTimer clearTip, % 0 - 10000
@@ -580,7 +580,7 @@ __$skill_dot_插言__() {
   if (hasStatusByTarget("眩晕")) {
     return
   }
-  Send {shift down}{6}{shift up}
+  Send {ctrl down}{alt down}{4}{alt up}{ctrl up}
   SetTimer __$watcher_dot_插言__, % $cd.技能施放判断间隔
   return true
 }
@@ -599,7 +599,7 @@ __$skill_dot_日珥斩__() {
   if !(A_TickCount - $ts.日珥斩 > $cd.日珥斩) {
     return
   }
-  Send {ctrl down}{1}{ctrl up}
+  Send {alt down}{1}{alt up}
   SetTimer __$watcher_dot_日珥斩__, % $cd.技能施放判断间隔
   return true
 }
@@ -619,7 +619,7 @@ __$skill_dot_暴乱剑__() {
   if !(A_TickCount - $ts.暴乱剑 > $cd.暴乱剑) {
     return
   }
-  Send {alt down}{3}{alt up}
+  Send {ctrl down}{3}{ctrl up}
   SetTimer __$watcher_dot_暴乱剑__, % $cd.技能施放判断间隔
   return true
 }
@@ -651,7 +651,7 @@ __$skill_dot_沥血剑__() {
   if !(A_TickCount - $ts.沥血剑 > $cd.沥血剑) {
     return
   }
-  Send {ctrl down}{4}{ctrl up}
+  Send {alt down}{4}{alt up}
   SetTimer __$watcher_dot_沥血剑__, % $cd.技能施放判断间隔
   return true
 }
@@ -680,7 +680,7 @@ __$skill_dot_深仁厚泽__() {
   if !(A_TickCount - $ts.深仁厚泽 > $cd.深仁厚泽) {
     return
   }
-  Send {ctrl down}{6}{ctrl up}
+  Send {alt down}{6}{alt up}
   SetTimer __$watcher_dot_深仁厚泽__, % $cd.技能施放判断间隔
   return true
 }
@@ -699,7 +699,7 @@ __$skill_dot_深奥之灵__() {
   if !(A_TickCount - $ts.深奥之灵 > $cd.深奥之灵) {
     return
   }
-  Send {alt down}{-}{alt up}
+  Send {ctrl down}{-}{ctrl up}
   SetTimer __$watcher_dot_深奥之灵__, % $cd.技能施放判断间隔
   return true
 }
@@ -718,7 +718,7 @@ __$skill_dot_盾阵__() {
   if !(A_TickCount - $ts.盾阵 > $cd.盾阵) {
     return
   }
-  Send {alt down}{=}{alt up}
+  Send {ctrl down}{=}{ctrl up}
   SetTimer __$watcher_dot_盾阵__, % $cd.技能施放判断间隔
   return true
 }
@@ -771,7 +771,7 @@ __$skill_dot_能力技__() {
     use("空白信息")
     return
   }
-  for __i__, skill in ["战逃反应", "深奥之灵", "厄运流转", "安魂祈祷", "雪仇", "亲疏自行", "自动盾阵", "空白信息"] {
+  for __i__, skill in ["战逃反应", "深奥之灵", "厄运流转", "安魂祈祷", "调停", "雪仇", "亲疏自行", "自动盾阵", "空白信息"] {
     if (use(skill)) {
       break
     }
@@ -793,11 +793,30 @@ __$skill_dot_获取状态__() {
   checkGold()
 }
 
+__$skill_dot_调停__() {
+  if !($level >= 74) {
+    return
+  }
+  if !($ap == 1) {
+    return
+  }
+  if !(A_TickCount - $ts.调停 > $cd.调停) {
+    return
+  }
+  Send {alt down}{=}{alt up}
+  SetTimer __$watcher_dot_调停__, % $cd.技能施放判断间隔
+  return true
+}
+
+__$watcher_dot_调停__() {
+  clearWatcher("调停")
+}
+
 __$skill_dot_铁壁__() {
   if !(A_TickCount - $ts.铁壁 > $cd.铁壁) {
     return
   }
-  Send {shift down}{3}{shift up}
+  Send {ctrl down}{alt down}{1}{alt up}{ctrl up}
   SetTimer __$watcher_dot_铁壁__, % $cd.技能施放判断间隔
   return true
 }
@@ -810,7 +829,7 @@ __$skill_dot_雪仇__() {
   if !(A_TickCount - $ts.雪仇 > $cd.雪仇) {
     return
   }
-  Send {shift down}{7}{shift up}
+  Send {ctrl down}{alt down}{5}{alt up}{ctrl up}
   SetTimer __$watcher_dot_雪仇__, % $cd.技能施放判断间隔
   return true
 }
@@ -826,7 +845,7 @@ __$skill_dot_预警__() {
   if !(A_TickCount - $ts.预警 > $cd.预警) {
     return
   }
-  Send {alt down}{9}{alt up}
+  Send {ctrl down}{9}{ctrl up}
   SetTimer __$watcher_dot_预警__, % $cd.技能施放判断间隔
   return true
 }
@@ -994,6 +1013,10 @@ __$default__() {
   $skill.能力技 := Func("__$skill_dot_能力技__")
   $ts.获取状态 := 0
   $skill.获取状态 := Func("__$skill_dot_获取状态__")
+  $ts.调停 := 0
+  $cd.调停 := 30000
+  $skill.调停 := Func("__$skill_dot_调停__")
+  $watcher.调停 := Func("__$watcher_dot_调停__")
   $ts.铁壁 := 0
   $cd.铁壁 := 90000
   $skill.铁壁 := Func("__$skill_dot_铁壁__")

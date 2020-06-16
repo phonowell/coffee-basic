@@ -6,7 +6,7 @@ $skill.铁壁 = ->
   unless A_TickCount - $ts.铁壁 > $cd.铁壁
     return
 
-  $.press 'shift + 3'
+  $.press 'ctrl + alt + 1'
 
   setInterval $watcher.铁壁, $cd.技能施放判断间隔
   return true

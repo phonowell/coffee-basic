@@ -6,7 +6,7 @@ checkNear = ->
     $isNear = false
     return $isNear
 
-  color = $.getColor 1479, 682
+  color = $.getColor 1803, 764
 
   if color == 0xD23A3A
     $isNear = false

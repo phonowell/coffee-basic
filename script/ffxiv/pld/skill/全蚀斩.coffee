@@ -9,7 +9,7 @@ $skill.全蚀斩 = ->
   unless A_TickCount - $ts.全蚀斩 > $cd.全蚀斩
     return
 
-  $.press 'alt + 4'
+  $.press 'ctrl + 4'
 
   setInterval $watcher.全蚀斩, $cd.技能施放判断间隔
   return true

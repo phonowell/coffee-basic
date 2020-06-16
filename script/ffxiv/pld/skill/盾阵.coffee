@@ -12,7 +12,7 @@ $skill.盾阵 = ->
   unless A_TickCount - $ts.盾阵 > $cd.盾阵
     return
 
-  $.press 'alt + equal'
+  $.press 'ctrl + equal'
 
   setInterval $watcher.盾阵, $cd.技能施放判断间隔
   return true

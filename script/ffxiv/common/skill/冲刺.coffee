@@ -1,3 +1,3 @@
 $skill.冲刺 = ->
-  $.press 'shift + minus'
+  $.press 'ctrl + alt + minus'
   return true

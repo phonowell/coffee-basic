@@ -18,8 +18,8 @@ $.on 'f6', ->
 
 $.on 'f9', ->
   [x, y] = $.getPosition()
-  # x = 1479
-  # y = 682
+  x = 1803
+  y = 764
   color = $.getColor x, y
 
   # $.move x, y
