@@ -1,1 +1,1 @@
-$skill.飞石 = -> $.press 'alt + 1'
+$skill.飞石 = -> $.press 'ctrl + 1'

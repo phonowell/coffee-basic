@@ -127,7 +127,7 @@ checkNear() {
     $isNear := false
     return $isNear
   }
-  PixelGetColor color, 1479, 682, RGB
+  PixelGetColor color, 1803, 764, RGB
   if (color == 0xD23A3A) {
     $isNear := false
     return $isNear
@@ -330,12 +330,12 @@ __$skill_dot_中断咏唱__() {
 }
 
 __$skill_dot_冲刺__() {
-  Send {shift down}{-}{shift up}
+  Send {ctrl down}{alt down}{-}{alt up}{ctrl up}
   return true
 }
 
 __$skill_dot_空白信息__() {
-  Send {shift down}{=}{shift up}
+  Send {ctrl down}{alt down}{=}{alt up}{ctrl up}
   return true
 }
 
@@ -357,7 +357,7 @@ __$skill_dot_全大赦__() {
   if !(能力技冷却判断()) {
     return
   }
-  Send {ctrl down}{8}{ctrl up}
+  Send {alt down}{8}{alt up}
   $ts.全大赦 := A_TickCount - $cd.全大赦 + $cd.技能施放补正
   SetTimer __$watcher_dot_全大赦__, % $cd.技能施放判断间隔
   return true
@@ -377,13 +377,13 @@ __$skill_dot_再生__() {
   if (hasStatusByTarget("再生")) {
     return
   }
-  Send {alt down}{0}{alt up}
+  Send {ctrl down}{0}{ctrl up}
   $ts.再生 := A_TickCount - $cd.再生 + $cd.技能施放补正
   return true
 }
 
 __$skill_dot_医治__() {
-  Send {alt down}{4}{alt up}
+  Send {ctrl down}{4}{ctrl up}
   return true
 }
 
@@ -394,7 +394,7 @@ __$skill_dot_医济__() {
   if !(A_TickCount - $ts.医济 > $cd.医济) {
     return
   }
-  Send {alt down}{8}{alt up}
+  Send {ctrl down}{8}{ctrl up}
   SetTimer __$watcher_dot_医济__, % $cd.技能施放判断间隔
   return true
 }
@@ -407,7 +407,7 @@ __$skill_dot_即刻咏唱__() {
   if !(A_TickCount - $ts.即刻咏唱 > $cd.即刻咏唱) {
     return
   }
-  Send {shift down}{3}{shift up}
+  Send {ctrl down}{alt down}{3}{alt up}{ctrl up}
   $ts.即刻咏唱 := A_TickCount - $cd.即刻咏唱 + $cd.技能施放补正
   SetTimer __$watcher_dot_即刻咏唱__, % $cd.技能施放判断间隔
   return true
@@ -418,14 +418,14 @@ __$watcher_dot_即刻咏唱__() {
 }
 
 __$skill_dot_复活__() {
-  Send {alt down}{5}{alt up}
+  Send {ctrl down}{5}{ctrl up}
 }
 
 __$skill_dot_天赐祝福__() {
   if !($level >= 50) {
     return
   }
-  Send {ctrl down}{1}{ctrl up}
+  Send {alt down}{1}{alt up}
   return true
 }
 
@@ -442,7 +442,7 @@ __$skill_dot_安慰之心__() {
   if !(能力技冷却判断()) {
     return
   }
-  Send {ctrl down}{2}{ctrl up}
+  Send {alt down}{2}{alt up}
   return true
 }
 
@@ -450,19 +450,19 @@ __$skill_dot_庇护所__() {
   if !($level >= 52) {
     return
   }
-  Send {ctrl down}{3}{ctrl up}
+  Send {alt down}{3}{alt up}
   return true
 }
 
 __$skill_dot_康复__() {
-  Send {shift down}{2}{shift up}
+  Send {ctrl down}{alt down}{2}{alt up}{ctrl up}
 }
 
 __$skill_dot_愈疗__() {
   if !($level >= 40) {
     return
   }
-  Send {alt down}{-}{alt up}
+  Send {ctrl down}{-}{ctrl up}
   return true
 }
 
@@ -485,7 +485,7 @@ __$skill_dot_救疗__() {
   if !($level >= 30) {
     return
   }
-  Send {alt down}{7}{alt up}
+  Send {ctrl down}{7}{ctrl up}
   return true
 }
 
@@ -496,7 +496,7 @@ __$skill_dot_无中生有__() {
   if !(A_TickCount - $ts.无中生有 > $cd.无中生有) {
     return
   }
-  Send {ctrl down}{5}{ctrl up}
+  Send {alt down}{5}{alt up}
   $ts.无中生有 := A_TickCount - $cd.无中生有 + $cd.技能施放补正
   SetTimer __$watcher_dot_无中生有__, % $cd.技能施放判断间隔
   return true
@@ -507,7 +507,7 @@ __$watcher_dot_无中生有__() {
 }
 
 __$skill_dot_治疗__() {
-  Send {alt down}{2}{alt up}
+  Send {ctrl down}{2}{ctrl up}
   return true
 }
 
@@ -518,7 +518,7 @@ __$skill_dot_法令__() {
   if !(A_TickCount - $ts.法令 > $cd.法令) {
     return
   }
-  Send {ctrl down}{4}{ctrl up}
+  Send {alt down}{4}{alt up}
   $ts.法令 := A_TickCount - $cd.法令 + $cd.技能施放补正
   SetTimer __$watcher_dot_法令__, % $cd.技能施放判断间隔
   return true
@@ -541,7 +541,7 @@ __$skill_dot_狂喜之心__() {
   if !(能力技冷却判断()) {
     return
   }
-  Send {ctrl down}{0}{ctrl up}
+  Send {alt down}{0}{alt up}
   return true
 }
 
@@ -563,7 +563,7 @@ __$skill_dot_疾风__() {
       }
     }
   }
-  Send {alt down}{3}{alt up}
+  Send {ctrl down}{3}{ctrl up}
   return true
 }
 
@@ -577,7 +577,7 @@ __$skill_dot_神名__() {
   if !(能力技冷却判断()) {
     return
   }
-  Send {ctrl down}{6}{ctrl up}
+  Send {alt down}{6}{alt up}
   $ts.神名 := A_TickCount - $cd.神名 + $cd.技能施放补正
   SetTimer __$watcher_dot_神名__, % $cd.技能施放判断间隔
   return true
@@ -591,7 +591,7 @@ __$skill_dot_神圣__() {
   if !($level >= 45) {
     return
   }
-  Send {alt down}{=}{alt up}
+  Send {ctrl down}{=}{ctrl up}
   return true
 }
 
@@ -599,7 +599,7 @@ __$skill_dot_神祝祷__() {
   if !($level >= 66) {
     return
   }
-  Send {ctrl down}{7}{ctrl up}
+  Send {alt down}{7}{alt up}
   return true
 }
 
@@ -610,7 +610,7 @@ __$skill_dot_神速咏唱__() {
   if !(A_TickCount - $ts.神速咏唱 > $cd.神速咏唱) {
     return
   }
-  Send {alt down}{9}{alt up}
+  Send {ctrl down}{9}{ctrl up}
   $ts.神速咏唱 := A_TickCount - $cd.神速咏唱 + $cd.技能施放补正
   SetTimer __$watcher_dot_神速咏唱__, % $cd.技能施放判断间隔
   return true
@@ -635,7 +635,7 @@ __$skill_dot_苦难之心__() {
   if !($red >= 3) {
     return
   }
-  Send {ctrl down}{9}{ctrl up}
+  Send {alt down}{9}{alt up}
   return true
 }
 
@@ -662,7 +662,7 @@ __$skill_dot_醒梦__() {
   if ($mp > 50) {
     return
   }
-  Send {shift down}{4}{shift up}
+  Send {ctrl down}{alt down}{4}{alt up}{ctrl up}
   $ts.醒梦 := A_TickCount - $cd.醒梦 + $cd.技能施放补正
   SetTimer __$watcher_dot_醒梦__, % $cd.技能施放判断间隔
   return true
@@ -673,7 +673,7 @@ __$watcher_dot_醒梦__() {
 }
 
 __$skill_dot_飞石__() {
-  Send {alt down}{1}{alt up}
+  Send {ctrl down}{1}{ctrl up}
 }
 
 attackS() {

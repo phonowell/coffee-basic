@@ -12,7 +12,7 @@ $skill.神名 = ->
   unless 能力技冷却判断()
     return
 
-  $.press 'ctrl + 6'
+  $.press 'alt + 6'
 
   $ts.神名 = A_TickCount - $cd.神名 + $cd.技能施放补正
   setInterval $watcher.神名, $cd.技能施放判断间隔

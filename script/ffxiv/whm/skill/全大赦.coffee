@@ -12,7 +12,7 @@ $skill.全大赦 = ->
   unless 能力技冷却判断()
     return
 
-  $.press 'ctrl + 8'
+  $.press 'alt + 8'
 
   $ts.全大赦 = A_TickCount - $cd.全大赦 + $cd.技能施放补正
   setInterval $watcher.全大赦, $cd.技能施放判断间隔

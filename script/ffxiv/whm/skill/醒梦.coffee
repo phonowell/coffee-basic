@@ -9,7 +9,7 @@ $skill.醒梦 = ->
   if $mp > 50
     return
 
-  $.press 'shift + 4'
+  $.press 'ctrl + alt + 4'
   
   $ts.醒梦 = A_TickCount - $cd.醒梦 + $cd.技能施放补正
   setInterval $watcher.醒梦, $cd.技能施放判断间隔

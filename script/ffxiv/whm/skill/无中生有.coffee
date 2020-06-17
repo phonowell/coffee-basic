@@ -9,7 +9,7 @@ $skill.无中生有 = ->
   unless A_TickCount - $ts.无中生有 > $cd.无中生有
     return
 
-  $.press 'ctrl + 5'
+  $.press 'alt + 5'
 
   $ts.无中生有 = A_TickCount - $cd.无中生有 + $cd.技能施放补正
   setInterval $watcher.无中生有, $cd.技能施放判断间隔

@@ -9,7 +9,7 @@ $skill.医济 = ->
   unless A_TickCount - $ts.医济 > $cd.医济
     return
   
-  $.press 'alt + 8'
+  $.press 'ctrl + 8'
 
   setInterval $watcher.医济, $cd.技能施放判断间隔
   return true

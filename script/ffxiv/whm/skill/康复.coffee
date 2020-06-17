@@ -1,1 +1,1 @@
-$skill.康复 = -> $.press 'shift + 2'
+$skill.康复 = -> $.press 'ctrl + alt + 2'

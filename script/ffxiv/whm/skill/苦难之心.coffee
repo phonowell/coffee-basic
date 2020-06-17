@@ -6,5 +6,5 @@ $skill.苦难之心 = ->
   unless $red >= 3
     return
 
-  $.press 'ctrl + 9'
+  $.press 'alt + 9'
   return true

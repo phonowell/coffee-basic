@@ -1,4 +1,4 @@
 $skill.医治 = ->
 
-  $.press 'alt + 4'
+  $.press 'ctrl + 4'
   return true

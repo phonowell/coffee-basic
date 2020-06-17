@@ -3,5 +3,5 @@ $skill.愈疗 = ->
   unless $level >= 40
     return
 
-  $.press 'alt + minus'
+  $.press 'ctrl + minus'
   return true

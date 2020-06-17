@@ -12,7 +12,7 @@ $skill.再生 = ->
   if hasStatusByTarget '再生'
     return
   
-  $.press 'alt + 0'
+  $.press 'ctrl + 0'
 
   $ts.再生 = A_TickCount - $cd.再生 + $cd.技能施放补正
   return true

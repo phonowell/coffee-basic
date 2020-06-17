@@ -12,5 +12,5 @@ $skill.狂喜之心 = ->
   unless 能力技冷却判断()
     return
 
-  $.press 'ctrl + 0'
+  $.press 'alt + 0'
   return true

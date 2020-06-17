@@ -1,1 +1,1 @@
-$skill.复活 = -> $.press 'alt + 5'
+$skill.复活 = -> $.press 'ctrl + 5'

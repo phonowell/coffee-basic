@@ -12,5 +12,5 @@ $skill.疾风 = ->
       if hasStatusByTarget '疾风'
         return
   
-  $.press 'alt + 3'
+  $.press 'ctrl + 3'
   return true

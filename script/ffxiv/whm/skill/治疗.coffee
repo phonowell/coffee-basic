@@ -1,3 +1,3 @@
 $skill.治疗 = ->
-  $.press 'alt + 2'
+  $.press 'ctrl + 2'
   return true
