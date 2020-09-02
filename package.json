@@ -27,9 +27,7 @@
     "type": "git",
     "url": "https://github.com/phonowell/coffee-basic.git"
   },
-  "scripts": {
-    "test": "node test.js"
-  },
+  "scripts": {},
   "url": "https://github.com/phonowell/coffee-basic",
   "version": "0.0.3"
 }
