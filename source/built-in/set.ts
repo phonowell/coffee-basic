@@ -1,8 +1,12 @@
 // interface
-import { IArgumentBuiltIn } from '../type'
 
-// export
-export function $setFixed({ argument }: IArgumentBuiltIn) {
+import { ArgumentBuiltIn } from '../type'
+
+// function
+
+export function $setFixed(
+  { argument }: ArgumentBuiltIn
+): string {
 
   let isFixed = 'Toggle'
   if (argument[0] === 'true')

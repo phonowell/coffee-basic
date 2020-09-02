@@ -1,11 +1,14 @@
-import { trim } from '../module/fn'
+import { trim } from '../transpiler/fn'
 
 // interface
-import { IArgumentBuiltIn } from '../type'
 
-// export
+import { ArgumentBuiltIn } from '../type'
 
-export function $open({ argument, output }: IArgumentBuiltIn) {
+// function
+
+export function $open(
+  { argument, output }: ArgumentBuiltIn
+): string[] {
   const arg = trim(argument[0])
   const result = [`Run ${arg}`]
   if (output)
@@ -13,6 +16,8 @@ export function $open({ argument, output }: IArgumentBuiltIn) {
   return result
 }
 
-export function $write({ argument }: IArgumentBuiltIn) {
+export function $write(
+  { argument }: ArgumentBuiltIn
+): string {
   return `FileAppend ${argument[1] || ''}, ${argument[0] || 'readme.txt'}, 'UTF-8-RAW'`
 }

@@ -125,7 +125,7 @@ checkNear() {
     $isNear := false
     return $isNear
   }
-  PixelGetColor color, 1479, 682, RGB
+  PixelGetColor color, 1803, 764, RGB
   if (color == 0xD23A3A) {
     $isNear := false
     return $isNear
@@ -290,12 +290,12 @@ __$skill_dot_中断咏唱__() {
 }
 
 __$skill_dot_冲刺__() {
-  Send {shift down}{-}{shift up}
+  Send {ctrl down}{alt down}{-}{alt up}{ctrl up}
   return true
 }
 
 __$skill_dot_空白信息__() {
-  Send {shift down}{=}{shift up}
+  Send {ctrl down}{alt down}{=}{alt up}{ctrl up}
   return true
 }
 

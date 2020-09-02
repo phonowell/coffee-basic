@@ -1,13 +1,32 @@
 import { getDepth, setDepth } from './fn'
 
 // interface
-import { IData } from '../type'
+
+import { Block } from '../type'
 
 // function
 
-const filterType = (line: string) => {
+function checkOriginal(
+  name: string
+): boolean {
 
-  let type: string
+  if (!(name.includes('.') || name.includes('[')))
+    return false
+
+  if (name.startsWith('$.'))
+    return false
+
+  if (name.startsWith('Math.'))
+    return false
+
+  return true
+}
+
+function filterType(
+  line: string
+): [string, string] {
+
+  let type: string = ''
 
   if (line.startsWith('return ')) {
     type = 'return'
@@ -28,7 +47,9 @@ const filterType = (line: string) => {
   return [type, line]
 }
 
-const format = (line: string) => {
+function format(
+  line: string
+): string {
 
   const depth = getDepth(line)
 
@@ -71,7 +92,7 @@ const format = (line: string) => {
         value.startsWith('== ')
       ].includes(true)
       if (isInvalid) return text
-      if (isOriginal(key)) return `${key}.Call(${value})`
+      if (checkOriginal(key)) return `${key}.Call(${value})`
       return `${key}(${value})`
     })
 
@@ -87,26 +108,29 @@ const format = (line: string) => {
   return `${setDepth(depth)}${result}`
 }
 
-const isOriginal = (name: string) => {
-  if (!(name.includes('.') || name.includes('[')))
-    return false
+function main(
+  listVar: string[],
+  listBlock: Block[]
+): void {
 
-  if (name.startsWith('$.'))
-    return false
+  listVar.forEach((line, i) =>
+    listVar[i] = format(line)
+  )
 
-  if (name.startsWith('Math.'))
-    return false
-
-  return true
+  listBlock.forEach(block =>
+    block.content = block.content.map(line => format(line))
+  )
 }
 
-const validate = (text: string) => {
+function validate(
+  text: string
+): boolean {
 
   const list = [
     'else {',
     'for ',
     'loop '
-  ]
+  ] as const
 
   let result = true
   for (const key of list) {
@@ -119,11 +143,4 @@ const validate = (text: string) => {
 }
 
 // export
-export default (data: IData) => {
-
-  data.var = data.var.map(value => format(value));
-
-  [...data.fn, ...data.event].forEach(block =>
-    block.content = block.content.map(line => format(line))
-  )
-}
+export default main

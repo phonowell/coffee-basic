@@ -6,7 +6,9 @@ global $isChanting := false
 global $hp := 0
 global $isMoving := false
 global $mp := 0
+global $isNear := false
 global $isTargeting := false
+global $trigger := false
 global $step := 0
 global $level := 80
 global $skill := {}
@@ -27,67 +29,109 @@ calcCd(name) {
 checkChanting() {
   if ($isMoving) {
     $isChanting := false
-    return
+    return $isChanting
   }
   PixelGetColor color, 1130, 865, RGB
   $isChanting := color == 0x2B1B13
+  return isChanting
 }
 
 checkHp() {
   PixelSearch x, y, 21, 36, 168, 36, 0x58483E, 10, Fast RGB
   if !(x) {
     $hp := 100
-    return
+    return $hp
   }
   percent := (x - 21) * 100 / (168 - 21)
   percent := Round(percent)
   $hp := percent
+  return $hp
 }
 
 checkMoving() {
   GetKeyState dis, 2joyx
   if (dis < 40 or dis > 60) {
     $isMoving := true
-    return
+    return $isMoving
   }
   GetKeyState dis, 2joyy
   if (dis < 40 or dis > 60) {
     $isMoving := true
-    return
+    return $isMoving
   }
   $isMoving := false
+  return $isMoving
 }
 
 checkMp() {
   PixelSearch x, y, 181, 36, 328, 36, 0x58483E, 10, Fast RGB
   if !(x) {
     $mp := 100
-    return
+    return $mp
   }
   percent := (x - 181) * 100 / (328 - 181)
   percent := Round(percent)
   $mp := percent
+  return $mp
+}
+
+checkNear() {
+  if !($isTargeting) {
+    $isNear := false
+    return $isNear
+  }
+  PixelGetColor color, 1803, 764, RGB
+  if (color == 0xD23A3A) {
+    $isNear := false
+    return $isNear
+  }
+  $isNear := true
+  return $isNear
 }
 
 checkTargeting() {
   PixelGetColor color, 650, 65, RGB
   if (color == 0xFF8888) {
-    $isTargeting := true
-    return
+    return setTargeting()
   }
   if (color == 0xFFC888) {
-    $isTargeting := true
-    return
+    return setTargeting()
   }
   if (color == 0xEBD788) {
-    $isTargeting := true
-    return
+    return setTargeting()
   }
   if (color == 0xFFB1FF) {
-    $isTargeting := true
-    return
+    return setTargeting()
   }
   $isTargeting := false
+  return $isTargeting
+}
+
+setTargeting() {
+  $isTargeting := true
+  $ts.targeting := A_TickCount
+  return $isTargeting
+}
+
+checkTrigger() {
+  GetKeyState __value__, 2joy7
+  isLT := __value__ == "D"
+  GetKeyState __value__, 2joy8
+  isRT := __value__ == "D"
+  if (isLT and isRT) {
+    $trigger := "both"
+    return $trigger
+  }
+  if (isLT) {
+    $trigger := "left"
+    return $trigger
+  }
+  if (isRT) {
+    $trigger := "right"
+    return $trigger
+  }
+  $trigger := false
+  return $trigger
 }
 
 clearTip() {
@@ -115,23 +159,6 @@ clearWatcher(name, type := "hasUsed") {
   return true
 }
 
-getCurrentTrigger() {
-  GetKeyState __value__, 2joy7
-  isLT := __value__ == "D"
-  GetKeyState __value__, 2joy8
-  isRT := __value__ == "D"
-  if (isLT and isRT) {
-    return "both"
-  }
-  if (isLT) {
-    return "left"
-  }
-  if (isRT) {
-    return "right"
-  }
-  return
-}
-
 hasStatus(name) {
   ImageSearch x, y, 725, 840, 925, 875, % A_ScriptDir . "\" . "image\" . name . ".png"
   return x > 0 and y > 0
@@ -147,13 +174,20 @@ hasUsed(name) {
   return x > 0 and y > 0
 }
 
-makeReportMsg(msg, list) {
+makeReportMsg(msg := false, list := false) {
+  if !(msg) {
+    msg := "Lv." . $level . " / " . $trigger . " / " . A_TickCount - $ts.报告 . " ms"
+    msg := "" . msg . "`nhp: " . $hp . " / mp: " . $mp . ""
+    msg := "" . msg . "`ntargeting: " . $isTargeting . " / near: " . $isNear . ""
+    msg := "" . msg . "`nmoving: " . $isMoving . " / chanting: " . $isChanting . ""
+    return msg
+  }
   for __i__, name in list {
     result := calcCd(name)
     if !(result > 1) {
       continue
     }
-    msg := "" . msg . "`n" . name . "：" . result . "s"
+    msg := "" . msg . "`n" . name . ": " . result . " s"
   }
   return msg
 }
@@ -219,6 +253,7 @@ __d_dot_display__() {
 }
 
 __$default__() {
+  $ts.targeting := 0
   $cd.技能施放判断间隔 := 100
   $cd.技能施放补正 := 1500
   d.value := 2

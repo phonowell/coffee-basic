@@ -28,13 +28,14 @@ global $isChanting := false
 global $hp := 0
 global $isMoving := false
 global $mp := 0
+global $isNear := false
 global $isTargeting := false
+global $trigger := false
 global $step := 0
 global $level := 80
 global $skill := {}
 global $watcher := {}
 global $black := 0
-global $distance := "far"
 global $white := 0
 global $isReporting := true
 global $ap := 0
@@ -43,20 +44,6 @@ global $isBR := false
 global $isWR := false
 
 ; function
-
-toggleView() {
-  GetKeyState __value__, 2joy5
-  isPressing := __value__ == "D"
-  if !(isPressing) {
-    SetTimer toggleView, Off
-    Send {ctrl up}{up up}
-    return
-  }
-  GetKeyState state, 2joyr
-  if (state < 20) {
-    Send {ctrl down}{up down}
-  }
-}
 
 attack() {
   trigger := getCurrentTrigger()
@@ -165,67 +152,109 @@ calcCd(name) {
 checkChanting() {
   if ($isMoving) {
     $isChanting := false
-    return
+    return $isChanting
   }
   PixelGetColor color, 1130, 865, RGB
   $isChanting := color == 0x2B1B13
+  return isChanting
 }
 
 checkHp() {
   PixelSearch x, y, 21, 36, 168, 36, 0x58483E, 10, Fast RGB
   if !(x) {
     $hp := 100
-    return
+    return $hp
   }
   percent := (x - 21) * 100 / (168 - 21)
   percent := Round(percent)
   $hp := percent
+  return $hp
 }
 
 checkMoving() {
   GetKeyState dis, 2joyx
   if (dis < 40 or dis > 60) {
     $isMoving := true
-    return
+    return $isMoving
   }
   GetKeyState dis, 2joyy
   if (dis < 40 or dis > 60) {
     $isMoving := true
-    return
+    return $isMoving
   }
   $isMoving := false
+  return $isMoving
 }
 
 checkMp() {
   PixelSearch x, y, 181, 36, 328, 36, 0x58483E, 10, Fast RGB
   if !(x) {
     $mp := 100
-    return
+    return $mp
   }
   percent := (x - 181) * 100 / (328 - 181)
   percent := Round(percent)
   $mp := percent
+  return $mp
+}
+
+checkNear() {
+  if !($isTargeting) {
+    $isNear := false
+    return $isNear
+  }
+  PixelGetColor color, 1803, 764, RGB
+  if (color == 0xD23A3A) {
+    $isNear := false
+    return $isNear
+  }
+  $isNear := true
+  return $isNear
 }
 
 checkTargeting() {
   PixelGetColor color, 650, 65, RGB
   if (color == 0xFF8888) {
-    $isTargeting := true
-    return
+    return setTargeting()
   }
   if (color == 0xFFC888) {
-    $isTargeting := true
-    return
+    return setTargeting()
   }
   if (color == 0xEBD788) {
-    $isTargeting := true
-    return
+    return setTargeting()
   }
   if (color == 0xFFB1FF) {
-    $isTargeting := true
-    return
+    return setTargeting()
   }
   $isTargeting := false
+  return $isTargeting
+}
+
+setTargeting() {
+  $isTargeting := true
+  $ts.targeting := A_TickCount
+  return $isTargeting
+}
+
+checkTrigger() {
+  GetKeyState __value__, 2joy7
+  isLT := __value__ == "D"
+  GetKeyState __value__, 2joy8
+  isRT := __value__ == "D"
+  if (isLT and isRT) {
+    $trigger := "both"
+    return $trigger
+  }
+  if (isLT) {
+    $trigger := "left"
+    return $trigger
+  }
+  if (isRT) {
+    $trigger := "right"
+    return $trigger
+  }
+  $trigger := false
+  return $trigger
 }
 
 clearTip() {
@@ -253,23 +282,6 @@ clearWatcher(name, type := "hasUsed") {
   return true
 }
 
-getCurrentTrigger() {
-  GetKeyState __value__, 2joy7
-  isLT := __value__ == "D"
-  GetKeyState __value__, 2joy8
-  isRT := __value__ == "D"
-  if (isLT and isRT) {
-    return "both"
-  }
-  if (isLT) {
-    return "left"
-  }
-  if (isRT) {
-    return "right"
-  }
-  return
-}
-
 hasStatus(name) {
   ImageSearch x, y, 725, 840, 925, 875, % A_ScriptDir . "\" . "image\" . name . ".png"
   return x > 0 and y > 0
@@ -285,13 +297,20 @@ hasUsed(name) {
   return x > 0 and y > 0
 }
 
-makeReportMsg(msg, list) {
+makeReportMsg(msg := false, list := false) {
+  if !(msg) {
+    msg := "Lv." . $level . " / " . $trigger . " / " . A_TickCount - $ts.报告 . " ms"
+    msg := "" . msg . "`nhp: " . $hp . " / mp: " . $mp . ""
+    msg := "" . msg . "`ntargeting: " . $isTargeting . " / near: " . $isNear . ""
+    msg := "" . msg . "`nmoving: " . $isMoving . " / chanting: " . $isChanting . ""
+    return msg
+  }
   for __i__, name in list {
     result := calcCd(name)
     if !(result > 1) {
       continue
     }
-    msg := "" . msg . "`n" . name . "：" . result . "s"
+    msg := "" . msg . "`n" . name . ": " . result . " s"
   }
   return msg
 }
@@ -351,27 +370,6 @@ checkBlack() {
   $black := percent
 }
 
-checkDistance() {
-  if !($isTargeting) {
-    $distance := "far"
-    return
-  }
-  PixelGetColor color, 1875, 723, RGB
-  if (color == 0x1A1D1E) {
-    $distance := "near"
-    return
-  }
-  if (color == 0x101312) {
-    $distance := "near"
-    return
-  }
-  if (color == 0x101211) {
-    $distance := "near"
-    return
-  }
-  $distance := "far"
-}
-
 checkWhite() {
   PixelSearch x, y, 1023, 798, 1170, 798, 0x58483E, 10, Fast RGB
   if !(x) {
@@ -385,27 +383,28 @@ checkWhite() {
 
 __$skill_dot_中断咏唱__() {
   if !($isChanting) {
-    return
+    return true
   }
   Send {space}
+  return true
 }
 
 __$skill_dot_冲刺__() {
-  Send {shift down}{-}{shift up}
+  Send {ctrl down}{alt down}{-}{alt up}{ctrl up}
+  return true
 }
 
 __$skill_dot_空白信息__() {
-  Send {shift down}{=}{shift up}
+  Send {ctrl down}{alt down}{=}{alt up}{ctrl up}
+  return true
 }
 
 __$skill_dot_索敌__() {
-  checkTargeting()
   if ($isTargeting) {
     return true
   }
   Send {f11}
-  checkTargeting()
-  return $isTargeting
+  return true
 }
 
 __$skill_dot_交击斩__() {
@@ -446,7 +445,7 @@ __$skill_dot_交剑__() {
   if !(A_TickCount - $ts.交剑 > $cd.交剑) {
     return
   }
-  if !($distance == "near") {
+  if !($isNear) {
     return
   }
   Send {ctrl down}{0}{ctrl up}
@@ -535,8 +534,8 @@ __$skill_dot_划圆斩__() {
   if !($black >= 20 and $white >= 20) {
     return
   }
-  checkDistance()
-  if !($distance == "near") {
+  checkNear()
+  if !($isNear) {
     use("短兵相接", true)
     return
   }
@@ -575,7 +574,7 @@ __$skill_dot_回刺__() {
     return
   }
   use("中断咏唱")
-  if !($distance == "near") {
+  if !($isNear) {
     use("短兵相接", true)
     return
   }
@@ -649,7 +648,7 @@ __$skill_dot_短兵相接__(isForced := false) {
   if !(A_TickCount - $ts.短兵相接 > $cd.短兵相接) {
     return
   }
-  if !($distance == "near" or isForced) {
+  if !($isNear or isForced) {
     return
   }
   Send {alt down}{4}{alt up}
@@ -768,7 +767,7 @@ __$skill_dot_获取状态__() {
   $ts.获取状态 := A_TickCount
   checkMoving()
   checkChanting()
-  checkDistance()
+  checkNear()
   checkBlack()
   checkWhite()
   isA := hasStatus("连续咏唱")
@@ -791,7 +790,7 @@ __$skill_dot_调整魔元__() {
   if !($black >= 60 and $white >= 60) {
     return
   }
-  if !($distance == "near") {
+  if !($isNear) {
     return
   }
   use("划圆斩")
@@ -1207,6 +1206,7 @@ revive() {
 }
 
 __$default__() {
+  $ts.targeting := 0
   $cd.技能施放判断间隔 := 100
   $cd.技能施放补正 := 1500
   $skill.中断咏唱 := Func("__$skill_dot_中断咏唱__")
@@ -1316,24 +1316,8 @@ return
   ExitApp
 return
 
-2joy5::
-  if !(getCurrentTrigger() == "both") {
-    SetTimer toggleView, Off
-    SetTimer toggleView, % 300
-    return
-  }
-  Send {shift down}{tab}{shift up}
-return
-
-2joy6::
-  if !(getCurrentTrigger() == "both") {
-    return
-  }
-  Send {tab}
-return
-
 2joy12::
-  if !(getCurrentTrigger()) {
+  if !(checkTrigger()) {
     return
   }
   use("冲刺")

@@ -1,45 +1,60 @@
-import * as _ from 'lodash'
+import _ from 'lodash'
 
 // interface
-import { IArgumentBuiltIn, IData } from '../type'
 
-// export
+import { ArgumentBuiltIn } from '../type'
 
-export function $alert({ argument, output }: IArgumentBuiltIn, data: IData) {
-  const result = [
+// function
+
+export function $alert(
+  { argument, output }: ArgumentBuiltIn
+): string[] {
+
+  const listResult = [
     `MsgBox % ${argument[0]}`
   ]
   if (output)
-    result.push(`${output} = ${argument[0]}`)
-  return result
+    listResult.push(`${output} = ${argument[0]}`)
+  return listResult
 }
 
-export function $info({ argument, output }: IArgumentBuiltIn, data: IData) {
-  const [title, text] = argument.length === 2 ? argument : ['"coffee-basic/0.0.2"', argument[0]]
-  const result = [
+export function $info(
+  { argument, output }: ArgumentBuiltIn
+): string[] {
+
+  const [title, text] = argument.length === 2
+    ? argument
+    : ['"coffee-basic/0.0.3"', argument[0]]
+  const listResult = [
     `TrayTip % ${title}, % ${text}`
   ]
   if (output)
-    result.push(` = ${text}`)
-  return result
+    listResult.push(` = ${text}`)
+  return listResult
 }
 
-export function $prompt({ argument, output }: IArgumentBuiltIn, data: IData) {
+export function $prompt(
+  { argument, output }: ArgumentBuiltIn
+): string {
+
   if (!output) throw new Error('found no output')
   const [message, value] = argument
   return `InputBox ${output}, , % ${message || ''}, , , , , , , , % ${value || ''}`
 }
 
-export function $tip({ argument, output }: IArgumentBuiltIn, data: IData) {
-  const result = [] as string[]
+export function $tip(
+  { argument, output }: ArgumentBuiltIn
+): string[] {
+
+  const listResult: string[] = []
   if (!argument[0])
-    result.push('ToolTip')
+    listResult.push('ToolTip')
   else
     if (argument[1] || argument[2])
-      result.push(`ToolTip % ${argument[0]}, ${argument[1] || 0}, ${argument[2] || 0}`)
+      listResult.push(`ToolTip % ${argument[0]}, ${argument[1] || 0}, ${argument[2] || 0}`)
     else
-      result.push(`ToolTip % ${argument[0]}`)
+      listResult.push(`ToolTip % ${argument[0]}`)
   if (output)
-    result.push(`${output} = ${argument[0]}`)
-  return result
+    listResult.push(`${output} = ${argument[0]}`)
+  return listResult
 }

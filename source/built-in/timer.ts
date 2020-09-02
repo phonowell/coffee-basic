@@ -1,11 +1,15 @@
-import { encodeFnName } from '../module/fn'
+import { encodeFnName } from '../transpiler/fn'
 
 // interface
-import { IArgumentBuiltIn, IData } from '../type'
 
-// export
+import { ArgumentBuiltIn } from '../type'
 
-export function $clearInterval({ argument }: IArgumentBuiltIn, data: IData) {
+// function
+
+export function $clearInterval(
+  { argument }: ArgumentBuiltIn
+): string[] | string {
+
   if (argument[0].includes('['))
     return [
       `__timer__ = ${argument[0]}`,
@@ -17,7 +21,10 @@ export function $clearInterval({ argument }: IArgumentBuiltIn, data: IData) {
     return `SetTimer ${argument[0]}, Off`
 }
 
-export function $clearTimeout({ argument }: IArgumentBuiltIn, data: IData) {
+export function $clearTimeout(
+  { argument }: ArgumentBuiltIn
+): string[] | string {
+
   if (argument[0].includes('['))
     return [
       `__timer__ = ${argument[0]}`,
@@ -29,7 +36,10 @@ export function $clearTimeout({ argument }: IArgumentBuiltIn, data: IData) {
     return `SetTimer ${argument[0]}, Off`
 }
 
-export function $setInterval({ argument }: IArgumentBuiltIn, data: IData) {
+export function $setInterval(
+  { argument }: ArgumentBuiltIn
+): string[] | string {
+
   if (argument[0].includes('['))
     return [
       `__timer__ = ${argument[0]}`,
@@ -41,7 +51,10 @@ export function $setInterval({ argument }: IArgumentBuiltIn, data: IData) {
     return `SetTimer ${argument[0]}, % ${argument[1] || 0}`
 }
 
-export function $setTimeout({ argument }: IArgumentBuiltIn, data: IData) {
+export function $setTimeout(
+  { argument }: ArgumentBuiltIn
+): string[] | string {
+
   if (argument[0].includes('['))
     return [
       `__timer__ = ${argument[0]}`,

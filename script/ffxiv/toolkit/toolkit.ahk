@@ -101,7 +101,7 @@ checkNear() {
     $isNear := false
     return $isNear
   }
-  PixelGetColor color, 1479, 682, RGB
+  PixelGetColor color, 1803, 764, RGB
   if (color == 0xD23A3A) {
     $isNear := false
     return $isNear

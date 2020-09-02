@@ -126,7 +126,7 @@ checkNear() {
     $isNear := false
     return $isNear
   }
-  PixelGetColor color, 1479, 682, RGB
+  PixelGetColor color, 1803, 764, RGB
   if (color == 0xD23A3A) {
     $isNear := false
     return $isNear
@@ -291,12 +291,12 @@ __$skill_dot_中断咏唱__() {
 }
 
 __$skill_dot_冲刺__() {
-  Send {shift down}{-}{shift up}
+  Send {ctrl down}{alt down}{-}{alt up}{ctrl up}
   return true
 }
 
 __$skill_dot_空白信息__() {
-  Send {shift down}{=}{shift up}
+  Send {ctrl down}{alt down}{=}{alt up}{ctrl up}
   return true
 }
 
@@ -512,7 +512,7 @@ __$skill_dot_能力技__() {
   }
   for __i__, skill in ["猛者强击", "死亡箭雨", "失血箭", "纷乱箭", "贤者的叙事谣", "伤腿", "伤足", "空白信息"] {
     if (use(skill)) {
-      break
+      return
     }
   }
 }
@@ -608,7 +608,6 @@ attackS() {
     return
   }
   if !($isNear) {
-    SoundBeep
     return
   }
   for __i__, skill in ["直线射击", "风蚀箭", "毒咬箭", "强力射击"] {

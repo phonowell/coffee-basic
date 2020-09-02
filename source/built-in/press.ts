@@ -1,11 +1,14 @@
-import { formatKey } from '../module/fn'
+import { formatKey } from '../transpiler/fn'
 
 // interface
-import { IArgumentBuiltIn } from '../type'
 
-// export
+import { ArgumentBuiltIn } from '../type'
 
-export function $isPressing({ argument, output }: IArgumentBuiltIn) {
+// function
+
+export function $isPressing(
+  { argument, output }: ArgumentBuiltIn
+): string[] {
 
   if (!output) throw new Error('found no output')
 
@@ -18,9 +21,11 @@ export function $isPressing({ argument, output }: IArgumentBuiltIn) {
   ]
 }
 
-export function $press({ argument }: IArgumentBuiltIn) {
+export function $press(
+  { argument }: ArgumentBuiltIn
+): string {
 
-  const listResult = [] as string[]
+  const listResult: string[] = []
   for (const arg of argument) {
 
     const list = arg

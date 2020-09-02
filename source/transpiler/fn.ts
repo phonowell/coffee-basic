@@ -1,12 +1,14 @@
-import $ from '../../lib/fire-keeper'
-import * as _ from 'lodash'
+import _ from 'lodash'
 
 // interface
-import { IBlock, IData } from '../type'
+import { Block } from '../type'
 
 // function
 
-export function encodeFnName(name: string) {
+export function encodeFnName(
+  name: string
+): string {
+
   name = name
     .replace(/\]/g, '')
     .replace(/\[/g, '.')
@@ -15,7 +17,9 @@ export function encodeFnName(name: string) {
   return `__${name}__`
 }
 
-export function formatKey(input: string) {
+export function formatKey(
+  input: string
+): string {
 
   return input
     .toLowerCase()
@@ -33,45 +37,54 @@ export function formatKey(input: string) {
     .replace(/:/g, ' ')
 }
 
-export function getDepth(line: string) {
+export function getDepth(
+  line: string
+): number {
   return Math.floor((line.length - line.trimStart().length) / 2)
 }
 
-export function newBlock() {
+export function initBlock(): Block {
   return {
     name: '',
     argument: '',
     content: []
-  } as IBlock
+  }
 }
 
 export function regFn(
-  data: IData, name: string, argument: string | string[], content: string[]
-) {
+  listFn: Block[],
+  name: string,
+  argument: string[] | string,
+  content: string[]
+): void {
 
   name = `__${name}__`
-  if ($.type(argument) === 'array') {
-    argument = (argument as string[]).join(', ')
-  }
+  if (argument instanceof Array)
+    argument = argument.join(', ')
   content.push('')
 
-  if (_.findIndex(data.fn, { name }) !== -1) return name
+  if (~_.findIndex(listFn, { name })) return
 
-  data.fn.push({ name, argument: argument as string, content })
-
-  return name
+  listFn.push({ name, argument, content })
 }
 
-export function setDepth(n: number) {
+export function setDepth(
+  n: number
+): string {
   return _.repeat(' ', n * 2)
 }
 
-export function trim(input: string) {
+export function trim(
+  input: string
+): string {
+
   if (!["'", '"'].includes(input[0])) return input
   return input.slice(1, (input.length - 1))
 }
 
-export function unquote(line: string) {
+export function unquote(
+  line: string
+): string {
 
   if (!line.includes('#{')) return line
 

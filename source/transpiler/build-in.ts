@@ -1,6 +1,5 @@
-import $ from '../../lib/fire-keeper'
-import * as _ from 'lodash'
-
+import $ from 'fire-keeper'
+import _ from 'lodash'
 import { getDepth, setDepth } from './fn'
 
 import { $abs, $ceil, $floor, $round } from '../built-in/math'
@@ -16,9 +15,9 @@ import { $trim, $trimEnd, $trimStart } from '../built-in/trim'
 
 // interface
 
-import { IData } from '../type'
+import { Block } from '../type'
 
-interface IOption {
+type Option = {
   argument: string[]
   depth: number
   name: string
@@ -27,7 +26,9 @@ interface IOption {
 
 // const
 
-const Rule = {
+const Rule: {
+  [key: string]: (option: Option) => string[] | string
+} = {
 
   '$.beep': $beep,
   '$.click': $click,
@@ -61,11 +62,13 @@ const Rule = {
   'setInterval': $setInterval,
   'setTimeout': $setTimeout
 
-} as { [key: string]: (option: IOption, data?: IData) => any }
+} as const
 
 // function
 
-const format = (line: string, data: IData) => {
+function format(
+  line: string
+): string[] | string {
 
   if (!line.includes('(')) return line
 
@@ -83,27 +86,55 @@ const format = (line: string, data: IData) => {
   }
 
   // return
-  const result = fn(option, data) as string | string[]
+  const result = fn(option)
 
-  if ($.type(result) === 'string')
-    return `${setDepth(depth)}${result as string}`
+  if (typeof result === 'string')
+    return `${setDepth(depth)}${result}`
 
-  if ($.type(result) === 'array') {
-    const _result = [] as string[]
-    for (const _line of result as string[])
-      _result.push(`${setDepth(depth)}${_line}`)
-    return _result
+  if (result instanceof Array) {
+    const _listResult: string[] = []
+    for (const _line of result)
+      _listResult.push(`${setDepth(depth)}${_line}`)
+    return _listResult
+  }
+
+  throw new Error(`invalid type '${$.type(result)}'`)
+}
+
+function main(
+  listBlock: Block[]
+): void {
+
+  for (const block of listBlock) {
+
+    let listResult: string[] = []
+
+    for (const line of block.content) {
+
+      const result = format(line)
+
+      if (typeof (result) === 'string') {
+        listResult.push(result)
+        continue
+      }
+
+      listResult = [...listResult, ...result]
+    }
+
+    block.content = listResult
   }
 }
 
-const pickOption = (line: string) => {
+function pickOption(
+  line: string
+): Option | undefined {
 
   const depth = getDepth(line)
 
-  let [name, ...arg] = line
+  let [name, ...listArg] = line
     .trim()
     .split('(')
-  let output: string
+  let output: string = ''
 
   if (name.includes('=')) {
     const list = name.split('=')
@@ -113,39 +144,19 @@ const pickOption = (line: string) => {
 
   if (name.includes(' ')) return
 
-  arg = _.trim(arg.join('('), ' ()')
-    .replace(/'[^']+?'/g, (text: string): string => text.replace(/,/g, '__comma__'))
-    .replace(/"[^"]+?"/g, (text: string): string => text.replace(/,/g, '__comma__'))
+  listArg = _.trim(listArg.join('('), ' ()')
+    .replace(/'[^']+?'/g, text => text.replace(/,/g, '__comma__'))
+    .replace(/"[^"]+?"/g, text => text.replace(/,/g, '__comma__'))
     .split(',')
-    .map((it) => it
+    .map(it => it
       .trim()
       .replace(/__comma__/g, ',')
     )
 
   // return
-  const argument = arg
-  return { argument, depth, name, output } as IOption
+  const argument = listArg
+  return { argument, depth, name, output }
 }
 
 // export
-export default (data: IData) => {
-
-  for (const block of [...data.fn, ...data.event]) {
-
-    let result = [] as string[]
-
-    for (const line of block.content) {
-
-      const res = format(line, data)
-
-      if (typeof (res) === 'string') {
-        result.push(res)
-        continue
-      }
-
-      result = [...result, ...res]
-    }
-
-    block.content = result
-  }
-}
+export default main

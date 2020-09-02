@@ -1,13 +1,16 @@
-import * as _ from 'lodash'
-
-import { getDepth, newBlock } from './fn'
+import _ from 'lodash'
+import { getDepth, initBlock } from './fn'
 
 // interface
-import { IData } from '../type'
+
+import { Block } from '../type'
 
 // function
 
-const format = (text: string) => {
+function format(
+  text: string
+): string {
+
   return text
     .toLowerCase()
     .replace(/[\s-]/g, '')
@@ -27,7 +30,9 @@ const format = (text: string) => {
     .replace(/:/g, ' ')
 }
 
-const getName = (line: string) => {
+function getName(
+  line: string
+): string {
 
   const name = line
     .replace(/\s/g, '')
@@ -37,27 +42,20 @@ const getName = (line: string) => {
   return format(_.trim(name, " '\""))
 }
 
-const validate = (line: string) => {
+function main(
+  listMain: string[]
+): {
+  event: Block[]
+  main: string[]
+} {
 
-  if (getDepth(line)) return
+  const listContent: string[] = []
+  const listEvent: Block[] = []
 
-  line = line
-    .trim()
+  let block = initBlock()
+  let isPending: boolean = false
 
-  if (!line.startsWith('$.on')) return
-  if (!line.endsWith('->')) return
-
-  return true
-}
-
-// export
-export default (data: IData) => {
-
-  let block = newBlock()
-  const result = [] as string[]
-  let isPending: boolean
-
-  for (const line of data.main) {
+  for (const line of listMain) {
 
     if (isPending) {
 
@@ -68,21 +66,37 @@ export default (data: IData) => {
 
       isPending = false
       block.content.push('')
-      data.event.push(block)
-      block = newBlock()
+      listEvent.push(block)
+      block = initBlock()
     }
 
     if (!validate(line)) {
-      result.push(line)
+      listContent.push(line)
       continue
     }
 
     isPending = true
-    const name = getName(line)
-    Object.assign(block, { name })
+    block.name = getName(line)
   }
 
-  //
-
-  data.main = result
+  return {
+    event: listEvent,
+    main: listContent
+  }
 }
+
+function validate(
+  line: string
+): boolean {
+
+  if (getDepth(line)) return false
+
+  line = line.trim()
+  if (!line.startsWith('$.on')) return false
+  if (!line.endsWith('->')) return false
+
+  return true
+}
+
+// export
+export default main

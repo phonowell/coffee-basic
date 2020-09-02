@@ -1,12 +1,17 @@
-export interface IBlock {
+export type ArgumentBuiltIn = {
+  argument: string[]
+  output: string
+}
+
+export type Block = {
   argument: string
   content: string[]
   name: string
 }
 
-export interface IData {
-  event: IBlock[]
-  fn: IBlock[]
+export type Data = {
+  event: Block[]
+  fn: Block[]
   foot: string[]
   head: string[]
   main: string[]
@@ -15,12 +20,7 @@ export interface IData {
   var: string[]
 }
 
-export interface IOption {
-  bare?: boolean
-  path?: string
-}
-
-export interface IArgumentBuiltIn {
-  argument: string[]
-  output: string
+export type Option = {
+  bare: boolean
+  path: string
 }

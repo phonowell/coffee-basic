@@ -1,11 +1,14 @@
-import * as _ from 'lodash'
+import _ from 'lodash'
 
 // interface
-import { IArgumentBuiltIn } from '../type'
+
+import { ArgumentBuiltIn } from '../type'
 
 // function
 
-function format(text: string) {
+function format(
+  text: string
+): string {
 
   if (text.includes('0x')) return text
 
@@ -21,9 +24,9 @@ function format(text: string) {
   return `0x${text.toUpperCase()}`
 }
 
-// export
-
-export function $findColor({ argument, output }: IArgumentBuiltIn) {
+export function $findColor(
+  { argument, output }: ArgumentBuiltIn
+): string {
 
   // output
 
@@ -52,7 +55,9 @@ export function $findColor({ argument, output }: IArgumentBuiltIn) {
 
 }
 
-export function $findImage({ argument, output }: IArgumentBuiltIn) {
+export function $findImage(
+  { argument, output }: ArgumentBuiltIn
+): string {
 
   // output
 

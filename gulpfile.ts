@@ -1,16 +1,16 @@
-import $ from './lib/fire-keeper'
-import * as fs from 'fs'
+import $ from 'fire-keeper'
+import fs from 'fs'
+
+// interface
+
+type IFnAsync = (...args: any[]) => Promise<unknown>
 
 // task
 for (const filename of fs.readdirSync('./task')) {
-
-  if (!filename.endsWith('.ts'))
-    continue
-
+  if (!filename.endsWith('.ts')) continue
   const name = filename.replace('.ts', '')
-  $.task(name, async (...arg: any[]) => {
-    const fnAsync = (await import(`./task/${name}.ts`)).default
-    await fnAsync(...arg)
+  $.task(name, async (...args: any[]) => {
+    const fnAsync = (await import(`./task/${name}`)).default as IFnAsync
+    await fnAsync(...args)
   })
-
 }

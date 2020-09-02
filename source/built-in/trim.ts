@@ -1,16 +1,23 @@
 // interface
-import { IArgumentBuiltIn } from '../type'
 
-// export
+import { ArgumentBuiltIn } from '../type'
 
-export function $trim({ argument }: IArgumentBuiltIn) {
+// function
+
+export function $trim(
+  { argument }: ArgumentBuiltIn
+): string {
   return `Trim ${argument[0]}`
 }
 
-export function $trimEnd({ argument }: IArgumentBuiltIn) {
+export function $trimEnd(
+  { argument }: ArgumentBuiltIn
+): string {
   return `RTrim ${argument[0]}`
 }
 
-export function $trimStart({ argument }: IArgumentBuiltIn) {
+export function $trimStart(
+  { argument }: ArgumentBuiltIn
+): string {
   return `LTrim ${argument[0]}`
 }

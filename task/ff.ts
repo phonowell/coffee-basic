@@ -1,14 +1,18 @@
-import $ from '../lib/fire-keeper'
-import * as _ from 'lodash'
+import $ from 'fire-keeper'
+import _ from 'lodash'
+
+// interface
+
+type Item = {
+  title: string
+  value: string
+}
 
 // function
 
-const load_ = async () => {
+async function load_(): Promise<Item[]> {
 
-  const listResult = [] as {
-    title: string
-    value: string
-  }[]
+  const listResult: Item[] = []
 
   for (const source of await $.source_('./script/ffxiv/**/index.coffee')) {
 
@@ -23,19 +27,26 @@ const load_ = async () => {
   return listResult
 }
 
-// export
-export default async () => {
+async function main_(): Promise<void> {
 
   // ask
 
-  const { target } = $.argv()
+  const { target }: {
+    target: string | undefined
+  } = $.argv()
   const list = await load_()
 
-  const source = target ? _.find(list, { title: target }).value : await $.prompt_({
-    id: 'target-ff',
-    list: await load_(),
-    type: 'auto'
-  })
+  let source: string = ''
+  if (typeof target === 'string') {
+    const it = _.find(list, { title: target })
+    if (it) source = it.value
+  } else
+    source = await $.prompt_({
+      id: 'target-ff',
+      list: await load_(),
+      type: 'auto'
+    })
+  if (!source) throw new Error(`invalid source '${source}'`)
 
   // compile
 
@@ -51,3 +62,6 @@ export default async () => {
   await $.write_(`${dirname}/${basename}.ahk`, await $.read_(temp))
   await $.remove_(temp)
 }
+
+// export
+export default main_

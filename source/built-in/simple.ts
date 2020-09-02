@@ -1,39 +1,49 @@
 // interface
-import { IArgumentBuiltIn, IData } from '../type'
+import { ArgumentBuiltIn } from '../type'
 
-// export
+// function
 
-export function $beep() {
+export function $beep(): string {
   return 'SoundBeep'
 }
 
-export function $click({ argument }: IArgumentBuiltIn) {
+export function $click(
+  { argument }: ArgumentBuiltIn
+): string {
   return argument[0]
     ? `Click % ${argument[0].replace(/:/g, ' ')}`
     : 'Click'
 }
 
-export function $exit({ output }: IArgumentBuiltIn, data: IData) {
-  const result = ['ExitApp']
+export function $exit(
+  { output }: ArgumentBuiltIn
+): string[] {
+
+  const listResult = ['ExitApp']
   if (output)
-    result.push(`${output} = 42`)
-  return result
+    listResult.push(`${output} = 42`)
+  return listResult
 }
 
-export function $move({ argument, output }: IArgumentBuiltIn, data: IData) {
+export function $move(
+  { argument, output }: ArgumentBuiltIn
+): string[] {
+
   const arg = `${argument[0] || 0}, ${argument[1] || 0}, ${argument[2] || 0}`
-  const result = [
+  const listResult = [
     `MouseMove ${arg}`
   ]
   if (output)
-    result.push(`${output} = [${arg}]`)
-  return result
+    listResult.push(`${output} = [${arg}]`)
+  return listResult
 }
 
-export function $reload() {
+export function $reload(): string {
   return 'Reload'
 }
 
-export function $sleep({ argument }: IArgumentBuiltIn) {
+export function $sleep(
+  { argument }: ArgumentBuiltIn
+): string {
   return `Sleep % ${argument[0]}`
 }

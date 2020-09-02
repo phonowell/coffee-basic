@@ -1,9 +1,6 @@
-import $ from '../../lib/fire-keeper'
+import $ from 'fire-keeper'
 
-// interface
-import { IData } from '../type'
-
-// const
+// variable
 
 const listForbidden = [
   '::',
@@ -21,21 +18,26 @@ const listForbidden = [
   'until',
   'when',
   'while'
-]
+] as const
 
 // function
 
-const log = (message: string, i: number) => {
+function log<T extends string>(
+  message: T,
+  i: number
+): T {
+
   $.i(`line ${i + 1}: ${message}`)
   return message
 }
 
-// export
-export default (data: IData) => {
+function main(
+  raw: string
+): boolean {
 
   let result = true
 
-  const listRaw = data.raw.split('\n')
+  const listRaw = raw.split('\n')
   listRaw.forEach((line, i) => {
 
     // block comment
@@ -62,3 +64,6 @@ export default (data: IData) => {
 
   return result
 }
+
+// export
+export default main

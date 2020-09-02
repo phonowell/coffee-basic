@@ -10,7 +10,7 @@
 alert 'hello'
 ```
 
-### clearInterval(funcName: any): void
+### clearInterval(funcName: string): void
 
 类似于`js`中的`clearInterval()`，但只能使用函数名作为参数。
 
@@ -18,7 +18,7 @@ alert 'hello'
 clearInterval fn
 ```
 
-### clearTimeout(funcName: any): void
+### clearTimeout(funcName: string): void
 
 类似于`js`中的`clearTimeout()`，但只能使用函数名作为参数。
 
@@ -34,7 +34,7 @@ clearTimeout fn
 msg = prompt 'input your message', 'hello?'
 ```
 
-### setInterval(funcName: any): void
+### setInterval(funcName: string): void
 
 类似于`js`中的`setInterval()`，但只能使用函数名作为参数。
 
@@ -42,7 +42,7 @@ msg = prompt 'input your message', 'hello?'
 setInterval fn
 ```
 
-### setTimeout(funcName: any): void
+### setTimeout(funcName: string): void
 
 类似于`js`中的`setTimeout()`，但只能使用函数名作为参数。
 

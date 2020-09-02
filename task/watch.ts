@@ -1,7 +1,8 @@
-import $ from '../lib/fire-keeper'
+import $ from 'fire-keeper'
 
-// export
-export default async () => {
+// function
+
+async function main_(): Promise<void> {
 
   const parseAsync = (await import('../source/index')).default
 
@@ -19,3 +20,6 @@ export default async () => {
     await parseAsync(e.path)
   )
 }
+
+// export
+export default main_

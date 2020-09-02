@@ -1,7 +1,8 @@
-import $ from '../lib/fire-keeper'
+import $ from 'fire-keeper'
 
-// export
-export default async () => {
+// function
+
+async function main_(): Promise<void> {
 
   await $.remove_('./script/**/*.ahk')
 
@@ -24,3 +25,6 @@ export default async () => {
     bare: true
   })
 }
+
+// export
+export default main_

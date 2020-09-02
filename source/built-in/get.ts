@@ -1,16 +1,19 @@
-import * as _ from 'lodash'
-
-import { formatKey } from '../module/fn'
+import _ from 'lodash'
+import { formatKey } from '../transpiler/fn'
 
 // interface
-import { IArgumentBuiltIn } from '../type'
 
-// export
-export function $getColor({ argument, output }: IArgumentBuiltIn) {
+import { ArgumentBuiltIn } from '../type'
+
+// function
+
+export function $getColor(
+  { argument, output }: ArgumentBuiltIn
+): string[] {
 
   if (!output) throw new Error('found no output')
 
-  const result = [] as string[]
+  const result: string[] = []
 
   let [x, y] = argument
   if (!(x && y)) {
@@ -24,7 +27,9 @@ export function $getColor({ argument, output }: IArgumentBuiltIn) {
   return result
 }
 
-export function $getPosition({ output }: IArgumentBuiltIn) {
+export function $getPosition(
+  { output }: ArgumentBuiltIn
+): string {
 
   if (!output) throw new Error('found no output')
 
@@ -35,6 +40,8 @@ export function $getPosition({ output }: IArgumentBuiltIn) {
   return `MouseGetPos ${x}, ${y}`
 }
 
-export function $getState({ argument, output }: IArgumentBuiltIn) {
+export function $getState(
+  { argument, output }: ArgumentBuiltIn
+): string {
   return `GetKeyState ${output}, ${formatKey(argument[0])}`
 }
