@@ -1,5 +1,27 @@
 # coffee-basic
 
+## 概述
+
+### 这是啥？
+
+一个将`coffeescript`转换为`ahk`的项目，目的是让使用者能够使用`coffeescript`来书写`ahk`。
+
+### 有必要么？
+
+`ahk`的语法是啥样的，有实际用过的人应该懂的都懂。觉得没有必要的人大可以坚持写原生`ahk`，毕竟**也不是不能用**。
+
+### 为啥是`coffeescript`？
+
+主要因为如下原因：
+
+- 历史原因，`coffeescript`是我之前的主力语言，我对这门语言非常熟悉
+
+- `coffeescript`语法简洁优雅，强制缩进的特性很适合入门者
+
+- `coffeescript`作为脚本语言，本身与`ahk`有一定相似性，易于搞转换
+
+综上，选择使用从该语言转换至`ahk`。
+
 ## 内置函数
 
 ### alert(message: string): string

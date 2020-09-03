@@ -1,9 +1,9 @@
-import $ from '../lib/fire-keeper'
-import * as _ from 'lodash'
+import $ from 'fire-keeper'
+import _ from 'lodash'
 
 // interface
 
-interface IChoice {
+interface Choice {
   title: string
   value: string
 }
@@ -12,24 +12,28 @@ interface IChoice {
 
 class M {
 
-  async ask_(source: string, target: string) {
+  async ask_(source: string, target: string): Promise<string> {
 
-    const isExisted = [
+    const isExisted: [boolean, boolean] = [
       await $.isExisted_(source),
       await $.isExisted_(target)
     ]
 
-    const mtime = isExisted[0] && isExisted[1]
-      ? [
-        (await $.stat_(source)).mtimeMs,
-        (await $.stat_(target)).mtimeMs
-      ]
-      : [0, 0]
+    const mtime: [number, number] = [0, 0]
+    if (isExisted[0]) {
+      const stat = await $.stat_(source)
+      mtime[0] = stat
+        ? stat.mtimeMs
+        : 0
+    }
+    if (isExisted[1]) {
+      const stat = await $.stat_(target)
+      mtime[1] = stat
+        ? stat.mtimeMs
+        : 0
+    }
 
-    const choice = [] as {
-      title: string
-      value: string
-    }[]
+    const choice: Choice[] = []
 
     if (isExisted[0])
       choice.push({
@@ -49,6 +53,11 @@ class M {
         value: 'import'
       })
 
+    if (!choice.length) {
+      $.info('skip')
+      return 'skip'
+    }
+
     choice.push({
       title: 'skip',
       value: 'skip'
@@ -59,53 +68,54 @@ class M {
       message: 'and you decide to...',
       type: 'select'
     })
-
   }
 
-  async execute_() {
+  async execute_(): Promise<void> {
 
-    const data = await this.load_()
+    const data: string[] = await this.load_()
 
     // diff
     for (const line of data) {
 
-      const _list = line.split('@')
-      const [path, extra] = [_list[0], _list[1] || '']
+      const _list: string[] = line.split('@')
+      const [path, extra]: [string, string] = [_list[0], _list[1] || '']
 
-      const _list2 = extra.split('/')
-      const [namespace, version] = [
+      const _list2: string[] = extra.split('/')
+      const [namespace, version]: [string, string] = [
         _list2[0] || 'default',
         _list2[1] || 'latest'
       ]
 
-      const source = `./${path}`
-      let target = `../midway/${path}`
-      const { basename, dirname, extname } = $.getName(target)
+      const source: string = `./${path}`
+      let target: string = `../midway/${path}`
+      const { basename, dirname, extname }: {
+        basename: string
+        dirname: string
+        extname: string
+      } = $.getName(target)
       target = `${dirname}/${basename}-${namespace}-${version}${extname}`
 
       if (await $.isSame_([source, target])) continue
 
       $.info(`'${source}' is different from '${target}'`)
 
-      const value = await this.ask_(source, target)
+      const value: string = await this.ask_(source, target)
       if (!value) break
 
       await this.overwrite_(value, source, target)
     }
-
-    return this
   }
 
-  async load_() {
+  async load_(): Promise<string[]> {
 
     $.info().pause()
-    const listSource = await $.source_('./data/sync/**/*.yaml')
-    const listData = [] as string[][]
+    const listSource: string[] = await $.source_('./data/sync/**/*.yaml')
+    const listData: string[][] = []
     for (const source of listSource)
-      listData.push(await $.read_(source))
+      listData.push(await $.read_(source) as string[])
     $.info().resume()
 
-    let result = [] as string[]
+    let result: string[] = []
 
     for (const data of listData)
       result = [
@@ -116,21 +126,25 @@ class M {
     return _.uniq(result)
   }
 
-  async overwrite_(value: string, source: string, target: string) {
+  async overwrite_(value: string, source: string, target: string): Promise<void> {
 
     if (value === 'export') {
-      const { dirname, filename } = $.getName(target)
+      const { dirname, filename }: {
+        dirname: string
+        filename: string
+      } = $.getName(target)
       await $.copy_(source, dirname, filename)
     }
 
     if (value === 'import') {
-      const { dirname, filename } = $.getName(source)
+      const { dirname, filename }: {
+        dirname: string
+        filename: string
+      } = $.getName(source)
       await $.copy_(target, dirname, filename)
     }
-
-    return this
   }
 }
 
 // export
-export default async () => await (new M()).execute_()
+export default async (): Promise<void> => await (new M()).execute_()
