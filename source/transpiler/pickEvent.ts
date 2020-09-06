@@ -24,7 +24,7 @@ function format(
     // ---
     .replace(/(clickmiddle|middleclick)/g, 'mbutton')
     .replace(/(clickright|rightclick)/g, 'rbutton')
-    .replace(/click/g, 'lbutton')
+    .replace(/(click|clickleft|leftclick)/g, 'lbutton')
     // ---
     .replace(/&/g, ' & ')
     .replace(/:/g, ' ')

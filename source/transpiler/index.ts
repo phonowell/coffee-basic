@@ -13,7 +13,7 @@ import replaceIf from './replaceIf'
 import replaceFor from './replaceFor'
 import replaceLoop from './replaceLoop'
 import call from './call'
-import buildIn from './build-in'
+import injectBuiltIn from './inject'
 import render from './render'
 
 // interface
@@ -50,7 +50,7 @@ async function main_(
   replaceLoop(listBlock)
 
   call(data.var, listBlock)
-  buildIn(listBlock)
+  injectBuiltIn(listBlock)
 
   return render(data, option)
 }

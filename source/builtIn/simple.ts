@@ -15,14 +15,8 @@ export function $click(
     : 'Click'
 }
 
-export function $exit(
-  { output }: ArgumentBuiltIn
-): string[] {
-
-  const listResult = ['ExitApp']
-  if (output)
-    listResult.push(`${output} = 42`)
-  return listResult
+export function $exit(): string {
+  return 'ExitApp'
 }
 
 export function $move(
