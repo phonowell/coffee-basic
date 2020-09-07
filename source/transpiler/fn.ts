@@ -56,18 +56,20 @@ export function regFn(
   name: string,
   argument: string[],
   content: string[]
-): void {
+): string {
 
   name = encodeFnName(name)
   content.push('')
 
-  if (~_.findIndex(listFn, { name })) return
+  if (~_.findIndex(listFn, { name })) return name
 
   listFn.push({
     name,
     argument,
     content
   })
+
+  return name
 }
 
 export function setDepth(

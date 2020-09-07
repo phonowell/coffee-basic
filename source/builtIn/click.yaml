@@ -2,7 +2,7 @@
   - input
 -
   - if (!input) {
-  - '  Click'
-  - '  return'
-  - '}'
-  - Click % StrReplace input, ":", " "
+  - \_Click
+  - \_return
+  - \}
+  - Click % StrReplace input, ':', ' '

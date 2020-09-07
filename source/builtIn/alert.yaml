@@ -1,0 +1,5 @@
+-
+  - message = ''
+-
+  - MsgBox % message
+  - return message

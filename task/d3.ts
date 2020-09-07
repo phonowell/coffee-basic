@@ -11,7 +11,9 @@ async function main_(): Promise<void> {
   await $.remove_(`${base}/*.ahk`)
 
   const parseAsync = (await import('../source/index')).default
-  await parseAsync(`${base}/index.coffee`)
+  await parseAsync(`${base}/index.coffee`, {
+    bare: true
+  })
 }
 
 // export

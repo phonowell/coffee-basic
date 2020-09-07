@@ -21,7 +21,7 @@ const Rule = [
   // '$.getColor': $getColor,
   // '$.getPosition': $getPosition,
   // '$.getState': $getState,
-  // '$.info': $info,
+  '$.info',
   // '$.isPressing': $isPressing,
   '$.move',
   '$.now',
@@ -29,17 +29,17 @@ const Rule = [
   // '$.press': $press,
   '$.reload',
   // '$.setFixed': $setFixed,
-  // '$.sleep': $sleep,
+  '$.sleep',
   // '$.tip': $tip,
   '$.trim',
   '$.trimEnd',
   '$.trimStart',
   // '$.write': $write,
-  // 'Math.abs': $abs,
-  // 'Math.ceil': $ceil,
-  // 'Math.floor': $floor,
-  // 'Math.round': $round,
-  // 'alert': $alert,
+  '$.abs',
+  '$.ceil',
+  '$.floor',
+  '$.round',
+  '$.alert',
   // 'clearInterval': $clearInterval,
   // 'clearTimeout': $clearTimeout,
   // 'prompt': $prompt,
@@ -48,6 +48,27 @@ const Rule = [
 ] as const
 
 // function
+
+async function load_(
+  name: string
+): Promise<Block> {
+
+  const filename = name.replace('$.', '')
+  const [argument, content] = await $.read_(`./source/builtIn/${filename}.yaml`) as Yaml
+
+  return {
+    name,
+    argument: argument.map(it => it.replace(/'/g, '"')),
+    content: content.map(it => {
+      let _it = it
+        .replace(/'/g, '"')
+        .replace(/\\\}/g, '}')
+      if (_it.startsWith('\\_'))
+        _it = _it.replace('\\_', '  ')
+      return _it
+    })
+  }
+}
 
 async function main_(
   listVar: string[],
@@ -72,14 +93,12 @@ async function main_(
   listVar.unshift('$ = {}')
 
   // function
-  
+
   const listResult: string[] = []
 
-  for (const name of setResult) {
-    const filename = name.replace('$.', '')
-    const data: Yaml = await $.read_(`./source/builtIn/${filename}.yaml`) as Yaml
-    regFn(listFn, name, data[0], data[1])
-    const _name = encodeFnName(name)
+  for (const key of setResult) {
+    const { name, argument, content } = await load_(key)
+    const _name = regFn(listFn, name, argument, content)
     listResult.push(`${name} = Func('${_name}')`)
   }
 
