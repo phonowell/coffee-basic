@@ -46,7 +46,7 @@ export function getDepth(
 export function initBlock(): Block {
   return {
     name: '',
-    argument: '',
+    argument: [],
     content: []
   }
 }
@@ -54,18 +54,20 @@ export function initBlock(): Block {
 export function regFn(
   listFn: Block[],
   name: string,
-  argument: string[] | string,
+  argument: string[],
   content: string[]
 ): void {
 
-  name = `__${name}__`
-  if (argument instanceof Array)
-    argument = argument.join(', ')
+  name = encodeFnName(name)
   content.push('')
 
   if (~_.findIndex(listFn, { name })) return
 
-  listFn.push({ name, argument, content })
+  listFn.push({
+    name,
+    argument,
+    content
+  })
 }
 
 export function setDepth(

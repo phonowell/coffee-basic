@@ -1,4 +1,4 @@
-import { unquote } from './fn'
+import { encodeFnName, unquote } from './fn'
 
 // interface
 
@@ -46,7 +46,7 @@ function main(
       ...listResult,
       '',
       '; default',
-      '__$default__()'
+      `${encodeFnName('$default')}()`
     ]
 
   // event
@@ -122,7 +122,7 @@ function renderFunction(
     listResult = [
       ...listResult,
       '',
-      `${block.name}(${unquote(block.argument)}) {`,
+      `${block.name}(${unquote(block.argument.join(', '))}) {`,
       ...listContent,
       '}'
     ]

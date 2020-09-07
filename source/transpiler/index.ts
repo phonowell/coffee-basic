@@ -13,7 +13,7 @@ import replaceIf from './replaceIf'
 import replaceFor from './replaceFor'
 import replaceLoop from './replaceLoop'
 import call from './call'
-import injectBuiltIn from './inject'
+import injectBuiltIn_ from './inject'
 import render from './render'
 
 // interface
@@ -40,7 +40,7 @@ async function main_(
   Object.assign(data, pickFunction(data.main))
   Object.assign(data, pickEvent(data.main))
 
-  wrapMain(data.main, data.fn)
+  wrapMain(data.fn, data.main)
   data.head = setHead(data.mode)
   data.foot = setFoot()
 
@@ -50,7 +50,7 @@ async function main_(
   replaceLoop(listBlock)
 
   call(data.var, listBlock)
-  injectBuiltIn(listBlock)
+  await injectBuiltIn_(data.var, data.fn, listBlock)
 
   return render(data, option)
 }

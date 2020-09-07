@@ -1,10 +1,5 @@
-export type ArgumentBuiltIn = {
-  argument: string[]
-  output: string
-}
-
 export type Block = {
-  argument: string
+  argument: string[]
   content: string[]
   name: string
 }

@@ -9,7 +9,7 @@ import { Block } from '../type'
 
 function getName(
   line: string
-): [string, string] {
+): [string, string[]] {
 
   const [name, ...arg] = line
     .trim()
@@ -19,6 +19,7 @@ function getName(
   return [
     name.trim(),
     _.trim(arg.join('='), ' ()')
+      .split(',')
   ]
 }
 
@@ -65,7 +66,8 @@ function main(
     } else
       _name = name
 
-    Object.assign(block, { name: _name, argument })
+    block.name = _name
+    block.argument = argument
   }
 
   return {

@@ -7,8 +7,8 @@ import { Block } from '../type'
 // function
 
 function main(
-  listMain: string[],
-  listFn: Block[]
+  listFn: Block[],
+  listMain: string[]
 ): void {
 
   if (!(
@@ -17,7 +17,7 @@ function main(
       .trim()
   )) return
 
-  regFn(listFn, '$default', '', listMain)
+  regFn(listFn, '$default', [], listMain)
 }
 
 // export

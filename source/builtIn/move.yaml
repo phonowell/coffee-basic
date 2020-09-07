@@ -1,0 +1,7 @@
+-
+  - x = 0
+  - y = 0
+  - speed = 0
+-
+  - MouseMove x, y, speed
+  - return [x, y, speed]

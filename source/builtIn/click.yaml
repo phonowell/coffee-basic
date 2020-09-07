@@ -1,0 +1,8 @@
+-
+  - input
+-
+  - if (!input) {
+  - '  Click'
+  - '  return'
+  - '}'
+  - Click % StrReplace input, ":", " "

@@ -1,162 +1,103 @@
 import $ from 'fire-keeper'
 import _ from 'lodash'
-import { getDepth, setDepth } from './fn'
-
-import { $abs, $ceil, $floor, $round } from '../builtIn/math'
-import { $alert, $info, $prompt, $tip } from '../builtIn/info'
-import { $beep, $click, $exit, $move, $reload, $sleep } from '../builtIn/simple'
-import { $clearInterval, $clearTimeout, $setInterval, $setTimeout } from '../builtIn/timer'
-import { $findColor, $findImage } from '../builtIn/find'
-import { $getColor, $getPosition, $getState } from '../builtIn/get'
-import { $isPressing, $press } from '../builtIn/press'
-import { $open, $write } from '../builtIn/file'
-import { $setFixed } from '../builtIn/set'
-import { $trim, $trimEnd, $trimStart } from '../builtIn/trim'
+import { encodeFnName, regFn } from './fn'
 
 // interface
 
 import { Block } from '../type'
 
-type Option = {
-  argument: string[]
-  depth: number
-  name: string
-  output: string
-}
+type Yaml = [
+  string[], string[]
+]
 
 // const
 
-const Rule: {
-  [key: string]: (option: Option) => string[] | string
-} = {
-
-  '$.beep': $beep,
-  '$.click': $click,
-  '$.exit': $exit,
-  '$.findColor': $findColor,
-  '$.findImage': $findImage,
-  '$.getColor': $getColor,
-  '$.getPosition': $getPosition,
-  '$.getState': $getState,
-  '$.info': $info,
-  '$.isPressing': $isPressing,
-  '$.move': $move,
-  '$.open': $open,
-  '$.press': $press,
-  '$.reload': $reload,
-  '$.setFixed': $setFixed,
-  '$.sleep': $sleep,
-  '$.tip': $tip,
-  '$.trim': $trim,
-  '$.trimEnd': $trimEnd,
-  '$.trimStart': $trimStart,
-  '$.write': $write,
-  'Math.abs': $abs,
-  'Math.ceil': $ceil,
-  'Math.floor': $floor,
-  'Math.round': $round,
-  'alert': $alert,
-  'clearInterval': $clearInterval,
-  'clearTimeout': $clearTimeout,
-  'prompt': $prompt,
-  'setInterval': $setInterval,
-  'setTimeout': $setTimeout
-
-} as const
+const Rule = [
+  '$.beep',
+  '$.click',
+  '$.exit',
+  // '$.findColor': $findColor,
+  // '$.findImage': $findImage,
+  // '$.getColor': $getColor,
+  // '$.getPosition': $getPosition,
+  // '$.getState': $getState,
+  // '$.info': $info,
+  // '$.isPressing': $isPressing,
+  '$.move',
+  '$.now',
+  // '$.open': $open,
+  // '$.press': $press,
+  '$.reload',
+  // '$.setFixed': $setFixed,
+  // '$.sleep': $sleep,
+  // '$.tip': $tip,
+  '$.trim',
+  '$.trimEnd',
+  '$.trimStart',
+  // '$.write': $write,
+  // 'Math.abs': $abs,
+  // 'Math.ceil': $ceil,
+  // 'Math.floor': $floor,
+  // 'Math.round': $round,
+  // 'alert': $alert,
+  // 'clearInterval': $clearInterval,
+  // 'clearTimeout': $clearTimeout,
+  // 'prompt': $prompt,
+  // 'setInterval': $setInterval,
+  // 'setTimeout': $setTimeout
+] as const
 
 // function
 
-function format(
-  line: string
-): string[] | string {
-
-  if (!line.includes('(')) return line
-
-  const option = pickOption(line)
-  if (!option) return line
-  const { argument, depth, name, output } = option
-
-  // not found
-  const fn = Rule[name]
-  if (!fn) {
-    let _result = `${name}(${argument.join(', ')})`
-    if (output)
-      _result = `${output} = ${_result}`
-    return `${setDepth(depth)}${_result}`
-  }
-
-  // return
-  const result = fn(option)
-
-  if (typeof result === 'string')
-    return `${setDepth(depth)}${result}`
-
-  if (result instanceof Array) {
-    const _listResult: string[] = []
-    for (const _line of result)
-      _listResult.push(`${setDepth(depth)}${_line}`)
-    return _listResult
-  }
-
-  throw new Error(`invalid type '${$.type(result)}'`)
-}
-
-function main(
+async function main_(
+  listVar: string[],
+  listFn: Block[],
   listBlock: Block[]
-): void {
+): Promise<void> {
 
-  for (const block of listBlock) {
+  const setResult: Set<typeof Rule[number]> = new Set()
 
-    let listResult: string[] = []
-
-    for (const line of block.content) {
-
-      const result = format(line)
-
-      if (typeof (result) === 'string') {
-        listResult.push(result)
-        continue
+  listBlock.forEach(block =>
+    block.content.forEach(line => {
+      for (const key of Rule) {
+        if (!line.includes(key)) continue
+        setResult.add(key as typeof Rule[number])
       }
+    })
+  )
 
-      listResult = [...listResult, ...result]
-    }
+  if (!setResult.size) return
 
-    block.content = listResult
-  }
-}
+  // variable
+  listVar.unshift('$ = {}')
 
-function pickOption(
-  line: string
-): Option | undefined {
+  // function
+  
+  const listResult: string[] = []
 
-  const depth = getDepth(line)
-
-  let [name, ...listArg] = line
-    .trim()
-    .split('(')
-  let output: string = ''
-
-  if (name.includes('=')) {
-    const list = name.split('=')
-    output = list[0].trim()
-    name = list[1].trim()
+  for (const name of setResult) {
+    const filename = name.replace('$.', '')
+    const data: Yaml = await $.read_(`./source/builtIn/${filename}.yaml`) as Yaml
+    regFn(listFn, name, data[0], data[1])
+    const _name = encodeFnName(name)
+    listResult.push(`${name} = Func('${_name}')`)
   }
 
-  if (name.includes(' ')) return
+  let block = _.find(listFn, {
+    name: encodeFnName('$default')
+  })
+  if (!block) {
+    regFn(listFn, '$default', [], [])
+    block = _.find(listFn, {
+      name: encodeFnName('$default')
+    }) as Block
+  }
 
-  listArg = _.trim(listArg.join('('), ' ()')
-    .replace(/'[^']+?'/g, text => text.replace(/,/g, '__comma__'))
-    .replace(/"[^"]+?"/g, text => text.replace(/,/g, '__comma__'))
-    .split(',')
-    .map(it => it
-      .trim()
-      .replace(/__comma__/g, ',')
-    )
-
-  // return
-  const argument = listArg
-  return { argument, depth, name, output }
+  block.content = [
+    ...listResult,
+    ...block.content
+  ]
 }
 
 // export
-export default main
+export default main_
